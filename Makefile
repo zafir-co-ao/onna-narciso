@@ -11,10 +11,9 @@ tests:
 build:
 	rm -fr bin
 	mkdir bin
-	cp -r web/assets bin/assets
 	cp -r web/static bin/static
 	templ generate
-	bunx tailwindcss -i web/assets/css/main.css -o web/assets/css/styles.css
+	bunx tailwindcss -i web/assets/css/main.css -o web/static/css/styles.css
 	go build -o bin/$(APP_NAME) cmd/web/main.go
 
 build-dev:
