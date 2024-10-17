@@ -8,16 +8,18 @@ TEST_DIR = ./...
 tests:
 	$(GO_TEST) $(TEST_DIR)
 
-build:
+
+clean:
 	rm -fr bin
+
+build: clean
 	mkdir bin
 	cp -r web/static bin/static
 	templ generate
 	bunx tailwindcss -i web/assets/css/main.css -o web/static/css/styles.css
 	go build -o bin/$(APP_NAME) cmd/web/main.go
 
-build-dev:
-	rm -fr bin
+build-dev: clean
 	mkdir bin
 
 run-dev: build-dev
