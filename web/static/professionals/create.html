@@ -1,0 +1,296 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Onna SPA</title>
+    </head>
+    <body>
+        <div class="min-h-full">
+            <nav class="bg-gray-500">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="flex h-16 items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="hidden md:block">
+                                <div
+                                    class="ml-10 flex items-baseline space-x-4"
+                                >
+                                    <!-- Current: "bg-indigo-700 text-white", Default: "text-white hover:bg-indigo-500 hover:bg-opacity-75" -->
+                                    <a
+                                        href="/"
+                                        class="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-white"
+                                        aria-current="page"
+                                        >Agenda</a
+                                    >
+                                    <a
+                                        href="/professionals/index.html"
+                                        class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-600 hover:bg-opacity-75"
+                                        >Profissionais</a
+                                    >
+                                    <a
+                                        href="/appointments/index.html"
+                                        class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-600 hover:bg-opacity-75"
+                                        >Tratamentos</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="ml-4 flex items-center md:ml-6">
+                                <button
+                                    type="button"
+                                    class="relative rounded-full bg-gray-600 p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-600"
+                                >
+                                    <span class="absolute -inset-1.5"></span>
+                                    <span class="sr-only">
+                                            View notifications
+                                    </span>
+                                    <svg
+                                        class="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        aria-hidden="true"
+                                        data-slot="icon"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                                        />
+                                    </svg>
+                                </button>
+
+                                <!-- Profile dropdown -->
+                                <div class="relative ml-3">
+                                    <div>
+                                        <button
+                                            type="button"
+                                            class="relative flex max-w-xs items-center rounded-full bg-indigo-600 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"
+                                            id="user-menu-button"
+                                            aria-expanded="false"
+                                            aria-haspopup="true"
+                                        >
+                                            <span
+                                                class="absolute -inset-1.5"
+                                            ></span>
+                                            <span class="sr-only">Open user menu</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="-mr-2 flex md:hidden">
+                            <!-- Mobile menu button -->
+                            <button
+                                type="button"
+                                class="relative inline-flex items-center justify-center rounded-md bg-gray-500 p-2 text-gray-200 hover:bg-gray-600 hover:bg-opacity-75 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-600"
+                                aria-controls="mobile-menu"
+                                aria-expanded="false"
+                            >
+                                <span class="absolute -inset-0.5"></span>
+                                <span class="sr-only">Open main menu</span>
+                                <!-- Menu open: "hidden", Menu closed: "block" -->
+                                <svg
+                                    class="block h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                    data-slot="icon"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                                    />
+                                </svg>
+                                <!-- Menu open: "block", Menu closed: "hidden" -->
+                                <svg
+                                    class="hidden h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                    data-slot="icon"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18 18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile menu, show/hide based on menu state. -->
+                <div class="md:hidden" id="mobile-menu">
+                    <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+                        <!-- Current: "bg-indigo-700 text-white", Default: "text-white hover:bg-indigo-500 hover:bg-opacity-75" -->
+                        <a
+                            href="#"
+                            class="block rounded-md bg-gray-700 px-3 py-2 text-base font-medium text-white"
+                            aria-current="page"
+                            >Agenda</a>
+                        <a
+                            href="/pages/professionals/list.html"
+                            class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:bg-opacity-75"
+                            >Profissionais</a>
+                        <a
+                            href="#"
+                            class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:bg-opacity-75"
+                            >Tratamentos</a>
+
+                    </div>
+                    <div class="border-t border-indigo-700 pb-3 pt-4">
+                        <div class="flex items-center px-5">
+                            <button
+                                type="button"
+                                class="relative ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-indigo-600 p-1 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"
+                            >
+                                <span class="absolute -inset-1.5"></span>
+                                <span class="sr-only">View notifications</span>
+                                <svg
+                                    class="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                    data-slot="icon"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <header class="bg-white shadow">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    <h1
+                        class="text-3xl font-bold leading-tight tracking-tight text-gray-900"
+                    >
+                        Criar Profissional
+                    </h1>
+                </div>
+            </header>
+            <main>
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    <form>
+                        <div class="space-y-12">
+                            <div class="border-b border-gray-900/10 pb-12">
+                                <h2
+                                    class="text-base font-semibold leading-7 text-gray-900"
+                                >
+                                    Informações
+                                </h2>
+                                <div
+                                    class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
+                                >
+                                    <div class="sm:col-span-3">
+                                        <label
+                                            for="first-name"
+                                            class="block text-sm font-medium leading-6 text-gray-900"
+                                        >
+                                            Nome
+                                        </label>
+                                        <div class="mt-2">
+                                            <input
+                                                type="text"
+                                                name="first-name"
+                                                id="first-name"
+                                                autocomplete="given-name"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label
+                                            for="E-mail"
+                                            class="block text-sm font-medium leading-6 text-gray-900"
+                                        >
+                                            E-mail
+                                        </label>
+                                        <div class="mt-2">
+                                            <input
+                                                type="text"
+                                                name="last-name"
+                                                id="last-name"
+                                                autocomplete="family-name"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label
+                                            for="E-mail"
+                                            class="block text-sm font-medium leading-6 text-gray-900"
+                                        >
+                                            Telefone
+                                        </label>
+                                        <div class="mt-2">
+                                            <input
+                                                type="text"
+                                                name="last-name"
+                                                id="last-name"
+                                                autocomplete="family-name"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <div class="sm:col-span-3">
+                                        <label class="block text-sm font-medium leading-6 text-gray-900">
+                                            Tratamentos
+                                        </label>
+                                        <div class="mt-2">
+                                            <select
+                                                multiple
+                                                class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option>Manicure</option>
+                                                <option>Pedicure</option>
+                                                <option>
+                                                    Massagem Corporal
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <a
+                                type="button"
+                                href="/index.html"
+                                class="text-sm block font-semibold leading-6 text-gray-900"
+                            >
+                                Cancelar
+                            </a>
+                            <a
+                                type="submit"
+                                href="#"
+                                class="rounded-md block bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                            >
+                                Salvar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
