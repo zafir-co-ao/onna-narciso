@@ -13,7 +13,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		repo := inmem.NewAppointmentRepository()
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1")
+		id, err := usecase.Schedule("1", "1")
 
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
@@ -30,7 +30,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1")
+		id, err := usecase.Schedule("1", "1")
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -54,7 +54,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1")
+		id, err := usecase.Schedule("1", "1")
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -71,11 +71,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 	t.Run("should_schedule_appointment_with_professional", func(t *testing.T) {
 		professionalId := "1"
+		customerId := "2"
 		repo := inmem.NewAppointmentRepository()
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule(professionalId)
+		id, err := usecase.Schedule(professionalId, customerId)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -87,6 +88,28 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if appointment.ProfessionalID != "1" {
 			t.Errorf("The appointment professional must be  1, got %s", appointment.ProfessionalID)
+		}
+	})
+
+	t.Run("should_schedule_appointment_with_customer", func(t *testing.T) {
+		customerId := "1"
+		professionalId := "2"
+		repo := inmem.NewAppointmentRepository()
+
+		usecase := scheduling.NewAppointmentScheduler(repo)
+
+		id, err := usecase.Schedule(professionalId, customerId)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		appointment, err := repo.Get(id)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		if appointment.CustomerID != "1" {
+			t.Errorf("The appointment customer must be  1, got %s", appointment.CustomerID)
 		}
 	})
 }
