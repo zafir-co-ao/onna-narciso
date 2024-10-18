@@ -14,6 +14,7 @@ type Appointment struct {
 	Status         Status
 	Date           string
 	Start          string
+	Duration       int
 }
 
 func (a *Appointment) IsScheduled() bool {
