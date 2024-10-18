@@ -7,6 +7,36 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/components"
 )
 
+var appointments = []scheduling.Appointment{
+	{
+		ID:               "1",
+		CustomerName:     "Paola Oliveira",
+		ProfessionalName: "Julieta Venegas",
+		ServiceName:      "Manicure",
+		Date:             "2024-10-10",
+		Start:            "08:00",
+		Duration:         180,
+	},
+	{
+		ID:               "2",
+		CustomerName:     "Juliana Paes",
+		ProfessionalName: "Julieta Venegas",
+		ServiceName:      "Manicure",
+		Date:             "2024-10-11",
+		Start:            "10:30",
+		Duration:         90,
+	},
+	{
+		ID:               "3",
+		CustomerName:     "Gisele Bündchen",
+		ProfessionalName: "Mariana Aydar",
+		ServiceName:      "Depilação Laser",
+		Date:             "2024-10-10",
+		Start:            "12:00",
+		Duration:         60,
+	},
+}
+
 func HandleWeekView(w http.ResponseWriter, r *http.Request) {
-	components.WeekView("2024-10-10", 6, 8, 22, []scheduling.Appointment{}).Render(r.Context(), w)
+	components.WeekView("2024-10-10", 6, 8, 22, appointments).Render(r.Context(), w)
 }
