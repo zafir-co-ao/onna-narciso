@@ -1,7 +1,17 @@
 package scheduling
 
+type AppointmentSchedulerDTO struct {
+	ID             string
+	ProfessionalID string
+	CustomerID     string
+	ServiceID      string
+	Date           string
+	StartHour      string
+	Duration       int
+}
+
 type AppointmentScheduler interface {
-	Schedule(professionalId, customerId, serviceId, date, startHour string, duration int) (string, error)
+	Schedule(d AppointmentSchedulerDTO) (string, error)
 }
 
 type appointmentScedulerImpl struct {
@@ -14,17 +24,17 @@ func NewAppointmentScheduler(repo AppointmentRepository) AppointmentScheduler {
 	}
 }
 
-func (s *appointmentScedulerImpl) Schedule(professionalId, customerId, serviceId, date, startHour string, duration int) (string, error) {
+func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, error) {
 
 	app := Appointment{
 		ID:             "1",
 		Status:         StatusScheduled,
-		ProfessionalID: professionalId,
-		CustomerID:     customerId,
-		ServiceID:      serviceId,
-		Date:           date,
-		Start:          startHour,
-		Duration:       duration,
+		ProfessionalID: d.ProfessionalID,
+		CustomerID:     d.CustomerID,
+		ServiceID:      d.ServiceID,
+		Date:           d.Date,
+		Start:          d.StartHour,
+		Duration:       d.Duration,
 	}
 
 	s.repo.Save(app)
