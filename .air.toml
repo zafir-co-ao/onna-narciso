@@ -5,9 +5,10 @@ tmp_dir = "tmp"
 args_bin = []
 bin = "bin/narciso"
 cmd = """templ generate && \
-	cp -r web/static bin/static && \
+	cp -fr web/static bin/static && \
  	bunx tailwindcss -i web/assets/css/main.css -o bin/static/css/styles.css && \
-	go build -o bin/narciso cmd/web/main.go
+	go build -o bin/narciso cmd/web/main.go && \
+	echo "Build complete"
 	"""
 
 delay = 100
