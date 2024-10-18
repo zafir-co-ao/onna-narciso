@@ -7,10 +7,11 @@ const (
 type Status string
 
 type Appointment struct {
-	ID     string
-	Status Status
-	Date   string
-	Start  string
+	ID             string
+	ProfessionalID string
+	Status         Status
+	Date           string
+	Start          string
 }
 
 func (a *Appointment) IsScheduled() bool {
