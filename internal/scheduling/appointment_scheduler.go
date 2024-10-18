@@ -26,16 +26,15 @@ func NewAppointmentScheduler(repo AppointmentRepository) AppointmentScheduler {
 
 func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, error) {
 
-	app := Appointment{
-		ID:             "1",
-		Status:         StatusScheduled,
-		ProfessionalID: d.ProfessionalID,
-		CustomerID:     d.CustomerID,
-		ServiceID:      d.ServiceID,
-		Date:           d.Date,
-		Start:          d.StartHour,
-		Duration:       d.Duration,
-	}
+	app, _ := NewAppointmentBuilder().
+		WithAppointmentID("1").
+		WithProfessionalID(d.ProfessionalID).
+		WithCustomerID(d.CustomerID).
+		WithServiceID(d.ServiceID).
+		WithDate(d.Date).
+		WithStartHour(d.StartHour).
+		WithDuration(d.Duration).
+		Build()
 
 	s.repo.Save(app)
 
