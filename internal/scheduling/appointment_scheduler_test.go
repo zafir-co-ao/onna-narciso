@@ -13,7 +13,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		repo := inmem.NewAppointmentRepository()
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1", "1", "4", "2024-10-09")
+		id, err := usecase.Schedule("1", "1", "4", "2024-10-09", "11:00")
 
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
@@ -30,7 +30,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1", "1", "3", "2024-10-09")
+		id, err := usecase.Schedule("1", "1", "3", "2024-10-09", "11:00")
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -54,7 +54,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule("1", "1", "1", "2024-10-09")
+		id, err := usecase.Schedule("1", "1", "1", "2024-10-09", "13:00")
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -74,11 +74,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		customerId := "2"
 		serviceId := "3"
 		date := "2024-10-12"
+		startHour := "12:00"
 		repo := inmem.NewAppointmentRepository()
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule(professionalId, customerId, serviceId, date)
+		id, err := usecase.Schedule(professionalId, customerId, serviceId, date, startHour)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -97,12 +98,13 @@ func TestAppointmentScheduler(t *testing.T) {
 		customerId := "1"
 		professionalId := "2"
 		serviceId := "4"
+		startHour := "10:00"
 		date := "2024-10-10"
 		repo := inmem.NewAppointmentRepository()
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule(professionalId, customerId, serviceId, date)
+		id, err := usecase.Schedule(professionalId, customerId, serviceId, date, startHour)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -122,11 +124,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		serviceId := "4"
 		professionalId := "3"
 		date := "2024-10-11"
+		startHour := "08:00"
 		repo := inmem.NewAppointmentRepository()
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule(professionalId, customerId, serviceId, date)
+		id, err := usecase.Schedule(professionalId, customerId, serviceId, date, startHour)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -146,11 +149,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		serviceId := "4"
 		professionalId := "3"
 		date := "2024-10-01"
+		startHour := "08:00"
 		repo := inmem.NewAppointmentRepository()
 
 		usecase := scheduling.NewAppointmentScheduler(repo)
 
-		id, err := usecase.Schedule(professionalId, customerId, serviceId, date)
+		id, err := usecase.Schedule(professionalId, customerId, serviceId, date, startHour)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -162,6 +166,31 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if appointment.Date != date {
 			t.Errorf("The appointment date must be %s, got %s", date, appointment.Date)
+		}
+	})
+
+	t.Run("should_schedule_appointment_with_start_hour", func(t *testing.T) {
+		customerId := "2"
+		serviceId := "4"
+		professionalId := "3"
+		date := "2024-10-01"
+		startHour := "08:00"
+		repo := inmem.NewAppointmentRepository()
+
+		usecase := scheduling.NewAppointmentScheduler(repo)
+
+		id, err := usecase.Schedule(professionalId, customerId, serviceId, date, startHour)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		appointment, err := repo.Get(id)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		if appointment.Start != startHour {
+			t.Errorf("The appointment start hour must be %s, got %s", startHour, appointment.Start)
 		}
 	})
 }
