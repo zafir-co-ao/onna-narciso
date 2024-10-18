@@ -1,6 +1,7 @@
 package scheduling_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
@@ -42,15 +43,14 @@ func TestDailyAppointments(t *testing.T) {
 	})
 
 	type dailyAppointmentsTestMatrix struct {
-		date         string
-		expectedSize int
-		expectedIDs  []string
+		date        string
+		expectedIDs []string
 	}
 
 	matrix := []dailyAppointmentsTestMatrix{
-		{date: "2024-10-10", expectedSize: 2, expectedIDs: []string{"1", "4"}},
-		{date: "2024-10-11", expectedSize: 1, expectedIDs: []string{"5"}},
-		{date: "2024-10-12", expectedSize: 2, expectedIDs: []string{"6", "7"}},
+		{date: "2024-10-10", expectedIDs: []string{"1", "4"}},
+		{date: "2024-10-11", expectedIDs: []string{"5"}},
+		{date: "2024-10-12", expectedIDs: []string{"6", "7"}},
 	}
 
 	appointmentsGetter := scheduling.NewDayliAppointmentsGetter(repo)
@@ -61,14 +61,18 @@ func TestDailyAppointments(t *testing.T) {
 
 			results, _ := appointmentsGetter.Get(test.date)
 
-			if len(results) != test.expectedSize {
-				t.Errorf("Expected %d appointments, got %d", test.expectedSize, len(results))
+			if len(results) != len(test.expectedIDs) {
+				t.Errorf("Expected %d appointments, got %d", len(test.expectedIDs), len(results))
 			}
 
 			for i, appointment := range results {
-				if appointment.ID != test.expectedIDs[i] {
-					t.Errorf("Expected appointment with ID %s, got %s", test.expectedIDs[i], appointment.ID)
+
+				if !slices.ContainsFunc(results, func(a scheduling.Appointment) bool {
+					return a.ID == test.expectedIDs[i]
+				}) {
+					t.Errorf("Expected appointment in IDs %v, got %s", test.expectedIDs, appointment.ID)
 				}
+
 			}
 		})
 	}

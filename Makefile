@@ -20,7 +20,7 @@ build: clean
 	go build -o bin/$(APP_NAME) cmd/web/main.go
 
 build-dev: clean
-	mkdir bin
+	mkdir -p bin/static
 
 run-dev: build-dev
 	air
