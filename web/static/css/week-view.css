@@ -1,0 +1,39 @@
+.week-view-rows-60 {
+    grid-template-rows: repeat(61, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-56 {
+    grid-template-rows: repeat(57, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-52 {
+    grid-template-rows: repeat(53, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-48 {
+    grid-template-rows: repeat(49, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-44 {
+    grid-template-rows: repeat(45, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-42 {
+    grid-template-rows: repeat(43, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-40 {
+    grid-template-rows: repeat(41, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-36 {
+    grid-template-rows: repeat(37, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-32 {
+    grid-template-rows: repeat(33, minmax(1.75rem, 1fr));
+}
+
+.week-view-rows-28 {
+    grid-template-rows: repeat(29, minmax(1.75rem, 1fr));
+}
