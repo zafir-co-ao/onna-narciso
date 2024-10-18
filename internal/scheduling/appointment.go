@@ -10,6 +10,7 @@ type Appointment struct {
 	ID             string
 	ProfessionalID string
 	CustomerID     string
+	ServiceID      string
 	Status         Status
 	Date           string
 	Start          string
