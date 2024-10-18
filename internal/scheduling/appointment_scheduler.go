@@ -18,7 +18,7 @@ func (s *appointmentScedulerImpl) Schedule() (string, error) {
 
 	app := Appointment{
 		ID:     "1",
-		Status: "Scheduled",
+		Status: StatusScheduled,
 	}
 
 	s.repo.Save(app)

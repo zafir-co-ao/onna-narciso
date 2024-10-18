@@ -64,7 +64,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Status != "Scheduled" {
+		if appointment.IsScheduled() == false {
 			t.Errorf("Appointment status should be Scheduled, got %s", appointment.Status)
 		}
 	})
