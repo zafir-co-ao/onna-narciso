@@ -9,6 +9,7 @@ import (
 )
 
 func TestAppointmentScheduler(t *testing.T) {
+	professionalRepo := inmem.NewProfessionalRepository()
 	customerRepo := inmem.NewCustomerRepository()
 	repo := inmem.NewAppointmentRepository()
 
@@ -20,6 +21,14 @@ func TestAppointmentScheduler(t *testing.T) {
 	customerRepo.Save(customer2)
 	customerRepo.Save(customer3)
 
+	professional1 := scheduling.Professional{ID: "1"}
+	professional2 := scheduling.Professional{ID: "2"}
+	professional3 := scheduling.Professional{ID: "3"}
+
+	professionalRepo.Save(professional1)
+	professionalRepo.Save(professional2)
+	professionalRepo.Save(professional3)
+
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerDTO{
 			ProfessionalID: "1",
@@ -29,7 +38,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -50,7 +59,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       180,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -80,7 +89,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "13:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -106,7 +115,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "12:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -132,7 +141,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "10:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -158,7 +167,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "10:30",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -184,7 +193,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "18:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -210,7 +219,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:30",
 			Duration:       120,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -236,7 +245,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -262,7 +271,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:35",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -292,7 +301,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 90)
 		repo.Save(a)
 
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		_, err := usecase.Schedule(d)
 		if err == nil {
@@ -342,7 +351,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 480)
 		repo.Save(a)
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		for _, dto := range d {
 			_, err := usecase.Schedule(dto)
@@ -364,7 +373,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
 
 		_, err := usecase.Schedule(d)
 		if err == nil {
@@ -374,5 +383,28 @@ func TestAppointmentScheduler(t *testing.T) {
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
 			t.Errorf("The error must be ErrCustomerNotFound, got %v", err)
 		}
+	})
+
+	t.Run("should_return_error_professional_not_found_if_professional_not_exists_in_repositoru", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "4",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "2024-09-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+		professionalRepo := inmem.NewProfessionalRepository()
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+
+		_, err := usecase.Schedule(d)
+		if err == nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrProfessionalNotFound) {
+			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
+		}
+
 	})
 }
