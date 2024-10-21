@@ -1,9 +1,5 @@
 package scheduling
 
-import (
-	"time"
-)
-
 type AppointmentSchedulerDTO struct {
 	ID             string
 	ProfessionalID string
@@ -73,56 +69,12 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 }
 
 func (s *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerDTO) (Customer, error) {
-	var customer Customer
-
 	if len(d.CustomerID) > 0 {
 		c, err := s.customerRepo.Get(d.CustomerID)
 		return c, err
 	}
 
-	if len(d.CustomerName) > 0 && len(d.CustomerPhone) > 0 {
-		customer = Customer{ID: "1000", Name: d.CustomerName, Phone: d.CustomerPhone}
-		s.customerRepo.Save(customer)
-	}
-
+	customer := Customer{ID: "1000", Name: d.CustomerName, Phone: d.CustomerPhone}
+	s.customerRepo.Save(customer)
 	return customer, nil
-}
-
-func VerifyAvailability(a Appointment, appointments []Appointment) bool {
-	var isAvailable = true
-
-	if len(appointments) == 0 {
-		return isAvailable
-	}
-
-	for _, b := range appointments {
-		if isNotAvailable(a, b) {
-			isAvailable = false
-			break
-		}
-	}
-
-	return isAvailable
-
-}
-
-func isNotAvailable(a, b Appointment) bool {
-	startTimeA, _ := time.Parse("15:04", a.Start)
-	endTimeA, _ := time.Parse("15:04", a.End)
-	startTimeB, _ := time.Parse("15:04", b.Start)
-	endTimeB, _ := time.Parse("15:04", b.End)
-
-	if startTimeA.Equal(startTimeB) {
-		return true
-	}
-
-	if startTimeA.Before(startTimeB) && endTimeA.After(startTimeB) {
-		return true
-	}
-
-	if startTimeA.After(startTimeB) && startTimeA.Before(endTimeB) {
-		return true
-	}
-
-	return false
 }
