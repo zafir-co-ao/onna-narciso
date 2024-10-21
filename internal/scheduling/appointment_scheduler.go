@@ -22,13 +22,15 @@ type appointmentScedulerImpl struct {
 	customerRepo     CustomerRepository
 	appointmentRepo  AppointmentRepository
 	professionalRepo ProfessionalRepository
+	serviceRepo      ServiceRepository
 }
 
-func NewAppointmentScheduler(aRepo AppointmentRepository, cRepo CustomerRepository, pRepo ProfessionalRepository) AppointmentScheduler {
+func NewAppointmentScheduler(aRepo AppointmentRepository, cRepo CustomerRepository, pRepo ProfessionalRepository, sRepo ServiceRepository) AppointmentScheduler {
 	return &appointmentScedulerImpl{
 		appointmentRepo:  aRepo,
 		customerRepo:     cRepo,
 		professionalRepo: pRepo,
+		serviceRepo:      sRepo,
 	}
 }
 
@@ -39,6 +41,11 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 	}
 
 	_, err = s.professionalRepo.Get(d.ProfessionalID)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.serviceRepo.Get(d.ServiceID)
 	if err != nil {
 		return "", err
 	}

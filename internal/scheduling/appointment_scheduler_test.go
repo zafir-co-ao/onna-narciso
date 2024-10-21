@@ -12,6 +12,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	professionalRepo := inmem.NewProfessionalRepository()
 	customerRepo := inmem.NewCustomerRepository()
 	repo := inmem.NewAppointmentRepository()
+	serviceRepo := inmem.NewServiceRepository()
 
 	customer1 := scheduling.Customer{ID: "1"}
 	customer2 := scheduling.Customer{ID: "2"}
@@ -29,6 +30,16 @@ func TestAppointmentScheduler(t *testing.T) {
 	professionalRepo.Save(professional2)
 	professionalRepo.Save(professional3)
 
+	service1 := scheduling.Service{ID: "1"}
+	service2 := scheduling.Service{ID: "2"}
+	service3 := scheduling.Service{ID: "3"}
+	service4 := scheduling.Service{ID: "4"}
+
+	serviceRepo.Save(service1)
+	serviceRepo.Save(service2)
+	serviceRepo.Save(service3)
+	serviceRepo.Save(service4)
+
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerDTO{
 			ProfessionalID: "1",
@@ -38,7 +49,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -59,7 +70,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       180,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -89,7 +100,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "13:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -115,7 +126,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "12:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -141,7 +152,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "10:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -161,13 +172,13 @@ func TestAppointmentScheduler(t *testing.T) {
 	t.Run("should_schedule_appointmet_with_service", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerDTO{
 			ProfessionalID: "3",
-			ServiceID:      "10",
+			ServiceID:      "1",
 			CustomerID:     "2",
 			Date:           "2024-09-17",
 			StartHour:      "10:30",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -193,7 +204,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "18:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -219,7 +230,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:30",
 			Duration:       120,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -245,7 +256,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -271,7 +282,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:35",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		id, err := usecase.Schedule(d)
 		if err != nil {
@@ -301,11 +312,11 @@ func TestAppointmentScheduler(t *testing.T) {
 		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 90)
 		repo.Save(a)
 
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		_, err := usecase.Schedule(d)
 		if err == nil {
-			t.Errorf("Scheduling appointment should not return error: %v", err)
+			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
 		if !errors.Is(err, scheduling.ErrBusyTime) {
@@ -351,12 +362,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 480)
 		repo.Save(a)
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		for _, dto := range d {
 			_, err := usecase.Schedule(dto)
 			if err == nil {
-				t.Errorf("Scheduling appointment should not return error: %v", err)
+				t.Errorf("Scheduling appointment should return error: %v", err)
 			}
 			if !errors.Is(err, scheduling.ErrBusyTime) {
 				t.Errorf("The error must be ErrBusyTime, got %v", err)
@@ -373,11 +384,11 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		_, err := usecase.Schedule(d)
 		if err == nil {
-			t.Errorf("Scheduling appointment should not return error: %v", err)
+			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
@@ -385,7 +396,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_professional_not_found_if_professional_not_exists_in_repositoru", func(t *testing.T) {
+	t.Run("should_return_error_professional_not_found_if_professional_not_exists_in_repository", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerDTO{
 			ProfessionalID: "4",
 			CustomerID:     "3",
@@ -395,16 +406,37 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 		professionalRepo := inmem.NewProfessionalRepository()
-		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo)
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
 
 		_, err := usecase.Schedule(d)
 		if err == nil {
-			t.Errorf("Scheduling appointment should not return error: %v", err)
+			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
 		if !errors.Is(err, scheduling.ErrProfessionalNotFound) {
 			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
 		}
+	})
 
+	t.Run("should_return_error_service_not_found_if_service_not_exists_in_repository", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "5",
+			Date:           "2024-09-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
+
+		_, err := usecase.Schedule(d)
+		if err == nil {
+			t.Errorf("Scheduling appointment should return error: %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrServiceNotFound) {
+			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
+		}
 	})
 }

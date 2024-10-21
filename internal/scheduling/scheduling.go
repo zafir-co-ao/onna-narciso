@@ -7,4 +7,5 @@ var (
 	ErrCustomerNotFound      = errors.New("Client not found")
 	ErrInvalidStatusToCancel = errors.New("Invalid status to cancel")
 	ErrProfessionalNotFound  = errors.New("Professional not found")
+	ErrServiceNotFound       = errors.New("Service not found")
 )
