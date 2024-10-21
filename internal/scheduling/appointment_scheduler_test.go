@@ -439,4 +439,34 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
 		}
 	})
+
+	t.Run("must_register_the_customer_at_the_time_of_the_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			CustomerName:   "John Doe",
+			CustomerPhone:  "123456789",
+			ServiceID:      "4",
+			Date:           "2024-09-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, _ := repo.Get(id)
+
+		customer, err := customerRepo.Get(a.CustomerID)
+		if err != nil {
+			t.Errorf("Should return customer: %v", err)
+		}
+
+		if customer.ID != a.CustomerID {
+			t.Errorf("The customer must be the same as the appointment")
+		}
+	})
 }

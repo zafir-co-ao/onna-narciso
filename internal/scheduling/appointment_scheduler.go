@@ -8,6 +8,8 @@ type AppointmentSchedulerDTO struct {
 	ID             string
 	ProfessionalID string
 	CustomerID     string
+	CustomerName   string
+	CustomerPhone  string
 	ServiceID      string
 	Date           string
 	StartHour      string
@@ -35,12 +37,7 @@ func NewAppointmentScheduler(aRepo AppointmentRepository, cRepo CustomerReposito
 }
 
 func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, error) {
-	_, err := s.customerRepo.Get(d.CustomerID)
-	if err != nil {
-		return "", err
-	}
-
-	_, err = s.professionalRepo.Get(d.ProfessionalID)
+	_, err := s.professionalRepo.Get(d.ProfessionalID)
 	if err != nil {
 		return "", err
 	}
@@ -50,10 +47,15 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 		return "", err
 	}
 
+	customer, err := s.getOrAddCustomer(d)
+	if err != nil {
+		return "", err
+	}
+
 	app, _ := NewAppointmentBuilder().
 		WithAppointmentID("1").
 		WithProfessionalID(d.ProfessionalID).
-		WithCustomerID(d.CustomerID).
+		WithCustomerID(customer.ID).
 		WithServiceID(d.ServiceID).
 		WithDate(d.Date).
 		WithStartHour(d.StartHour).
@@ -68,6 +70,22 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 	s.appointmentRepo.Save(app)
 
 	return "1", nil
+}
+
+func (s *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerDTO) (Customer, error) {
+	var customer Customer
+
+	if len(d.CustomerID) > 0 {
+		c, err := s.customerRepo.Get(d.CustomerID)
+		return c, err
+	}
+
+	if len(d.CustomerName) > 0 && len(d.CustomerPhone) > 0 {
+		customer = Customer{ID: "1000", Name: d.CustomerName, Phone: d.CustomerPhone}
+		s.customerRepo.Save(customer)
+	}
+
+	return customer, nil
 }
 
 func VerifyAvailability(a Appointment, appointments []Appointment) bool {

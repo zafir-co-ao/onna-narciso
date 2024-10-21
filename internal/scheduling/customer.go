@@ -1,5 +1,7 @@
 package scheduling
 
 type Customer struct {
-	ID string
+	ID    string
+	Name  string
+	Phone string
 }
