@@ -10,8 +10,7 @@ var ErrInvalidDate = errors.New("Invalid date")
 type Date string
 
 func NewDate(v string) (Date, error) {
-	_, err := time.Parse("2006-01-02", v)
-	if err != nil {
+	if !isValidDate(v) {
 		return Date(""), ErrInvalidDate
 	}
 
@@ -20,4 +19,9 @@ func NewDate(v string) (Date, error) {
 
 func (d Date) Value() string {
 	return string(d)
+}
+
+func isValidDate(v string) bool {
+	_, err := time.Parse("2006-01-02", v)
+	return err == nil
 }
