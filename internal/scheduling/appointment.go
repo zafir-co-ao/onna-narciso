@@ -1,5 +1,10 @@
 package scheduling
 
+import (
+	"strconv"
+	"strings"
+)
+
 const (
 	StatusScheduled Status = "scheduled"
 )
@@ -17,9 +22,44 @@ type Appointment struct {
 	Status           Status
 	Date             string // Formato: 2024-10-01
 	Start            string // Formato 9:00
+	End              string
 	Duration         int
+}
+
+func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
+	app := Appointment{
+		ID:             ID,
+		ProfessionalID: ProfessionalID,
+		CustomerID:     CustomerID,
+		ServiceID:      ServiceID,
+		Date:           Date,
+		Start:          Start,
+		Duration:       Duration,
+		Status:         StatusScheduled,
+	}
+
+	app.calculateEnd()
+
+	return app, nil
 }
 
 func (a *Appointment) IsScheduled() bool {
 	return a.Status == StatusScheduled
+}
+
+func (a *Appointment) calculateEnd() {
+	parts := strings.Split(a.Start, ":")
+	hour, _ := strconv.ParseInt(parts[0], 10, 8)
+	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
+
+	totalMinutes := a.Duration + int(minutes)
+	endHour := hour + int64(totalMinutes)/60
+	endMinutes := totalMinutes % 60
+
+	if endMinutes < 10 {
+		a.End = strconv.Itoa(int(endHour)) + ":0" + strconv.Itoa(int(endMinutes))
+		return
+	}
+
+	a.End = strconv.Itoa(int(endHour)) + ":" + strconv.Itoa(int(endMinutes))
 }

@@ -236,7 +236,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-10-15",
-			StartHour:      "08:00",
+			StartHour:      "8:00",
 			Duration:       30,
 		}
 		repo := inmem.NewAppointmentRepository()
@@ -255,6 +255,34 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if appointment.Duration != d.Duration {
 			t.Errorf("The appointment duration must be 30, got %d", appointment.Duration)
+		}
+	})
+
+	t.Run("must_calculate_the_end_time_of_the_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "2024-10-15",
+			StartHour:      "8:35",
+			Duration:       90,
+		}
+		repo := inmem.NewAppointmentRepository()
+
+		usecase := scheduling.NewAppointmentScheduler(repo)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		appointment, err := repo.Get(id)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		if appointment.End != "10:05" {
+			t.Errorf("The appointment end hour must be 10:05, got %s", appointment.End)
 		}
 	})
 }

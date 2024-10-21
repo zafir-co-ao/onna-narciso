@@ -61,14 +61,14 @@ func (b *appointmentBuilder) WithDuration(duration int) AppointmentBuilder {
 }
 
 func (b *appointmentBuilder) Build() (Appointment, error) {
-	return Appointment{
-		ID:             b.ID,
-		ProfessionalID: b.ProfessionalID,
-		CustomerID:     b.CustomerID,
-		ServiceID:      b.ServiceID,
-		Date:           b.Date,
-		Start:          b.StartHour,
-		Duration:       b.Duration,
-		Status:         StatusScheduled,
-	}, nil
+	app, _ := NewAppointment(
+		b.ID,
+		b.ProfessionalID,
+		b.CustomerID,
+		b.ServiceID,
+		b.Date,
+		b.StartHour,
+		b.Duration,
+	)
+	return app, nil
 }
