@@ -216,7 +216,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Date != d.Date {
+		if appointment.Date.Value() != d.Date {
 			t.Errorf("The appointment date must be %s, got %s", d.Date, appointment.Date)
 		}
 	})
@@ -488,6 +488,28 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if !errors.Is(err, scheduling.ErrCustomerRegistration) {
 			t.Errorf("The error must be ErrCustomerRegistration, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_date_of_appointment_is_in_wrong_format", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "01/08/2024",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
+
+		_, err := usecase.Schedule(d)
+		if err == nil {
+			t.Errorf("Scheduling appointment should return error: %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrInvalidDate) {
+			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})
 }

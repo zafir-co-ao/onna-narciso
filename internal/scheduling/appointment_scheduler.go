@@ -48,7 +48,7 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 		return "", err
 	}
 
-	app, _ := NewAppointmentBuilder().
+	app, err := NewAppointmentBuilder().
 		WithAppointmentID("1").
 		WithProfessionalID(d.ProfessionalID).
 		WithCustomerID(customer.ID).
@@ -57,6 +57,10 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 		WithStartHour(d.StartHour).
 		WithDuration(d.Duration).
 		Build()
+
+	if err != nil {
+		return "", err
+	}
 
 	appointments, _ := s.appointmentRepo.FindByDate(d.Date)
 	if !VerifyAvailability(app, appointments) {

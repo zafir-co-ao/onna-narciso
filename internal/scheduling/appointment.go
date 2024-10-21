@@ -21,19 +21,24 @@ type Appointment struct {
 	ServiceName      string
 	ServiceID        string
 	Status           Status
-	Date             string // Formato: 2024-10-01
+	Date             Date   // Formato: 2024-10-01
 	Start            string // Formato 9:00
 	End              string
 	Duration         int
 }
 
 func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
+	date, err := NewDate(Date)
+	if err != nil {
+		return Appointment{}, err
+	}
+
 	app := Appointment{
 		ID:             ID,
 		ProfessionalID: ProfessionalID,
 		CustomerID:     CustomerID,
 		ServiceID:      ServiceID,
-		Date:           Date,
+		Date:           date,
 		Start:          Start,
 		Duration:       Duration,
 		Status:         StatusScheduled,

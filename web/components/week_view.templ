@@ -38,7 +38,7 @@ func getDaysOfMonthFromMonday(date string, days int) [][]string {
 
 func getEventClass(appointment scheduling.Appointment, startHour int) string {
 
-	date, _ := time.Parse("2006-01-02", appointment.Date)
+	date, _ := time.Parse("2006-01-02", appointment.Date.Value())
 
 	parts := strings.Split(appointment.Start, ":")
 

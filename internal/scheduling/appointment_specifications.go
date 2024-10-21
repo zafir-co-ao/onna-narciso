@@ -9,7 +9,7 @@ import (
 
 func DateIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
-		return a.Date == d
+		return a.Date.Value() == d
 	}
 }
 
@@ -24,7 +24,7 @@ func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	}
 
 	return func(a Appointment) bool {
-		t2, err := time.Parse("2006-01-02", a.Date)
+		t2, err := time.Parse("2006-01-02", a.Date.Value())
 		if err != nil {
 			return false
 		}

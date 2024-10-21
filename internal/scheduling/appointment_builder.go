@@ -61,7 +61,7 @@ func (b *appointmentBuilder) WithDuration(duration int) AppointmentBuilder {
 }
 
 func (b *appointmentBuilder) Build() (Appointment, error) {
-	app, _ := NewAppointment(
+	return NewAppointment(
 		b.ID,
 		b.ProfessionalID,
 		b.CustomerID,
@@ -70,5 +70,4 @@ func (b *appointmentBuilder) Build() (Appointment, error) {
 		b.StartHour,
 		b.Duration,
 	)
-	return app, nil
 }
