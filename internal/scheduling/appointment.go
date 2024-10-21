@@ -7,6 +7,7 @@ import (
 
 const (
 	StatusScheduled Status = "scheduled"
+	StatusCancelled Status = "cancelled"
 )
 
 type Status string
@@ -43,8 +44,16 @@ func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start strin
 	return app, nil
 }
 
+func (a *Appointment) Cancel() {
+	a.Status = StatusCancelled
+}
+
 func (a *Appointment) IsScheduled() bool {
 	return a.Status == StatusScheduled
+}
+
+func (a *Appointment) IsCancelled() bool {
+	return a.Status == StatusCancelled
 }
 
 func (a *Appointment) calculateEnd() {
