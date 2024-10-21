@@ -21,14 +21,19 @@ type Appointment struct {
 	ServiceName      string
 	ServiceID        string
 	Status           Status
-	Date             Date   // Formato: 2024-10-01
-	Start            string // Formato 9:00
-	End              string
+	Date             Date // Formato: 2024-10-01
+	Start            Hour // Formato 9:00
+	End              Hour
 	Duration         int
 }
 
 func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
 	date, err := NewDate(Date)
+	if err != nil {
+		return Appointment{}, err
+	}
+
+	hour, err := NewHour(Start)
 	if err != nil {
 		return Appointment{}, err
 	}
@@ -39,7 +44,7 @@ func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start strin
 		CustomerID:     CustomerID,
 		ServiceID:      ServiceID,
 		Date:           date,
-		Start:          Start,
+		Start:          hour,
 		Duration:       Duration,
 		Status:         StatusScheduled,
 	}
@@ -62,7 +67,7 @@ func (a *Appointment) IsCancelled() bool {
 }
 
 func (a *Appointment) calculateEnd() {
-	parts := strings.Split(a.Start, ":")
+	parts := strings.Split(a.Start.Value(), ":")
 	hour, _ := strconv.ParseInt(parts[0], 10, 8)
 	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
 
@@ -71,9 +76,9 @@ func (a *Appointment) calculateEnd() {
 	endMinutes := totalMinutes % 60
 
 	if endMinutes < 10 {
-		a.End = strconv.Itoa(int(endHour)) + ":0" + strconv.Itoa(int(endMinutes))
+		a.End, _ = NewHour(strconv.Itoa(int(endHour)) + ":0" + strconv.Itoa(int(endMinutes)))
 		return
 	}
 
-	a.End = strconv.Itoa(int(endHour)) + ":" + strconv.Itoa(int(endMinutes))
+	a.End, _ = NewHour(strconv.Itoa(int(endHour)) + ":" + strconv.Itoa(int(endMinutes)))
 }
