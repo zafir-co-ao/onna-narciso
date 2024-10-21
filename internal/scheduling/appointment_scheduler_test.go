@@ -311,4 +311,56 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The error must be ErrBusyTime, got %v", err)
 		}
 	})
+
+	t.Run("should_return_the_busy_time_error_when_the_appointment_clashes_with_one_on_schedule", func(t *testing.T) {
+		var d = []scheduling.AppointmentSchedulerDTO{
+			{
+				ProfessionalID: "1",
+				CustomerID:     "3",
+				ServiceID:      "4",
+				Date:           "2024-10-15",
+				StartHour:      "9:00",
+				Duration:       30,
+			},
+			{
+				ProfessionalID: "1",
+				CustomerID:     "3",
+				ServiceID:      "4",
+				Date:           "2024-10-15",
+				StartHour:      "9:30",
+				Duration:       60,
+			},
+			{
+				ProfessionalID: "3",
+				CustomerID:     "3",
+				ServiceID:      "4",
+				Date:           "2024-10-15",
+				StartHour:      "7:30",
+				Duration:       60,
+			},
+			{
+				ProfessionalID: "2",
+				CustomerID:     "2",
+				ServiceID:      "4",
+				Date:           "2024-10-15",
+				StartHour:      "11:30",
+				Duration:       480,
+			},
+		}
+
+		repo := inmem.NewAppointmentRepository()
+		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 480)
+		repo.Save(a)
+
+		usecase := scheduling.NewAppointmentScheduler(repo)
+		for _, dto := range d {
+			_, err := usecase.Schedule(dto)
+			if err == nil {
+				t.Errorf("Scheduling appointment should not return error: %v", err)
+			}
+			if !errors.Is(err, scheduling.ErrBusyTime) {
+				t.Errorf("The error must be ErrBusyTime, got %v", err)
+			}
+		}
+	})
 }
