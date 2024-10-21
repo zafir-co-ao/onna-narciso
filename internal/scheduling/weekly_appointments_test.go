@@ -14,36 +14,36 @@ func TestWeeklyAppointments(t *testing.T) {
 
 	repo.Save(scheduling.Appointment{
 		ID:        "1",
-		Date:      "2024-10-09",
-		Start:     "11:00",
+		Date:      scheduling.Date("2024-10-09"),
+		Start:     scheduling.Hour("11:00"),
 		ServiceID: "3",
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:        "4",
-		Date:      "2024-10-25",
-		Start:     "10:00",
+		Date:      scheduling.Date("2024-10-25"),
+		Start:     scheduling.Hour("10:00"),
 		ServiceID: "3",
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:        "5",
-		Date:      "2024-10-11",
-		Start:     "10:00",
+		Date:      scheduling.Date("2024-10-11"),
+		Start:     scheduling.Hour("10:00"),
 		ServiceID: "3",
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:        "6",
-		Date:      "2024-10-12",
-		Start:     "10:00",
+		Date:      scheduling.Date("2024-10-12"),
+		Start:     scheduling.Hour("10:00"),
 		ServiceID: "3",
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:        "7",
-		Date:      "2024-10-22",
-		Start:     "09:00",
+		Date:      scheduling.Date("2024-10-22"),
+		Start:     scheduling.Hour("09:00"),
 		ServiceID: "3",
 	})
 
