@@ -16,7 +16,7 @@ func (r *serviceRepo) Get(id string) (scheduling.Service, error) {
 	if service, ok := r.data[id]; ok {
 		return service, nil
 	}
-	return scheduling.Service{}, scheduling.ErrServiceNotFound
+	return scheduling.EmptyService, scheduling.ErrServiceNotFound
 }
 
 func (r *serviceRepo) Save(s scheduling.Service) error {

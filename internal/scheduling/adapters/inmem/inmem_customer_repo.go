@@ -15,7 +15,7 @@ func NewCustomerRepository() scheduling.CustomerRepository {
 func (r *customerRepo) Get(id string) (scheduling.Customer, error) {
 	customer, ok := r.data[id]
 	if !ok {
-		return scheduling.Customer{}, scheduling.ErrCustomerNotFound
+		return scheduling.EmptyCustomer, scheduling.ErrCustomerNotFound
 	}
 	return customer, nil
 }

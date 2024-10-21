@@ -16,7 +16,7 @@ func (r *professionalRepo) Get(id string) (scheduling.Professional, error) {
 	if p, ok := r.data[id]; ok {
 		return p, nil
 	}
-	return scheduling.Professional{}, scheduling.ErrProfessionalNotFound
+	return scheduling.EmptyProfessional, scheduling.ErrProfessionalNotFound
 }
 
 func (r *professionalRepo) Save(p scheduling.Professional) error {
