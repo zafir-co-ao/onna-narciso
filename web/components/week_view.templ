@@ -99,7 +99,7 @@ templ WeekView(date string,
 					<div
 						class={ "col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100",  fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) }
 					>
-						<div class="row-end-1 h-7"></div>
+						<div class="row-span-1"></div>
 						for i := startHour; i < endHour; i++ {
 							<div>
 								<div
@@ -112,6 +112,7 @@ templ WeekView(date string,
 							<div></div>
 							<div></div>
 						}
+						<div class="row-span-1"></div>
 					</div>
 					<!-- Vertical lines -->
 					<div
@@ -138,7 +139,7 @@ templ WeekView(date string,
 
 templ Event(appointment scheduling.Appointment, startHour int) {
 	<li
-		class={ "relative mt-px flex", getEventClass(appointment, startHour) }
+		class={ "relative flex", getEventClass(appointment, startHour) }
 	>
 		<a
 			href="#"

@@ -1,7 +1,13 @@
 /** @type { import('tailwindcss').Config } */
 
 module.exports = {
-  content: ["./**/*.templ", "./**/*.tpl", "./web/**/*.html", "./web/**/*.csss"],
+  content: [
+    "./**/*.templ",
+    "./**/*.tpl",
+    "./web/**/*.html",
+    "./web/*.html",
+    "./web/**/*.csss",
+  ],
   safelist: [
     "sm:col-start-1",
     "sm:col-start-2",
