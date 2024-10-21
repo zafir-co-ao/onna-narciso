@@ -19,17 +19,24 @@ type AppointmentScheduler interface {
 }
 
 type appointmentScedulerImpl struct {
-	repo AppointmentRepository
+	appointmentRepo AppointmentRepository
+	customerRepo    CustomerRepository
 }
 
-func NewAppointmentScheduler(repo AppointmentRepository) AppointmentScheduler {
+func NewAppointmentScheduler(appointmentRepo AppointmentRepository, customerRepo CustomerRepository) AppointmentScheduler {
 	return &appointmentScedulerImpl{
-		repo: repo,
+		appointmentRepo: appointmentRepo,
+		customerRepo:    customerRepo,
 	}
 }
 
 func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, error) {
-	appointments, _ := s.repo.FindByDate(d.Date)
+	_, err := s.customerRepo.Get(d.CustomerID)
+	if err != nil {
+		return "", err
+	}
+
+	appointments, _ := s.appointmentRepo.FindByDate(d.Date)
 
 	app, _ := NewAppointmentBuilder().
 		WithAppointmentID("1").
@@ -45,7 +52,7 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 		return "", ErrBusyTime
 	}
 
-	s.repo.Save(app)
+	s.appointmentRepo.Save(app)
 
 	return "1", nil
 }
