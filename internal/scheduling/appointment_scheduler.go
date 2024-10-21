@@ -70,11 +70,18 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, e
 
 func (s *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerDTO) (Customer, error) {
 	if len(d.CustomerID) > 0 {
-		c, err := s.customerRepo.Get(d.CustomerID)
-		return c, err
+		return s.customerRepo.Get(d.CustomerID)
 	}
 
-	customer := Customer{ID: "1000", Name: d.CustomerName, Phone: d.CustomerPhone}
-	s.customerRepo.Save(customer)
-	return customer, nil
+	if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {
+		return EmptyCustomer, ErrCustomerRegistration
+	}
+
+	c := Customer{
+		ID:    "1",
+		Name:  d.CustomerName,
+		Phone: d.CustomerPhone,
+	}
+	s.customerRepo.Save(c)
+	return c, nil
 }

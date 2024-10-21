@@ -5,4 +5,5 @@ import "errors"
 var (
 	ErrBusyTime              = errors.New("Schedule time is busy")
 	ErrInvalidStatusToCancel = errors.New("Invalid status to cancel")
+	ErrCustomerRegistration  = errors.New("Error registering customer")
 )

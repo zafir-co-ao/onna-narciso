@@ -469,4 +469,25 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The customer must be the same as the appointment")
 		}
 	})
+
+	t.Run("should_return_error_when_not_register_a_customer", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			ServiceID:      "4",
+			Date:           "2024-08-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, customerRepo, professionalRepo, serviceRepo)
+
+		_, err := usecase.Schedule(d)
+		if err == nil {
+			t.Errorf("Scheduling appointment should return error: %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrCustomerRegistration) {
+			t.Errorf("The error must be ErrCustomerRegistration, got %v", err)
+		}
+	})
 }
