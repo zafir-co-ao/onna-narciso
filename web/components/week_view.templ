@@ -40,7 +40,7 @@ func getEventClass(appointment scheduling.Appointment, startHour int) string {
 
 	date, _ := time.Parse("2006-01-02", appointment.Date.Value())
 
-	parts := strings.Split(appointment.Start, ":")
+	parts := strings.Split(appointment.Start.Value(), ":")
 
 	hour, _ := strconv.ParseInt(parts[0], 10, 8)
 	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
@@ -147,7 +147,7 @@ templ Event(appointment scheduling.Appointment, startHour int) {
 		>
 			<p class="order-1 font-semibold text-blue-700">{ appointment.CustomerName }</p>
 			<p class="text-blue-500 group-hover:text-blue-700">
-				<time datetime="2022-01-12T06:00">{ appointment.Start }</time>
+				<time datetime="2022-01-12T06:00">{ appointment.Start.Value() }</time>
 			</p>
 		</a>
 	</li>

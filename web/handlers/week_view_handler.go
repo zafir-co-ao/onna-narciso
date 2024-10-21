@@ -13,8 +13,8 @@ var appointments = []scheduling.Appointment{
 		CustomerName:     "Paola Oliveira",
 		ProfessionalName: "Julieta Venegas",
 		ServiceName:      "Manicure",
-		Date:             "2024-10-10",
-		Start:            "08:00",
+		Date:             scheduling.Date("2024-10-10"),
+		Start:            scheduling.Hour("08:00"),
 		Duration:         180,
 	},
 	{
@@ -22,8 +22,8 @@ var appointments = []scheduling.Appointment{
 		CustomerName:     "Juliana Paes",
 		ProfessionalName: "Julieta Venegas",
 		ServiceName:      "Manicure",
-		Date:             "2024-10-11",
-		Start:            "10:30",
+		Date:             scheduling.Date("2024-10-11"),
+		Start:            scheduling.Hour("10:30"),
 		Duration:         90,
 	},
 	{
@@ -31,8 +31,8 @@ var appointments = []scheduling.Appointment{
 		CustomerName:     "Gisele Bündchen",
 		ProfessionalName: "Mariana Aydar",
 		ServiceName:      "Depilação Laser",
-		Date:             "2024-10-10",
-		Start:            "12:00",
+		Date:             scheduling.Date("2024-10-10"),
+		Start:            scheduling.Hour("12:00"),
 		Duration:         60,
 	},
 }
