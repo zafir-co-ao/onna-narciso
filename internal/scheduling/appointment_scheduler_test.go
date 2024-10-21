@@ -285,4 +285,30 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The appointment end hour must be 10:05, got %s", appointment.End)
 		}
 	})
+
+	t.Run("should_return_the_busy_time_error_when_there_is_not_availability_in_schedule", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerDTO{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "2024-10-15",
+			StartHour:      "8:00",
+			Duration:       90,
+		}
+
+		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 90)
+		repo := inmem.NewAppointmentRepository()
+		repo.Save(a)
+
+		usecase := scheduling.NewAppointmentScheduler(repo)
+
+		_, err := usecase.Schedule(d)
+		if err == nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrBusyTime) {
+			t.Errorf("The error must be ErrBusyTime, got %v", err)
+		}
+	})
 }

@@ -25,6 +25,13 @@ func NewAppointmentScheduler(repo AppointmentRepository) AppointmentScheduler {
 }
 
 func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerDTO) (string, error) {
+	appointments, _ := s.repo.FindByDate(d.Date)
+
+	for _, app := range appointments {
+		if app.Start == d.StartHour {
+			return "", ErrBusyTime
+		}
+	}
 
 	app, _ := NewAppointmentBuilder().
 		WithAppointmentID("1").
