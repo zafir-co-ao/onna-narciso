@@ -280,7 +280,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "3", "2024-10-15", "8:00", 90)
+		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "Michael Miller", "3", "2024-10-15", "8:00", 90)
 		repo.Save(a)
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
@@ -331,7 +331,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			},
 		}
 
-		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "3", "2024-10-15", "8:00", 480)
+		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "Michael Miller", "3", "2024-10-15", "8:00", 480)
 		repo.Save(a)
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
@@ -533,7 +533,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_register_name_of_professional_in_appointment", func(t *testing.T) {
+	t.Run("must_register_the_name_of_professional_on_the_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
@@ -556,9 +556,36 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		p, _ := pacl.FindProfessionalByID(a.ProfessionalID.Value())
-
 		if a.ProfessionalName != p.Name {
-			t.Errorf("The professional name must be the same as the appointment")
+			t.Errorf("The professional name must be the same as the appointment: %v", a.ProfessionalName)
+		}
+	})
+
+	t.Run("must_register_the_customer_name_in_the_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "2",
+			ServiceID:      "4",
+			Date:           "2024-07-01",
+			StartHour:      "19:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, err := repo.FindByID(scheduling.NewID(id))
+		if err != nil {
+			t.Errorf("Should return appointment: %v", err)
+		}
+
+		c, _ := cacl.FindCustomerByID(a.CustomerID.Value())
+		if a.CustomerName != c.Name {
+			t.Errorf("The customer name must be the same as the appointment: %v", a.CustomerName)
 		}
 	})
 }
@@ -568,7 +595,7 @@ var cacl scheduling.CustomerAclFunc = func(id string) (scheduling.Customer, erro
 	case "1":
 		return scheduling.Customer{ID: "1"}, nil
 	case "2":
-		return scheduling.Customer{ID: "2"}, nil
+		return scheduling.Customer{ID: "2", Name: "Sara Gomes"}, nil
 	case "3":
 		return scheduling.Customer{ID: "3"}, nil
 	default:

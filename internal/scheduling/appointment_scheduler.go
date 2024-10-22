@@ -55,6 +55,7 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		WithProfessionalID(NewID(d.ProfessionalID)).
 		WithProfessionalName(p.Name).
 		WithCustomerID(NewID(customer.ID)).
+		WithCustomerName(customer.Name).
 		WithServiceID(NewID(d.ServiceID)).
 		WithDate(d.Date).
 		WithStartHour(d.StartHour).
