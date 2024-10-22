@@ -32,18 +32,18 @@ func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl 
 	}
 }
 
-func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string, error) {
-	p, err := s.professionalAcl.FindProfessionalByID(d.ProfessionalID)
+func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string, error) {
+	p, err := u.professionalAcl.FindProfessionalByID(d.ProfessionalID)
 	if err != nil {
 		return "", err
 	}
 
-	_, err = s.serviceAcl.FindServiceByID(d.ServiceID)
+	s, err := u.serviceAcl.FindServiceByID(d.ServiceID)
 	if err != nil {
 		return "", err
 	}
 
-	customer, err := s.getOrAddCustomer(d)
+	c, err := u.getOrAddCustomer(d)
 	if err != nil {
 		return "", err
 	}
@@ -52,11 +52,12 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 
 	app, err := NewAppointmentBuilder().
 		WithAppointmentID(id).
-		WithProfessionalID(NewID(d.ProfessionalID)).
+		WithProfessionalID(NewID(p.ID)).
 		WithProfessionalName(p.Name).
-		WithCustomerID(NewID(customer.ID)).
-		WithCustomerName(customer.Name).
-		WithServiceID(NewID(d.ServiceID)).
+		WithCustomerID(NewID(c.ID)).
+		WithCustomerName(c.Name).
+		WithServiceID(NewID(s.ID)).
+		WithServiceName(s.Name).
 		WithDate(d.Date).
 		WithStartHour(d.StartHour).
 		WithDuration(d.Duration).
@@ -66,19 +67,19 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		return "", err
 	}
 
-	appointments, _ := s.repo.FindByDate(d.Date)
+	appointments, _ := u.repo.FindByDate(d.Date)
 	if !VerifyAvailability(app, appointments) {
 		return "", ErrBusyTime
 	}
 
-	s.repo.Save(app)
+	u.repo.Save(app)
 
 	return id.Value(), nil
 }
 
-func (s *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) (Customer, error) {
+func (u *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) (Customer, error) {
 	if len(d.CustomerID) > 0 {
-		return s.customerAcl.FindCustomerByID(d.CustomerID)
+		return u.customerAcl.FindCustomerByID(d.CustomerID)
 	}
 
 	if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {

@@ -7,6 +7,7 @@ type AppointmentBuilder interface {
 	WithCustomerID(id ID) AppointmentBuilder
 	WithCustomerName(name string) AppointmentBuilder
 	WithServiceID(id ID) AppointmentBuilder
+	WithServiceName(name string) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
 	WithStartHour(hour string) AppointmentBuilder
 	WithDuration(duration int) AppointmentBuilder
@@ -20,6 +21,7 @@ type appointmentBuilder struct {
 	CustomerID       ID
 	CustomerName     string
 	ServiceID        ID
+	ServiceName      string
 	Date             string
 	StartHour        string
 	Duration         int
@@ -59,6 +61,11 @@ func (b *appointmentBuilder) WithServiceID(id ID) AppointmentBuilder {
 	return b
 }
 
+func (b *appointmentBuilder) WithServiceName(name string) AppointmentBuilder {
+	b.ServiceName = name
+	return b
+}
+
 func (b *appointmentBuilder) WithDate(date string) AppointmentBuilder {
 	b.Date = date
 	return b
@@ -92,6 +99,7 @@ func (b *appointmentBuilder) Build() (Appointment, error) {
 		b.CustomerID,
 		b.CustomerName,
 		b.ServiceID,
+		b.ServiceName,
 		date,
 		hour,
 		b.Duration,

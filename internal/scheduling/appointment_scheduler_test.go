@@ -10,6 +10,11 @@ import (
 
 func TestAppointmentScheduler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
+	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Start: "8:00", Duration: 90}
+	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Start: "8:00", Duration: 480}
+
+	repo.Save(a1)
+	repo.Save(a2)
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerInput{
@@ -223,7 +228,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-10-15",
+			Date:           "2024-10-25",
 			StartHour:      "8:00",
 			Duration:       30,
 		}
@@ -249,7 +254,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-10-15",
+			Date:           "2024-05-15",
 			StartHour:      "8:35",
 			Duration:       90,
 		}
@@ -275,13 +280,10 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-10-15",
+			Date:           "2024-10-14",
 			StartHour:      "8:00",
 			Duration:       90,
 		}
-
-		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "Michael Miller", "3", "2024-10-15", "8:00", 90)
-		repo.Save(a)
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
@@ -330,9 +332,6 @@ func TestAppointmentScheduler(t *testing.T) {
 				Duration:       480,
 			},
 		}
-
-		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "Michael Miller", "3", "2024-10-15", "8:00", 480)
-		repo.Save(a)
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
 		for _, dto := range d {
@@ -588,6 +587,34 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The customer name must be the same as the appointment: %v", a.CustomerName)
 		}
 	})
+
+	t.Run("must_register_the_service_name_in_the_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "2",
+			ServiceID:      "4",
+			Date:           "2024-05-01",
+			StartHour:      "19:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, err := repo.FindByID(scheduling.NewID(id))
+		if err != nil {
+			t.Errorf("Should return appointment: %v", err)
+		}
+
+		s, _ := sacl.FindServiceByID(a.ServiceID.Value())
+		if a.ServiceName != s.Name {
+			t.Errorf("The service name must be the same as the appointment: %v", a.ServiceName)
+		}
+	})
 }
 
 var cacl scheduling.CustomerAclFunc = func(id string) (scheduling.Customer, error) {
@@ -625,7 +652,7 @@ var sacl scheduling.ServiceAclFunc = func(id string) (scheduling.Service, error)
 	case "3":
 		return scheduling.Service{ID: "3"}, nil
 	case "4":
-		return scheduling.Service{ID: "4"}, nil
+		return scheduling.Service{ID: "4", Name: "Manicure + Pedicure"}, nil
 	default:
 		return scheduling.Service{}, scheduling.ErrServiceNotFound
 	}
