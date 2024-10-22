@@ -9,13 +9,14 @@ import (
 )
 
 func TestAppointmentCanceler(t *testing.T) {
-	a1, _ := scheduling.NewAppointment("1", "10", "Jane Doe", "3", "Sara Gomes", "4", "2021-01-01", "10:00", 60)
-	a2, _ := scheduling.NewAppointment("1", "10", "Jane Doe", "4", "Micheal Miller", "4", "2021-01-01", "10:00", 60)
+	repo := inmem.NewAppointmentRepository()
+	a1 := scheduling.Appointment{ID: "1"}
+	a2 := scheduling.Appointment{ID: "2", Status: scheduling.StatusCancelled}
+
+	repo.Save(a1)
+	repo.Save(a2)
 
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
-		repo := inmem.NewAppointmentRepository()
-		repo.Save(a1)
-
 		usecase := scheduling.NewAppointmentCanceler(repo)
 
 		err := usecase.Execute("1")
@@ -34,17 +35,9 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_appointment_status_is_canceled", func(t *testing.T) {
-		repo := inmem.NewAppointmentRepository()
-		repo.Save(a2)
-
 		usecase := scheduling.NewAppointmentCanceler(repo)
 
-		err := usecase.Execute("1")
-		if err != nil {
-			t.Errorf("Canceling appointment should not return error: %v", err)
-		}
-
-		err = usecase.Execute("1")
+		err := usecase.Execute("2")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
@@ -55,10 +48,9 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_appointment_not_found_when_appointment_not_exists_in_repository", func(t *testing.T) {
-		repo := inmem.NewAppointmentRepository()
 		usecase := scheduling.NewAppointmentCanceler(repo)
 
-		err := usecase.Execute("1")
+		err := usecase.Execute("3")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
