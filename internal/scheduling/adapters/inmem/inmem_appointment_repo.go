@@ -15,9 +15,9 @@ func NewAppointmentRepository() scheduling.AppointmentRepository {
 	}
 }
 
-func (r *repo) FindByID(id string) (scheduling.Appointment, error) {
+func (r *repo) FindByID(id scheduling.ID) (scheduling.Appointment, error) {
 
-	if val, ok := r.data[id]; ok {
+	if val, ok := r.data[id.Value()]; ok {
 		return val, nil
 	}
 

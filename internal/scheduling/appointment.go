@@ -29,12 +29,12 @@ type Status string
 
 type Appointment struct {
 	ID               ID
+	ProfessionalID   ID
 	ProfessionalName string
-	ProfessionalID   string
-	CustomerID       string
+	CustomerID       ID
 	CustomerName     string
+	ServiceID        ID
 	ServiceName      string
-	ServiceID        string
 	Status           Status
 	Date             Date // Formato: 2024-10-01
 	Start            Hour // Formato 9:00
@@ -42,24 +42,14 @@ type Appointment struct {
 	Duration         int
 }
 
-func NewAppointment(ID ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
-	date, err := NewDate(Date)
-	if err != nil {
-		return Appointment{}, err
-	}
-
-	hour, err := NewHour(Start)
-	if err != nil {
-		return Appointment{}, err
-	}
-
+func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID ID, Date Date, Start Hour, Duration int) (Appointment, error) {
 	app := Appointment{
 		ID:             ID,
 		ProfessionalID: ProfessionalID,
 		CustomerID:     CustomerID,
 		ServiceID:      ServiceID,
-		Date:           date,
-		Start:          hour,
+		Date:           Date,
+		Start:          Start,
 		Duration:       Duration,
 		Status:         StatusScheduled,
 	}

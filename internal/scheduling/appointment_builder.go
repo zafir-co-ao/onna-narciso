@@ -2,9 +2,9 @@ package scheduling
 
 type AppointmentBuilder interface {
 	WithAppointmentID(id ID) AppointmentBuilder
-	WithProfessionalID(id string) AppointmentBuilder
-	WithCustomerID(id string) AppointmentBuilder
-	WithServiceID(id string) AppointmentBuilder
+	WithProfessionalID(id ID) AppointmentBuilder
+	WithCustomerID(id ID) AppointmentBuilder
+	WithServiceID(id ID) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
 	WithStartHour(hour string) AppointmentBuilder
 	WithDuration(duration int) AppointmentBuilder
@@ -13,9 +13,9 @@ type AppointmentBuilder interface {
 
 type appointmentBuilder struct {
 	ID             ID
-	ProfessionalID string
-	CustomerID     string
-	ServiceID      string
+	ProfessionalID ID
+	CustomerID     ID
+	ServiceID      ID
 	Date           string
 	StartHour      string
 	Duration       int
@@ -30,17 +30,17 @@ func (b *appointmentBuilder) WithAppointmentID(id ID) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithProfessionalID(id string) AppointmentBuilder {
+func (b *appointmentBuilder) WithProfessionalID(id ID) AppointmentBuilder {
 	b.ProfessionalID = id
 	return b
 }
 
-func (b *appointmentBuilder) WithCustomerID(id string) AppointmentBuilder {
+func (b *appointmentBuilder) WithCustomerID(id ID) AppointmentBuilder {
 	b.CustomerID = id
 	return b
 }
 
-func (b *appointmentBuilder) WithServiceID(id string) AppointmentBuilder {
+func (b *appointmentBuilder) WithServiceID(id ID) AppointmentBuilder {
 	b.ServiceID = id
 	return b
 }
@@ -61,13 +61,23 @@ func (b *appointmentBuilder) WithDuration(duration int) AppointmentBuilder {
 }
 
 func (b *appointmentBuilder) Build() (Appointment, error) {
+	date, err := NewDate(b.Date)
+	if err != nil {
+		return Appointment{}, err
+	}
+
+	hour, err := NewHour(b.StartHour)
+	if err != nil {
+		return Appointment{}, err
+	}
+
 	return NewAppointment(
 		b.ID,
 		b.ProfessionalID,
 		b.CustomerID,
 		b.ServiceID,
-		b.Date,
-		b.StartHour,
+		date,
+		hour,
 		b.Duration,
 	)
 }
