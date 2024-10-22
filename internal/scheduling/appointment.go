@@ -42,16 +42,26 @@ type Appointment struct {
 	Duration         int
 }
 
-func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID ID, Date Date, Start Hour, Duration int) (Appointment, error) {
+func NewAppointment(
+	ID ID,
+	ProfessionalID ID,
+	ProfessionalName string,
+	CustomerID ID,
+	ServiceID ID,
+	Date Date,
+	Start Hour,
+	Duration int,
+) (Appointment, error) {
 	app := Appointment{
-		ID:             ID,
-		ProfessionalID: ProfessionalID,
-		CustomerID:     CustomerID,
-		ServiceID:      ServiceID,
-		Date:           Date,
-		Start:          Start,
-		Duration:       Duration,
-		Status:         StatusScheduled,
+		ID:               ID,
+		ProfessionalID:   ProfessionalID,
+		ProfessionalName: ProfessionalName,
+		CustomerID:       CustomerID,
+		ServiceID:        ServiceID,
+		Date:             Date,
+		Start:            Start,
+		Duration:         Duration,
+		Status:           StatusScheduled,
 	}
 
 	app.calculateEnd()

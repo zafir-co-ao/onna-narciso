@@ -10,7 +10,7 @@ import (
 
 func TestAppointmentCanceler(t *testing.T) {
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
-		a, _ := scheduling.NewAppointment("1", "10", "3", "4", "2021-01-01", "10:00", 60)
+		a, _ := scheduling.NewAppointment("1", "10", "Jane Doe", "3", "4", "2021-01-01", "10:00", 60)
 		repo := inmem.NewAppointmentRepository()
 		repo.Save(a)
 
@@ -32,7 +32,7 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_appointment_status_is_canceled", func(t *testing.T) {
-		a, _ := scheduling.NewAppointment("1", "10", "3", "4", "2021-01-01", "10:00", 60)
+		a, _ := scheduling.NewAppointment("1", "10", "Jane Doe", "3", "4", "2021-01-01", "10:00", 60)
 		repo := inmem.NewAppointmentRepository()
 		repo.Save(a)
 

@@ -280,7 +280,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 90)
+		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "3", "2024-10-15", "8:00", 90)
 		repo.Save(a)
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
@@ -331,7 +331,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			},
 		}
 
-		a, _ := scheduling.NewAppointment("1", "3", "4", "3", "2024-10-15", "8:00", 480)
+		a, _ := scheduling.NewAppointment("1", "3", "John Doe", "4", "3", "2024-10-15", "8:00", 480)
 		repo.Save(a)
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
@@ -532,6 +532,35 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The ID of appointment must be the same as the generated")
 		}
 	})
+
+	t.Run("should_register_name_of_professional_in_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "2022-07-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, err := repo.FindByID(scheduling.NewID(id))
+		if err != nil {
+			t.Errorf("Should return appointment: %v", err)
+		}
+
+		p, _ := pacl.FindProfessionalByID(a.ProfessionalID.Value())
+
+		if a.ProfessionalName != p.Name {
+			t.Errorf("The professional name must be the same as the appointment")
+		}
+	})
 }
 
 var cacl scheduling.CustomerAclFunc = func(id string) (scheduling.Customer, error) {
@@ -554,7 +583,7 @@ var pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Profession
 	case "2":
 		return scheduling.Professional{ID: "2"}, nil
 	case "3":
-		return scheduling.Professional{ID: "3"}, nil
+		return scheduling.Professional{ID: "3", Name: "John Doe"}, nil
 	default:
 		return scheduling.Professional{}, scheduling.ErrProfessionalNotFound
 	}

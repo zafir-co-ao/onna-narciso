@@ -33,7 +33,7 @@ func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl 
 }
 
 func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string, error) {
-	_, err := s.professionalAcl.FindProfessionalByID(d.ProfessionalID)
+	p, err := s.professionalAcl.FindProfessionalByID(d.ProfessionalID)
 	if err != nil {
 		return "", err
 	}
@@ -53,6 +53,7 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 	app, err := NewAppointmentBuilder().
 		WithAppointmentID(id).
 		WithProfessionalID(NewID(d.ProfessionalID)).
+		WithProfessionalName(p.Name).
 		WithCustomerID(NewID(customer.ID)).
 		WithServiceID(NewID(d.ServiceID)).
 		WithDate(d.Date).

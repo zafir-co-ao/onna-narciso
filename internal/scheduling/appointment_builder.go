@@ -3,6 +3,7 @@ package scheduling
 type AppointmentBuilder interface {
 	WithAppointmentID(id ID) AppointmentBuilder
 	WithProfessionalID(id ID) AppointmentBuilder
+	WithProfessionalName(name string) AppointmentBuilder
 	WithCustomerID(id ID) AppointmentBuilder
 	WithServiceID(id ID) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
@@ -12,13 +13,14 @@ type AppointmentBuilder interface {
 }
 
 type appointmentBuilder struct {
-	ID             ID
-	ProfessionalID ID
-	CustomerID     ID
-	ServiceID      ID
-	Date           string
-	StartHour      string
-	Duration       int
+	ID               ID
+	ProfessionalID   ID
+	ProfessionalName string
+	CustomerID       ID
+	ServiceID        ID
+	Date             string
+	StartHour        string
+	Duration         int
 }
 
 func NewAppointmentBuilder() AppointmentBuilder {
@@ -32,6 +34,11 @@ func (b *appointmentBuilder) WithAppointmentID(id ID) AppointmentBuilder {
 
 func (b *appointmentBuilder) WithProfessionalID(id ID) AppointmentBuilder {
 	b.ProfessionalID = id
+	return b
+}
+
+func (b *appointmentBuilder) WithProfessionalName(name string) AppointmentBuilder {
+	b.ProfessionalName = name
 	return b
 }
 
@@ -74,6 +81,7 @@ func (b *appointmentBuilder) Build() (Appointment, error) {
 	return NewAppointment(
 		b.ID,
 		b.ProfessionalID,
+		b.ProfessionalName,
 		b.CustomerID,
 		b.ServiceID,
 		date,
