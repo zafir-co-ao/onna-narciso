@@ -13,7 +13,7 @@ func NewAppointmentCanceler(repo AppointmentRepository) AppointmentCanceler {
 }
 
 func (c *appointmentCancelerImpl) Execute(id string) error {
-	a, err := c.repo.Get(id)
+	a, err := c.repo.FindByID(id)
 	if err != nil {
 		return err
 	}

@@ -21,7 +21,7 @@ func TestAppointmentCanceler(t *testing.T) {
 			t.Errorf("Canceling appointment should not return error: %v", err)
 		}
 
-		app, err := repo.Get("1")
+		app, err := repo.FindByID("1")
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
 			t.Errorf("Appointment should be stored in repository")
 		}

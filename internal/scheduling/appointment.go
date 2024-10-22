@@ -10,6 +10,21 @@ const (
 	StatusCancelled Status = "cancelled"
 )
 
+type Service struct {
+	ID   string
+	Name string
+}
+
+type Professional struct {
+	ID   string
+	Name string
+}
+
+type Customer struct {
+	ID   string
+	Name string
+}
+
 type Status string
 
 type Appointment struct {
