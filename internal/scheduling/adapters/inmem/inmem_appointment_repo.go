@@ -25,7 +25,7 @@ func (r *repo) FindByID(id string) (scheduling.Appointment, error) {
 }
 
 func (r *repo) Save(a scheduling.Appointment) error {
-	r.data[a.ID] = a
+	r.data[a.ID.Value()] = a
 	return nil
 }
 

@@ -27,8 +27,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if id != "1" {
-			t.Error("Appointment id should be 1")
+		if id == "" {
+			t.Errorf("Appointment id should be %v", id)
 		}
 	})
 
@@ -57,7 +57,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ID != id {
+		if appointment.ID.Value() != id {
 			t.Errorf("Appointment ID should be %s", id)
 		}
 	})
@@ -503,6 +503,33 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if !errors.Is(err, scheduling.ErrInvalidHour) {
 			t.Errorf("The error must be ErrInvalidHour, got %v", err)
+		}
+	})
+
+	t.Run("should_generate_the_id_of_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "3",
+			ServiceID:      "4",
+			Date:           "2024-08-01",
+			StartHour:      "8:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, err := repo.FindByID(id)
+		if err != nil {
+			t.Errorf("Should return appointment: %v", err)
+		}
+
+		if a.ID.Value() != id {
+			t.Errorf("The ID of appointment must be the same as the generated")
 		}
 	})
 }

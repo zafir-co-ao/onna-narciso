@@ -28,7 +28,7 @@ type Customer struct {
 type Status string
 
 type Appointment struct {
-	ID               string
+	ID               ID
 	ProfessionalName string
 	ProfessionalID   string
 	CustomerID       string
@@ -42,7 +42,7 @@ type Appointment struct {
 	Duration         int
 }
 
-func NewAppointment(ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
+func NewAppointment(ID ID, ProfessionalID, CustomerID, ServiceID, Date, Start string, Duration int) (Appointment, error) {
 	date, err := NewDate(Date)
 	if err != nil {
 		return Appointment{}, err

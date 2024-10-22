@@ -48,8 +48,10 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		return "", err
 	}
 
+	id, _ := Random()
+
 	app, err := NewAppointmentBuilder().
-		WithAppointmentID("1").
+		WithAppointmentID(id).
 		WithProfessionalID(d.ProfessionalID).
 		WithCustomerID(customer.ID).
 		WithServiceID(d.ServiceID).
@@ -69,7 +71,7 @@ func (s *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 
 	s.repo.Save(app)
 
-	return "1", nil
+	return id.Value(), nil
 }
 
 func (s *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) (Customer, error) {
