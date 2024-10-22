@@ -12,8 +12,8 @@ func NewAppointmentCanceler(repo AppointmentRepository) AppointmentCanceler {
 	return &appointmentCancelerImpl{repo}
 }
 
-func (c *appointmentCancelerImpl) Execute(id string) error {
-	a, err := c.repo.FindByID(NewID(id))
+func (u *appointmentCancelerImpl) Execute(id string) error {
+	a, err := u.repo.FindByID(NewID(id))
 	if err != nil {
 		return err
 	}
@@ -24,7 +24,7 @@ func (c *appointmentCancelerImpl) Execute(id string) error {
 
 	a.Cancel()
 
-	c.repo.Save(a)
+	u.repo.Save(a)
 
 	return nil
 }
