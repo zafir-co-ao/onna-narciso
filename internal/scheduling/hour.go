@@ -2,7 +2,6 @@ package scheduling
 
 import (
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -22,8 +21,6 @@ func (h Hour) Value() string {
 }
 
 func isValidHour(v string) bool {
-	x, err := time.Parse("15:04", v)
-
-	fmt.Println(x)
+	_, err := time.Parse("15:04", v)
 	return err == nil
 }
