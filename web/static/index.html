@@ -9,16 +9,19 @@
         <link href="/css/week-view.css" rel="stylesheet" />
         <link href="/css/styles.css" rel="stylesheet" />
 
-
-
         <title>Narciso | Onna SPA</title>
 
         <script>
-          window.addEventListener("load", (evt) => {
-            htmx.ajax("GET", "/week-view", {target: "#week-view", swap: "outerHTML"})
-          })
+            window.addEventListener("load", (evt) => {
+                htmx.ajax("GET", "/week-view", {
+                    target: "#week-view",
+                    swap: "outerHTML",
+                });
+            });
         </script>
+        <script type="text/javascript" src="/js/main.js"></script>
     </head>
+
     <body>
         <div class="min-h-full">
             <nav class="bg-gray-500">
@@ -28,7 +31,8 @@
                             <div class="hidden md:block">
                                 <div
                                     class="ml-10 flex items-baseline space-x-4"
-                                >                                    <a
+                                >
+                                    <a
                                         href="/"
                                         class="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-white"
                                         aria-current="page"
@@ -42,7 +46,8 @@
                                     <a
                                         href="/treatments/index.html"
                                         class="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-gray-600 hover:bg-opacity-75"
-                                        >Tratamentos</a>
+                                        >Tratamentos</a
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -54,7 +59,7 @@
                                 >
                                     <span class="absolute -inset-1.5"></span>
                                     <span class="sr-only">
-                                            View notifications
+                                        View notifications
                                     </span>
                                     <svg
                                         class="h-6 w-6"
@@ -86,7 +91,9 @@
                                             <span
                                                 class="absolute -inset-1.5"
                                             ></span>
-                                            <span class="sr-only">Open user menu</span>
+                                            <span class="sr-only"
+                                                >Open user menu</span
+                                            >
                                         </button>
                                     </div>
                                 </div>
@@ -147,16 +154,18 @@
                             href="#"
                             class="block rounded-md bg-gray-700 px-3 py-2 text-base font-medium text-white"
                             aria-current="page"
-                            >Agenda</a>
+                            >Agenda</a
+                        >
                         <a
                             href="/pages/professionals/list.html"
                             class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:bg-opacity-75"
-                            >Profissionais</a>
+                            >Profissionais</a
+                        >
                         <a
                             href="#"
                             class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:bg-opacity-75"
-                            >Tratamentos</a>
-
+                            >Tratamentos</a
+                        >
                     </div>
                     <div class="border-t border-indigo-700 pb-3 pt-4">
                         <div class="flex items-center px-5">
@@ -200,19 +209,25 @@
                 <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                     <!-- Your content -->
                     <div class="flex h-full flex-col border border-gray-100">
-                        <header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
+                        <header
+                            class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4"
+                        >
                             <h1
                                 class="text-base font-semibold leading-6 text-gray-900"
                             >
                                 <time datetime="2022-01">Outubro - 2024</time>
                             </h1>
                             <div class="flex items-center">
-                                <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
+                                <div
+                                    class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch"
+                                >
                                     <button
                                         type="button"
                                         class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50"
                                     >
-                                        <span class="sr-only">Previous week</span>
+                                        <span class="sr-only"
+                                            >Previous week</span
+                                        >
                                         <svg
                                             class="h-5 w-5"
                                             viewBox="0 0 20 20"
@@ -233,7 +248,9 @@
                                     >
                                         Hoje
                                     </button>
-                                    <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
+                                    <span
+                                        class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"
+                                    ></span>
                                     <button
                                         type="button"
                                         class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50"
@@ -254,7 +271,9 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div class="hidden md:ml-4 md:flex md:items-center space-x-3">
+                                <div
+                                    class="hidden md:ml-4 md:flex md:items-center space-x-3"
+                                >
                                     <div class="relative">
                                         <button
                                             type="button"
@@ -264,7 +283,9 @@
                                             aria-haspopup="true"
                                             onclick="toogleTreatments()"
                                         >
-                                            <span id="treatment-text">&LT;Tratamentos&GT;</span>
+                                            <span id="treatment-text"
+                                                >&LT;Tratamentos&GT;</span
+                                            >
                                             <svg
                                                 class="-mr-1 h-5 w-5 text-gray-400"
                                                 viewBox="0 0 20 20"
@@ -287,7 +308,11 @@
                                             aria-labelledby="menu-button"
                                             tabindex="-1"
                                         >
-                                            <div class="py-1" role="none" id="treatments"></div>
+                                            <div
+                                                class="py-1"
+                                                role="none"
+                                                id="treatments"
+                                            ></div>
                                         </div>
                                     </div>
                                     <div class="relative">
@@ -300,8 +325,10 @@
                                             aria-haspopup="true"
                                             onclick="toogleProfissionals()"
                                         >
-
-                                            <span id="professional-text">&LT;Todos Profissionais&GT;</span>
+                                            <span id="professional-text"
+                                                >&LT;Todos
+                                                Profissionais&GT;</span
+                                            >
                                             <svg
                                                 class="-mr-1 h-5 w-5 text-gray-400"
                                                 viewBox="0 0 20 20"
@@ -323,9 +350,12 @@
                                             aria-labelledby="menu-button"
                                             tabindex="-1"
                                             id="menu-professionals"
-
                                         >
-                                            <div class="py-1" id="professionals" role="none"></div>
+                                            <div
+                                                class="py-1"
+                                                id="professionals"
+                                                role="none"
+                                            ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -415,220 +445,327 @@
                                 </div>
                             </div>
                         </header>
-                        <div id="week-view" class="isolate flex flex-auto flex-col bg-white "></div>
+                        <div
+                            id="week-view"
+                            class="isolate flex flex-auto flex-col bg-white"
+                        ></div>
                     </div>
                 </div>
 
-
-                <dialog id="dialog" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                  <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                          <div class="">
-                            <div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
-                              <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Nova marcação</h3>
-                              <div class="relative mt-4">
-                                  <button
-                                      type="button"
-                                      class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                      id="select-client"
-                                      aria-expanded="false"
-                                      aria-haspopup="true"
-                                      onclick="toogleClients()"
-                                  >
-                                      <span id="client-text">Escolher cliente</span>
-                                      <svg
-                                          class="-mr-1 h-5 w-5 text-gray-400"
-                                          viewBox="0 0 20 20"
-                                          fill="currentColor"
-                                          aria-hidden="true"
-                                          data-slot="icon"
-                                      >
-                                          <path
-                                              fill-rule="evenodd"
-                                              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                              clip-rule="evenodd"
-                                          />
-                                      </svg>
-                                  </button>
-                                  <div
-                                      class="absolute hidden transition w-full ease-in duration-75 scale-100 right-0 z-10 mt-3 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2 h-48 overflow-y-auto"
-                                      role="menu"
-                                      id="menu-clients"
-                                      aria-orientation="vertical"
-                                      aria-labelledby="menu-button"
-                                      tabindex="-1"
-                                  >
-                                      <div class="p-2" role="none" id="container-clients">
-                                        <input
-                                            type="text"
-                                            placeholder="Pesquisar por nome, nif e telefone"
-                                            class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                            oninput="searchClients(this)"
-                                        />
-                                        <div>
-                                            <ul id="clients-result" class="space-y-3">
-                                                <li class="text-sm mt-2 border-b p-2 cursor-pointer" onclick="toogleClientCreateForm()">Criar Novo Cliente</li>
-                                            </ul>
-                                        </div>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div id="client-form" class="hidden">
-                                <div class="mt-4">
+                <dialog
+                    id="dialog"
+                    class="relative z-10"
+                    aria-labelledby="modal-title"
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <!-- <div
+                        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                        aria-hidden="true"
+                    ></div> -->
+                    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                        <div
+                            class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                        >
+                            <div
+                                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                            >
+                                <div
+                                    class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4"
+                                >
                                     <div>
-                                      <div class="relative mt-2 rounded-md shadow-sm">
-                                        <input type="text" class="block w-full rounded-md border-0 py-1.5 p-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Nome do Cliente">
-                                        <div class="absolute inset-y-0 right-0 flex items-center cursor-pointer" onclick="showClientSearchForm()">
-                                            <span class="text-sm text-white border-l rounded-r-md p-2 bg-gray-500">Pesquisar</span>
+                                        <div
+                                            class="mt-3 text-center p-4 sm:mt-0 sm:text-left"
+                                        >
+                                            <h3
+                                                id="modal-title"
+                                                class="text-base font-semibold leading-6 text-gray-900"
+                                            >
+                                                Nova marcação
+                                            </h3>
+                                            <div class="relative mt-4">
+                                                <button
+                                                    type="button"
+                                                    class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                    id="select-client"
+                                                    aria-expanded="false"
+                                                    aria-haspopup="true"
+                                                    onclick="toogleClients()"
+                                                >
+                                                    <span id="client-text"
+                                                        >Escolher cliente</span
+                                                    >
+                                                    <svg
+                                                        class="-mr-1 h-5 w-5 text-gray-400"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                        aria-hidden="true"
+                                                        data-slot="icon"
+                                                    >
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                            clip-rule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                                <div
+                                                    class="absolute hidden transition w-full ease-in duration-75 scale-100 right-0 z-10 mt-3 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2 h-48 overflow-y-auto"
+                                                    role="menu"
+                                                    id="menu-clients"
+                                                    aria-orientation="vertical"
+                                                    aria-labelledby="menu-button"
+                                                    tabindex="-1"
+                                                >
+                                                    <div
+                                                        class="p-2"
+                                                        role="none"
+                                                        id="container-clients"
+                                                    >
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Pesquisar por nome, nif e telefone"
+                                                            class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                            oninput="searchClients(this)"
+                                                        />
+                                                        <div>
+                                                            <ul
+                                                                id="clients-result"
+                                                                class="space-y-3"
+                                                            >
+                                                                <li
+                                                                    class="text-sm mt-2 border-b p-2 cursor-pointer"
+                                                                    onclick="toogleClientCreateForm()"
+                                                                >
+                                                                    Criar Novo
+                                                                    Cliente
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                id="client-form"
+                                                class="hidden"
+                                            >
+                                                <div class="mt-4">
+                                                    <div>
+                                                        <div
+                                                            class="relative mt-2 rounded-md shadow-sm"
+                                                        >
+                                                            <input
+                                                                type="text"
+                                                                class="block w-full rounded-md border-0 py-1.5 p-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                                placeholder="Nome do Cliente"
+                                                            />
+                                                            <div
+                                                                class="absolute inset-y-0 right-0 flex items-center cursor-pointer"
+                                                                onclick="showClientSearchForm()"
+                                                            >
+                                                                <span
+                                                                    class="text-sm text-white border-l rounded-r-md p-2 bg-gray-500"
+                                                                    >Pesquisar</span
+                                                                >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Telefone"
+                                                        class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="text"
+                                                    id="professional-display"
+                                                    autocomplete="given-name"
+                                                    placeholder="Profissional"
+                                                    disabled
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="text"
+                                                    name="first-name"
+                                                    id="treatment-display"
+                                                    autocomplete="given-name"
+                                                    placeholder="Tratamento"
+                                                    disabled
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="date"
+                                                    name="first-name"
+                                                    disabled
+                                                    value="2024-10-11"
+                                                    id="first-name"
+                                                    autocomplete="given-name"
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <select
+                                                    id="country"
+                                                    name="country"
+                                                    autocomplete="country-name"
+                                                    class="block border w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                >
+                                                    <option>
+                                                        Selecione a duração
+                                                    </option>
+                                                    <option>15min</option>
+                                                    <option>30min</option>
+                                                    <option>45min</option>
+                                                    <option>60min</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                      </div>
                                     </div>
                                 </div>
-                                <div class="mt-4">
-                                    <input
-                                        type="text"
-                                        placeholder="Telefone"
-                                        class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
+                                <div
+                                    class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
+                                >
+                                    <button
+                                        type="button"
+                                        class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+                                        onclick="save()"
+                                    >
+                                        Marcar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                        onclick="closeDialog()"
+                                    >
+                                        Fechar
+                                    </button>
                                 </div>
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="text"
-                                      id="professional-display"
-                                      autocomplete="given-name"
-                                      placeholder="Profissional"
-                                      disabled
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="text"
-                                      name="first-name"
-                                      id="treatment-display"
-                                      autocomplete="given-name"
-                                      placeholder="Tratamento"
-                                      disabled
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="date"
-                                      name="first-name"
-                                      disabled
-                                      value="2024-10-11"
-                                      id="first-name"
-                                      autocomplete="given-name"
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <select
-                                      id="country"
-                                      name="country"
-                                      autocomplete="country-name"
-                                      class="block border w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  >
-                                      <option>Selecione a duração</option>
-                                      <option>15min</option>
-                                      <option>30min</option>
-                                      <option>45min</option>
-                                      <option>60min</option>
-                                  </select>
-                              </div>
                             </div>
-                          </div>
                         </div>
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                          <button type="button" class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto" onclick="save()">Marcar</button>
-                          <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" onclick="closeDialog()">Fechar</button>
-                        </div>
-                      </div>
                     </div>
-                  </div>
                 </dialog>
 
-                <dialog id="reschedule-dialog" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                <dialog
+                    id="reschedule-dialog"
+                    class="relative z-10"
+                    aria-labelledby="modal-title"
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <div
+                        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                        aria-hidden="true"
+                    ></div>
 
-                  <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                          <div class="">
-                            <div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
-                              <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Reagendar</h3>
-                              <div class="mt-4">
-                                  <input
-                                      type="text"
-                                      id="client-scheduled"
-                                      placeholder="Cliente"
-                                      value="Rita Almeida"
-                                      disabled
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="text"
-                                      id="professional-scheduled"
-                                      placeholder="Profissional"
-                                      value="Julia Gomes"
-                                      disabled
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="text"
-                                      value="Manicure"
-                                      id="treatment-scheduled"
-                                      placeholder="Tratamento"
-                                      disabled
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="date"
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <input
-                                      type="time"
-                                      class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
-                                  />
-                              </div>
-                              <div class="mt-4">
-                                  <select
-                                      id="country"
-                                      name="country"
-                                      autocomplete="country-name"
-                                      class="block border w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
-                                  >
-                                      <option>Selecione a duração</option>
-                                      <option>15min</option>
-                                      <option>30min</option>
-                                      <option>45min</option>
-                                      <option>60min</option>
-                                  </select>
-                              </div>
+                    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                        <div
+                            class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                        >
+                            <div
+                                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                            >
+                                <div
+                                    class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4"
+                                >
+                                    <div class="">
+                                        <div
+                                            class="mt-3 text-center p-4 sm:mt-0 sm:text-left"
+                                        >
+                                            <h3
+                                                class="text-base font-semibold leading-6 text-gray-900"
+                                                id="modal-title"
+                                            >
+                                                Reagendar
+                                            </h3>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="text"
+                                                    id="client-scheduled"
+                                                    placeholder="Cliente"
+                                                    value="Rita Almeida"
+                                                    disabled
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="text"
+                                                    id="professional-scheduled"
+                                                    placeholder="Profissional"
+                                                    value="Julia Gomes"
+                                                    disabled
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="text"
+                                                    value="Manicure"
+                                                    id="treatment-scheduled"
+                                                    placeholder="Tratamento"
+                                                    disabled
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="date"
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <input
+                                                    type="time"
+                                                    class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div class="mt-4">
+                                                <select
+                                                    id="country"
+                                                    name="country"
+                                                    autocomplete="country-name"
+                                                    class="block border w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                                                >
+                                                    <option>
+                                                        Selecione a duração
+                                                    </option>
+                                                    <option>15min</option>
+                                                    <option>30min</option>
+                                                    <option>45min</option>
+                                                    <option>60min</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
+                                >
+                                    <button
+                                        type="button"
+                                        class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+                                    >
+                                        Salvar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                        onclick=""
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
                             </div>
-                          </div>
                         </div>
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                          <button type="button" class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto" onclick="onclick="closeRescheduleDialog()">Salvar</button>
-                          <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" onclick="closeRescheduleDialog()">Cancelar</button>
-                        </div>
-                      </div>
                     </div>
-                  </div>
                 </dialog>
             </main>
         </div>

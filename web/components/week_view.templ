@@ -51,6 +51,17 @@ func getEventClass(appointment scheduling.Appointment, startHour int) string {
 	return fmt.Sprintf("sm:col-start-%d row-start-%d row-span-%d", date.Weekday(), row, span)
 }
 
+func getDayOfWeek(day, today string) string {
+	t, _ := time.Parse("2006-01-02", today)
+	y, m, _ := t.Date()
+
+	if len(day) == 1 {
+		day = "0" + day
+	}
+
+	return fmt.Sprintf("%v-%v-%v", y, int(m), day)
+}
+
 templ WeekView(date string,
 	days int,
 	startHour int,
@@ -82,7 +93,7 @@ templ WeekView(date string,
 						<div class="flex items-center justify-center py-3">
 							<span>
 								{ day[1] }
-								<span class="items-center justify-center font-semibold text-gray-900">
+								<span class="items-center justify-center font-semibold text-gray-900 week-day-cell" data-week-day={ getDayOfWeek(day[0], date) }>
 									{ day[0] }
 								</span>
 							</span>
@@ -124,9 +135,7 @@ templ WeekView(date string,
 						<div class={ fmt.Sprintf("col-start-%d", days + 1),"row-span-full w-8" }></div>
 					</div>
 					<!-- Events -->
-					<ol
-						class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) }
-					>
+					<ol class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onclick="openEventDialog(event)">
 						for _, a := range appointments {
 							@Event(a, startHour)
 						}
@@ -135,6 +144,7 @@ templ WeekView(date string,
 			</div>
 		</div>
 	</div>
+	@AddEventDialog()
 }
 
 templ Event(appointment scheduling.Appointment, startHour int) {
