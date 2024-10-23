@@ -43,7 +43,7 @@ func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		return "", err
 	}
 
-	c, err := u.getOrAddCustomer(d)
+	c, err := u.findOrRegistrationCustomer(d)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +77,7 @@ func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 	return id.Value(), nil
 }
 
-func (u *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) (Customer, error) {
+func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {
 	if len(d.CustomerID) > 0 {
 		return u.customerAcl.FindCustomerByID(d.CustomerID)
 	}

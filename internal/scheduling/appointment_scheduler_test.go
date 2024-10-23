@@ -6,6 +6,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
 )
 
 func TestAppointmentScheduler(t *testing.T) {
@@ -18,7 +19,9 @@ func TestAppointmentScheduler(t *testing.T) {
 	repo.Save(a2)
 	repo.Save(a3)
 
-	cacl := fakeCustomerAcl{}
+	cacl := stubs.CustomerAclStub{}
+	pacl := stubs.Pacl
+	sacl := stubs.Sacl
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerInput{
@@ -650,55 +653,4 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("The status of appointment must be scheduled: %v", a.Status)
 		}
 	})
-}
-
-type fakeCustomerAcl struct{}
-
-func (c fakeCustomerAcl) FindCustomerByID(id string) (scheduling.Customer, error) {
-	switch id {
-	case "1":
-		return scheduling.Customer{ID: "1"}, nil
-	case "2":
-		return scheduling.Customer{ID: "2", Name: "Sara Gomes"}, nil
-	case "3":
-		return scheduling.Customer{ID: "3"}, nil
-	default:
-		return scheduling.Customer{}, scheduling.ErrCustomerNotFound
-	}
-}
-
-func (c fakeCustomerAcl) RequestCustomerRegistration(name string, phone string) (scheduling.Customer, error) {
-	if name == "" || phone == "" {
-		return scheduling.Customer{}, scheduling.ErrCustomerRegistration
-	}
-
-	return scheduling.Customer{ID: "1", Name: name, PhoneNumber: phone}, nil
-}
-
-var pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Professional, error) {
-	switch id {
-	case "1":
-		return scheduling.Professional{ID: "1"}, nil
-	case "2":
-		return scheduling.Professional{ID: "2"}, nil
-	case "3":
-		return scheduling.Professional{ID: "3", Name: "John Doe"}, nil
-	default:
-		return scheduling.Professional{}, scheduling.ErrProfessionalNotFound
-	}
-}
-
-var sacl scheduling.ServiceAclFunc = func(id string) (scheduling.Service, error) {
-	switch id {
-	case "1":
-		return scheduling.Service{ID: "1"}, nil
-	case "2":
-		return scheduling.Service{ID: "2"}, nil
-	case "3":
-		return scheduling.Service{ID: "3"}, nil
-	case "4":
-		return scheduling.Service{ID: "4", Name: "Manicure + Pedicure"}, nil
-	default:
-		return scheduling.Service{}, scheduling.ErrServiceNotFound
-	}
 }
