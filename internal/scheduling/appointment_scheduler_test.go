@@ -10,11 +10,13 @@ import (
 
 func TestAppointmentScheduler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
-	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Start: "8:00", Duration: 90}
-	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Start: "8:00", Duration: 480}
+	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Start: "8:00", Duration: 90, Status: scheduling.StatusScheduled}
+	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Start: "8:00", Duration: 480, Status: scheduling.StatusScheduled}
+	a3 := scheduling.Appointment{ID: "6", Date: "2020-04-01", Start: "19:00", Duration: 60, Status: scheduling.StatusCancelled}
 
 	repo.Save(a1)
 	repo.Save(a2)
+	repo.Save(a3)
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerInput{
@@ -613,6 +615,37 @@ func TestAppointmentScheduler(t *testing.T) {
 		s, _ := sacl.FindServiceByID(a.ServiceID.Value())
 		if a.ServiceName != s.Name {
 			t.Errorf("The service name must be the same as the appointment: %v", a.ServiceName)
+		}
+	})
+
+	t.Run("must_schedule_an_appointment_at_the_time_of_canceled_appointment", func(t *testing.T) {
+		d := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "2",
+			ServiceID:      "4",
+			Date:           "2020-04-01",
+			StartHour:      "19:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+
+		id, err := usecase.Schedule(d)
+		if err != nil {
+			t.Errorf("Scheduling appointment should not return error: %v", err)
+		}
+
+		a, err := repo.FindByID(scheduling.NewID(id))
+		if err != nil {
+			t.Errorf("Should return appointment: %v", err)
+		}
+
+		if a.ID.Value() != id {
+			t.Errorf("The ID of appointment must be the same as the generated: %v", a.ID.Value())
+		}
+
+		if a.Status != scheduling.StatusScheduled {
+			t.Errorf("The status of appointment must be scheduled: %v", a.Status)
 		}
 	})
 }

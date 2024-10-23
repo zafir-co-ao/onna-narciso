@@ -58,3 +58,19 @@ func (r *repo) FindByWeekServiceAndProfessionals(date string, serviceID string, 
 
 	return appointments, nil
 }
+
+func (r *repo) FindByDateAndStatus(date string, status scheduling.Status) ([]scheduling.Appointment, error) {
+	spec := shared.And(
+		scheduling.DateIsSpecificantion(date),
+		scheduling.StatusIsSpecificantion(status),
+	)
+
+	var appointments []scheduling.Appointment
+	for _, appointment := range r.data {
+		if spec.IsSatisfiedBy(appointment) {
+			appointments = append(appointments, appointment)
+		}
+	}
+
+	return appointments, nil
+}

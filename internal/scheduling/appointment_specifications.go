@@ -13,6 +13,12 @@ func DateIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	}
 }
 
+func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
+	return func(a Appointment) bool {
+		return a.Status == s
+	}
+}
+
 func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	t1, err := time.Parse("2006-01-02", d)
 	w1, y1 := t1.ISOWeek()

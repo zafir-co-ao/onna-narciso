@@ -67,7 +67,7 @@ func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		return "", err
 	}
 
-	appointments, _ := u.repo.FindByDate(d.Date)
+	appointments, _ := u.repo.FindByDateAndStatus(d.Date, StatusScheduled)
 	if !VerifyAvailability(app, appointments) {
 		return "", ErrBusyTime
 	}
