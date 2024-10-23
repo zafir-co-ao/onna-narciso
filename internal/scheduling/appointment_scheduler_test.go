@@ -18,6 +18,8 @@ func TestAppointmentScheduler(t *testing.T) {
 	repo.Save(a2)
 	repo.Save(a3)
 
+	cacl := fakeCustomerAcl{}
+
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		d := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
@@ -650,7 +652,9 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 }
 
-var cacl scheduling.CustomerAclFunc = func(id string) (scheduling.Customer, error) {
+type fakeCustomerAcl struct{}
+
+func (c fakeCustomerAcl) FindCustomerByID(id string) (scheduling.Customer, error) {
 	switch id {
 	case "1":
 		return scheduling.Customer{ID: "1"}, nil
@@ -661,6 +665,14 @@ var cacl scheduling.CustomerAclFunc = func(id string) (scheduling.Customer, erro
 	default:
 		return scheduling.Customer{}, scheduling.ErrCustomerNotFound
 	}
+}
+
+func (c fakeCustomerAcl) RequestCustomerRegistration(name string, phone string) (scheduling.Customer, error) {
+	if name == "" || phone == "" {
+		return scheduling.Customer{}, scheduling.ErrCustomerRegistration
+	}
+
+	return scheduling.Customer{ID: "1", Name: name, PhoneNumber: phone}, nil
 }
 
 var pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Professional, error) {

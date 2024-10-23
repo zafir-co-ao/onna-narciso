@@ -21,8 +21,9 @@ type Professional struct {
 }
 
 type Customer struct {
-	ID   string
-	Name string
+	ID          string
+	Name        string
+	PhoneNumber string
 }
 
 type Status string

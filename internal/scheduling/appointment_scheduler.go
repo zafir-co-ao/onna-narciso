@@ -82,13 +82,9 @@ func (u *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) 
 		return u.customerAcl.FindCustomerByID(d.CustomerID)
 	}
 
-	if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {
-		return Customer{}, ErrCustomerRegistration
-	}
-
-	c := Customer{
-		ID:   "1",
-		Name: d.CustomerName,
-	}
-	return c, nil
+	// if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {
+	// 	return Customer{}, ErrCustomerRegistration
+	// }
+	// c :=
+	return u.customerAcl.RequestCustomerRegistration(d.CustomerName, d.CustomerPhone)
 }
