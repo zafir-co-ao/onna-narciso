@@ -17,10 +17,8 @@ func main() {
 
 	s := scheduling.NewAppointmentScheduler(r, cacl, pacl, sacl)
 	c := scheduling.NewAppointmentCanceler(r)
-	routes := scheduling.NewRouter(s, c)
 
-	http.Handle("/appointments/", http.StripPrefix("/appointments", routes))
-	http.Handle("/", web.NewRouter())
+	http.Handle("/", web.NewRouter(s, c))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
