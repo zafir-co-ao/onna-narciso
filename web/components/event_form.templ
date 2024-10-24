@@ -1,19 +1,34 @@
 package components
 
 templ EventForm() {
+	<script>
+	    document.body.addEventListener("htmx:load", (evt) => {
+			closeEventDialog()
+		})
+
+	    document.body.addEventListener("htmx:responseError", (evt) => {
+			const xhr = evt.detail.xhr;
+			const status = xhr.status
+			const responseText = xhr.responseText
+			const el = document.querySelector("#error-messages")
+			el.innerText = responseText
+			show("#error-messages")
+		})
+	</script>
 	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-		<form>
+		<form method="post" hx-post="/appointments/schedule" hx-trigger="submit" hx-target="#events" hx-swap="beforeend" enctype="multipart/form-data">
 			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 				<div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
 					<h3 id="modal-title" class="text-base font-semibold leading-6 text-gray-900">Nova marcação</h3>
+					<div id="error-messages" class="bg-red-50 text-red-600 px-3 py-2.5 rounded-md my-3 hidden"></div>
 					<div class="relative mt-4">
 						<button
 							type="button"
-							class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+							class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
 							id="select-customer"
 							aria-expanded="false"
 							aria-haspopup="true"
-							onclick="toogleCustomers()"
+							onclick="toogle('#menu-customer')"
 						>
 							<span id="customer-name">Escolher cliente</span>
 							<svg
@@ -38,30 +53,18 @@ templ EventForm() {
 							aria-labelledby="menu-button"
 							tabindex="-1"
 						>
-							<div
-								class="p-2"
-								role="none"
-								id="customers-container"
-							>
+							<div id="customers-container" class="p-2" role="none">
 								<input
 									type="text"
 									placeholder="Pesquisar por nome, nif e telefone"
-									class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+									class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
 									oninput="searchCustomers(this)"
 								/>
-								<div>
-									<ul
-										id="customers-list"
-										class="space-y-3"
-									>
-										<li
-											class="text-sm mt-2 border-b p-2 cursor-pointer"
-											onclick="toogleClientCreateForm()"
-										>
-											Criar Novo Cliente
-										</li>
-									</ul>
-								</div>
+								<ul id="customers-list" class="space-y-3">
+									<li class="text-sm mt-2 border-b p-2 cursor-pointer" onclick="toogleCustomerForm()">
+										Criar Novo Cliente
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -69,28 +72,30 @@ templ EventForm() {
 						<input type="hidden" name="customer_id" id="customer-id"/>
 						<div class="mt-4">
 							<div>
-								<div
-									class="relative mt-2 rounded-md shadow-sm"
-								>
+								<div class="relative mt-2 rounded-md shadow-sm">
 									<input
+										id="new-customer-name"
 										type="text"
-										class="block w-full rounded-md border-0 py-1.5 p-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										name="customer_name"
+										class="block w-full rounded-md px-3 py-2.5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 										placeholder="Nome do Cliente"
 									/>
 									<div
 										class="absolute inset-y-0 right-0 flex items-center cursor-pointer"
-										onclick="showClientSearchForm()"
+										onclick="toogleCustomerForm()"
 									>
-										<span class="text-sm text-white border-l rounded-r-md p-2 bg-gray-500">Pesquisar</span>
+										<span class="text-sm text-white border-l rounded-r-md p-3 bg-gray-500">Pesquisar</span>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="mt-4">
 							<input
+								id="new-customer-phone"
 								type="text"
+								name="customer_phone"
 								placeholder="Telefone"
-								class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
 						</div>
 					</div>
@@ -100,7 +105,13 @@ templ EventForm() {
 							name="professional"
 							placeholder="Sara Gomes"
 							disabled
-							class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+						<input
+							type="hidden"
+							name="professional_id"
+							value="1"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						/>
 					</div>
 					<div class="mt-4">
@@ -109,38 +120,70 @@ templ EventForm() {
 							name="service"
 							placeholder="Manicure + Pedicure"
 							disabled
-							class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+						<input
+							type="hidden"
+							name="service_id"
+							value="1"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						/>
 					</div>
 					<div class="mt-4">
 						<input
 							id="event-date"
-							type="date"
+							type="hidden"
+							name="date"
+							value="1"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+						<input
+							id="date"
+							type="text"
 							name="date"
 							disabled
 							value="2020-02-01"
-							class="block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+					<div class="mt-4">
+						<input
+							id="event-hour"
+							type="hidden"
+							name="start"
+							value="10:00"
+							class="block disabled w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+						<input
+							id="hour"
+							type="text"
+							value="10:00"
+							disabled
+							class="block disabled w-full py-2.5 px-3 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						/>
 					</div>
 					<div class="mt-4">
 						<select
 							name="duration"
-							class="block border w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							class="block border w-full rounded-md px-3 py-2.5 text-gray-900 shadow-sm ring-inset ring-gray-300 sm:text-sm sm:leading-6"
 						>
 							<option>Selecione a duração</option>
-							<option value="15">15 Minutos</option>
-							<option value="30">30 Minutos</option>
-							<option value="45">45 Minutos</option>
-							<option value="60">60 Minutos</option>
+							<option value="15">15 minutos</option>
+							<option value="30">30 minutos</option>
+							<option value="45">45 minutos</option>
+							<option value="60">1 hora</option>
+							<option value="90">1 hora e 30 minutos</option>
+							<option value="120">2 horas</option>
+							<option value="150">2 horas e 30 minutos</option>
+							<option value="180">3 horas</option>
 						</select>
 					</div>
 				</div>
 			</div>
 			<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 				<button
-					type="button"
+					type="submit"
 					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-					onclick="save()"
 				>
 					Marcar
 				</button>
