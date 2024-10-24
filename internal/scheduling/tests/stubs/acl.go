@@ -5,9 +5,9 @@ import "github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 var Pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Professional, error) {
 	switch id {
 	case "1":
-		return scheduling.Professional{ID: "1"}, nil
+		return scheduling.Professional{ID: "1", Name: "Sara Gomes"}, nil
 	case "2":
-		return scheduling.Professional{ID: "2"}, nil
+		return scheduling.Professional{ID: "2", Name: "Julieta Venegas"}, nil
 	case "3":
 		return scheduling.Professional{ID: "3", Name: "John Doe"}, nil
 	default:
@@ -18,11 +18,11 @@ var Pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Profession
 var Sacl scheduling.ServiceAclFunc = func(id string) (scheduling.Service, error) {
 	switch id {
 	case "1":
-		return scheduling.Service{ID: "1"}, nil
+		return scheduling.Service{ID: "1", Name: "Manicure"}, nil
 	case "2":
-		return scheduling.Service{ID: "2"}, nil
+		return scheduling.Service{ID: "2", Name: "Pedicure"}, nil
 	case "3":
-		return scheduling.Service{ID: "3"}, nil
+		return scheduling.Service{ID: "3", Name: "Depilação"}, nil
 	case "4":
 		return scheduling.Service{ID: "4", Name: "Manicure + Pedicure"}, nil
 	default:
@@ -35,11 +35,11 @@ type CustomerAclStub struct{}
 func (c CustomerAclStub) FindCustomerByID(id string) (scheduling.Customer, error) {
 	switch id {
 	case "1":
-		return scheduling.Customer{ID: "1"}, nil
+		return scheduling.Customer{ID: "1", Name: "João Silva"}, nil
 	case "2":
-		return scheduling.Customer{ID: "2", Name: "Sara Gomes"}, nil
+		return scheduling.Customer{ID: "2", Name: "Maria Oliveira"}, nil
 	case "3":
-		return scheduling.Customer{ID: "3"}, nil
+		return scheduling.Customer{ID: "3", Name: "Carlos Ferreira"}, nil
 	default:
 		return scheduling.Customer{}, scheduling.ErrCustomerNotFound
 	}

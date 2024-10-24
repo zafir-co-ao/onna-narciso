@@ -12,8 +12,19 @@ type AppointmentSchedulerInput struct {
 	Duration       int
 }
 
+type AppointmentSchedulerOutput struct {
+	ID               string
+	CustomerName     string
+	ServiceName      string
+	ProfessionalName string
+	Date             string
+	Hour             string
+	Start            int
+	Duration         int
+}
+
 type AppointmentScheduler interface {
-	Schedule(d AppointmentSchedulerInput) (string, error)
+	Schedule(d AppointmentSchedulerInput) (AppointmentSchedulerOutput, error)
 }
 
 type appointmentScedulerImpl struct {
@@ -32,20 +43,20 @@ func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl 
 	}
 }
 
-func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string, error) {
+func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (AppointmentSchedulerOutput, error) {
 	p, err := u.professionalAcl.FindProfessionalByID(d.ProfessionalID)
 	if err != nil {
-		return "", err
+		return AppointmentSchedulerOutput{}, err
 	}
 
 	s, err := u.serviceAcl.FindServiceByID(d.ServiceID)
 	if err != nil {
-		return "", err
+		return AppointmentSchedulerOutput{}, err
 	}
 
 	c, err := u.findOrRegistrationCustomer(d)
 	if err != nil {
-		return "", err
+		return AppointmentSchedulerOutput{}, err
 	}
 
 	id, _ := Random()
@@ -64,17 +75,17 @@ func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string,
 		Build()
 
 	if err != nil {
-		return "", err
+		return AppointmentSchedulerOutput{}, err
 	}
 
 	appointments, _ := u.repo.FindByDateAndStatus(d.Date, StatusScheduled)
 	if !VerifyAvailability(app, appointments) {
-		return "", ErrBusyTime
+		return AppointmentSchedulerOutput{}, ErrBusyTime
 	}
 
 	u.repo.Save(app)
 
-	return id.Value(), nil
+	return u.buildOutput(app), nil
 }
 
 func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {
@@ -82,9 +93,18 @@ func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedu
 		return u.customerAcl.FindCustomerByID(d.CustomerID)
 	}
 
-	// if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {
-	// 	return Customer{}, ErrCustomerRegistration
-	// }
-	// c :=
 	return u.customerAcl.RequestCustomerRegistration(d.CustomerName, d.CustomerPhone)
+}
+
+func (*appointmentScedulerImpl) buildOutput(a Appointment) AppointmentSchedulerOutput {
+	o := AppointmentSchedulerOutput{
+		ID:               a.ID.Value(),
+		CustomerName:     a.CustomerName,
+		ServiceName:      a.ServiceName,
+		ProfessionalName: a.ProfessionalName,
+		Date:             a.Date.Value(),
+		Hour:             a.Start.Value(),
+		Duration:         a.Duration,
+	}
+	return o
 }

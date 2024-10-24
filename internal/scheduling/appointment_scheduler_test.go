@@ -34,13 +34,13 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if id == "" {
-			t.Errorf("Appointment id should be %v", id)
+		if o.ID == "" {
+			t.Errorf("Appointment id should be %v", o.ID)
 		}
 	})
 
@@ -55,12 +55,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Error("Appointment should be stored in repository")
 		}
@@ -69,8 +69,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ID.Value() != id {
-			t.Errorf("Appointment ID should be %s", id)
+		if appointment.ID.Value() != o.ID {
+			t.Errorf("Appointment ID should be %s", o.ID)
 		}
 	})
 
@@ -85,12 +85,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -111,12 +111,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -137,12 +137,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -163,12 +163,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -189,12 +189,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -215,12 +215,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -241,12 +241,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(id))
+		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -267,12 +267,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -430,12 +430,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, _ := repo.FindByID(scheduling.NewID(id))
+		a, _ := repo.FindByID(scheduling.NewID(o.ID))
 
 		customer, err := cacl.FindCustomerByID(a.CustomerID.Value())
 		if err != nil {
@@ -524,17 +524,17 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		if a.ID.Value() != id {
+		if a.ID.Value() != o.ID {
 			t.Errorf("The ID of appointment must be the same as the generated")
 		}
 	})
@@ -551,12 +551,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -579,12 +579,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -607,12 +607,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -635,17 +635,17 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		id, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(d)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(id))
+		a, err := repo.FindByID(scheduling.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		if a.ID.Value() != id {
+		if a.ID.Value() != o.ID {
 			t.Errorf("The ID of appointment must be the same as the generated: %v", a.ID.Value())
 		}
 
