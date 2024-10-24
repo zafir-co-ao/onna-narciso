@@ -3,10 +3,23 @@ package main
 import (
 	"net/http"
 
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
 	"github.com/zafir-co-ao/onna-narciso/web"
 )
 
 func main() {
+	r := inmem.NewAppointmentRepository()
+	cacl := stubs.CustomerAclStub{}
+	pacl := stubs.Pacl
+	sacl := stubs.Sacl
+
+	s := scheduling.NewAppointmentScheduler(r, cacl, pacl, sacl)
+	c := scheduling.NewAppointmentCanceler(r)
+	routes := scheduling.NewRouter(s, c)
+
+	http.Handle("/appointments/", http.StripPrefix("/appointments", routes))
 	http.Handle("/", web.NewRouter())
 
 	err := http.ListenAndServe(":8080", nil)
