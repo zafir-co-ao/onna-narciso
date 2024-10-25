@@ -2,7 +2,6 @@ function openEventDialog(event, rows) {
     hidden("#error-messages")
     hidden("#customer-form")
 
-
     const week = document.querySelectorAll(".week-day-cell")
 
     const day = week[getPosition(event) - 1]
@@ -18,9 +17,14 @@ function openEventDialog(event, rows) {
     document.querySelector("#add-event-dialog").showModal()
 }
 
+function openRescheduleDialog(event, id) {
+    event.stopPropagation()
+    document.querySelector("#reschedule-dialog").showModal()
+    htmx.ajax("GET", `/appointments/${id}`, {target: "#reschedule-form", swap: "innerHTML"})
+}
+
 function closeEventDialog() {
-    const dialogEl = document.querySelector("#add-event-dialog")
-    dialogEl.close()
+    document.querySelector("#add-event-dialog").close()
 }
 
 

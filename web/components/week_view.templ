@@ -3,8 +3,6 @@ package components
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -34,21 +32,6 @@ func getDaysOfMonthFromMonday(date string, days int) [][]string {
 		t = t.AddDate(0, 0, +1)
 	}
 	return d
-}
-
-func getEventClass(o scheduling.AppointmentSchedulerOutput, startHour int) string {
-
-	date, _ := time.Parse("2006-01-02", o.Date)
-
-	parts := strings.Split(o.Hour, ":")
-
-	hour, _ := strconv.ParseInt(parts[0], 10, 8)
-	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
-
-	row := (hour-int64(startHour))*4 + minutes/15 + 2
-	span := o.Duration / 15
-
-	return fmt.Sprintf("sm:col-start-%d row-start-%d row-span-%d", date.Weekday(), row, span)
 }
 
 func getDayOfWeek(day, today string) string {
@@ -149,17 +132,5 @@ templ WeekView(date string,
 		</div>
 	</div>
 	@AddEventDialog()
-}
-
-templ Event(o scheduling.AppointmentSchedulerOutput, startHour int) {
-	<li class={ "relative flex", getEventClass(o, startHour) }>
-		<a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100">
-			<p class="order-1 font-semibold text-blue-700">{ o.CustomerName }</p>
-			<p class="order-1 font-semibold text-blue-500">{ o.ProfessionalName }</p>
-			<p class="order-1 font-semibold text-blue-300">{ o.ServiceName }</p>
-			<p class="text-blue-500 group-hover:text-blue-700">
-				<time datetime="2022-01-12T06:00">{ o.Hour }</time>
-			</p>
-		</a>
-	</li>
+	@RescheduleEventDialog()
 }
