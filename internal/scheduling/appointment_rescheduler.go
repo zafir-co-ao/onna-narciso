@@ -18,7 +18,10 @@ func (r *appointmentRescheduler) Execute(id string) (AppointmentOutput, error) {
 		return AppointmentOutput{}, err
 	}
 
-	a.Reschedule()
+	err = a.Reschedule()
+	if err != nil {
+		return AppointmentOutput{}, err
+	}
 
 	r.repo.Save(a)
 

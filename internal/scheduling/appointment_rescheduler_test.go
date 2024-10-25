@@ -11,8 +11,11 @@ import (
 func TestAppointmentRescheduler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
-	a := scheduling.Appointment{ID: "1"}
-	repo.Save(a)
+	a1 := scheduling.Appointment{ID: "1", Status: scheduling.StatusScheduled}
+	a2 := scheduling.Appointment{ID: "3", Status: scheduling.StatusCancelled}
+
+	repo.Save(a1)
+	repo.Save(a2)
 
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentRescheduler(repo)
@@ -42,6 +45,19 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
 			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_appointment_status_is_different_of_scheduled", func(t *testing.T) {
+		usecase := scheduling.NewAppointmentRescheduler(repo)
+
+		_, err := usecase.Execute("3")
+		if err == nil {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
+			t.Errorf("The error must be ErrInvalidStatusToReschedule, got %v", err)
 		}
 	})
 }

@@ -3,8 +3,9 @@ package scheduling
 import "errors"
 
 var (
-	ErrBusyTime              = errors.New("Schedule time is busy")
-	ErrInvalidStatusToCancel = errors.New("Invalid status to cancel")
+	ErrBusyTime                  = errors.New("Schedule time is busy")
+	ErrInvalidStatusToCancel     = errors.New("Invalid status to cancel")
+	ErrInvalidStatusToReschedule = errors.New("Invalid status to reschedule")
 )
 
 type AppointmentOutput struct {
@@ -17,7 +18,6 @@ type AppointmentOutput struct {
 	Start            int
 	Duration         int
 }
-
 
 func buildOutput(a Appointment) AppointmentOutput {
 	o := AppointmentOutput{
