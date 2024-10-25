@@ -1,7 +1,7 @@
 package scheduling
 
 type AppointmentRescheduler interface {
-	Execute(id string, date string) (AppointmentOutput, error)
+	Execute(id string, date string, hour string) (AppointmentOutput, error)
 }
 
 type appointmentRescheduler struct {
@@ -12,13 +12,13 @@ func NewAppointmentRescheduler(r AppointmentRepository) AppointmentRescheduler {
 	return &appointmentRescheduler{repo: r}
 }
 
-func (r *appointmentRescheduler) Execute(id string, date string) (AppointmentOutput, error) {
+func (r *appointmentRescheduler) Execute(id string, date string, hour string) (AppointmentOutput, error) {
 	a, err := r.repo.FindByID(NewID(id))
 	if err != nil {
 		return AppointmentOutput{}, err
 	}
 
-	err = a.Reschedule(date)
+	err = a.Reschedule(date, hour)
 	if err != nil {
 		return AppointmentOutput{}, err
 	}

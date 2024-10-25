@@ -75,13 +75,14 @@ func NewAppointment(
 	return app, nil
 }
 
-func (a *Appointment) Reschedule(d string) error {
+func (a *Appointment) Reschedule(d string, h string) error {
 
 	if !a.IsScheduled() {
 		return ErrInvalidStatusToReschedule
 	}
 
 	a.Date = Date(d)
+	a.Start = Hour(h)
 	a.Status = StatusRescheduled
 	return nil
 }
