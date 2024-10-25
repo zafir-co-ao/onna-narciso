@@ -1,17 +1,17 @@
 package scheduling
 
-type DayliAppointmentsGetter interface {
+type DailyAppointmentsGetter interface {
 	Get(day string) ([]Appointment, error)
 }
 
-type dayliAppointmentsGetterImpl struct {
+type dailyAppointmentsGetterImpl struct {
 	repo AppointmentRepository
 }
 
-func NewDayliAppointmentsGetter(repo AppointmentRepository) DayliAppointmentsGetter {
-	return &dayliAppointmentsGetterImpl{repo: repo}
+func NewDailyAppointmentsGetter(repo AppointmentRepository) DailyAppointmentsGetter {
+	return &dailyAppointmentsGetterImpl{repo: repo}
 }
 
-func (d *dayliAppointmentsGetterImpl) Get(date string) ([]Appointment, error) {
+func (d *dailyAppointmentsGetterImpl) Get(date string) ([]Appointment, error) {
 	return d.repo.FindByDate(date)
 }
