@@ -13,6 +13,5 @@ func NewAppointmentFinder(r AppointmentRepository) AppointmentFinder {
 }
 
 func (f *appointmentFinderImpl) Execute(id string) (Appointment, error) {
-	a, _ := f.repo.FindByID(NewID(id))
-	return a, nil
+	return f.repo.FindByID(NewID(id))
 }

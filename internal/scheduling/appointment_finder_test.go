@@ -12,7 +12,6 @@ func TestAppointmentFinder(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
 	repo.Save(scheduling.Appointment{ID: "1"})
-	repo.Save(scheduling.Appointment{ID: "2"})
 
 	t.Run("should_find_appointment_in_repository", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentFinder(repo)
@@ -23,11 +22,24 @@ func TestAppointmentFinder(t *testing.T) {
 		}
 
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
-			t.Errorf("Should return appointment not an error: %v", err)
+			t.Errorf("Should return appointment not an error, got %v", err)
 		}
 
 		if a.ID.Value() != "1" {
-			t.Errorf("Should return appointment with id %v but got %v", 1, a.ID.Value())
+			t.Errorf("Should return appointment with id %v, got %v", 1, a.ID.Value())
+		}
+	})
+
+	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
+		usecase := scheduling.NewAppointmentFinder(repo)
+
+		_, err := usecase.Execute("2")
+		if err == nil {
+			t.Errorf("Finder appointment should return error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
+			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
 		}
 	})
 }
