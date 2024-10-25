@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	StatusScheduled Status = "scheduled"
-	StatusCancelled Status = "cancelled"
+	StatusScheduled   Status = "scheduled"
+	StatusCancelled   Status = "cancelled"
+	StatusRescheduled Status = "rescheduled"
 )
 
 type Service struct {
@@ -74,12 +75,20 @@ func NewAppointment(
 	return app, nil
 }
 
+func (a *Appointment) Reschedule() {
+	a.Status = StatusRescheduled
+}
+
 func (a *Appointment) Cancel() {
 	a.Status = StatusCancelled
 }
 
 func (a *Appointment) IsScheduled() bool {
 	return a.Status == StatusScheduled
+}
+
+func (a *Appointment) IsRescheduled() bool {
+	return a.Status == StatusRescheduled
 }
 
 func (a *Appointment) IsCancelled() bool {
