@@ -12,7 +12,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
 	a1 := scheduling.Appointment{ID: "1", Status: scheduling.StatusScheduled}
-	a2 := scheduling.Appointment{ID: "3", Status: scheduling.StatusCancelled}
+	a2 := scheduling.Appointment{ID: "3", Status: scheduling.StatusCanceled}
 
 	repo.Save(a1)
 	repo.Save(a2)

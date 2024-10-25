@@ -7,7 +7,7 @@ import (
 
 const (
 	StatusScheduled   Status = "scheduled"
-	StatusCancelled   Status = "cancelled"
+	StatusCanceled    Status = "canceled"
 	StatusRescheduled Status = "rescheduled"
 )
 
@@ -85,8 +85,14 @@ func (a *Appointment) Reschedule() error {
 	return nil
 }
 
-func (a *Appointment) Cancel() {
-	a.Status = StatusCancelled
+func (a *Appointment) Cancel() error {
+	if a.IsCancelled() {
+		return ErrInvalidStatusToCancel
+	}
+
+	a.Status = StatusCanceled
+
+	return nil
 }
 
 func (a *Appointment) IsScheduled() bool {
@@ -98,7 +104,7 @@ func (a *Appointment) IsRescheduled() bool {
 }
 
 func (a *Appointment) IsCancelled() bool {
-	return a.Status == StatusCancelled
+	return a.Status == StatusCanceled
 }
 
 func (a *Appointment) calculateEnd() {

@@ -18,11 +18,10 @@ func (u *appointmentCancelerImpl) Execute(id string) error {
 		return err
 	}
 
-	if a.IsCancelled() {
-		return ErrInvalidStatusToCancel
+	err = a.Cancel()
+	if err != nil {
+		return err
 	}
-
-	a.Cancel()
 
 	u.repo.Save(a)
 
