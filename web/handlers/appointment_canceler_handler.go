@@ -34,6 +34,5 @@ func NewAppointmentCancelerHandler(u scheduling.AppointmentCanceler) func(w http
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("appointment cancelled"))
 	}
 }

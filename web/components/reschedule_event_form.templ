@@ -1,0 +1,74 @@
+package components
+
+import "github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+
+templ RescheduleEventForm(o scheduling.AppointmentOutput) {
+	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+		<form method="post" enctype="multipart/form-data" hx-post="/appointments/reschedule" hx-trigger="submit">
+			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+				<div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
+					<div class="flex justify-between items-center">
+						<h3 class="text-base font-semibold leading-6 text-gray-900">Reagendar</h3>
+						<span class="cursor-pointer text-lg" onclick="closeDialog('#reschedule-dialog')">x</span>
+					</div>
+					<input type="hidden" name="appointment_id" id="appointment-id" value={ o.ID }/>
+					<div class="mt-4">
+						@viewInfo(o.CustomerName)
+					</div>
+					<div class="mt-4">
+						@viewInfo(o.ProfessionalName)
+					</div>
+					<div class="mt-4">
+						@viewInfo(o.ServiceName)
+					</div>
+					<div class="mt-4">
+						<input
+							type="date"
+							name="date"
+							value={ o.Date }
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+						/>
+					</div>
+					<div class="mt-4">
+						<input
+							type="time"
+							name="time"
+							class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+						/>
+					</div>
+					<div class="mt-4">
+						<select
+							name="duration"
+							class="block border w-full rounded-md px-3 py-2.5 text-gray-900 shadow-sm ring-inset ring-gray-300 sm:text-sm sm:leading-6"
+						>
+							<option>Selecione a duração</option>
+							<option value="15">15 minutos</option>
+							<option value="30">30 minutos</option>
+							<option value="45">45 minutos</option>
+							<option value="60">1 hora</option>
+							<option value="90">1 hora e 30 minutos</option>
+							<option value="120">2 horas</option>
+							<option value="150">2 horas e 30 minutos</option>
+							<option value="180">3 horas</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+				<button
+					type="submit"
+					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+				>
+					Reagendar
+				</button>
+				<button
+					type="button"
+					class="mt-3 inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-900 sm:mt-0 sm:w-auto"
+					onclick="openDialog('#cancel-dialog')"
+				>
+					Cancelar
+				</button>
+			</div>
+		</form>
+	</div>
+}

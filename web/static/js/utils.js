@@ -1,32 +1,11 @@
-function openEventDialog(event, rows) {
-    hidden("#error-messages")
-    hidden("#customer-form")
 
-    const week = document.querySelectorAll(".week-day-cell")
-
-    const day = week[getPosition(event) - 1]
-    const date = day.getAttribute("data-week-day")
-    const hour = getHour(event, rows)
-
-    document.querySelector("#date").setAttribute("value", date)
-    document.querySelector("#event-date").setAttribute("value", date)
-
-    document.querySelector("#event-hour").setAttribute("value", hour)
-    document.querySelector("#hour").setAttribute("value", hour)
-
-    document.querySelector("#add-event-dialog").showModal()
+function openDialog(target) {
+    document.querySelector(target).showModal()
 }
 
-function openRescheduleDialog(event, id) {
-    event.stopPropagation()
-    document.querySelector("#reschedule-dialog").showModal()
-    htmx.ajax("GET", `/appointments/${id}`, {target: "#reschedule-form", swap: "innerHTML"})
+function closeDialog(target) {
+    document.querySelector(target).close()
 }
-
-function closeEventDialog() {
-    document.querySelector("#add-event-dialog").close()
-}
-
 
 function getHour(event, rows) {
     const h = calculateHour(event, rows)
