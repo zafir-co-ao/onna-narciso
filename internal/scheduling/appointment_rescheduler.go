@@ -13,7 +13,10 @@ func NewAppointmentRescheduler(r AppointmentRepository) AppointmentRescheduler {
 }
 
 func (r *appointmentRescheduler) Execute(id string) (AppointmentOutput, error) {
-	a, _ := r.repo.FindByID(NewID(id))
+	a, err := r.repo.FindByID(NewID(id))
+	if err != nil {
+		return AppointmentOutput{}, err
+	}
 
 	a.Reschedule()
 

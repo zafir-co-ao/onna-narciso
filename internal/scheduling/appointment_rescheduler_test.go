@@ -1,6 +1,7 @@
 package scheduling_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
@@ -29,6 +30,18 @@ func TestAppointmentRescheduler(t *testing.T) {
 		if !a.IsRescheduled() {
 			t.Errorf("The appointment status must be Rescheduled, got %v", a.Status)
 		}
+	})
 
+	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
+		usecase := scheduling.NewAppointmentRescheduler(repo)
+
+		_, err := usecase.Execute("2")
+		if err == nil {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
+			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
+		}
 	})
 }
