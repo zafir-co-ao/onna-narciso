@@ -1,7 +1,7 @@
 package scheduling
 
 type AppointmentFinder interface {
-	Execute(id string) (Appointment, error)
+	Execute(id string) (AppointmentOutput, error)
 }
 
 type appointmentFinderImpl struct {
@@ -12,6 +12,11 @@ func NewAppointmentFinder(r AppointmentRepository) AppointmentFinder {
 	return &appointmentFinderImpl{repo: r}
 }
 
-func (f *appointmentFinderImpl) Execute(id string) (Appointment, error) {
-	return f.repo.FindByID(NewID(id))
+func (f *appointmentFinderImpl) Execute(id string) (AppointmentOutput, error) {
+	a, err := f.repo.FindByID(NewID(id))
+	if err != nil {
+		return AppointmentOutput{}, err
+	}
+
+	return buildOutput(a), nil
 }

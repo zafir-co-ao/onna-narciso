@@ -25,8 +25,8 @@ func TestAppointmentFinder(t *testing.T) {
 			t.Errorf("Should return appointment not an error, got %v", err)
 		}
 
-		if a.ID.Value() != "1" {
-			t.Errorf("Should return appointment with id %v, got %v", 1, a.ID.Value())
+		if a.ID != "1" {
+			t.Errorf("Should return appointment with id %v, got %v", 1, a.ID)
 		}
 	})
 
