@@ -7,7 +7,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/components"
 )
 
-var appointments = []scheduling.AppointmentSchedulerOutput{
+var appointments = []scheduling.AppointmentOutput{
 	{
 		ID:               "1",
 		CustomerName:     "Paola Oliveira",
