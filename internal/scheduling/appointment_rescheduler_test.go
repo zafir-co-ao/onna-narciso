@@ -16,7 +16,6 @@ func TestAppointmentRescheduler(t *testing.T) {
 		v := strconv.Itoa(i)
 		a := scheduling.Appointment{ID: scheduling.NewID(v), Status: scheduling.StatusScheduled}
 		repo.Save(a)
-
 	}
 
 	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
@@ -112,6 +111,19 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if !errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
 			t.Errorf("The error must be ErrInvalidStatusToReschedule, got %v", err)
+		}
+	})
+
+	t.Run("should_return_an_error_if_the_date_is_in_an_invalid_format", func(t *testing.T) {
+		usecase := scheduling.NewAppointmentRescheduler(repo)
+
+		_, err := usecase.Execute("6", "10-10-2020", "10:00", 120)
+		if errors.Is(nil, err) {
+			t.Errorf("Shoud return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrInvalidDate, err) {
+			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})
 }
