@@ -11,7 +11,7 @@ import (
 func NewAppointmentFinderHandler(f scheduling.AppointmentFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
-			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			sendMethodNotAllowed(w)
 			return
 		}
 
@@ -20,15 +20,16 @@ func NewAppointmentFinderHandler(f scheduling.AppointmentFinder) func(w http.Res
 		o, err := f.Execute(id)
 
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
-			http.Error(w, "Marcação não encontrada", http.StatusNotFound)
+			sendNotFound(w, "Marcação não encontrada")
 			return
 		}
 
 		if !errors.Is(nil, err) {
-			http.Error(w, "Erro desconhecido, contacte o Administrador", http.StatusInternalServerError)
+			sendServerError(w)
 			return
 		}
 
+		sendOk(w)
 		components.RescheduleEventForm(o).Render(r.Context(), w)
 
 	}
