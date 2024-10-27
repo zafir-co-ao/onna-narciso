@@ -126,4 +126,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})
+
+	t.Run("should_return_an_error_if_the_hour_is_in_an_invalid_format", func(t *testing.T) {
+		usecase := scheduling.NewAppointmentRescheduler(repo)
+
+		_, err := usecase.Execute("2", "2021-07-01", "11h00", 30)
+		if errors.Is(nil, err) {
+			t.Errorf("Shoud return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrInvalidHour, err) {
+			t.Errorf("The error must be ErrHourDate, got %v", err)
+		}
+	})
 }

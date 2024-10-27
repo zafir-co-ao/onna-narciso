@@ -85,8 +85,13 @@ func (a *Appointment) Reschedule(date string, hour string, duration int) error {
 		return err
 	}
 
+	h, err := NewHour(hour)
+	if err != nil {
+		return err
+	}
+
 	a.Date = d
-	a.Start = Hour(hour)
+	a.Start = h
 	a.Duration = duration
 	a.Status = StatusRescheduled
 
