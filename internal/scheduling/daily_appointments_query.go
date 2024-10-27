@@ -13,5 +13,5 @@ func NewDailyAppointmentsGetter(repo AppointmentRepository) DailyAppointmentsGet
 }
 
 func (d *dailyAppointmentsGetterImpl) Get(date string) ([]Appointment, error) {
-	return d.repo.FindByDate(date)
+	return d.repo.FindByDate(Date(date))
 }

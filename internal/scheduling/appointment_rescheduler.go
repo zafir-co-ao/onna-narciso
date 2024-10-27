@@ -22,21 +22,21 @@ func NewAppointmentRescheduler(r AppointmentRepository) AppointmentRescheduler {
 func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (AppointmentOutput, error) {
 	a, err := r.repo.FindByID(NewID(i.ID))
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
 	err = a.Reschedule(i.Date, i.StartHour, i.Duration)
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := r.repo.FindByDateAndStatus(i.Date, StatusScheduled)
+	appointments, err := r.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
 	if !VerifyAvailability(a, appointments) {
-		return AppointmentOutput{}, ErrBusyTime
+		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
 	r.repo.Save(a)

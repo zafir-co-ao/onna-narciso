@@ -24,7 +24,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	sacl := stubs.Sacl
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "1",
 			ServiceID:      "4",
@@ -34,7 +34,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -45,7 +45,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_store_appointment_in_repository", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "1",
 			ServiceID:      "3",
@@ -55,7 +55,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -75,7 +75,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("the_status_of_appointment_should_be_scheduled", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "3",
 			ServiceID:      "1",
@@ -85,7 +85,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -101,7 +101,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_schedule_appointment_with_professional", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "2",
 			ServiceID:      "3",
@@ -111,7 +111,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -121,13 +121,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ProfessionalID.Value() != d.ProfessionalID {
-			t.Errorf("The appointment professional must be  %s, got %s", d.ProfessionalID, appointment.ProfessionalID)
+		if appointment.ProfessionalID.Value() != i.ProfessionalID {
+			t.Errorf("The appointment professional must be  %s, got %s", i.ProfessionalID, appointment.ProfessionalID)
 		}
 	})
 
 	t.Run("should_schedule_appointment_with_customer", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			CustomerID:     "1",
 			ProfessionalID: "2",
 			ServiceID:      "4",
@@ -137,7 +137,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -147,13 +147,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.CustomerID.Value() != d.CustomerID {
-			t.Errorf("The appointment customer must be  %s, got %s", d.CustomerID, appointment.CustomerID)
+		if appointment.CustomerID.Value() != i.CustomerID {
+			t.Errorf("The appointment customer must be  %s, got %s", i.CustomerID, appointment.CustomerID)
 		}
 	})
 
 	t.Run("should_schedule_appointmet_with_service", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			ServiceID:      "1",
 			CustomerID:     "2",
@@ -163,7 +163,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -173,13 +173,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ServiceID.Value() != d.ServiceID {
-			t.Errorf("The appointment service must be  %s, got %s", d.ServiceID, appointment.ServiceID)
+		if appointment.ServiceID.Value() != i.ServiceID {
+			t.Errorf("The appointment service must be  %s, got %s", i.ServiceID, appointment.ServiceID)
 		}
 	})
 
 	t.Run("should_schedule_appointment_with_date", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			ServiceID:      "4",
 			CustomerID:     "2",
@@ -189,7 +189,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -199,13 +199,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Date.Value() != d.Date {
-			t.Errorf("The appointment date must be %s, got %s", d.Date, appointment.Date)
+		if appointment.Date.Value() != i.Date {
+			t.Errorf("The appointment date must be %s, got %s", i.Date, appointment.Date)
 		}
 	})
 
 	t.Run("should_schedule_appointment_with_start_hour", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "2",
 			ServiceID:      "4",
 			CustomerID:     "2",
@@ -215,7 +215,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -225,13 +225,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Start.Value() != d.StartHour {
-			t.Errorf("The appointment start hour must be %s, got %s", d.StartHour, appointment.Start)
+		if appointment.Start.Value() != i.StartHour {
+			t.Errorf("The appointment start hour must be %s, got %s", i.StartHour, appointment.Start)
 		}
 	})
 
 	t.Run("should_schedule_appointment_with_duration", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -241,7 +241,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -251,13 +251,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Duration != d.Duration {
+		if appointment.Duration != i.Duration {
 			t.Errorf("The appointment duration must be 30, got %d", appointment.Duration)
 		}
 	})
 
 	t.Run("must_calculate_the_end_time_of_the_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -267,7 +267,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -283,7 +283,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_the_busy_time_error_when_there_is_not_availability_in_schedule", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -294,7 +294,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -305,7 +305,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_the_busy_time_error_when_the_appointment_clashes_with_one_on_schedule", func(t *testing.T) {
-		var d = []scheduling.AppointmentSchedulerInput{
+		var inputs = []scheduling.AppointmentSchedulerInput{
 			{
 				ProfessionalID: "1",
 				CustomerID:     "3",
@@ -341,8 +341,8 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		for _, dto := range d {
-			_, err := usecase.Schedule(dto)
+		for _, i := range inputs {
+			_, err := usecase.Schedule(i)
 			if err == nil {
 				t.Errorf("Scheduling appointment should return error: %v", err)
 			}
@@ -353,7 +353,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_customer_not_found_if_customer_not_exists_in_repository", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "4",
 			ServiceID:      "4",
@@ -363,7 +363,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -374,7 +374,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_professional_not_found_if_professional_not_exists_in_repository", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "4",
 			CustomerID:     "100",
 			ServiceID:      "4",
@@ -385,7 +385,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -396,7 +396,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_service_not_found_if_service_not_exists_in_repository", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "5",
@@ -407,7 +407,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -418,7 +418,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("must_register_the_customer_at_the_time_of_the_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerName:   "John Doe",
 			CustomerPhone:  "123456789",
@@ -430,7 +430,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -448,7 +448,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_when_not_register_a_customer", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			ServiceID:      "4",
 			Date:           "2024-08-01",
@@ -458,7 +458,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		scheduler := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := scheduler.Schedule(d)
+		_, err := scheduler.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -469,7 +469,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_date_of_appointment_is_in_wrong_format", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -480,7 +480,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -491,7 +491,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_start_hour_of_appointment_is_in_wrong_format", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -502,7 +502,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		_, err := usecase.Schedule(d)
+		_, err := usecase.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -513,7 +513,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("should_generate_the_id_of_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -524,7 +524,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -540,7 +540,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("must_register_the_name_of_professional_on_the_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
@@ -551,7 +551,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -568,7 +568,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("must_register_the_customer_name_in_the_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
@@ -579,7 +579,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -596,7 +596,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("must_register_the_service_name_in_the_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
@@ -607,7 +607,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -624,7 +624,7 @@ func TestAppointmentScheduler(t *testing.T) {
 	})
 
 	t.Run("must_schedule_an_appointment_at_the_time_of_canceled_appointment", func(t *testing.T) {
-		d := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
@@ -635,7 +635,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
 
-		o, err := usecase.Schedule(d)
+		o, err := usecase.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}

@@ -117,7 +117,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_an_error_if_there_is_no_availability_to_reschedule_the_appointment", func(t *testing.T) {
-		var d = []scheduling.AppointmentReschedulerInput{
+		var inputs = []scheduling.AppointmentReschedulerInput{
 			{
 				ID:        "8",
 				Date:      "2024-10-27",
@@ -136,12 +136,18 @@ func TestAppointmentRescheduler(t *testing.T) {
 				StartHour: "11:00",
 				Duration:  60,
 			},
+			{
+				ID:        "10",
+				Date:      "2024-10-27",
+				StartHour: "7:00",
+				Duration:  90,
+			},
 		}
 
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		for _, a := range d {
-			_, err := usecase.Execute(a)
+		for _, i := range inputs {
+			_, err := usecase.Execute(i)
 
 			if errors.Is(nil, err) {
 				t.Errorf("Shoud return an error, got %v", err)

@@ -13,7 +13,7 @@ type AppointmentSchedulerInput struct {
 }
 
 type AppointmentScheduler interface {
-	Schedule(d AppointmentSchedulerInput) (AppointmentOutput, error)
+	Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error)
 }
 
 type appointmentScedulerImpl struct {
@@ -32,20 +32,20 @@ func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl 
 	}
 }
 
-func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (AppointmentOutput, error) {
-	p, err := u.professionalAcl.FindProfessionalByID(d.ProfessionalID)
+func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error) {
+	p, err := u.professionalAcl.FindProfessionalByID(i.ProfessionalID)
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.serviceAcl.FindServiceByID(d.ServiceID)
+	s, err := u.serviceAcl.FindServiceByID(i.ServiceID)
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
-	c, err := u.findOrRegistrationCustomer(d)
+	c, err := u.findOrRegistrationCustomer(i)
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
 	id, _ := Random()
@@ -58,18 +58,22 @@ func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (Appoint
 		WithCustomerName(c.Name).
 		WithServiceID(NewID(s.ID)).
 		WithServiceName(s.Name).
-		WithDate(d.Date).
-		WithStartHour(d.StartHour).
-		WithDuration(d.Duration).
+		WithDate(i.Date).
+		WithStartHour(i.StartHour).
+		WithDuration(i.Duration).
 		Build()
 
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
-	appointments, _ := u.repo.FindByDateAndStatus(d.Date, StatusScheduled)
+	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
+
 	if !VerifyAvailability(app, appointments) {
-		return AppointmentOutput{}, ErrBusyTime
+		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
 	u.repo.Save(app)

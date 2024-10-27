@@ -8,6 +8,8 @@ var (
 	ErrInvalidStatusToReschedule = errors.New("Invalid status to reschedule")
 )
 
+var EmptyAppointmentOutput = AppointmentOutput{}
+
 type AppointmentOutput struct {
 	ID               string
 	CustomerName     string
@@ -15,12 +17,11 @@ type AppointmentOutput struct {
 	ProfessionalName string
 	Date             string
 	Hour             string
-	Start            int
 	Duration         int
 }
 
 func buildOutput(a Appointment) AppointmentOutput {
-	o := AppointmentOutput{
+	return AppointmentOutput{
 		ID:               a.ID.Value(),
 		CustomerName:     a.CustomerName,
 		ServiceName:      a.ServiceName,
@@ -29,5 +30,4 @@ func buildOutput(a Appointment) AppointmentOutput {
 		Hour:             a.Start.Value(),
 		Duration:         a.Duration,
 	}
-	return o
 }

@@ -15,7 +15,7 @@ func NewAppointmentFinder(r AppointmentRepository) AppointmentFinder {
 func (f *appointmentFinderImpl) Execute(id string) (AppointmentOutput, error) {
 	a, err := f.repo.FindByID(NewID(id))
 	if err != nil {
-		return AppointmentOutput{}, err
+		return EmptyAppointmentOutput, err
 	}
 
 	return buildOutput(a), nil
