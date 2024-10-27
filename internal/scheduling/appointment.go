@@ -12,31 +12,32 @@ const (
 )
 
 type Service struct {
-	ID   string
-	Name string
+	ID   ID
+	Name Name
 }
 
 type Professional struct {
-	ID   string
-	Name string
+	ID   ID
+	Name Name
 }
 
 type Customer struct {
-	ID          string
-	Name        string
+	ID          ID
+	Name        Name
 	PhoneNumber string
 }
 
 type Status string
+type Name string
 
 type Appointment struct {
 	ID               ID
 	ProfessionalID   ID
-	ProfessionalName string
+	ProfessionalName Name
 	CustomerID       ID
-	CustomerName     string
+	CustomerName     Name
 	ServiceID        ID
-	ServiceName      string
+	ServiceName      Name
 	Status           Status
 	Date             Date // Formato: 2024-10-01
 	Start            Hour // Formato 9:00
@@ -47,11 +48,11 @@ type Appointment struct {
 func NewAppointment(
 	ID ID,
 	ProfessionalID ID,
-	ProfessionalName string,
+	ProfessionalName Name,
 	CustomerID ID,
-	CustomerName string,
+	CustomerName Name,
 	ServiceID ID,
-	ServiceName string,
+	ServiceName Name,
 	Date Date,
 	Start Hour,
 	Duration int,

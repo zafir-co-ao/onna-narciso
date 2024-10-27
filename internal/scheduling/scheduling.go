@@ -23,9 +23,9 @@ type AppointmentOutput struct {
 func buildOutput(a Appointment) AppointmentOutput {
 	return AppointmentOutput{
 		ID:               a.ID.Value(),
-		CustomerName:     a.CustomerName,
-		ServiceName:      a.ServiceName,
-		ProfessionalName: a.ProfessionalName,
+		CustomerName:     string(a.CustomerName),
+		ServiceName:      string(a.ServiceName),
+		ProfessionalName: string(a.ProfessionalName),
 		Date:             a.Date.Value(),
 		Hour:             a.Start.Value(),
 		Duration:         a.Duration,

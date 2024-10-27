@@ -50,5 +50,5 @@ func (c CustomerAclStub) RequestCustomerRegistration(name string, phone string) 
 		return scheduling.Customer{}, scheduling.ErrCustomerRegistration
 	}
 
-	return scheduling.Customer{ID: "1", Name: name, PhoneNumber: phone}, nil
+	return scheduling.Customer{ID: "1", Name: scheduling.Name(name), PhoneNumber: phone}, nil
 }

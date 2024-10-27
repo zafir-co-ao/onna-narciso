@@ -52,11 +52,11 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 
 	app, err := NewAppointmentBuilder().
 		WithAppointmentID(id).
-		WithProfessionalID(NewID(p.ID)).
+		WithProfessionalID(p.ID).
 		WithProfessionalName(p.Name).
-		WithCustomerID(NewID(c.ID)).
+		WithCustomerID(c.ID).
 		WithCustomerName(c.Name).
-		WithServiceID(NewID(s.ID)).
+		WithServiceID(s.ID).
 		WithServiceName(s.Name).
 		WithDate(i.Date).
 		WithStartHour(i.StartHour).

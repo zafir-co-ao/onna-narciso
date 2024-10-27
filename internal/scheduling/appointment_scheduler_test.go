@@ -442,7 +442,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return customer: %v", err)
 		}
 
-		if customer.ID != a.CustomerID.Value() {
+		if customer.ID.Value() != a.CustomerID.Value() {
 			t.Errorf("The customer must be the same as the appointment")
 		}
 	})

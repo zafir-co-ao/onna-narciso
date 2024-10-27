@@ -3,11 +3,11 @@ package scheduling
 type AppointmentBuilder interface {
 	WithAppointmentID(id ID) AppointmentBuilder
 	WithProfessionalID(id ID) AppointmentBuilder
-	WithProfessionalName(name string) AppointmentBuilder
+	WithProfessionalName(name Name) AppointmentBuilder
 	WithCustomerID(id ID) AppointmentBuilder
-	WithCustomerName(name string) AppointmentBuilder
+	WithCustomerName(name Name) AppointmentBuilder
 	WithServiceID(id ID) AppointmentBuilder
-	WithServiceName(name string) AppointmentBuilder
+	WithServiceName(name Name) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
 	WithStartHour(hour string) AppointmentBuilder
 	WithDuration(duration int) AppointmentBuilder
@@ -17,11 +17,11 @@ type AppointmentBuilder interface {
 type appointmentBuilder struct {
 	ID               ID
 	ProfessionalID   ID
-	ProfessionalName string
+	ProfessionalName Name
 	CustomerID       ID
-	CustomerName     string
+	CustomerName     Name
 	ServiceID        ID
-	ServiceName      string
+	ServiceName      Name
 	Date             string
 	StartHour        string
 	Duration         int
@@ -41,7 +41,7 @@ func (b *appointmentBuilder) WithProfessionalID(id ID) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithProfessionalName(name string) AppointmentBuilder {
+func (b *appointmentBuilder) WithProfessionalName(name Name) AppointmentBuilder {
 	b.ProfessionalName = name
 	return b
 }
@@ -51,7 +51,7 @@ func (b *appointmentBuilder) WithCustomerID(id ID) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithCustomerName(name string) AppointmentBuilder {
+func (b *appointmentBuilder) WithCustomerName(name Name) AppointmentBuilder {
 	b.CustomerName = name
 	return b
 }
@@ -61,7 +61,7 @@ func (b *appointmentBuilder) WithServiceID(id ID) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithServiceName(name string) AppointmentBuilder {
+func (b *appointmentBuilder) WithServiceName(name Name) AppointmentBuilder {
 	b.ServiceName = name
 	return b
 }
