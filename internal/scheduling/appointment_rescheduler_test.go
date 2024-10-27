@@ -13,19 +13,28 @@ func TestAppointmentRescheduler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
 	for i := range 10 {
+		i += 1
 		v := strconv.Itoa(i)
 		a := scheduling.Appointment{ID: scheduling.NewID(v), Status: scheduling.StatusScheduled}
 		repo.Save(a)
 	}
 
 	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
+	a3 := scheduling.Appointment{ID: "12", Status: scheduling.StatusScheduled, Date: "2024-10-27", Start: "8:00", Duration: 240}
 
 	repo.Save(a2)
+	repo.Save(a3)
 
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "1",
+			Date:      "2024-04-11",
+			StartHour: "8:30",
+			Duration:  120,
+		}
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		o, err := usecase.Execute("1", "2024-04-11", "8:30", 120)
+		o, err := usecase.Execute(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -41,9 +50,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("must_enter_the_reschedule_date", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "3",
+			Date:      "2020-10-10",
+			StartHour: "9:30",
+			Duration:  120,
+		}
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		o, err := usecase.Execute("3", "2020-10-10", "9:30", 120)
+		o, err := usecase.Execute(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -54,9 +69,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("must_enter_the_reschedule_hour", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "4",
+			Date:      "2021-11-10",
+			StartHour: "10:00",
+			Duration:  120,
+		}
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		o, err := usecase.Execute("4", "2021-11-10", "10:00", 120)
+		o, err := usecase.Execute(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -67,9 +88,16 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("must_enter_the_reschedule_duration", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "5",
+			Date:      "2022-12-10",
+			StartHour: "8:00",
+			Duration:  60,
+		}
+
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		o, err := usecase.Execute("5", "2022-12-10", "8:00", 60)
+		o, err := usecase.Execute(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -88,10 +116,54 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
+	t.Run("should_return_an_error_if_there_is_no_availability_to_reschedule_the_appointment", func(t *testing.T) {
+		var d = []scheduling.AppointmentReschedulerInput{
+			{
+				ID:        "8",
+				Date:      "2024-10-27",
+				StartHour: "8:00",
+				Duration:  60,
+			},
+			{
+				ID:        "9",
+				Date:      "2024-10-27",
+				StartHour: "9:30",
+				Duration:  60,
+			},
+			{
+				ID:        "10",
+				Date:      "2024-10-27",
+				StartHour: "11:00",
+				Duration:  60,
+			},
+		}
+
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		_, err := usecase.Execute("1000", "2023-11-31", "9:15", 120)
+		for _, a := range d {
+			_, err := usecase.Execute(a)
+
+			if errors.Is(nil, err) {
+				t.Errorf("Shoud return an error, got %v", err)
+			}
+
+			if !errors.Is(scheduling.ErrBusyTime, err) {
+				t.Errorf("The error must be ErrBusyTime, got %v", err)
+			}
+		}
+	})
+
+	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "1000",
+			Date:      "2023-11-31",
+			StartHour: "9:15",
+			Duration:  120,
+		}
+
+		usecase := scheduling.NewAppointmentRescheduler(repo)
+
+		_, err := usecase.Execute(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -102,9 +174,16 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_appointment_status_is_different_of_scheduled", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "20",
+			Date:      "2010-09-18",
+			StartHour: "19:15",
+			Duration:  60,
+		}
+
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		_, err := usecase.Execute("20", "2010-09-18", "19:15", 120)
+		_, err := usecase.Execute(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -115,9 +194,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_an_error_if_the_date_is_in_an_invalid_format", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "6",
+			Date:      "10-07-2001",
+			StartHour: "11:00",
+			Duration:  30,
+		}
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		_, err := usecase.Execute("6", "10-10-2020", "10:00", 120)
+		_, err := usecase.Execute(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -128,9 +213,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 	})
 
 	t.Run("should_return_an_error_if_the_hour_is_in_an_invalid_format", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "2",
+			Date:      "2021-07-01",
+			StartHour: "11h00",
+			Duration:  30,
+		}
 		usecase := scheduling.NewAppointmentRescheduler(repo)
 
-		_, err := usecase.Execute("2", "2021-07-01", "11h00", 30)
+		_, err := usecase.Execute(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
