@@ -9,11 +9,17 @@ import (
 
 var cwd string
 
-func NewRouter(s scheduling.AppointmentScheduler, c scheduling.AppointmentCanceler, f scheduling.AppointmentFinder) *http.ServeMux {
+func NewRouter(
+	s scheduling.AppointmentScheduler,
+	c scheduling.AppointmentCanceler,
+	f scheduling.AppointmentFinder,
+	r scheduling.AppointmentRescheduler,
+) *http.ServeMux {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/appointments/{id}", handlers.NewAppointmentFinderHandler(f))
 	mux.HandleFunc("/appointments/schedule", handlers.NewAppointmentSchedulerHandler(s))
+	mux.HandleFunc("/appointments/reschedule", handlers.NewAppointmentReschedulerHandler(r))
 	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
 	mux.HandleFunc("/week-view", handlers.HandleWeekView)
 	mux.HandleFunc("/", handlers.NewStaticHandler())

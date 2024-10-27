@@ -10,16 +10,17 @@ import (
 )
 
 func main() {
-	r := inmem.NewAppointmentRepository()
+	repo := inmem.NewAppointmentRepository()
 	cacl := stubs.CustomerAclStub{}
 	pacl := stubs.Pacl
 	sacl := stubs.Sacl
 
-	s := scheduling.NewAppointmentScheduler(r, cacl, pacl, sacl)
-	c := scheduling.NewAppointmentCanceler(r)
-	f := scheduling.NewAppointmentFinder(r)
+	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+	c := scheduling.NewAppointmentCanceler(repo)
+	f := scheduling.NewAppointmentFinder(repo)
+	r := scheduling.NewAppointmentRescheduler(repo)
 
-	http.Handle("/", web.NewRouter(s, c, f))
+	http.Handle("/", web.NewRouter(s, c, f, r))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
