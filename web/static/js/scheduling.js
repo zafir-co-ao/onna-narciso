@@ -9,7 +9,7 @@ function openScheduleForm(event, rows) {
 
     document.querySelector("#event-date").setAttribute("value", date)
     document.querySelector("#event-hour").setAttribute("value", hour)
-    document.querySelector("#event-service").setAttribute("value", 1)
+    document.querySelector("#event-service").setAttribute("value", 4)
     document.querySelector("#event-professional").setAttribute("value", 1)
 
     document.querySelector("#professional").innerHTML = "Sara Gomes"
@@ -38,6 +38,28 @@ function cancelEvent() {
 
 
     closeDialog("#cancel-dialog")
+    closeDialog("#reschedule-dialog")
+}
+
+function rescheduleEvent() {
+    const id = document.querySelector("#appointment-id").getAttribute("value")
+    if (!id) {
+        console.error("Erro ao reagendar evento")
+        return
+    }
+
+    const date = document.querySelector("#reschedule-date").getAttribute("value")
+    const start = document.querySelector("#reschedule-start")
+    const duration = document.querySelector("#reschedule-duration")
+    const form = new FormData()
+
+    form.append("id", id)
+    form.append("date", date)
+    form.append("duration", duration.value)
+    form.append("start", start.value)
+
+    htmx.ajax("POST", `/appointments/reschedule`, { target: `#${id}`, swap: "outerHTML", values: form })
+
     closeDialog("#reschedule-dialog")
 }
 

@@ -22,6 +22,7 @@ func NewRouter(
 	mux.HandleFunc("/appointments/reschedule", handlers.NewAppointmentReschedulerHandler(r))
 	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
 	mux.HandleFunc("/week-view", handlers.HandleWeekView)
+	mux.HandleFunc("/daily-view", handlers.HandleDailyView)
 	mux.HandleFunc("/", handlers.NewStaticHandler())
 
 	return mux
