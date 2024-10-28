@@ -12,7 +12,7 @@ func NewRouter() *http.ServeMux {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/week-view", handlers.HandleWeekView)
+	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments)
 	mux.HandleFunc("/", handlers.NewStaticHandler())
 
 	return mux

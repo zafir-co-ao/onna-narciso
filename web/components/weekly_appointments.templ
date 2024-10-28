@@ -51,7 +51,7 @@ func getEventClass(appointment scheduling.Appointment, startHour int) string {
 	return fmt.Sprintf("sm:col-start-%d row-start-%d row-span-%d", date.Weekday(), row, span)
 }
 
-templ WeekView(date string,
+templ WeeklyAppointments(date string,
 	days int,
 	startHour int,
 	endHour int,

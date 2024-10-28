@@ -37,6 +37,6 @@ var appointments = []scheduling.Appointment{
 	},
 }
 
-func HandleWeekView(w http.ResponseWriter, r *http.Request) {
-	components.WeekView("2024-10-10", 6, 8, 22, appointments).Render(r.Context(), w)
+func HandleWeeklyAppointments(w http.ResponseWriter, r *http.Request) {
+	components.WeeklyAppointments("2024-10-10", 6, 8, 22, appointments).Render(r.Context(), w)
 }
