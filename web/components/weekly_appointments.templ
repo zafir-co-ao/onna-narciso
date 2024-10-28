@@ -3,8 +3,6 @@ package components
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -36,34 +34,32 @@ func getDaysOfMonthFromMonday(date string, days int) [][]string {
 	return d
 }
 
-func getEventClass(appointment scheduling.Appointment, startHour int) string {
+func getDayOfWeek(day, today string) string {
+	t, _ := time.Parse("2006-01-02", today)
+	y, m, _ := t.Date()
 
-	date, _ := time.Parse("2006-01-02", appointment.Date.Value())
+	if len(day) == 1 {
+		day = "0" + day
+	}
 
-	parts := strings.Split(appointment.Start.Value(), ":")
+	return fmt.Sprintf("%v-%v-%v", y, int(m), day)
+}
 
-	hour, _ := strconv.ParseInt(parts[0], 10, 8)
-	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
-
-	row := (hour-int64(startHour))*4 + minutes/15 + 2
-	span := appointment.Duration / 15
-
-	return fmt.Sprintf("sm:col-start-%d row-start-%d row-span-%d", date.Weekday(), row, span)
+script openScheduleFormHandler(startHour, endHour int) {
+    openScheduleForm(event, (endHour - startHour) * 4 + 1)
 }
 
 templ WeeklyAppointments(date string,
 	days int,
 	startHour int,
 	endHour int,
-	appointments []scheduling.Appointment) {
+	appointments []scheduling.AppointmentOutput) {
 	<div id="week-view" class="isolate flex flex-auto flex-col overflow-auto bg-white">
 		<div
 			style="width: 165%"
 			class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full"
 		>
-			<div
-				class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
-			>
+			<div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
 				<div class={ "grid text-sm leading-6 text-gray-500 sm:hidden", fmt.Sprintf("grid-cols-%v", days) }>
 					for _, day := range getDaysOfMonthFromMonday(date, days) {
 						<button type="button" class="flex flex-col items-center pb-3 pt-2">
@@ -82,7 +78,7 @@ templ WeeklyAppointments(date string,
 						<div class="flex items-center justify-center py-3">
 							<span>
 								{ day[1] }
-								<span class="items-center justify-center font-semibold text-gray-900">
+								<span class="items-center justify-center font-semibold text-gray-900 week-day-cell" data-week-day={ getDayOfWeek(day[0], date) }>
 									{ day[0] }
 								</span>
 							</span>
@@ -91,9 +87,7 @@ templ WeeklyAppointments(date string,
 				</div>
 			</div>
 			<div class="flex flex-auto">
-				<div
-					class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"
-				></div>
+				<div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
 				<div class="grid flex-auto grid-cols-1 grid-rows-1">
 					<!-- Horizontal lines -->
 					<div
@@ -124,9 +118,7 @@ templ WeeklyAppointments(date string,
 						<div class={ fmt.Sprintf("col-start-%d", days + 1),"row-span-full w-8" }></div>
 					</div>
 					<!-- Events -->
-					<ol
-						class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) }
-					>
+					<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onClick={ openScheduleFormHandler(startHour, endHour) }>
 						for _, a := range appointments {
 							@Event(a, startHour)
 						}
@@ -135,20 +127,7 @@ templ WeeklyAppointments(date string,
 			</div>
 		</div>
 	</div>
-}
-
-templ Event(appointment scheduling.Appointment, startHour int) {
-	<li
-		class={ "relative flex", getEventClass(appointment, startHour) }
-	>
-		<a
-			href="#"
-			class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100"
-		>
-			<p class="order-1 font-semibold text-blue-700">{ appointment.CustomerName }</p>
-			<p class="text-blue-500 group-hover:text-blue-700">
-				<time datetime="2022-01-12T06:00">{ appointment.Start.Value() }</time>
-			</p>
-		</a>
-	</li>
+	@DialogScheduleEvent()
+	@DialogRescheduleEvent()
+	@DialogCancelEvent()
 }

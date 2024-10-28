@@ -5,7 +5,7 @@ import (
 	"math/big"
 )
 
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 type ID string
 
@@ -25,11 +25,11 @@ func (i ID) Value() string {
 func generate() (string, error) {
 	code := make([]byte, 10)
 	for i := range code {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(characters))))
 		if err != nil {
 			return "", err
 		}
-		code[i] = letters[num.Int64()]
+		code[i] = characters[num.Int64()]
 	}
 	return string(code), nil
 }

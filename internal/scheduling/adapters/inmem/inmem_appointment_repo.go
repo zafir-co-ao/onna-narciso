@@ -29,7 +29,7 @@ func (r *repo) Save(a scheduling.Appointment) error {
 	return nil
 }
 
-func (r *repo) FindByDate(d string) ([]scheduling.Appointment, error) {
+func (r *repo) FindByDate(d scheduling.Date) ([]scheduling.Appointment, error) {
 	spec := scheduling.DateIsSpecificantion(d)
 
 	var appointments []scheduling.Appointment
@@ -47,6 +47,22 @@ func (r *repo) FindByWeekServiceAndProfessionals(date string, serviceID string, 
 		scheduling.WeekIsSpecificantion(date),
 		scheduling.ServiceIsSpecificantion(serviceID),
 		scheduling.ProfessionalsInSpecificantion(professionalsIDs),
+	)
+
+	var appointments []scheduling.Appointment
+	for _, appointment := range r.data {
+		if spec.IsSatisfiedBy(appointment) {
+			appointments = append(appointments, appointment)
+		}
+	}
+
+	return appointments, nil
+}
+
+func (r *repo) FindByDateAndStatus(date scheduling.Date, status scheduling.Status) ([]scheduling.Appointment, error) {
+	spec := shared.And(
+		scheduling.DateIsSpecificantion(date),
+		scheduling.StatusIsSpecificantion(status),
 	)
 
 	var appointments []scheduling.Appointment

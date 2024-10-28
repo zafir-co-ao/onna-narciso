@@ -6,35 +6,38 @@ import (
 )
 
 const (
-	StatusScheduled Status = "scheduled"
-	StatusCancelled Status = "cancelled"
+	StatusScheduled   Status = "scheduled"
+	StatusCanceled    Status = "canceled"
+	StatusRescheduled Status = "rescheduled"
 )
 
 type Service struct {
-	ID   string
-	Name string
+	ID   ID
+	Name Name
 }
 
 type Professional struct {
-	ID   string
-	Name string
+	ID   ID
+	Name Name
 }
 
 type Customer struct {
-	ID   string
-	Name string
+	ID          ID
+	Name        Name
+	PhoneNumber string
 }
 
 type Status string
+type Name string
 
 type Appointment struct {
 	ID               ID
 	ProfessionalID   ID
-	ProfessionalName string
+	ProfessionalName Name
 	CustomerID       ID
-	CustomerName     string
+	CustomerName     Name
 	ServiceID        ID
-	ServiceName      string
+	ServiceName      Name
 	Status           Status
 	Date             Date // Formato: 2024-10-01
 	Start            Hour // Formato 9:00
@@ -45,11 +48,11 @@ type Appointment struct {
 func NewAppointment(
 	ID ID,
 	ProfessionalID ID,
-	ProfessionalName string,
+	ProfessionalName Name,
 	CustomerID ID,
-	CustomerName string,
+	CustomerName Name,
 	ServiceID ID,
-	ServiceName string,
+	ServiceName Name,
 	Date Date,
 	Start Hour,
 	Duration int,
@@ -73,16 +76,50 @@ func NewAppointment(
 	return app, nil
 }
 
-func (a *Appointment) Cancel() {
-	a.Status = StatusCancelled
+func (a *Appointment) Reschedule(date string, hour string, duration int) error {
+	if !a.IsScheduled() {
+		return ErrInvalidStatusToReschedule
+	}
+
+	d, err := NewDate(date)
+	if err != nil {
+		return err
+	}
+
+	h, err := NewHour(hour)
+	if err != nil {
+		return err
+	}
+
+	a.Date = d
+	a.Start = h
+	a.Duration = duration
+	a.Status = StatusRescheduled
+
+	a.calculateEnd()
+	return nil
+}
+
+func (a *Appointment) Cancel() error {
+	if a.IsCancelled() {
+		return ErrInvalidStatusToCancel
+	}
+
+	a.Status = StatusCanceled
+
+	return nil
 }
 
 func (a *Appointment) IsScheduled() bool {
 	return a.Status == StatusScheduled
 }
 
+func (a *Appointment) IsRescheduled() bool {
+	return a.Status == StatusRescheduled
+}
+
 func (a *Appointment) IsCancelled() bool {
-	return a.Status == StatusCancelled
+	return a.Status == StatusCanceled
 }
 
 func (a *Appointment) calculateEnd() {

@@ -7,9 +7,15 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
-func DateIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
+func DateIsSpecificantion(d Date) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
-		return a.Date.Value() == d
+		return a.Date == d
+	}
+}
+
+func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
+	return func(a Appointment) bool {
+		return a.Status == s
 	}
 }
 

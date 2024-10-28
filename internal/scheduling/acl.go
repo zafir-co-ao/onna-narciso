@@ -6,6 +6,7 @@ var (
 	ErrServiceNotFound      = errors.New("service not found")
 	ErrCustomerNotFound     = errors.New("customer not found")
 	ErrProfessionalNotFound = errors.New("professional not found")
+	ErrCustomerRegistration = errors.New("Error registering customer")
 )
 
 type ProfessionalAcl interface {
@@ -18,6 +19,7 @@ type ServiceAcl interface {
 
 type CustomerAcl interface {
 	FindCustomerByID(id string) (Customer, error)
+	RequestCustomerRegistration(name, phone string) (Customer, error)
 }
 
 type ProfessionalAclFunc func(id string) (Professional, error)
@@ -29,11 +31,5 @@ func (f ProfessionalAclFunc) FindProfessionalByID(id string) (Professional, erro
 type ServiceAclFunc func(id string) (Service, error)
 
 func (f ServiceAclFunc) FindServiceByID(id string) (Service, error) {
-	return f(id)
-}
-
-type CustomerAclFunc func(id string) (Customer, error)
-
-func (f CustomerAclFunc) FindCustomerByID(id string) (Customer, error) {
 	return f(id)
 }

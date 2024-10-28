@@ -13,7 +13,7 @@ type AppointmentSchedulerInput struct {
 }
 
 type AppointmentScheduler interface {
-	Schedule(d AppointmentSchedulerInput) (string, error)
+	Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error)
 }
 
 type appointmentScedulerImpl struct {
@@ -32,63 +32,59 @@ func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl 
 	}
 }
 
-func (u *appointmentScedulerImpl) Schedule(d AppointmentSchedulerInput) (string, error) {
-	p, err := u.professionalAcl.FindProfessionalByID(d.ProfessionalID)
+func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error) {
+	p, err := u.professionalAcl.FindProfessionalByID(i.ProfessionalID)
 	if err != nil {
-		return "", err
+		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.serviceAcl.FindServiceByID(d.ServiceID)
+	s, err := u.serviceAcl.FindServiceByID(i.ServiceID)
 	if err != nil {
-		return "", err
+		return EmptyAppointmentOutput, err
 	}
 
-	c, err := u.getOrAddCustomer(d)
+	c, err := u.findOrRegistrationCustomer(i)
 	if err != nil {
-		return "", err
+		return EmptyAppointmentOutput, err
 	}
 
 	id, _ := Random()
 
 	app, err := NewAppointmentBuilder().
 		WithAppointmentID(id).
-		WithProfessionalID(NewID(p.ID)).
+		WithProfessionalID(p.ID).
 		WithProfessionalName(p.Name).
-		WithCustomerID(NewID(c.ID)).
+		WithCustomerID(c.ID).
 		WithCustomerName(c.Name).
-		WithServiceID(NewID(s.ID)).
+		WithServiceID(s.ID).
 		WithServiceName(s.Name).
-		WithDate(d.Date).
-		WithStartHour(d.StartHour).
-		WithDuration(d.Duration).
+		WithDate(i.Date).
+		WithStartHour(i.StartHour).
+		WithDuration(i.Duration).
 		Build()
 
 	if err != nil {
-		return "", err
+		return EmptyAppointmentOutput, err
 	}
 
-	appointments, _ := u.repo.FindByDate(d.Date)
+	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
+
 	if !VerifyAvailability(app, appointments) {
-		return "", ErrBusyTime
+		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
 	u.repo.Save(app)
 
-	return id.Value(), nil
+	return buildOutput(app), nil
 }
 
-func (u *appointmentScedulerImpl) getOrAddCustomer(d AppointmentSchedulerInput) (Customer, error) {
+func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {
 	if len(d.CustomerID) > 0 {
 		return u.customerAcl.FindCustomerByID(d.CustomerID)
 	}
 
-	if len(d.CustomerName) == 0 || len(d.CustomerPhone) == 0 {
-		return Customer{}, ErrCustomerRegistration
-	}
-
-	c := Customer{
-		ID:   "1",
-		Name: d.CustomerName,
-	}
-	return c, nil
+	return u.customerAcl.RequestCustomerRegistration(d.CustomerName, d.CustomerPhone)
 }
