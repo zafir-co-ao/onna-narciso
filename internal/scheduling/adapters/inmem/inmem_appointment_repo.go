@@ -21,7 +21,7 @@ func (r *repo) FindByID(id scheduling.ID) (scheduling.Appointment, error) {
 		return val, nil
 	}
 
-	return scheduling.Appointment{}, scheduling.ErrAppointmentNotFound
+	return scheduling.EmptyAppointment, scheduling.ErrAppointmentNotFound
 }
 
 func (r *repo) Save(a scheduling.Appointment) error {

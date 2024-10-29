@@ -48,7 +48,10 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	id, _ := Random()
+	id, err := Random()
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
 
 	app, err := NewAppointmentBuilder().
 		WithAppointmentID(id).

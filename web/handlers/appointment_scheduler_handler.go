@@ -30,7 +30,7 @@ func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w ht
 			CustomerID:     r.Form.Get("customer_id"),
 			CustomerName:   r.Form.Get("customer_name"),
 			CustomerPhone:  r.Form.Get("customer_phone"),
-			Duration:       int(duration),
+			Duration:       duration,
 		}
 
 		o, err := u.Schedule(input)
