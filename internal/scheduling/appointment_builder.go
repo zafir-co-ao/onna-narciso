@@ -84,12 +84,12 @@ func (b *appointmentBuilder) WithDuration(duration int) AppointmentBuilder {
 func (b *appointmentBuilder) Build() (Appointment, error) {
 	date, err := NewDate(b.Date)
 	if err != nil {
-		return Appointment{}, err
+		return EmptyAppointment, err
 	}
 
 	hour, err := NewHour(b.StartHour)
 	if err != nil {
-		return Appointment{}, err
+		return EmptyAppointment, err
 	}
 
 	return NewAppointment(

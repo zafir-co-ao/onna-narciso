@@ -11,6 +11,8 @@ const (
 	StatusRescheduled Status = "rescheduled"
 )
 
+var EmptyAppointment = Appointment{}
+
 type Service struct {
 	ID   ID
 	Name Name
