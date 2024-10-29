@@ -49,14 +49,10 @@ func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (Appoint
 	e := event.New(
 		EventAppointmentRescheduled,
 		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithPayload(i),
 	)
 
 	r.bus.Publish(e)
 
 	return buildOutput(a), nil
-}
-
-type payload struct {
-	Date      string
-	StartHour string
 }

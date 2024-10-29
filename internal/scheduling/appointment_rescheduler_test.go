@@ -2,6 +2,7 @@ package scheduling_test
 
 import (
 	"errors"
+	"reflect"
 	"strconv"
 	"testing"
 
@@ -257,6 +258,34 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !h.WasPublished(o.ID, scheduling.EventAppointmentRescheduled) {
+			t.Error("The EventAppointmentRescheduled must be published")
+		}
+	})
+
+	t.Run("must_entry_the_payload_in_reschedule_appointment_event", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:        "12",
+			Date:      "2018-05-10",
+			StartHour: "11:00",
+			Duration:  60,
+		}
+		h := &FakeStorageHandler{}
+		bus := event.NewInmemEventBus()
+		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
+		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
+
+		o, err := usecase.Execute(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Should not return an error, got %v", err)
+		}
+
+		e, err := h.FindEventByAggregateID(o.ID)
+		if errors.Is(event.ErrEventNotFound, err) {
+			t.Errorf("Should return an event, got %v", err)
+
+		}
+
+		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentReschedulerInput{}) {
 			t.Error("The EventAppointmentRescheduled must be published")
 		}
 	})
