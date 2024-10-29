@@ -7,9 +7,11 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 )
 
 func TestAppointmentScheduler(t *testing.T) {
+	bus := event.NewInmemEventBus()
 	repo := inmem.NewAppointmentRepository()
 	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Start: "8:00", Duration: 90, Status: scheduling.StatusScheduled}
 	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Start: "8:00", Duration: 480, Status: scheduling.StatusScheduled}
@@ -32,7 +34,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -53,7 +55,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:00",
 			Duration:       180,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -83,7 +85,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "13:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -109,7 +111,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "12:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -135,7 +137,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "10:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -161,7 +163,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "10:30",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -187,7 +189,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "18:00",
 			Duration:       60,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -213,7 +215,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "11:30",
 			Duration:       120,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -239,7 +241,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       30,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -265,7 +267,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:35",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -292,7 +294,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -339,7 +341,7 @@ func TestAppointmentScheduler(t *testing.T) {
 				Duration:       480,
 			},
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		for _, i := range inputs {
 			_, err := usecase.Schedule(i)
@@ -361,7 +363,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			StartHour:      "8:00",
 			Duration:       90,
 		}
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -383,7 +385,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -405,7 +407,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -428,7 +430,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -456,7 +458,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		scheduler := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		scheduler := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := scheduler.Schedule(i)
 		if err == nil {
@@ -478,7 +480,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -500,7 +502,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 		if err == nil {
@@ -522,7 +524,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -549,7 +551,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -577,7 +579,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -605,7 +607,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -633,7 +635,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
 		if err != nil {
@@ -651,6 +653,29 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if a.Status != scheduling.StatusScheduled {
 			t.Errorf("The status of appointment must be scheduled: %v", a.Status)
+		}
+	})
+
+	t.Run("must_publish_the_scheduled_appointment_event", func(t *testing.T) {
+		i := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "3",
+			CustomerID:     "2",
+			ServiceID:      "1",
+			Date:           "2020-01-01",
+			StartHour:      "9:00",
+			Duration:       60,
+		}
+		h := &FakeStorageHandler{}
+		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+
+		o, err := usecase.Schedule(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Should not return an error, got %v", err)
+		}
+
+		if !h.WasPublished(o.ID, scheduling.EventAppointmentScheduled) {
+			t.Error("The EventAppointmentScheduled must be published")
 		}
 	})
 }

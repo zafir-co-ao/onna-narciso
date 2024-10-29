@@ -1,5 +1,9 @@
 package scheduling
 
+import "github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+
+const EventAppointmentScheduled = "EventAppointmentScheduled"
+
 type AppointmentSchedulerInput struct {
 	ID             string
 	ProfessionalID string
@@ -21,14 +25,22 @@ type appointmentScedulerImpl struct {
 	serviceAcl      ServiceAcl
 	customerAcl     CustomerAcl
 	professionalAcl ProfessionalAcl
+	bus             event.Bus
 }
 
-func NewAppointmentScheduler(repo AppointmentRepository, cacl CustomerAcl, pacl ProfessionalAcl, sacl ServiceAcl) AppointmentScheduler {
+func NewAppointmentScheduler(
+	repo AppointmentRepository,
+	cacl CustomerAcl,
+	pacl ProfessionalAcl,
+	sacl ServiceAcl,
+	bus event.Bus,
+) AppointmentScheduler {
 	return &appointmentScedulerImpl{
 		repo:            repo,
 		customerAcl:     cacl,
 		professionalAcl: pacl,
 		serviceAcl:      sacl,
+		bus:             bus,
 	}
 }
 
@@ -53,7 +65,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	app, err := NewAppointmentBuilder().
+	a, err := NewAppointmentBuilder().
 		WithAppointmentID(id).
 		WithProfessionalID(p.ID).
 		WithProfessionalName(p.Name).
@@ -75,13 +87,20 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	if !VerifyAvailability(app, appointments) {
+	if !VerifyAvailability(a, appointments) {
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
-	u.repo.Save(app)
+	u.repo.Save(a)
 
-	return buildOutput(app), nil
+	e := event.New(
+		EventAppointmentScheduled,
+		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+	)
+
+	u.bus.Publish(e)
+
+	return buildOutput(a), nil
 }
 
 func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {
