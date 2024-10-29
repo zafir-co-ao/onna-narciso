@@ -2,6 +2,7 @@ package scheduling_test
 
 import (
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
@@ -676,6 +677,35 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if !h.WasPublished(o.ID, scheduling.EventAppointmentScheduled) {
 			t.Error("The EventAppointmentScheduled must be published")
+		}
+	})
+
+	t.Run("must_entry_the_payload_in_schedule_appointment_event", func(t *testing.T) {
+		i := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "1",
+			CustomerID:     "2",
+			ServiceID:      "1",
+			Date:           "2020-02-01",
+			StartHour:      "10:00",
+			Duration:       60,
+		}
+		h := &FakeStorageHandler{}
+		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+
+		o, err := usecase.Schedule(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Should not return an error, got %v", err)
+		}
+
+		e, err := h.FindEventByAggregateID(o.ID)
+		if errors.Is(event.ErrEventNotFound, err) {
+			t.Errorf("Should return an event, got %v", err)
+
+		}
+
+		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentSchedulerInput{}) {
+			t.Error("The event payload must be logged")
 		}
 	})
 }
