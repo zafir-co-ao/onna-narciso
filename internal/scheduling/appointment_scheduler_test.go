@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 func TestAppointmentScheduler(t *testing.T) {
@@ -63,7 +64,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Error("Appointment should be stored in repository")
 		}
@@ -93,7 +94,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -119,7 +120,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -145,7 +146,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -171,7 +172,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -197,7 +198,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -223,7 +224,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -249,7 +250,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(scheduling.NewID(o.ID))
+		appointment, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -275,7 +276,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -438,7 +439,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, _ := repo.FindByID(scheduling.NewID(o.ID))
+		a, _ := repo.FindByID(id.NewID(o.ID))
 
 		customer, err := cacl.FindCustomerByID(a.CustomerID.Value())
 		if err != nil {
@@ -532,7 +533,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -559,7 +560,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -587,7 +588,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -615,7 +616,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}
@@ -643,7 +644,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return appointment: %v", err)
 		}

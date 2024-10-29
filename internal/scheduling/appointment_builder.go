@@ -1,12 +1,14 @@
 package scheduling
 
+import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+
 type AppointmentBuilder interface {
-	WithAppointmentID(id ID) AppointmentBuilder
-	WithProfessionalID(id ID) AppointmentBuilder
+	WithAppointmentID(id id.ID) AppointmentBuilder
+	WithProfessionalID(id id.ID) AppointmentBuilder
 	WithProfessionalName(name Name) AppointmentBuilder
-	WithCustomerID(id ID) AppointmentBuilder
+	WithCustomerID(id id.ID) AppointmentBuilder
 	WithCustomerName(name Name) AppointmentBuilder
-	WithServiceID(id ID) AppointmentBuilder
+	WithServiceID(id id.ID) AppointmentBuilder
 	WithServiceName(name Name) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
 	WithStartHour(hour string) AppointmentBuilder
@@ -15,12 +17,12 @@ type AppointmentBuilder interface {
 }
 
 type appointmentBuilder struct {
-	ID               ID
-	ProfessionalID   ID
+	ID               id.ID
+	ProfessionalID   id.ID
 	ProfessionalName Name
-	CustomerID       ID
+	CustomerID       id.ID
 	CustomerName     Name
-	ServiceID        ID
+	ServiceID        id.ID
 	ServiceName      Name
 	Date             string
 	StartHour        string
@@ -31,12 +33,12 @@ func NewAppointmentBuilder() AppointmentBuilder {
 	return &appointmentBuilder{}
 }
 
-func (b *appointmentBuilder) WithAppointmentID(id ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithAppointmentID(id id.ID) AppointmentBuilder {
 	b.ID = id
 	return b
 }
 
-func (b *appointmentBuilder) WithProfessionalID(id ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithProfessionalID(id id.ID) AppointmentBuilder {
 	b.ProfessionalID = id
 	return b
 }
@@ -46,7 +48,7 @@ func (b *appointmentBuilder) WithProfessionalName(name Name) AppointmentBuilder 
 	return b
 }
 
-func (b *appointmentBuilder) WithCustomerID(id ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithCustomerID(id id.ID) AppointmentBuilder {
 	b.CustomerID = id
 	return b
 }
@@ -56,7 +58,7 @@ func (b *appointmentBuilder) WithCustomerName(name Name) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithServiceID(id ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithServiceID(id id.ID) AppointmentBuilder {
 	b.ServiceID = id
 	return b
 }

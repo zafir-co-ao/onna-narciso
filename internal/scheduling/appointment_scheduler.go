@@ -1,6 +1,9 @@
 package scheduling
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
 
 const EventAppointmentScheduled = "EventAppointmentScheduled"
 
@@ -60,7 +63,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	id, err := Random()
+	id, err := id.Random()
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

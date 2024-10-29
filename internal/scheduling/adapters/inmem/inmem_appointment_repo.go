@@ -3,6 +3,7 @@ package inmem
 import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 type repo struct {
@@ -15,7 +16,7 @@ func NewAppointmentRepository() scheduling.AppointmentRepository {
 	}
 }
 
-func (r *repo) FindByID(id scheduling.ID) (scheduling.Appointment, error) {
+func (r *repo) FindByID(id id.ID) (scheduling.Appointment, error) {
 
 	if val, ok := r.data[id.Value()]; ok {
 		return val, nil

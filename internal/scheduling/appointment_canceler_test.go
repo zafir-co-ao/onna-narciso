@@ -69,7 +69,7 @@ func TestAppointmentCanceler(t *testing.T) {
 
 	t.Run("must_publish_the_canceled_appointment_event", func(t *testing.T) {
 		id := "3"
-		h := &fakeStorageHandler{}
+		h := &FakeStorageHandler{}
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
@@ -87,7 +87,7 @@ func TestAppointmentCanceler(t *testing.T) {
 
 	t.Run("must_entry_the_appointment_id_when_publish_event", func(t *testing.T) {
 		id := "4"
-		h := &fakeStorageHandler{}
+		h := &FakeStorageHandler{}
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
@@ -104,20 +104,28 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 }
 
-type fakeStorageHandler struct {
+type FakeStorageHandler struct {
 	events []event.Event
 }
 
-func (s *fakeStorageHandler) Handle(e event.Event) {
+func (s *FakeStorageHandler) Handle(e event.Event) {
 	s.events = append(s.events, e)
 }
 
-func (s *fakeStorageHandler) WasPublished(id, name string) bool {
+func (s *FakeStorageHandler) WasPublished(id, name string) bool {
 	for _, e := range s.events {
 		if e.Name() == name && e.Header(event.HeaderAggregateID) == id {
 			return true
 		}
 	}
-
 	return false
+}
+
+func (s *FakeStorageHandler) FindEventByAggregateID(id string) (event.Event, error) {
+	for _, e := range s.events {
+		if e.Header(event.HeaderAggregateID) == id {
+			return e, nil
+		}
+	}
+	return event.Event{}, event.ErrEventNotFound
 }

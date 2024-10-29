@@ -1,6 +1,9 @@
 package scheduling
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
 
 const EventAppointmentCanceled = "EventAppointmentCanceled"
 
@@ -17,8 +20,8 @@ func NewAppointmentCanceler(repo AppointmentRepository, bus event.Bus) Appointme
 	return &appointmentCancelerImpl{repo, bus}
 }
 
-func (u *appointmentCancelerImpl) Execute(id string) error {
-	a, err := u.repo.FindByID(NewID(id))
+func (u *appointmentCancelerImpl) Execute(appointmentId string) error {
+	a, err := u.repo.FindByID(id.NewID(appointmentId))
 	if err != nil {
 		return err
 	}

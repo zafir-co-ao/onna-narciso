@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 func TestAppointmentRescheduler(t *testing.T) {
@@ -18,7 +19,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	for i := range 20 {
 		i += 1
 		v := strconv.Itoa(i)
-		a := scheduling.Appointment{ID: scheduling.NewID(v), Status: scheduling.StatusScheduled}
+		a := scheduling.Appointment{ID: id.NewID(v), Status: scheduling.StatusScheduled}
 		repo.Save(a)
 	}
 
@@ -42,7 +43,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -105,7 +106,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(scheduling.NewID(o.ID))
+		a, err := repo.FindByID(id.NewID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}

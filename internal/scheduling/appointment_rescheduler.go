@@ -1,6 +1,9 @@
 package scheduling
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
 
 const EventAppointmentRescheduled = "EventAppointmentRescheduled"
 
@@ -25,7 +28,7 @@ func NewAppointmentRescheduler(r AppointmentRepository, b event.Bus) Appointment
 }
 
 func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (AppointmentOutput, error) {
-	a, err := r.repo.FindByID(NewID(i.ID))
+	a, err := r.repo.FindByID(id.NewID(i.ID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
