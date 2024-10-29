@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/web/components"
 )
 
 func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +29,7 @@ func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func
 			Duration:  duration,
 		}
 
-		_, err = re.Execute(i)
+		o, err := re.Execute(i)
 		if errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
 			sendBadRequest(w, "Estado inválido para reagendar")
 			return
@@ -60,5 +61,6 @@ func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func
 		}
 
 		sendOk(w)
+		components.Event(o, 8).Render(r.Context(), w)
 	}
 }
