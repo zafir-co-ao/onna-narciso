@@ -16,10 +16,12 @@ func TestAppointmentCanceler(t *testing.T) {
 	a1 := scheduling.Appointment{ID: "1"}
 	a2 := scheduling.Appointment{ID: "2", Status: scheduling.StatusCanceled}
 	a3 := scheduling.Appointment{ID: "3"}
+	a4 := scheduling.Appointment{ID: "4"}
 
 	repo.Save(a1)
 	repo.Save(a2)
 	repo.Save(a3)
+	repo.Save(a4)
 
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
@@ -66,18 +68,37 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 
 	t.Run("must_publish_the_canceled_appointment_event", func(t *testing.T) {
+		id := "3"
 		h := &fakeStorageHandler{}
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
-		err := usecase.Execute("3")
+		err := usecase.Execute(id)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if !h.WasPublished(scheduling.EventAppointmentCanceled) {
+		if !h.WasPublished(id, scheduling.EventAppointmentCanceled) {
+			t.Error("The EventAppointmentCanceled must be published")
+		}
+	})
+
+	t.Run("must_entry_the_appointment_id_when_publish_event", func(t *testing.T) {
+		id := "4"
+		h := &fakeStorageHandler{}
+		bus := event.NewInmemEventBus()
+		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
+
+		usecase := scheduling.NewAppointmentCanceler(repo, bus)
+
+		err := usecase.Execute(id)
+		if !errors.Is(nil, err) {
+			t.Errorf("Should not return an error, got %v", err)
+		}
+
+		if !h.WasPublished(id, scheduling.EventAppointmentCanceled) {
 			t.Error("The EventAppointmentCanceled must be published")
 		}
 	})
@@ -91,9 +112,9 @@ func (s *fakeStorageHandler) Handle(e event.Event) {
 	s.events = append(s.events, e)
 }
 
-func (s *fakeStorageHandler) WasPublished(name string) bool {
+func (s *fakeStorageHandler) WasPublished(id, name string) bool {
 	for _, e := range s.events {
-		if e.Name() == name {
+		if e.Name() == name && e.Header(event.HeaderAggregateID) == id {
 			return true
 		}
 	}

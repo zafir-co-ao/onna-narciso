@@ -30,7 +30,11 @@ func (u *appointmentCancelerImpl) Execute(id string) error {
 
 	u.repo.Save(a)
 
-	e := event.New(EventAppointmentCanceled)
+	e := event.New(
+		EventAppointmentCanceled,
+		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+	)
+
 	u.bus.Publish(e)
 
 	return nil
