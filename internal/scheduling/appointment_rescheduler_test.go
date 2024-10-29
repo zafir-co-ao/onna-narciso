@@ -286,7 +286,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentReschedulerInput{}) {
-			t.Error("The EventAppointmentRescheduled must be published")
+			t.Error("The event payload must be logged")
 		}
 	})
 }
