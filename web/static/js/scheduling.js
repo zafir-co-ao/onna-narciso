@@ -41,28 +41,6 @@ function cancelEvent() {
     closeDialog("#reschedule-dialog")
 }
 
-function rescheduleEvent() {
-    const id = document.querySelector("#appointment-id").getAttribute("value")
-    if (!id) {
-        console.error("Erro ao reagendar evento")
-        return
-    }
-
-    const date = document.querySelector("#reschedule-date").getAttribute("value")
-    const start = document.querySelector("#reschedule-start")
-    const duration = document.querySelector("#reschedule-duration")
-    const form = new FormData()
-
-    form.append("id", id)
-    form.append("date", date)
-    form.append("duration", duration.value)
-    form.append("start", start.value)
-
-    htmx.ajax("POST", `/appointments/reschedule`, { target: `#${id}`, swap: "outerHTML", values: form })
-
-    closeDialog("#reschedule-dialog")
-}
-
 function closeScheduleForm() {
     show("#select-customer")
     closeDialog('#schedule-dialog')
