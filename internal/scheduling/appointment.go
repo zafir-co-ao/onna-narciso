@@ -3,6 +3,8 @@ package scheduling
 import (
 	"strconv"
 	"strings"
+
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 const (
@@ -14,17 +16,17 @@ const (
 var EmptyAppointment = Appointment{}
 
 type Service struct {
-	ID   ID
+	ID   id.ID
 	Name Name
 }
 
 type Professional struct {
-	ID   ID
+	ID   id.ID
 	Name Name
 }
 
 type Customer struct {
-	ID          ID
+	ID          id.ID
 	Name        Name
 	PhoneNumber string
 }
@@ -33,12 +35,12 @@ type Status string
 type Name string
 
 type Appointment struct {
-	ID               ID
-	ProfessionalID   ID
+	ID               id.ID
+	ProfessionalID   id.ID
 	ProfessionalName Name
-	CustomerID       ID
+	CustomerID       id.ID
 	CustomerName     Name
-	ServiceID        ID
+	ServiceID        id.ID
 	ServiceName      Name
 	Status           Status
 	Date             Date // Formato: 2024-10-01
@@ -48,12 +50,12 @@ type Appointment struct {
 }
 
 func NewAppointment(
-	ID ID,
-	ProfessionalID ID,
+	ID id.ID,
+	ProfessionalID id.ID,
 	ProfessionalName Name,
-	CustomerID ID,
+	CustomerID id.ID,
 	CustomerName Name,
-	ServiceID ID,
+	ServiceID id.ID,
 	ServiceName Name,
 	Date Date,
 	Start Hour,

@@ -1,4 +1,4 @@
-package scheduling
+package id
 
 import (
 	"crypto/rand"
@@ -16,6 +16,11 @@ func NewID(v string) ID {
 func Random() (ID, error) {
 	v, err := generate()
 	return ID(v), err
+}
+
+func MustRandom() ID {
+	v, _ := generate()
+	return ID(v)
 }
 
 func (i ID) Value() string {
