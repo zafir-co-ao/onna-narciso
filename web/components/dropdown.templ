@@ -2,196 +2,42 @@ package components
 
 import (
 	"context"
+	"fmt"
 	"io"
 )
 
-type _dropdownOpt = func(s *_dropdownState)
+type _dropdownState _inputState
 
-type DropdownOption [2]string
-
-type _dropdownState struct {
-	id          string
-	label       string
-	name        string
-	placeholder string
-	hxGet       string
-	hxPost      string
-	hxTarget    string
-	hxTrigger   string
-	hxSwap      string
-	value       string
-	options     []DropdownOption
-}
-
-func WithId(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.id = v
-	}
-}
-
-func WithLabel(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.label = v
-	}
-}
-
-func WithName(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.name = v
-	}
-}
-
-func WithValue(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.value = v
-	}
-}
-
-func WithPlaceholder(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.placeholder = v
-	}
-}
-
-func WithOptions(o ...DropdownOption) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.options = o
-	}
-}
-
-func WithHxGet(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.hxPost = ""
-		s.hxGet = v
-	}
-}
-
-func WithHxPost(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.hxGet = ""
-		s.hxPost = v
-	}
-}
-
-func WithHxTarget(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.hxTarget = v
-	}
-}
-
-func WithHxTrigger(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.hxTrigger = v
-	}
-}
-
-func WithHxSwap(v string) _dropdownOpt {
-	return func(s *_dropdownState) {
-		s.hxSwap = v
-	}
-}
-
-func (s _dropdownState) Render(ctx context.Context, w io.Writer) error {
+func (s *_dropdownState) Render(ctx context.Context, w io.Writer) error {
 	return _dropdownTempl(s).Render(ctx, w)
 }
 
-func Dropdown(opts ..._dropdownOpt) templ.Component {
-	s := &_dropdownState{hxTrigger: "change"}
+func Dropdown(name, value string, opts ..._inputStateOpt) templ.Component {
+	opts = append(opts, WithName(name), WithValue(value))
 
-	for _, opt := range opts {
-		opt(s)
-	}
+	s := newInputState(opts...)
 
-	return s
+	return (*_dropdownState)(s)
 }
 
-var _dropdownHandle = templ.NewOnceHandle()
+func _dropdownGetData(s *_dropdownState) string {
 
-func _dropdown__optionValue_label(opts []DropdownOption, value, placeholder string) string {
+	label := ""
 
-	if value == "" {
-		return placeholder
-	}
-
-	for _, opt := range opts {
-		if opt[1] == value {
-			return opt[0]
+	for _, opt := range s.options {
+		if opt[1] == s.value {
+			label = opt[0]
+			break
 		}
 	}
 
-	return placeholder
-
+	return fmt.Sprintf("{open: false, value: '%s', label: '%s', placeholder: '%s'}",
+		s.value,
+		label,
+		s.placeholder)
 }
 
-templ _dropdownTempl(s _dropdownState) {
-	@_dropdownHandle.Once() {
-		<script type="text/javascript">
-		    function getDropdownRoot(el) {
-				if(!el)
-				  return undefined;
-
-				if(el.target)
-				  return getDropdownRoot(el.target)
-
-				if (el.classList?.contains("dropdown"))
-				  return el
-
-				return getDropdownRoot(el.parentElement)
-			}
-
-			function getDropdownButton(rootOrEvt) {
-			   let root = rootOrEvt
-			   if (rootOrEvt.target)
-					root = getDropdownRoot(rootOrEvt.target)
-
-				return root.querySelector(".dropdown__button")
-			}
-
-            function handleDropdownOptionSelection(evt) {
-                const root = getDropdownRoot(evt)
-                const value = evt.target.parentElement.dataset.value;
-
-                const label = root.querySelector(".dropdown__button__text");
-                const input = root.querySelector(".dropdown__input");
-
-                const selectedItem = root.querySelector("li.selected");
-
-                if (selectedItem)
-                  selectedItem.classList.remove("selected")
-
-                if (label)
-                    label.innerText = evt.target.innerText;
-
-                if( input)
-                    input.value = value
-
-                evt.target.parentElement.classList.add("selected");
-
-
-                closeDropdown(evt)
-                root.dispatchEvent(new Event('change'))
-            }
-
-            function closeDropdown(evt) {
-                const button = getDropdownButton(evt);
-                button.parentElement.classList.remove('dropdown--opened')
-            }
-
-            function handleDropdownToggle(evt) {
-                const button = getDropdownButton(evt);
-                const parent = button.parentElement;
-
-
-
-                if(parent.classList.contains('dropdown--opened')) {
-                  parent.classList.remove('dropdown--opened')
-                  return
-                }
-
-                parent.classList.add('dropdown--opened')
-            }
-        </script>
-	}
+templ _dropdownTempl(s *_dropdownState) {
 	<div
 		class="dropdown"
 		if s.id != "" {
@@ -212,46 +58,42 @@ templ _dropdownTempl(s _dropdownState) {
 		if s.hxSwap != "" {
 			hx-swap={ s.hxSwap }
 		}
+		x-data={ _dropdownGetData(s) }
+		x-bind:data-value="value"
+		x-ref="dropdown"
 	>
-		if s.name != "" {
-			<input class="dropdown__input" type="hidden" name={ s.name } value={ s.value }/>
-		}
+		<input x-ref="input" x-model="value" class="dropdown__input" type="hidden" name={ s.name }/>
 		<label
 			id="listbox-label"
-			class={ "block text-sm/6 font-medium text-gray-900", templ.KV("hidden", s.label == "") }
+			class="block text-sm/6 font-medium text-gray-900"
+			x-bind:class={ fmt.Sprintf("{'hidden': '%s' === ''}", s.label) }
 		>
 			{ s.label }
 		</label>
-		<div class="relative group">
+		<div
+			x-bind:class="{ 'dropdown--opened': open }"
+			class="relative group"
+		>
 			<button
 				type="button"
 				class="dropdown__button relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm/6"
 				aria-haspopup="listbox"
 				aria-expanded="false"
 				aria-labelledby="listbox-label"
-				onclick="handleDropdownToggle(event)"
+				x-on:click="open = !open"
+				x-on:blur="open = false"
 			>
-				<!-- onblur="closeDropdown(event)" -->
-				<span class={ "dropdown__button__text block truncate text-center w-28", templ.KV("text-gray-600", s.value == "") }>
-					{ _dropdown__optionValue_label(s.options, s.value, s.placeholder) }
-				</span>
+				<span
+					x-bind:class="{ 'text-gray-600': value === '' }"
+					x-text="value === '' ? placeholder : label"
+					class="dropdown__button__text block truncate text-center w-28"
+				></span>
 				<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 					<svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
 						<path fill-rule="evenodd" d="M10.53 3.47a.75.75 0 0 0-1.06 0L6.22 6.72a.75.75 0 0 0 1.06 1.06L10 5.06l2.72 2.72a.75.75 0 1 0 1.06-1.06l-3.25-3.25Zm-4.31 9.81 3.25 3.25a.75.75 0 0 0 1.06 0l3.25-3.25a.75.75 0 1 0-1.06-1.06L10 14.94l-2.72-2.72a.75.75 0 0 0-1.06 1.06Z" clip-rule="evenodd"></path>
 					</svg>
 				</span>
 			</button>
-			<!--
-            Select popover, show/hide based on select state.
-
-            Entering: ""
-                From: ""
-                To: ""
-
-            Leaving: "transition ease-in duration-100"
-                From: "opacity-100"
-                To: "opacity-0"
-            -->
 			<ul
 				class="hidden group-[.dropdown--opened]:block absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
 				tabindex="-1"
@@ -260,23 +102,18 @@ templ _dropdownTempl(s _dropdownState) {
 				aria-activedescendant="listbox-option-3"
 			>
 				for _, option := range s.options {
-					<!--
-                    Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
-                    Highlighted: "bg-indigo-600 text-white", Not Highlighted: "text-gray-900"
-                    -->
 					<li
-						class={ "group relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white", templ.KV("selected", option[1] == s.value) }
+						class="group relative select-none py-2 pl-8 pr-4 text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white"
 						role="option"
-						data-value={ option[1] }
-						onclick="handleDropdownOptionSelection(event)"
+						x-bind:class={ fmt.Sprintf("{'selected': value === '%s'}", option[1]) }
+						x-on:mousedown={ fmt.Sprintf("$refs.input.value = value = '%s'; label = '%s'; open: false; $refs.dropdown.dispatchEvent(new Event('change'))", option[1], option[0]) }
 					>
-						<span class="block truncate font-normal group-[.selected]:font-semibold">
+						<span
+							class="block truncate font-normal group-[.selected]:font-semibold"
+						>
 							{ option[0] }
 						</span>
-						<!--
-                        Highlighted: "text-white", Not Highlighted: "text-indigo-600"
-                        -->
-						<span class="hidden group-[.selected]:flex absolute inset-y-0 left-0 items-center pl-1.5 text-indigo-600 ">
+						<span class="hidden group-[.selected]:flex absolute inset-y-0 left-0 items-center pl-1.5 text-indigo-600 hover:text-white">
 							<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
 								<path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"></path>
 							</svg>
