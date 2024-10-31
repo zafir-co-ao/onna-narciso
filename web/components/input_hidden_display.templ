@@ -1,0 +1,35 @@
+package components
+
+import (
+	"context"
+	"io"
+)
+
+type _inputHiddenDisplayState struct {
+	id    string
+	name  string
+	value string
+}
+
+func (s _inputHiddenDisplayState) Render(ctx context.Context, w io.Writer) error {
+	return _inputHiddenDisplayTempl(s).Render(ctx, w)
+}
+
+func InputHiddenDisplay(name string, value string) templ.Component {
+	return &_inputHiddenDisplayState{
+		name:  name,
+		value: value,
+	}
+}
+
+templ _inputHiddenDisplayTempl(s _inputHiddenDisplayState) {
+	<div class="mt-4">
+		<div
+			if s.id != "" {
+				id={ s.id }
+			}
+			class="w-full py-2.5 px-3 bg-gray-50 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6"
+		></div>
+		<input type="hidden" name={ s.name }/>
+	</div>
+}

@@ -175,26 +175,24 @@ templ WeeklyAppointments(date string,
 						</button>
 					</div>
 					<div class="hidden md:block">
-						@Dropdown(
+						@Dropdown("service", "1",
 							WithId("menu-service"),
-							WithName("service"),
-							WithValue("1"),
 							WithOptions(
-								DropdownOption{"Manicure + Pedicure", "1"},
-								DropdownOption{"Depilação", "2"},
-								DropdownOption{"Massagem Facial", "3"},
+								InputOption{"Manicure + Pedicure", "1"},
+								InputOption{"Depilação", "2"},
+								InputOption{"Massagem Facial", "3"},
 							),
 						)
 					</div>
 					<div class="hidden md:block">
 						@Dropdown(
+							"professional",
+							"2",
 							WithId("menu-professional"),
-							WithName("professional"),
-							WithValue("2"),
 							WithOptions(
-								DropdownOption{"Daniela Mercury", "1"},
-								DropdownOption{"Ivett Sangalo", "2"},
-								DropdownOption{"Edith Piaff", "3"},
+								InputOption{"Daniela Mercury", "1"},
+								InputOption{"Ivett Sangalo", "2"},
+								InputOption{"Edith Piaff", "3"},
 							),
 						)
 					</div>
