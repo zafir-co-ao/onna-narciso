@@ -1,21 +1,17 @@
 package components
 
-templ ScheduleEventForm() {
-	<script>
-	    document.body.addEventListener("htmx:load", (evt) => {
-			closeDialog("#schedule-dialog")
-		})
+type FormState struct {
+	CustomerID       string
+	CustomerName     string
+	ProfessionalID   string
+	ProfessionalName string
+	ServiceID        string
+	ServiceName      string
+	Hour             string
+	Date             string
+}
 
-	    document.body.addEventListener("htmx:responseError", (evt) => {
-			const xhr = evt.detail.xhr;
-			const status = xhr.status
-			const responseText = xhr.responseText
-			const el = document.querySelector("#error-messages")
-			el.innerText = responseText
-			show("#error-messages")
-		})
-
-	</script>
+templ ScheduleEventForm(f FormState) {
 	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
 		<form method="post" hx-post="/appointments/schedule" hx-trigger="submit" hx-target="#events" hx-swap="beforeend">
 			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">

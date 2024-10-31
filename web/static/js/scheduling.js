@@ -1,6 +1,6 @@
 function openScheduleForm(event, rows) {
-    hidden("#error-messages")
-    hidden("#customer-form")
+    // hidden("#error-messages")
+    // hidden("#customer-form")
 
     const week = document.querySelectorAll(".week-day-cell")
     const day = week[getPosition(event) - 1]
@@ -17,7 +17,7 @@ function openScheduleForm(event, rows) {
     document.querySelector("#date").innerHTML = date
     document.querySelector("#hour").innerHTML = hour
 
-    openDialog("#schedule-dialog")
+    // openDialog("#schedule-dialog")
 }
 
 function openRescheduleForm(event, id) {
