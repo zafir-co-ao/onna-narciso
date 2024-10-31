@@ -45,74 +45,34 @@ func getDayOfWeek(day, today string) string {
 	return fmt.Sprintf("%v-%v-%v", y, int(m), day)
 }
 
-script openScheduleFormHandler(startHour, endHour int) {
-    openScheduleForm(event, (endHour - startHour) * 4 + 1)
-}
-
-var _getScheduleForm = templ.NewOnceHandle()
+var _getAppointmentSchedulingForm = templ.NewOnceHandle()
 
 templ WeeklyAppointments(date string,
 	days int,
 	startHour int,
 	endHour int,
 	appointments []scheduling.AppointmentOutput) {
-	@_getScheduleForm.Once() {
+	@_getAppointmentSchedulingForm.Once() {
 		<script type="text/javascript">
-		    function getScheduleForm (event) {
+		    function getAppointmentForm (event) {
 		        openDialog("#dialog")
 				const rows = parseInt(event.target.dataset.rows)
     			const week = document.querySelectorAll(".week-day-cell")
                 const day = week[getPosition(event) - 1]
-                const date = day.getAttribute("data-week-day")
+                const date = day.dataset.weekDay
                 const hour = getHour(event, rows)
 
                 const form = new FormData()
 
+                form.append("service_id", "1")
+                form.append("service_name", "Manicure + Pedicure")
+                form.append("professional_id", "1")
+                form.append("professional_name", "Sara Gomes")
                 form.append("date", date)
                 form.append("hour", hour)
-                htmx.ajax("GET", "/appointment-form", { target: "#dialog-content", swap: "innerHTML", values: form})
+
+                htmx.ajax("POST", "/appointment-form", { target: "#dialog-content", swap: "innerHTML", values: form})
 			}
-
-    		function openDialog(target) {
-                document.querySelector(target).showModal()
-            }
-
-            function closeDialog(target) {
-                document.querySelector(target).close()
-            }
-
-            function getHour(event, rows) {
-                const h = calculateHour(event, rows)
-                const m = calculateMinutes(event, rows)
-                if (m.toString().length === 1 ) {
-                    return `${h}:0${m}`
-                }
-
-                return `${h}:${m}`
-            }
-
-            function calculateHour(event, rows) {
-                const calendar = event.target;
-                const row = calendar.clientHeight / parseInt(rows);
-                const deslocY = Math.trunc((event.layerY - (3 * row)) / row);
-                const h = Math.trunc(deslocY / 4 + 8);
-                return h
-            }
-
-            function calculateMinutes(event, rows) {
-                const calendar = event.target;
-                const row = calendar.clientHeight / parseInt(rows);
-                const deslocY = Math.trunc((event.layerY - (3 * row)) / row);
-                const m = Math.trunc((deslocY % 4) * 15);
-                return m
-            }
-
-            function getPosition(event) {
-                const calendar = event.target;
-                const col = calendar.clientWidth / 6;
-                const deslocX = Math.trunc((event.layerX) / col);
-                return deslocX + 1;
-            }
 		</script>
 	}
 	<div id="weekly-view">
@@ -264,7 +224,7 @@ templ WeeklyAppointments(date string,
 								<div class={ fmt.Sprintf("col-start-%d", days + 1),"row-span-full w-8" }></div>
 							</div>
 							<!-- Events -->
-							<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onclick="getScheduleForm(event)" data-rows={ fmt.Sprintf("%v", (endHour-startHour)*4+1) }>
+							<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onclick="getAppointmentForm(event)" data-rows={ fmt.Sprintf("%v", (endHour-startHour)*4+1) }>
 								for _, a := range appointments {
 									@Event(a, startHour)
 								}

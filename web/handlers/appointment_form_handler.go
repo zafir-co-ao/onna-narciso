@@ -7,13 +7,13 @@ import (
 )
 
 func HandleAppointmentForm(w http.ResponseWriter, r *http.Request) {
-	var s = components.FormState{
-		ProfessionalID:   "1",
-		ProfessionalName: "Sara Gomes",
-		ServiceID:        "1",
-		ServiceName:      "Manicure + Pedicure",
-		Hour:             "10:00",
-		Date:             "2024-10-10",
+	var s = components.AppointmentSchedulingState{
+		ProfessionalID:   r.FormValue("professional_id"),
+		ProfessionalName: r.FormValue("professional_name"),
+		ServiceID:        r.FormValue("service_id"),
+		ServiceName:      r.FormValue("service_name"),
+		StartHour:        r.FormValue("hour"),
+		Date:             r.FormValue("date"),
 	}
-	components.ScheduleEventForm(s).Render(r.Context(), w)
+	components.AppointmentSchedulingForm(s).Render(r.Context(), w)
 }

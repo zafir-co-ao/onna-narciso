@@ -1,0 +1,112 @@
+package components
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func _getCustomers() []map[string]string {
+	return []map[string]string{
+		{"id": "1", "name": "João Silva", "nif": "123456789", "phone": "900123456"},
+		{"id": "2", "name": "Mariana Oliveira", "nif": "987654321", "phone": "900654321"},
+	}
+}
+
+func _chooseCustomerGetData(customers interface{}) string {
+	c, _ := json.Marshal(customers)
+	return fmt.Sprintf(`{
+	    openCustomerDropdown: false,
+		openCustomerForm: false,
+		search: '',
+		selectedCustomer: { id: '', name: ''},
+		customers: %s,
+		get filteredCustomers() {
+			const criteria = this.search.toLowerCase();
+
+			if (criteria.length < 3) return
+
+			return this.customers.filter(
+				item => item.name.toLowerCase().includes(criteria) ||
+				        item.nif.includes(criteria) ||
+				        item.phone.includes(criteria)
+			);
+		}
+	}`, c)
+}
+
+templ ChooseCustomer() {
+	<div x-data={ _chooseCustomerGetData(_getCustomers()) }>
+		<div class="relative mt-4">
+			<input type="hidden" name="customer_id" id="customer-id" x-model="selectedCustomer.id"/>
+			<button
+				type="button"
+				class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+				aria-expanded="false"
+				aria-haspopup="true"
+				x-show="!openCustomerForm"
+				@click="openCustomerDropdown = !openCustomerDropdown"
+			>
+				<span x-text="selectedCustomer.id != '' ? selectedCustomer.name : 'Escolher cliente'">
+					Escolher cliente
+				</span>
+				<svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+					<path fill-rule="evenodd" d="M10.53 3.47a.75.75 0 0 0-1.06 0L6.22 6.72a.75.75 0 0 0 1.06 1.06L10 5.06l2.72 2.72a.75.75 0 1 0 1.06-1.06l-3.25-3.25Zm-4.31 9.81 3.25 3.25a.75.75 0 0 0 1.06 0l3.25-3.25a.75.75 0 1 0-1.06-1.06L10 14.94l-2.72-2.72a.75.75 0 0 0-1.06 1.06Z" clip-rule="evenodd"></path>
+				</svg>
+			</button>
+			<div
+				class="absolute transition w-full ease-in duration-75 scale-100 right-0 z-10 mt-3 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2 h-48 overflow-y-auto"
+				role="menu"
+				aria-orientation="vertical"
+				aria-labelledby="menu-button"
+				x-show="openCustomerDropdown"
+				@click.outside="openCustomerDropdown = false"
+			>
+				<div class="p-2">
+					<input
+						type="text"
+						placeholder="Pesquisar por nome, nif e telefone"
+						class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+						x-model="search"
+					/>
+					<ul>
+						<li class="text-sm border-b mt-2 p-2.5 cursor-pointer" x-show="!search" @click="openCustomerForm = !openCustomerForm; openCustomerDropdown = !openCustomerDropdown">
+							Criar Novo Cliente
+						</li>
+						<template x-for="customer in filteredCustomers" :key="customer.id">
+							<li
+								class="text-sm border-b p-2.5 cursor-pointer hover:bg-gray-100"
+								x-text="customer.name"
+								@click="selectedCustomer.name = customer.name; selectedCustomer.id = customer.id; openCustomerDropdown = !openCustomerDropdown"
+							></li>
+						</template>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div x-show="openCustomerForm">
+			<div class="mt-4">
+				<div>
+					<div class="relative mt-2 rounded-md shadow-sm">
+						<input
+							type="text"
+							name="customer_name"
+							class="block w-full rounded-md px-3 py-2.5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+							placeholder="Nome do Cliente"
+						/>
+						<div class="absolute inset-y-0 right-0 flex items-center cursor-pointer" @click="openCustomerForm = !openCustomerForm; openCustomerDropdown = !openCustomerDropdown">
+							<span class="text-sm text-white border-l rounded-r-md p-3 bg-gray-500">Pesquisar</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mt-4">
+				<input
+					type="text"
+					name="customer_phone"
+					placeholder="Telefone"
+					class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+				/>
+			</div>
+		</div>
+	</div>
+}

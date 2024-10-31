@@ -5,25 +5,19 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 )
 
-templ RescheduleEventForm(o scheduling.AppointmentOutput) {
+templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
 	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
 		<form hx-post="/appointments/reschedule" hx-trigger="submit" hx-target={ fmt.Sprintf("#%v", o.ID) } hx-swap="outerHTML">
 			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 				<div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
 					<div class="flex justify-between items-center">
 						<h3 class="text-base font-semibold leading-6 text-gray-900">Editar marcação</h3>
-						<span class="cursor-pointer text-lg" onclick="closeDialog('#reschedule-dialog')">x</span>
+						<span class="cursor-pointer text-lg" onclick="closeDialog('#dialog')">x</span>
 					</div>
-					<input type="hidden" name="id" id="appointment-id" value={ o.ID }/>
-					<div class="mt-4">
-						@viewInfo(o.CustomerName)
-					</div>
-					<div class="mt-4">
-						@viewInfo(o.ProfessionalName)
-					</div>
-					<div class="mt-4">
-						@viewInfo(o.ServiceName)
-					</div>
+					<input type="hidden" name="id" value={ o.ID }/>
+					@InputHiddenDisplay(o.CustomerName, "", "")
+					@InputHiddenDisplay(o.ProfessionalName, "", "")
+					@InputHiddenDisplay(o.ServiceName, "", "")
 					<div class="mt-4">
 						<input
 							type="date"
@@ -70,11 +64,12 @@ templ RescheduleEventForm(o scheduling.AppointmentOutput) {
 				<button
 					type="button"
 					class="mt-3 inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-900 sm:mt-0 sm:w-auto"
-					onclick="openDialog('#cancel-dialog')"
+					onclick="openConfirmDialog('#cancel-dialog')"
 				>
 					Cancelar
 				</button>
 			</div>
 		</form>
 	</div>
+	@DialogCancelEvent(o.ID)
 }
