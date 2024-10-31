@@ -1,10 +1,22 @@
-
 function openDialog(target) {
+    clearContent("#dialog-content")
+    document.querySelector(target).showModal()
+}
+
+function openConfirmDialog(target) {
     document.querySelector(target).showModal()
 }
 
 function closeDialog(target) {
-    document.querySelector(target).close()
+    const el = document.querySelector(target)
+    if (!el) return
+
+    el.close()
+}
+
+function clearContent(target) {
+    const el = document.querySelector(target)
+    el.innerHTML = ""
 }
 
 function getHour(event, rows) {
