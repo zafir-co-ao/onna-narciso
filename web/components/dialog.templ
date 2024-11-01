@@ -2,7 +2,7 @@ package components
 
 templ _dialog() {
 	<script type="text/javascript">
-	    const el = document.querySelector("#events")
+	    var el = document.querySelector("#events")
 	    el.addEventListener("htmx:afterSwap", () => {
 			closeDialog("#dialog")
 		})

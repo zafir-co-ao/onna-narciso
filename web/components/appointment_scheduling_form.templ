@@ -12,9 +12,9 @@ type AppointmentSchedulingState struct {
 }
 
 templ AppointmentSchedulingForm(s AppointmentSchedulingState) {
-	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+	<div class="relative transform text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
 		<form method="post" hx-post="/appointments/schedule" hx-trigger="submit" hx-target="#events" hx-swap="beforeend">
-			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+			<div class="bg-white rounded-t-lg px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 				<div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
 					<div class="flex justify-between items-center">
 						<h3 id="modal-title" class="text-base font-semibold leading-6 text-gray-900">Nova marcação</h3>
@@ -27,24 +27,24 @@ templ AppointmentSchedulingForm(s AppointmentSchedulingState) {
 					@InputHiddenDisplay(s.Date, "date", s.Date)
 					@InputHiddenDisplay(s.StartHour, "start", s.StartHour)
 					<div class="mt-4">
-						<select
-							name="duration"
-							class="block border w-full rounded-md px-3 py-2.5 text-gray-900 shadow-sm ring-inset ring-gray-300 sm:text-sm sm:leading-6"
-						>
-							<option>Selecione a duração</option>
-							<option value="15">15 minutos</option>
-							<option value="30">30 minutos</option>
-							<option value="45">45 minutos</option>
-							<option value="60">1 hora</option>
-							<option value="90">1 hora e 30 minutos</option>
-							<option value="120">2 horas</option>
-							<option value="150">2 horas e 30 minutos</option>
-							<option value="180">3 horas</option>
-						</select>
+    					@Dropdown(
+    		                "duration",
+      						"15",
+      						WithOptions(
+                                InputOption{"15 Minutos", "15"},
+                                InputOption{"30 Minutos", "30"},
+                                InputOption{"45 Minutos", "45"},
+                                InputOption{"1 Hora", "60"},
+                                InputOption{"1 Hora e 30 Minutos", "90"},
+                                InputOption{"2 Horas", "120"},
+                                InputOption{"2 Horas e 30 Minutos", "150"},
+                                InputOption{"3 Horas", "180"},
+                            ),
+       					)
 					</div>
 				</div>
 			</div>
-			<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+			<div class="bg-gray-50 rounded-b-lg px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 				<button
 					type="submit"
 					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"

@@ -86,7 +86,7 @@ templ _dropdownTempl(s *_dropdownState) {
 				<span
 					x-bind:class="{ 'text-gray-600': value === '' }"
 					x-text="value === '' ? placeholder : label"
-					class="dropdown__button__text block truncate text-center w-28"
+					class="dropdown__button__text block truncate"
 				></span>
 				<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 					<svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
