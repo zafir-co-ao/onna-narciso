@@ -51,7 +51,7 @@ func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (Appoint
 
 	e := event.New(
 		EventAppointmentRescheduled,
-		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 		event.WithPayload(i),
 	)
 

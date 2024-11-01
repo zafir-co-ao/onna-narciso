@@ -75,7 +75,7 @@ func TestWeeklyAppointments(t *testing.T) {
 			for i, appointment := range results {
 
 				if !slices.ContainsFunc(results, func(a scheduling.Appointment) bool {
-					return a.ID.Value() == test.expectedIDs[i]
+					return a.ID.String() == test.expectedIDs[i]
 				}) {
 					t.Errorf("Expected appointment in IDs %v, got %s", test.expectedIDs, appointment.ID)
 				}

@@ -45,13 +45,41 @@ func getDayOfWeek(day, today string) string {
 	return fmt.Sprintf("%v-%v-%v", y, int(m), day)
 }
 
+func entityToOptions[T any](data []T, f func(t T) InputOption) []InputOption {
+	var options []InputOption
+	for _, d := range data {
+		options = append(options, f(d))
+	}
+	return options
+}
+
+func servicesToOptions(services []scheduling.Service) []InputOption {
+	return entityToOptions(services, func(s scheduling.Service) InputOption {
+		return InputOption{s.Name.String(), s.ID.String()}
+	})
+}
+
+func professionalsToOptions(professionals []scheduling.Professional) []InputOption {
+	return entityToOptions(professionals, func(p scheduling.Professional) InputOption {
+		return InputOption{p.Name.String(), p.ID.String()}
+	})
+}
+
 var _getAppointmentSchedulingForm = templ.NewOnceHandle()
 
+type WeeklyAppointmentsOptions struct {
+	Days          int
+	StartHour     int
+	EndHour       int
+	Services      []scheduling.Service
+	Professionals []scheduling.Professional
+	Appointments  []scheduling.AppointmentOutput
+}
+
 templ WeeklyAppointments(date string,
-	days int,
-	startHour int,
-	endHour int,
-	appointments []scheduling.AppointmentOutput) {
+	serviceID string,
+	professionalID string,
+	opts WeeklyAppointmentsOptions) {
 	@_getAppointmentSchedulingForm.Once() {
 		<script type="text/javascript">
 		    function getAppointmentForm (event) {
@@ -82,10 +110,12 @@ templ WeeklyAppointments(date string,
 			</h1>
 			<form
 				hx-post="/weekly-appointments"
-				hx-trigger="change from:#menu-service,change from:#menu-professional"
+				hx-trigger="change from:#service_id,change from:#professional_id"
 				hx-target="#weekly-view"
 				hx-swap="outerHTML"
 			>
+				<input type="hidden" name="date" value={ date }/>
+				<input type="hidden" name="previous-date" value={ date }/>
 				<div class="flex items-center gap-3">
 					<div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
 						<button
@@ -135,26 +165,23 @@ templ WeeklyAppointments(date string,
 						</button>
 					</div>
 					<div class="hidden md:block">
-						@Dropdown("service", "1",
-							WithId("menu-service"),
-							WithOptions(
-								InputOption{"Manicure + Pedicure", "1"},
-								InputOption{"Depilação", "2"},
-								InputOption{"Massagem Facial", "3"},
-							),
+						@Dropdown("service-id",
+							serviceID,
+							WithId("service_id"),
+							WithOptions(InputOption{"[ Serviços ]", "all"}),
+							WithOptions(servicesToOptions(opts.Services)...),
 						)
+						<input type="hidden" name="previous-service-id" value={ serviceID }/>
 					</div>
 					<div class="hidden md:block">
 						@Dropdown(
-							"professional",
-							"2",
-							WithId("menu-professional"),
-							WithOptions(
-								InputOption{"Daniela Mercury", "1"},
-								InputOption{"Ivett Sangalo", "2"},
-								InputOption{"Edith Piaff", "3"},
-							),
+							"professional-id",
+							professionalID,
+							WithId("professional_id"),
+							WithOptions(InputOption{"[ Profissionais ]", "all"}),
+							WithOptions(professionalsToOptions(opts.Professionals)...),
 						)
+						<input type="hidden" name="previous-professional-id" value={ professionalID }/>
 					</div>
 				</div>
 			</form>
@@ -166,8 +193,8 @@ templ WeeklyAppointments(date string,
 					class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full"
 				>
 					<div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
-						<div class={ "grid text-sm leading-6 text-gray-500 sm:hidden", fmt.Sprintf("grid-cols-%v", days) }>
-							for _, day := range getDaysOfMonthFromMonday(date, days) {
+						<div class={ "grid text-sm leading-6 text-gray-500 sm:hidden", fmt.Sprintf("grid-cols-%v", opts.Days) }>
+							for _, day := range getDaysOfMonthFromMonday(date, opts.Days) {
 								<button type="button" class="flex flex-col items-center pb-3 pt-2">
 									{ day[1] }
 									<span class="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
@@ -177,10 +204,10 @@ templ WeeklyAppointments(date string,
 							}
 						</div>
 						<div
-							class={ "-mr-px hidden divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid", fmt.Sprintf("grid-cols-%v", days) }
+							class={ "-mr-px hidden divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid", fmt.Sprintf("grid-cols-%v", opts.Days) }
 						>
 							<div class="col-end-1 w-14"></div>
-							for _, day := range getDaysOfMonthFromMonday(date, days) {
+							for _, day := range getDaysOfMonthFromMonday(date, opts.Days) {
 								<div class="flex items-center justify-center py-3">
 									<span>
 										{ day[1] }
@@ -197,10 +224,10 @@ templ WeeklyAppointments(date string,
 						<div class="grid flex-auto grid-cols-1 grid-rows-1">
 							<!-- Horizontal lines -->
 							<div
-								class={ "col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100",  fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) }
+								class={ "col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
 							>
 								<div class="row-span-1"></div>
-								for i := startHour; i < endHour; i++ {
+								for i := opts.StartHour; i < opts.EndHour; i++ {
 									<div>
 										<div
 											class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400"
@@ -216,17 +243,22 @@ templ WeeklyAppointments(date string,
 							</div>
 							<!-- Vertical lines -->
 							<div
-								class={ "col-start-1 col-end-2 row-start-1 hidden grid-rows-1 divide-x divide-gray-100 sm:grid", fmt.Sprintf("grid-cols-%v", days) }
+								class={ "col-start-1 col-end-2 row-start-1 hidden grid-rows-1 divide-x divide-gray-100 sm:grid", fmt.Sprintf("grid-cols-%v", opts.Days) }
 							>
-								for i := 1; i <= days; i++ {
+								for i := 1; i <= opts.Days; i++ {
 									<div class={ fmt.Sprintf("col-start-%d", i), "row-span-full" }></div>
 								}
-								<div class={ fmt.Sprintf("col-start-%d", days + 1),"row-span-full w-8" }></div>
+								<div class={ fmt.Sprintf("col-start-%d", opts.Days + 1),"row-span-full w-8" }></div>
 							</div>
 							<!-- Events -->
-							<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onclick="getAppointmentForm(event)" data-rows={ fmt.Sprintf("%v", (endHour-startHour)*4+1) }>
-								for _, a := range appointments {
-									@Event(a, startHour)
+							<ol
+								id="events"
+								class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", opts.Days), fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
+								onclick="getAppointmentForm(event)"
+								data-rows={ fmt.Sprintf("%v", (opts.EndHour-opts.StartHour)*4+1) }
+							>
+								for _, a := range opts.Appointments {
+									@Event(a, opts.StartHour)
 								}
 							</ol>
 						</div>

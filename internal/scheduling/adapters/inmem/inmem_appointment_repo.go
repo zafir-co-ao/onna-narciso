@@ -10,15 +10,21 @@ type repo struct {
 	data map[string]scheduling.Appointment
 }
 
-func NewAppointmentRepository() scheduling.AppointmentRepository {
-	return &repo{
+func NewAppointmentRepository(s ...scheduling.Appointment) scheduling.AppointmentRepository {
+	r := &repo{
 		data: make(map[string]scheduling.Appointment),
 	}
+
+	for _, a := range s {
+		r.Save(a)
+	}
+
+	return r
 }
 
 func (r *repo) FindByID(id id.ID) (scheduling.Appointment, error) {
 
-	if val, ok := r.data[id.Value()]; ok {
+	if val, ok := r.data[id.String()]; ok {
 		return val, nil
 	}
 
@@ -26,7 +32,7 @@ func (r *repo) FindByID(id id.ID) (scheduling.Appointment, error) {
 }
 
 func (r *repo) Save(a scheduling.Appointment) error {
-	r.data[a.ID.Value()] = a
+	r.data[a.ID.String()] = a
 	return nil
 }
 

@@ -35,7 +35,7 @@ func (u *appointmentCancelerImpl) Execute(appointmentId string) error {
 
 	e := event.New(
 		EventAppointmentCanceled,
-		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 	)
 
 	u.bus.Publish(e)

@@ -98,7 +98,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 
 	e := event.New(
 		EventAppointmentScheduled,
-		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 		event.WithPayload(i),
 	)
 

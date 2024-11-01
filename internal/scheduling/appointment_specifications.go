@@ -44,7 +44,7 @@ func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 func ServiceIsSpecificantion(s string) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		fmt.Printf("Service: %v vs %s\n", s, a.ServiceID)
-		return a.ServiceID.Value() == s
+		return a.ServiceID.String() == s
 	}
 }
 
@@ -55,7 +55,7 @@ func ProfessionalsInSpecificantion(p []string) shared.SpecificationFunc[Appointm
 		}
 
 		for _, prof := range p {
-			if a.ProfessionalID.Value() == prof {
+			if a.ProfessionalID.String() == prof {
 				return true
 			}
 		}

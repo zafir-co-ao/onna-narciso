@@ -73,7 +73,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ID.Value() != o.ID {
+		if appointment.ID.String() != o.ID {
 			t.Errorf("Appointment ID should be %s", o.ID)
 		}
 	})
@@ -125,7 +125,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ProfessionalID.Value() != i.ProfessionalID {
+		if appointment.ProfessionalID.String() != i.ProfessionalID {
 			t.Errorf("The appointment professional must be  %s, got %s", i.ProfessionalID, appointment.ProfessionalID)
 		}
 	})
@@ -151,7 +151,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.CustomerID.Value() != i.CustomerID {
+		if appointment.CustomerID.String() != i.CustomerID {
 			t.Errorf("The appointment customer must be  %s, got %s", i.CustomerID, appointment.CustomerID)
 		}
 	})
@@ -177,7 +177,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ServiceID.Value() != i.ServiceID {
+		if appointment.ServiceID.String() != i.ServiceID {
 			t.Errorf("The appointment service must be  %s, got %s", i.ServiceID, appointment.ServiceID)
 		}
 	})
@@ -441,12 +441,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		a, _ := repo.FindByID(id.NewID(o.ID))
 
-		customer, err := cacl.FindCustomerByID(a.CustomerID.Value())
+		customer, err := cacl.FindCustomerByID(a.CustomerID.String())
 		if err != nil {
 			t.Errorf("Should return customer: %v", err)
 		}
 
-		if customer.ID.Value() != a.CustomerID.Value() {
+		if customer.ID.String() != a.CustomerID.String() {
 			t.Errorf("The customer must be the same as the appointment")
 		}
 	})
@@ -538,7 +538,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		if a.ID.Value() != o.ID {
+		if a.ID.String() != o.ID {
 			t.Errorf("The ID of appointment must be the same as the generated")
 		}
 	})
@@ -565,7 +565,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		p, _ := pacl.FindProfessionalByID(a.ProfessionalID.Value())
+		p, _ := pacl.FindProfessionalByID(a.ProfessionalID.String())
 		if a.ProfessionalName != p.Name {
 			t.Errorf("The professional name must be the same as the appointment: %v", a.ProfessionalName)
 		}
@@ -593,7 +593,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		c, _ := cacl.FindCustomerByID(a.CustomerID.Value())
+		c, _ := cacl.FindCustomerByID(a.CustomerID.String())
 		if a.CustomerName != c.Name {
 			t.Errorf("The customer name must be the same as the appointment: %v", a.CustomerName)
 		}
@@ -621,7 +621,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		s, _ := sacl.FindServiceByID(a.ServiceID.Value())
+		s, _ := sacl.FindServiceByID(a.ServiceID.String())
 		if a.ServiceName != s.Name {
 			t.Errorf("The service name must be the same as the appointment: %v", a.ServiceName)
 		}
@@ -649,8 +649,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		if a.ID.Value() != o.ID {
-			t.Errorf("The ID of appointment must be the same as the generated: %v", a.ID.Value())
+		if a.ID.String() != o.ID {
+			t.Errorf("The ID of appointment must be the same as the generated: %v", a.ID.String())
 		}
 
 		if a.Status != scheduling.StatusScheduled {
