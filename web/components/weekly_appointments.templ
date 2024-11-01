@@ -224,7 +224,7 @@ templ WeeklyAppointments(date string,
 								<div class={ fmt.Sprintf("col-start-%d", days + 1),"row-span-full w-8" }></div>
 							</div>
 							<!-- Events -->
-							<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } onclick="getAppointmentForm(event)" data-rows={ fmt.Sprintf("%v", (endHour-startHour)*4+1) }>
+							<ol id="events" class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", days), fmt.Sprintf("week-view-rows-%v", (endHour-startHour)*4) } ondblclick="getAppointmentForm(event)" data-rows={ fmt.Sprintf("%v", (endHour-startHour)*4+1) }>
 								for _, a := range appointments {
 									@Event(a, startHour)
 								}
