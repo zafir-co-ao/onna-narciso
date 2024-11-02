@@ -79,12 +79,12 @@ func weeklyAppointmentsProfessionalChanged(date, serviceID, professionalID strin
 
 func HandleWeeklyAppointments(w http.ResponseWriter, r *http.Request) {
 
-	date := r.URL.Query().Get("date")
-	previousDate := r.URL.Query().Get("previous-date")
-	serviceID := r.URL.Query().Get("service-id")
-	previousServiceID := r.URL.Query().Get("previous-servic-id")
-	professionalID := r.URL.Query().Get("professional-id")
-	previousProfessionalID := r.URL.Query().Get("previous-professional-id")
+	date := r.FormValue("date")
+	previousDate := r.FormValue("previous-date")
+	serviceID := r.FormValue("service-id")
+	previousServiceID := r.FormValue("previous-service-id")
+	professionalID := r.FormValue("professional-id")
+	previousProfessionalID := r.FormValue("previous-professional-id")
 
 	if date == "" {
 		//TODO - Utilizar a data atual
@@ -113,8 +113,9 @@ func HandleWeeklyAppointments(w http.ResponseWriter, r *http.Request) {
 		date, serviceID, professionalID = date, "all", "all"
 	}
 
-	professionals := testdata.Professionals
+	professionals := make([]scheduling.Professional, 0)
 	if serviceID != "all" {
+		professionals = testdata.Professionals
 		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
 		tmp := make([]scheduling.Professional, 0)
 		for _, professional := range professionals {
@@ -134,9 +135,9 @@ func HandleWeeklyAppointments(w http.ResponseWriter, r *http.Request) {
 		Appointments:  appointments,
 	}
 
-	if serviceID != "all" {
+	if serviceID == "all" {
 		professionalID = "all"
 	}
 
-	components.WeeklyAppointments("2024-10-10", serviceID, professionalID, opts).Render(r.Context(), w)
+	components.WeeklyAppointments(date, serviceID, professionalID, opts).Render(r.Context(), w)
 }
