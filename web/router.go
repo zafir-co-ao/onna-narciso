@@ -12,8 +12,9 @@ var cwd string
 func NewRouter(
 	s scheduling.AppointmentScheduler,
 	c scheduling.AppointmentCanceler,
-	f scheduling.AppointmentFinder,
+	f scheduling.AppointmentGetter,
 	r scheduling.AppointmentRescheduler,
+	wg scheduling.WeeklyAppointmentsFinder,
 ) *http.ServeMux {
 
 	mux := http.NewServeMux()
@@ -23,7 +24,7 @@ func NewRouter(
 	mux.HandleFunc("/appointments/reschedule", handlers.NewAppointmentReschedulerHandler(r))
 	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
 	mux.HandleFunc("/daily-view", handlers.HandleDailyView)
-	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments)
+	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments(wg))
 	mux.HandleFunc("/appointment-form", handlers.HandleAppointmentForm)
 
 	mux.HandleFunc("/", handlers.NewStaticHandler())

@@ -104,7 +104,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 
 	u.bus.Publish(e)
 
-	return buildOutput(a), nil
+	return toAppointmentOutput(a), nil
 }
 
 func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {

@@ -14,9 +14,9 @@ func TestAppointmentFinder(t *testing.T) {
 	repo.Save(scheduling.Appointment{ID: "1"})
 
 	t.Run("should_find_appointment_in_repository", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentFinder(repo)
+		usecase := scheduling.NewAppointmentGetter(repo)
 
-		a, err := usecase.Execute("1")
+		a, err := usecase.Get("1")
 		if err != nil {
 			t.Errorf("Finder appointment should not return error: %v", err)
 		}
@@ -31,9 +31,9 @@ func TestAppointmentFinder(t *testing.T) {
 	})
 
 	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentFinder(repo)
+		usecase := scheduling.NewAppointmentGetter(repo)
 
-		_, err := usecase.Execute("2")
+		_, err := usecase.Get("2")
 		if err == nil {
 			t.Errorf("Finder appointment should return error, got %v", err)
 		}

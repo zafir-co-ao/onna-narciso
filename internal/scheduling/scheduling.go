@@ -23,7 +23,7 @@ type AppointmentOutput struct {
 	Duration         int
 }
 
-func buildOutput(a Appointment) AppointmentOutput {
+func toAppointmentOutput(a Appointment) AppointmentOutput {
 	return AppointmentOutput{
 		ID:               a.ID.String(),
 		CustomerID:       string(a.CustomerID),

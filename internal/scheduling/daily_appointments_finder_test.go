@@ -59,7 +59,7 @@ func TestDailyAppointments(t *testing.T) {
 
 		t.Run(test.date, func(t *testing.T) {
 
-			results, _ := appointmentsGetter.Get(test.date)
+			results, _ := appointmentsGetter.Find(test.date)
 
 			if len(results) != len(test.expectedIDs) {
 				t.Errorf("Expected %d appointments, got %d", len(test.expectedIDs), len(results))
@@ -67,8 +67,8 @@ func TestDailyAppointments(t *testing.T) {
 
 			for i, appointment := range results {
 
-				if !slices.ContainsFunc(results, func(a scheduling.Appointment) bool {
-					return a.ID.String() == test.expectedIDs[i]
+				if !slices.ContainsFunc(results, func(a scheduling.AppointmentOutput) bool {
+					return a.ID == test.expectedIDs[i]
 				}) {
 					t.Errorf("Expected appointment in IDs %v, got %s", test.expectedIDs, appointment.ID)
 				}

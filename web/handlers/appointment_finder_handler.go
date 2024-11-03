@@ -8,7 +8,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/components"
 )
 
-func NewAppointmentFinderHandler(f scheduling.AppointmentFinder) func(w http.ResponseWriter, r *http.Request) {
+func NewAppointmentFinderHandler(f scheduling.AppointmentGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			sendMethodNotAllowed(w)
@@ -17,7 +17,7 @@ func NewAppointmentFinderHandler(f scheduling.AppointmentFinder) func(w http.Res
 
 		id := r.PathValue("id")
 
-		o, err := f.Execute(id)
+		o, err := f.Get(id)
 
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
 			sendNotFound(w, "Marcação não encontrada")

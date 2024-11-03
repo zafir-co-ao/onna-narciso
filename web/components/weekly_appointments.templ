@@ -45,6 +45,13 @@ func getDayOfWeek(day, today string) string {
 	return fmt.Sprintf("%v-%v-%v", y, int(m), day)
 }
 
+func getMonthYear(date string) string {
+	t, _ := time.Parse("2006-01-02", date)
+	tz, _ := time.LoadLocation("Europe/Lisbon")
+
+	return t.In(tz).Format("January 2006")
+}
+
 func entityToOptions[T any](data []T, f func(t T) InputOption) []InputOption {
 	var options []InputOption
 	for _, d := range data {
@@ -83,7 +90,7 @@ templ WeeklyAppointments(date string,
 	@_getAppointmentSchedulingForm.Once() {
 		<script type="text/javascript">
 		    function getAppointmentForm (event) {
-		        openDialog("#dialog")
+
 				const rows = parseInt(event.target.dataset.rows)
     			const week = document.querySelectorAll(".week-day-cell")
                 const day = week[getPosition(event) - 1]
@@ -99,6 +106,7 @@ templ WeeklyAppointments(date string,
                 form.append("date", date)
                 form.append("hour", hour)
 
+                openDialog("#dialog")
                 htmx.ajax("POST", "/appointment-form", { target: "#dialog-content", swap: "innerHTML", values: form})
 			}
 		</script>
@@ -106,7 +114,7 @@ templ WeeklyAppointments(date string,
 	<div id="weekly-view">
 		<header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
 			<h1 class="text-base font-semibold leading-6 text-gray-900">
-				<time datetime="2022-01">Outubro - 2024</time>
+				<time datetime={ date }>{ getMonthYear(date) }</time>
 			</h1>
 			<form
 				hx-post="/weekly-appointments"
