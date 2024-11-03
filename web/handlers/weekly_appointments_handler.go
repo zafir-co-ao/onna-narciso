@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
@@ -44,8 +45,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 		previousProfessionalID := r.FormValue("previous-professional-id")
 
 		if date == "" {
-			//TODO - Utilizar a data atual
-			date = "2024-11-04"
+			date = time.Now().Format("2006-01-02")
 		}
 
 		if serviceID == "" {

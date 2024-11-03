@@ -232,20 +232,21 @@ templ WeeklyAppointments(date string,
 						<div class="grid flex-auto grid-cols-1 grid-rows-1">
 							<!-- Horizontal lines -->
 							<div
-								class={ "col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
+								class={ "col-start-1 col-end-2 row-start-1 grid",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
 							>
-								<div class="row-span-1"></div>
+								<div class="row-span-1 border-b border-b-gray-200"></div>
 								for i := opts.StartHour; i < opts.EndHour; i++ {
-									<div>
+									<div class="border-b border-b-gray-100">
 										<div
-											class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400"
+											data-time={ fmt.Sprintf("%d:00", i) }
+											class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400 hover:bg-gray-200 cursor-pointer"
 										>
 											{ fmt.Sprintf("%d:00", i) }
 										</div>
 									</div>
-									<div></div>
-									<div></div>
-									<div></div>
+									<div class="border-b border-b-gray-100" data-time={ fmt.Sprintf("%d:15", i) }></div>
+									<div class="border-b border-b-gray-100" data-time={ fmt.Sprintf("%d:30", i) }></div>
+									<div class="border-b border-b-gray-200" data-time={ fmt.Sprintf("%d:45", i) }></div>
 								}
 								<div class="row-span-1"></div>
 							</div>
@@ -262,8 +263,10 @@ templ WeeklyAppointments(date string,
 							<ol
 								id="events"
 								class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", opts.Days), fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
-								onclick="getAppointmentForm(event)"
 								data-rows={ fmt.Sprintf("%v", (opts.EndHour-opts.StartHour)*4+1) }
+								if professionalID != "all" && serviceID != "all" {
+									onclick="getAppointmentForm(event)"
+								}
 							>
 								for _, a := range opts.Appointments {
 									@Event(a, opts.StartHour)

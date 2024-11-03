@@ -1,7 +1,6 @@
 package scheduling
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
@@ -43,7 +42,6 @@ func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 
 func ServiceIsSpecificantion(s string) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
-		fmt.Printf("Service: %v vs %s\n", s, a.ServiceID)
 		return a.ServiceID.String() == s
 	}
 }
