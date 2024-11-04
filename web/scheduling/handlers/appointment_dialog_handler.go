@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/zafir-co-ao/onna-narciso/web/components"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 )
 
 func HandleAppointmentDialog(w http.ResponseWriter, r *http.Request) {

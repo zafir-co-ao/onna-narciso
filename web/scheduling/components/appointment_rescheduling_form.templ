@@ -3,6 +3,7 @@ package components
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
 templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
@@ -15,9 +16,9 @@ templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
 						<span class="cursor-pointer text-lg" onclick="closeDialog('#dialog')">x</span>
 					</div>
 					<input type="hidden" name="id" value={ o.ID }/>
-					@InputHiddenDisplay(o.CustomerName, "", "")
-					@InputHiddenDisplay(o.ProfessionalName, "", "")
-					@InputHiddenDisplay(o.ServiceName, "", "")
+					@components.InputHiddenDisplay(o.CustomerName, "", "")
+					@components.InputHiddenDisplay(o.ProfessionalName, "", "")
+					@components.InputHiddenDisplay(o.ServiceName, "", "")
 					<div class="mt-4">
 						<input
 							type="date"
@@ -34,18 +35,18 @@ templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
 						/>
 					</div>
 					<div class="mt-4">
-						@Dropdown(
+						@components.Dropdown(
 							"duration",
 							"15",
-							WithOptions(
-								InputOption{"15 Minutos", "15"},
-								InputOption{"30 Minutos", "30"},
-								InputOption{"45 Minutos", "45"},
-								InputOption{"1 Hora", "60"},
-								InputOption{"1 Hora e 30 Minutos", "90"},
-								InputOption{"2 Horas", "120"},
-								InputOption{"2 Horas e 30 Minutos", "150"},
-								InputOption{"3 Horas", "180"},
+							components.WithOptions(
+								components.InputOption{"15 Minutos", "15"},
+								components.InputOption{"30 Minutos", "30"},
+								components.InputOption{"45 Minutos", "45"},
+								components.InputOption{"1 Hora", "60"},
+								components.InputOption{"1 Hora e 30 Minutos", "90"},
+								components.InputOption{"2 Horas", "120"},
+								components.InputOption{"2 Horas e 30 Minutos", "150"},
+								components.InputOption{"3 Horas", "180"},
 							),
 						)
 					</div>

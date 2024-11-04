@@ -1,0 +1,47 @@
+package components
+
+import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+
+type AppointmentSchedulerState struct {
+	CustomerID       string
+	CustomerName     string
+	ProfessionalID   string
+	ProfessionalName string
+	ServiceID        string
+	ServiceName      string
+	StartHour        string
+	Date             string
+	HxTarget         string
+	HxSwap           string
+	HxTrigger        string
+}
+
+templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
+	@components.Dialog(AppointmentSchedulerForm(s))
+}
+
+templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
+	<form method="post" hx-post="/appointments" hx-trigger={ s.HxTrigger } hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
+		@ChooseCustomer()
+		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
+		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
+		@components.InputHiddenDisplay(s.Date, "date", s.Date)
+		@components.InputHiddenDisplay(s.StartHour, "start", s.StartHour)
+		<div class="mt-4">
+			@components.Dropdown(
+				"duration",
+				"15",
+				components.WithOptions(
+					components.InputOption{"15 Minutos", "15"},
+					components.InputOption{"30 Minutos", "30"},
+					components.InputOption{"45 Minutos", "45"},
+					components.InputOption{"1 Hora", "60"},
+					components.InputOption{"1 Hora e 30 Minutos", "90"},
+					components.InputOption{"2 Horas", "120"},
+					components.InputOption{"2 Horas e 30 Minutos", "150"},
+					components.InputOption{"3 Horas", "180"},
+				),
+			)
+		</div>
+	</form>
+}

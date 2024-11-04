@@ -8,7 +8,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
-	"github.com/zafir-co-ao/onna-narciso/web/components"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 )
 
 func weeklyAppointmentsServiceChanged(date string, serviceID string) (string, string, string) {
@@ -83,13 +83,12 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			professionals = tmp
 		}
 
-
 		appointments, err := findApppointments(g, date, serviceID, professionalID)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		opts := components.WeeklyAppointmentsOptions{
+		opts := pages.WeeklyAppointmentsOptions{
 			Date:           date,
 			ServiceID:      serviceID,
 			ProfessionalID: professionalID,
@@ -101,12 +100,11 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			Appointments:   appointments,
 		}
 
-
 		if serviceID == "all" {
 			professionalID = "all"
 		}
 
-		components.WeeklyAppointments(opts).Render(r.Context(), w)
+		pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }
 

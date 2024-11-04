@@ -6,19 +6,20 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/web/components"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
+	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
 func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			sendMethodNotAllowed(w)
+			_http.SendMethodNotAllowed(w)
 			return
 		}
 
 		duration, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
-			sendBadRequest(w, "A duração da marcação está no formato inválido")
+			_http.SendBadRequest(w, "A duração da marcação está no formato inválido")
 			return
 		}
 
@@ -36,46 +37,46 @@ func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w ht
 		o, err := u.Schedule(input)
 
 		if errors.Is(scheduling.ErrCustomerNotFound, err) {
-			sendNotFound(w, "Cliente não encontrado")
+			_http.SendNotFound(w, "Cliente não encontrado")
 			return
 		}
 
 		if errors.Is(scheduling.ErrCustomerRegistration, err) {
-			sendReponse(w, "Não foi possível registar o cliente", http.StatusInternalServerError)
+			_http.SendReponse(w, "Não foi possível registar o cliente", http.StatusInternalServerError)
 			return
 		}
 
 		if errors.Is(scheduling.ErrProfessionalNotFound, err) {
-			sendNotFound(w, "Profissional não encontrado")
+			_http.SendNotFound(w, "Profissional não encontrado")
 			return
 		}
 
 		if errors.Is(scheduling.ErrServiceNotFound, err) {
-			sendNotFound(w, "Serviço não encontrado")
+			_http.SendNotFound(w, "Serviço não encontrado")
 			return
 		}
 
 		if errors.Is(scheduling.ErrBusyTime, err) {
-			sendBadRequest(w, "Horarário Indisponível")
+			_http.SendBadRequest(w, "Horarário Indisponível")
 			return
 		}
 
 		if errors.Is(scheduling.ErrInvalidDate, err) {
-			sendBadRequest(w, "A data para a marcação está no formato inválido")
+			_http.SendBadRequest(w, "A data para a marcação está no formato inválido")
 			return
 		}
 
 		if errors.Is(scheduling.ErrInvalidHour, err) {
-			sendBadRequest(w, "A hora da marcação está no formato inválido")
+			_http.SendBadRequest(w, "A hora da marcação está no formato inválido")
 			return
 		}
 
 		if !errors.Is(nil, err) {
-			sendServerError(w)
+			_http.SendServerError(w)
 			return
 		}
 
-		sendCreated(w)
-		components.Event(o, 8).Render(r.Context(), w)
+		_http.SendCreated(w)
+		components.Appointment(o, 8).Render(r.Context(), w)
 	}
 }

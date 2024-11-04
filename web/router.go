@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/web/handlers"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 )
 
 var cwd string
@@ -23,11 +23,11 @@ func NewRouter(
 	mux.HandleFunc("/appointments", handlers.NewAppointmentSchedulerHandler(s))
 	mux.HandleFunc("/appointments/reschedule", handlers.NewAppointmentReschedulerHandler(r))
 	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
-	mux.HandleFunc("/daily-view", handlers.HandleDailyView)
+	mux.HandleFunc("/daily-appointments", handlers.HandleDailyAppointments)
 	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments(wg))
 	mux.HandleFunc("/appointment-dialog", handlers.HandleAppointmentDialog)
 
-	mux.HandleFunc("/", handlers.NewStaticHandler())
+	mux.HandleFunc("/", NewStaticHandler())
 
 	return mux
 }

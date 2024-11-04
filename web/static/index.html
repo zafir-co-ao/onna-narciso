@@ -14,7 +14,7 @@
 
         <script>
             window.addEventListener("load", (evt) => {
-                htmx.ajax("GET", "/daily-view", {
+                htmx.ajax("GET", "/daily-appointments", {
                     target: "#content",
                     swap: "outerHTML",
                 });

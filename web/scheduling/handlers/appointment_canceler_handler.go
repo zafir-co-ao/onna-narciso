@@ -5,12 +5,13 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
 func NewAppointmentCancelerHandler(u scheduling.AppointmentCanceler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			sendMethodNotAllowed(w)
+			_http.SendMethodNotAllowed(w)
 			return
 		}
 
@@ -19,20 +20,20 @@ func NewAppointmentCancelerHandler(u scheduling.AppointmentCanceler) func(w http
 		err := u.Execute(id)
 
 		if errors.Is(scheduling.ErrInvalidStatusToCancel, err) {
-			sendBadRequest(w, "Estado inválido para cancelar")
+			_http.SendBadRequest(w, "Estado inválido para cancelar")
 			return
 		}
 
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
-			sendBadRequest(w, "Marcação não encontrada")
+			_http.SendBadRequest(w, "Marcação não encontrada")
 			return
 		}
 
 		if !errors.Is(nil, err) {
-			sendServerError(w)
+			_http.SendServerError(w)
 			return
 		}
 
-		sendOk(w)
+		_http.SendOk(w)
 	}
 }
