@@ -37,7 +37,7 @@ func _chooseCustomerGetData(customers interface{}) string {
 templ ChooseCustomer() {
 	<div x-data={ _chooseCustomerGetData(_getCustomers()) }>
 		<div class="relative mt-4">
-			<input type="hidden" name="customer_id" id="customer-id" x-model="selectedCustomer.id"/>
+			<input type="hidden" name="customer-id" id="customer-id" x-model="selectedCustomer.id"/>
 			<button
 				type="button"
 				class="flex items-center justify-between gap-x-1.5 w-full rounded-md bg-white px-3 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -89,7 +89,7 @@ templ ChooseCustomer() {
 					<div class="relative mt-2 rounded-md shadow-sm">
 						<input
 							type="text"
-							name="customer_name"
+							name="customer-name"
 							class="block w-full rounded-md px-3 py-2.5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
 							placeholder="Nome do Cliente"
 						/>
@@ -102,7 +102,7 @@ templ ChooseCustomer() {
 			<div class="mt-4">
 				<input
 					type="text"
-					name="customer_phone"
+					name="customer-phone"
 					placeholder="Telefone"
 					class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
 				/>
