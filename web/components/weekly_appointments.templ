@@ -94,7 +94,6 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
     			const week = document.querySelectorAll(".week-day-cell")
                 const day = week[getPosition(event) - 1]
                 const date = day.dataset.weekDay
-                const hour = getHour(event, rows)
 
                 htmx.ajax("GET", "/appointment-dialog", {
                   target: "#appointments",
@@ -104,9 +103,11 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
                     'professional-id': "1",
                     'professional-name': "Sara Gomes",
                     'date': date,
-                    'hour': hour,
                     'hx-target': '#appointments',
-                    'hx-swap': 'beforeend'
+                    'hx-swap': 'beforeend',
+                    'hx-trigger': 'click from:#btn-schedule',
+                    'layer-y': event.layerY,
+                    'height': event.target.clientHeight
                 }})
 			}
 		</script>

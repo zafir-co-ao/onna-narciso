@@ -30,12 +30,12 @@ templ Event(o scheduling.AppointmentOutput, startHour int) {
 		<script type="text/javascript">
 		    function getForm(event, el) {
 				event.stopPropagation()
-		        openDialog("#dialog")
 				const id = el.dataset.id
 				htmx.ajax("GET", `/appointments/${id}`, {target: "#dialog-content", swap: "innerHTML"})
 			}
 		</script>
 	}
+	<dialog id="dialog" hx-swap-oob="true"></dialog>
 	<li id={ o.ID } class={ "relative flex cursor-pointer z-[2000]", getEventClass(o, startHour) } data-id={ o.ID } onclick="getForm(event, this)">
 		<a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100">
 			<p class="order-1 font-semibold text-blue-700">{ o.CustomerName }</p>
