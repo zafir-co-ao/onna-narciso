@@ -8,7 +8,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 )
 
-func TestAppointmentFinder(t *testing.T) {
+func TestAppointmentGetter(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
 	repo.Save(scheduling.Appointment{ID: "1"})
