@@ -89,8 +89,7 @@ var getAppointmentDialogHandle = templ.NewOnceHandle()
 templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 	@getAppointmentDialogHandle.Once() {
 		<script type="text/javascript">
-		    function getAppointmentDialog (event) {
-
+		    function getAppointmentDialog(event) {
 				const rows = parseInt(event.target.dataset.rows)
     			const week = document.querySelectorAll(".week-day-cell")
                 const day = week[getPosition(event) - 1]
@@ -99,7 +98,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 
                 htmx.ajax("GET", "/appointment-dialog", {
                   target: "#appointments",
-                  params: {
+                  values: {
                     'service-id': "1",
                     'service-name': "Manicure + Pedicure",
                     'professional-id': "1",
