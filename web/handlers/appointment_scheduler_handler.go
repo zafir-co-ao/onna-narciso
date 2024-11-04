@@ -23,13 +23,13 @@ func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w ht
 		}
 
 		input := scheduling.AppointmentSchedulerInput{
-			ProfessionalID: r.Form.Get("professional_id"),
-			ServiceID:      r.Form.Get("service_id"),
+			ProfessionalID: r.Form.Get("professional-id"),
+			ServiceID:      r.Form.Get("service-id"),
 			Date:           r.Form.Get("date"),
 			StartHour:      r.Form.Get("start"),
-			CustomerID:     r.Form.Get("customer_id"),
-			CustomerName:   r.Form.Get("customer_name"),
-			CustomerPhone:  r.Form.Get("customer_phone"),
+			CustomerID:     r.Form.Get("customer-id"),
+			CustomerName:   r.Form.Get("customer-name"),
+			CustomerPhone:  r.Form.Get("customer-phone"),
 			Duration:       duration,
 		}
 
