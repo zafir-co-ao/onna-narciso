@@ -15,7 +15,15 @@ module.exports = {
     "sm:col-start-4",
     "sm:col-start-5",
     "sm:col-start-6",
-    "sm:col-start-7",
+
+    "grid-cols-1",
+    "grid-cols-5",
+    "grid-cols-6",
+
+    "sm:grid-cols-1",
+    "sm:grid-cols-5",
+    "sm:grid-cols-6",
+
     "row-start-2",
     "row-start-3",
     "row-start-4",

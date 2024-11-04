@@ -2,10 +2,13 @@ package components
 
 templ _dialog() {
 	<script type="text/javascript">
-	    var el = document.querySelector("#events")
-	    el.addEventListener("htmx:afterSwap", () => {
+        //TODO: Este pedaço de código causa erros no console,
+        /*
+	    let el = document.querySelector("#events")
+	    el?.addEventListener("htmx:afterSwap", () => {
 			closeDialog("#dialog")
 		})
+		*/
     </script>
 	<dialog id="dialog" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 		<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true">

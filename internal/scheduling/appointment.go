@@ -21,8 +21,9 @@ type Service struct {
 }
 
 type Professional struct {
-	ID   id.ID
-	Name Name
+	ID          id.ID
+	Name        Name
+	ServicesIDS []id.ID
 }
 
 type Customer struct {
@@ -33,6 +34,10 @@ type Customer struct {
 
 type Status string
 type Name string
+
+func (n Name) String() string {
+	return string(n)
+}
 
 type Appointment struct {
 	ID               id.ID

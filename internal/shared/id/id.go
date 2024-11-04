@@ -23,7 +23,7 @@ func MustRandom() ID {
 	return ID(v)
 }
 
-func (i ID) Value() string {
+func (i ID) String() string {
 	return string(i)
 }
 

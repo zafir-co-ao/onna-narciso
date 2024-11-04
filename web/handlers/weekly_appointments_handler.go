@@ -2,41 +2,121 @@ package handlers
 
 import (
 	"net/http"
+	"slices"
+	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/components"
 )
 
-var appointments = []scheduling.AppointmentOutput{
-	{
-		ID:               "1",
-		CustomerName:     "Paola Oliveira",
-		ProfessionalName: "Julieta Venegas",
-		ServiceName:      "Manicure",
-		Date:             "2024-10-10",
-		Hour:             "08:00",
-		Duration:         180,
-	},
-	{
-		ID:               "2",
-		CustomerName:     "Juliana Paes",
-		ProfessionalName: "Julieta Venegas",
-		ServiceName:      "Manicure",
-		Date:             "2024-10-11",
-		Hour:             "10:30",
-		Duration:         90,
-	},
-	{
-		ID:               "3",
-		CustomerName:     "Gisele Bündchen",
-		ProfessionalName: "Mariana Aydar",
-		ServiceName:      "Depilação Laser",
-		Date:             "2024-10-10",
-		Hour:             "12:00",
-		Duration:         60,
-	},
+func weeklyAppointmentsServiceChanged(date string, serviceID string) (string, string, string) {
+
+	if serviceID == "all" {
+		return date, "all", "all"
+	}
+
+	return date, serviceID, "all"
 }
 
-func HandleWeeklyAppointments(w http.ResponseWriter, r *http.Request) {
-	components.WeeklyAppointments("2024-10-10", 6, 8, 22, appointments).Render(r.Context(), w)
+func weeklyAppointmentsProfessionalChanged(date, serviceID, professionalID string) (string, string, string) {
+	if serviceID == "all" {
+		return date, "all", "all"
+	}
+
+	if professionalID == "all" {
+		return date, serviceID, "all"
+	}
+
+	//TODO - Quando tiver o repositório de profissionais, permitir apenas serviços que o profissional atende
+	return date, serviceID, professionalID
+}
+
+func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http.ResponseWriter, r *http.Request) {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		date := r.FormValue("date")
+		previousDate := r.FormValue("previous-date")
+		serviceID := r.FormValue("service-id")
+		previousServiceID := r.FormValue("previous-service-id")
+		professionalID := r.FormValue("professional-id")
+		previousProfessionalID := r.FormValue("previous-professional-id")
+
+		if date == "" {
+			date = time.Now().Format("2006-01-02")
+		}
+
+		if serviceID == "" {
+			serviceID = "all"
+			previousServiceID = "all"
+		}
+
+		if professionalID == "" {
+			professionalID = "all"
+			previousProfessionalID = "all"
+		}
+
+		if professionalID != previousProfessionalID {
+			date, serviceID, professionalID = weeklyAppointmentsProfessionalChanged(date, serviceID, professionalID)
+		}
+
+		if serviceID != previousServiceID {
+			date, serviceID, professionalID = weeklyAppointmentsServiceChanged(date, serviceID)
+		}
+
+		if date != previousDate {
+			date, serviceID, professionalID = date, "all", "all"
+		}
+
+		professionals := make([]scheduling.Professional, 0)
+		if serviceID != "all" {
+			professionals = testdata.Professionals
+			//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
+			tmp := make([]scheduling.Professional, 0)
+			for _, professional := range professionals {
+				if slices.Contains(professional.ServicesIDS, id.ID(serviceID)) {
+					tmp = append(tmp, professional)
+				}
+			}
+			professionals = tmp
+		}
+
+		appointments, err := findApppointments(g, date, serviceID, professionalID)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		opts := components.WeeklyAppointmentsOptions{
+			StartHour:     6,
+			EndHour:       20,
+			Days:          5,
+			Services:      testdata.Services,
+			Professionals: professionals,
+			Appointments:  appointments,
+		}
+
+		if serviceID == "all" {
+			professionalID = "all"
+		}
+
+		components.WeeklyAppointments(date, serviceID, professionalID, opts).Render(r.Context(), w)
+	}
+}
+
+func findApppointments(f scheduling.WeeklyAppointmentsFinder,
+	dateStart, serviceID, professionalID string) ([]scheduling.AppointmentOutput, error) {
+
+	if serviceID == "all" {
+		return make([]scheduling.AppointmentOutput, 0), nil
+	}
+
+	professionalIDS := make([]string, 0)
+	if professionalID != "all" {
+		professionalIDS = append(professionalIDS, professionalID)
+	}
+
+	return f.Find(dateStart, serviceID, professionalIDS)
 }

@@ -15,7 +15,7 @@ type AppointmentReschedulerInput struct {
 }
 
 type AppointmentRescheduler interface {
-	Execute(i AppointmentReschedulerInput) (AppointmentOutput, error)
+	Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error)
 }
 
 type appointmentRescheduler struct {
@@ -27,7 +27,7 @@ func NewAppointmentRescheduler(r AppointmentRepository, b event.Bus) Appointment
 	return &appointmentRescheduler{repo: r, bus: b}
 }
 
-func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (AppointmentOutput, error) {
+func (r *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
 	a, err := r.repo.FindByID(id.NewID(i.ID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
@@ -51,11 +51,11 @@ func (r *appointmentRescheduler) Execute(i AppointmentReschedulerInput) (Appoint
 
 	e := event.New(
 		EventAppointmentRescheduled,
-		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 		event.WithPayload(i),
 	)
 
 	r.bus.Publish(e)
 
-	return buildOutput(a), nil
+	return toAppointmentOutput(a), nil
 }

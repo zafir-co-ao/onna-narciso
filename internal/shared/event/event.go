@@ -69,7 +69,7 @@ func New(name string, opts ...EventOpt) Event {
 
 	myHeaders[HeaderEventName] = name
 
-	myHeaders[HeaderEventID] = id.Value()
+	myHeaders[HeaderEventID] = id.String()
 	myHeaders[HeaderIssuedAt] = time.Now().Format("2006-01-02T15:04:05Z")
 
 	e := Event{headers: myHeaders}

@@ -98,13 +98,13 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 
 	e := event.New(
 		EventAppointmentScheduled,
-		event.WithHeader(event.HeaderAggregateID, a.ID.Value()),
+		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 		event.WithPayload(i),
 	)
 
 	u.bus.Publish(e)
 
-	return buildOutput(a), nil
+	return toAppointmentOutput(a), nil
 }
 
 func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {

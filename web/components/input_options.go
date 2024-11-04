@@ -113,7 +113,11 @@ func WithOptions(v ...InputOption) _inputStateOpt {
 	return func(s interface{}) {
 		switch s := s.(type) {
 		case *_inputState:
-			s.options = v
+			if s.options == nil {
+				s.options = make([]InputOption, 0)
+			}
+
+			s.options = append(s.options, v...)
 		}
 	}
 }
