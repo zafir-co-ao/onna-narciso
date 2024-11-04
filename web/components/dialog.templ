@@ -1,19 +1,12 @@
 package components
 
-templ _dialog() {
-	<script type="text/javascript">
-        //TODO: Este pedaço de código causa erros no console,
-        /*
-	    let el = document.querySelector("#events")
-	    el?.addEventListener("htmx:afterSwap", () => {
-			closeDialog("#dialog")
-		})
-		*/
-    </script>
-	<dialog id="dialog" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+templ Dialog(inner templ.Component) {
+	<dialog id="dialog" hx-swap-oob="true" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" open>
 		<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true">
 			<div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-				<div id="dialog-content" class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"></div>
+				<div id="dialog-content" class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+					@inner
+				</div>
 			</div>
 		</div>
 	</dialog>

@@ -1,6 +1,6 @@
 package components
 
-type AppointmentSchedulingState struct {
+type AppointmentSchedulerState struct {
 	CustomerID       string
 	CustomerName     string
 	ProfessionalID   string
@@ -9,11 +9,17 @@ type AppointmentSchedulingState struct {
 	ServiceName      string
 	StartHour        string
 	Date             string
+	HxTarget         string
+	HxSwap           string
 }
 
-templ AppointmentSchedulingForm(s AppointmentSchedulingState) {
+templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
+	@Dialog(AppointmentSchedulerForm(s))
+}
+
+templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 	<div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-		<form method="post" hx-post="/appointments/schedule" hx-trigger="submit" hx-target="#events" hx-swap="beforeend">
+		<form method="post" hx-post="/appointments" hx-trigger="submit" hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
 			<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 				<div class="mt-3 text-center p-4 sm:mt-0 sm:text-left">
 					<div class="flex justify-between items-center">

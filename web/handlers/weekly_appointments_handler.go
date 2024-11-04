@@ -83,26 +83,30 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			professionals = tmp
 		}
 
+
 		appointments, err := findApppointments(g, date, serviceID, professionalID)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-
 		opts := components.WeeklyAppointmentsOptions{
-			StartHour:     6,
-			EndHour:       20,
-			Days:          5,
-			Services:      testdata.Services,
-			Professionals: professionals,
-			Appointments:  appointments,
+			Date:           date,
+			ServiceID:      serviceID,
+			ProfessionalID: professionalID,
+			StartHour:      6,
+			EndHour:        20,
+			Days:           5,
+			Services:       testdata.Services,
+			Professionals:  professionals,
+			Appointments:   appointments,
 		}
+
 
 		if serviceID == "all" {
 			professionalID = "all"
 		}
 
-		components.WeeklyAppointments(date, serviceID, professionalID, opts).Render(r.Context(), w)
+		components.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }
 
