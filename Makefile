@@ -11,6 +11,7 @@ tests:
 
 clean:
 	rm -fr bin
+	find . -name '*_templ.go' -type f -exec rm {} \;
 
 build: clean
 	mkdir bin

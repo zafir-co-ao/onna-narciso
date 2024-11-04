@@ -72,24 +72,24 @@ func professionalsToOptions(professionals []scheduling.Professional) []InputOpti
 	})
 }
 
-var _getAppointmentSchedulingForm = templ.NewOnceHandle()
-
 type WeeklyAppointmentsOptions struct {
-	Days          int
-	StartHour     int
-	EndHour       int
-	Services      []scheduling.Service
-	Professionals []scheduling.Professional
-	Appointments  []scheduling.AppointmentOutput
+	Date           string
+	ServiceID      string
+	ProfessionalID string
+	Days           int
+	StartHour      int
+	EndHour        int
+	Services       []scheduling.Service
+	Professionals  []scheduling.Professional
+	Appointments   []scheduling.AppointmentOutput
 }
 
-templ WeeklyAppointments(date string,
-	serviceID string,
-	professionalID string,
-	opts WeeklyAppointmentsOptions) {
-	@_getAppointmentSchedulingForm.Once() {
+var getAppointmentDialogHandle = templ.NewOnceHandle()
+
+templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
+	@getAppointmentDialogHandle.Once() {
 		<script type="text/javascript">
-		    function getAppointmentForm (event) {
+		    function getAppointmentDialog (event) {
 
 				const rows = parseInt(event.target.dataset.rows)
     			const week = document.querySelectorAll(".week-day-cell")
@@ -97,24 +97,25 @@ templ WeeklyAppointments(date string,
                 const date = day.dataset.weekDay
                 const hour = getHour(event, rows)
 
-                const form = new FormData()
-
-                form.append("service_id", "1")
-                form.append("service_name", "Manicure + Pedicure")
-                form.append("professional_id", "1")
-                form.append("professional_name", "Sara Gomes")
-                form.append("date", date)
-                form.append("hour", hour)
-
-                openDialog("#dialog")
-                htmx.ajax("POST", "/appointment-form", { target: "#dialog-content", swap: "innerHTML", values: form})
+                htmx.ajax("GET", "/appointment-dialog", {
+                  target: "#appointments",
+                  params: {
+                    'service-id': "1",
+                    'service-name': "Manicure + Pedicure",
+                    'professional-id': "1",
+                    'professional-name': "Sara Gomes",
+                    'date': date,
+                    'hour': hour,
+                    'hx-target': '#appointments',
+                    'hx-swap': 'beforeend'
+                }})
 			}
 		</script>
 	}
 	<div id="weekly-view">
 		<header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
 			<h1 class="text-base font-semibold leading-6 text-gray-900">
-				<time datetime={ date }>{ getMonthYear(date) }</time>
+				<time datetime={ opts.Date }>{ getMonthYear(opts.Date) }</time>
 			</h1>
 			<form
 				hx-post="/weekly-appointments"
@@ -122,8 +123,8 @@ templ WeeklyAppointments(date string,
 				hx-target="#weekly-view"
 				hx-swap="outerHTML"
 			>
-				<input type="hidden" name="date" value={ date }/>
-				<input type="hidden" name="previous-date" value={ date }/>
+				<input type="hidden" name="date" value={ opts.Date }/>
+				<input type="hidden" name="previous-date" value={ opts.Date }/>
 				<div class="flex items-center gap-3">
 					<div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
 						<button
@@ -174,22 +175,22 @@ templ WeeklyAppointments(date string,
 					</div>
 					<div class="hidden md:block">
 						@Dropdown("service-id",
-							serviceID,
+							opts.ServiceID,
 							WithId("service_id"),
 							WithOptions(InputOption{"[ Serviços ]", "all"}),
 							WithOptions(servicesToOptions(opts.Services)...),
 						)
-						<input type="hidden" name="previous-service-id" value={ serviceID }/>
+						<input type="hidden" name="previous-service-id" value={ opts.ServiceID }/>
 					</div>
 					<div class="hidden md:block">
 						@Dropdown(
 							"professional-id",
-							professionalID,
+							opts.ProfessionalID,
 							WithId("professional_id"),
 							WithOptions(InputOption{"[ Profissionais ]", "all"}),
 							WithOptions(professionalsToOptions(opts.Professionals)...),
 						)
-						<input type="hidden" name="previous-professional-id" value={ professionalID }/>
+						<input type="hidden" name="previous-professional-id" value={ opts.ProfessionalID }/>
 					</div>
 				</div>
 			</form>
@@ -202,7 +203,7 @@ templ WeeklyAppointments(date string,
 				>
 					<div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
 						<div class={ "grid text-sm leading-6 text-gray-500 sm:hidden", fmt.Sprintf("grid-cols-%v", opts.Days) }>
-							for _, day := range getDaysOfMonthFromMonday(date, opts.Days) {
+							for _, day := range getDaysOfMonthFromMonday(opts.Date, opts.Days) {
 								<button type="button" class="flex flex-col items-center pb-3 pt-2">
 									{ day[1] }
 									<span class="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
@@ -215,11 +216,11 @@ templ WeeklyAppointments(date string,
 							class={ "-mr-px hidden divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid", fmt.Sprintf("grid-cols-%v", opts.Days) }
 						>
 							<div class="col-end-1 w-14"></div>
-							for _, day := range getDaysOfMonthFromMonday(date, opts.Days) {
+							for _, day := range getDaysOfMonthFromMonday(opts.Date, opts.Days) {
 								<div class="flex items-center justify-center py-3">
 									<span>
 										{ day[1] }
-										<span class="items-center justify-center font-semibold text-gray-900 week-day-cell" data-week-day={ getDayOfWeek(day[0], date) }>
+										<span class="items-center justify-center font-semibold text-gray-900 week-day-cell" data-week-day={ getDayOfWeek(day[0], opts.Date) }>
 											{ day[0] }
 										</span>
 									</span>
@@ -259,13 +260,13 @@ templ WeeklyAppointments(date string,
 								}
 								<div class={ fmt.Sprintf("col-start-%d", opts.Days + 1),"row-span-full w-8" }></div>
 							</div>
-							<!-- Events -->
+							<!-- Appointments -->
 							<ol
-								id="events"
+								id="appointments"
 								class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", opts.Days), fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
 								data-rows={ fmt.Sprintf("%v", (opts.EndHour-opts.StartHour)*4+1) }
-								if professionalID != "all" && serviceID != "all" {
-									onclick="getAppointmentForm(event)"
+								if opts.ProfessionalID != "all" && opts.ServiceID != "all" {
+									onclick="getAppointmentDialog(event)"
 								}
 							>
 								for _, a := range opts.Appointments {
@@ -278,5 +279,4 @@ templ WeeklyAppointments(date string,
 			</div>
 		</div>
 	</div>
-	@_dialog()
 }
