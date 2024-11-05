@@ -6,11 +6,11 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ AppointmentRescheduleDialog(o scheduling.AppointmentOutput) {
-	@components.Dialog("Editar marcação", AppointmentReschedulingForm(o))
+templ AppointmentReschedulerDialog(o scheduling.AppointmentOutput) {
+	@components.Dialog("Editar marcação", AppointmentReschedulerForm(o))
 }
 
-templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
+templ AppointmentReschedulerForm(o scheduling.AppointmentOutput) {
 	<form hx-post="/appointments/reschedule" hx-trigger="submit" hx-target={ fmt.Sprintf("#%v", o.ID) } hx-swap="outerHTML">
 		<input type="hidden" name="id" value={ o.ID }/>
 		@components.InputHiddenDisplay(o.CustomerName, "", "")
@@ -57,7 +57,6 @@ templ AppointmentReschedulingForm(o scheduling.AppointmentOutput) {
 			<button
 				type="button"
 				class="mt-3 inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-900 sm:mt-0 sm:w-auto"
-				onclick="openConfirmDialog('#cancel-dialog')"
 			>
 				Cancelar
 			</button>
