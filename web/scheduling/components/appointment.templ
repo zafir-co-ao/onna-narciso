@@ -31,7 +31,7 @@ templ Appointment(o scheduling.AppointmentOutput, startHour int) {
 		    function getForm(event, el) {
 				event.stopPropagation()
 				const id = el.dataset.id
-				htmx.ajax("GET", `/appointments/${id}`, {target: "#dialog-content", swap: "innerHTML"})
+				htmx.ajax("GET", `/appointments/${id}`, {target: "#dialog", swap: "innerHTML"})
 			}
 		</script>
 	}
