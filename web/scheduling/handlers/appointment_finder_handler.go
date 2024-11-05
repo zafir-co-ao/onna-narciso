@@ -31,7 +31,6 @@ func NewAppointmentFinderHandler(f scheduling.AppointmentGetter) func(w http.Res
 		}
 
 		_http.SendOk(w)
-		components.AppointmentReschedulingForm(o).Render(r.Context(), w)
-
+		components.AppointmentRescheduleDialog(o).Render(r.Context(), w)
 	}
 }
