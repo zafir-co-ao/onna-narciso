@@ -93,35 +93,62 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 	@getAppointmentDialogHandle.Once() {
 		<script type="text/javascript">
 		    function getAppointmentDialog(event) {
-				const rows = parseInt(event.target.dataset.rows)
-    			const week = document.querySelectorAll(".week-day-cell")
-                const day = week[getAppointmentPosition(event) - 1]
-                const date = day.dataset.weekDay
+
+				const { date, time } = getAppointmentDatetime(event)
 
                 htmx.ajax("GET", "/appointment-dialog", {
                   target: "#appointments",
                   values: {
-                    'service-id': "1",
-                    'service-name': "Manicure + Pedicure",
-                    'professional-id': "1",
-                    'professional-name': "Sara Gomes",
+                    'service-id': document.querySelector("[name='service-id']").value,
+                    'professional-id': document.querySelector("[name='professional-id']").value,
                     'date': date,
+                    'start-hour': time,
                     'hx-target': '#appointments',
                     'hx-swap': 'beforeend',
                     'hx-trigger': 'click from:#btn-schedule',
-                    'layer-y': event.layerY,
-                    'height': event.target.clientHeight
                 }})
 			}
+
+
 		</script>
 	}
 	@getAppointmentPositionHandle.Once() {
 		<script type="text/javascript">
-        function getAppointmentPosition(event) {
+        function getAppointmentDatetime(event) {
             const calendar = event.target;
-            const col = calendar.clientWidth / 5;
-            const deslocX = Math.trunc((event.layerX) / col);
-            return deslocX + 1;
+
+            const initialDate = Date.parse(document.querySelector("[name='date']").value)
+            const startHour = parseInt(document.querySelector("[name='start-hour']").value)
+            const endHour = parseInt(document.querySelector("[name='end-hour']").value)
+            const days = parseInt(document.querySelector("[name='days']").value)
+
+            const dateSlot = calendar.clientWidth / days;
+            let timeSlot = calendar.clientHeight / ((endHour - startHour)*4 + 1);
+
+
+            const addDate = Math.floor(event.layerX / dateSlot);
+            let addSlots = Math.floor(event.layerY / timeSlot - 3);
+
+            if (addSlots === -1) {
+              addSlots = 0;
+            }
+
+            console.log(addDate);
+
+            let hour = startHour + Math.floor(addSlots/4);
+            const minutes = (addSlots % 4) * 15;
+
+            let date = new Date(initialDate + addDate * 24 * 60 * 60 * 1000)
+            let time = `${hour}:${minutes === 0 ? '00' : minutes }`
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = date.getFullYear();
+
+            console.log(document.querySelector("[name='date']").value)
+            console.log(date.getDate())
+
+            return {date: `${year}-${month}-${day}`, time}
         }
 
         </script>
@@ -139,6 +166,9 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 			>
 				<input type="hidden" name="date" value={ opts.Date }/>
 				<input type="hidden" name="previous-date" value={ opts.Date }/>
+				<input type="hidden" name="start-hour" value={ fmt.Sprint(opts.StartHour) }/>
+				<input type="hidden" name="end-hour" value={ fmt.Sprint(opts.EndHour) }/>
+				<input type="hidden" name="days" value={ fmt.Sprint(opts.Days) }/>
 				<div class="flex items-center gap-3">
 					<div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
 						<button

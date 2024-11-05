@@ -25,7 +25,7 @@ func NewRouter(
 	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
 	mux.HandleFunc("/daily-appointments", handlers.HandleDailyAppointments)
 	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments(wg))
-	mux.HandleFunc("/appointment-dialog", handlers.HandleAppointmentDialog)
+	mux.HandleFunc("/appointment-dialog", handlers.HandleAppointmentDialog())
 
 	mux.HandleFunc("/", NewStaticHandler())
 
