@@ -107,10 +107,14 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 	return toAppointmentOutput(a), nil
 }
 
-func (u *appointmentScedulerImpl) findOrRegistrationCustomer(d AppointmentSchedulerInput) (Customer, error) {
-	if len(d.CustomerID) > 0 {
-		return u.customerAcl.FindCustomerByID(d.CustomerID)
+func (u *appointmentScedulerImpl) findOrRegistrationCustomer(i AppointmentSchedulerInput) (Customer, error) {
+	if len(i.CustomerID) == 0 && len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0 {
+		return Customer{}, ErrCustomerNotFound
 	}
 
-	return u.customerAcl.RequestCustomerRegistration(d.CustomerName, d.CustomerPhone)
+	if len(i.CustomerID) > 0 && (len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0) {
+		return u.customerAcl.FindCustomerByID(i.CustomerID)
+	}
+
+	return u.customerAcl.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)
 }
