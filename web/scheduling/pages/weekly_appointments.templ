@@ -87,7 +87,7 @@ type WeeklyAppointmentsOptions struct {
 }
 
 var getAppointmentDialogHandle = templ.NewOnceHandle()
-var getAppointmentPositionHandle = templ.NewOnceHandle()
+var getAppointmentDatetimeHandle = templ.NewOnceHandle()
 
 templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 	@getAppointmentDialogHandle.Once() {
@@ -105,19 +105,17 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
                     'start-hour': time,
                     'hx-target': '#appointments',
                     'hx-swap': 'beforeend',
-                    'hx-trigger': 'click from:#btn-schedule',
                 }})
 			}
 
-
 		</script>
 	}
-	@getAppointmentPositionHandle.Once() {
+	@getAppointmentDatetimeHandle.Once() {
 		<script type="text/javascript">
         function getAppointmentDatetime(event) {
             const calendar = event.target;
 
-            const initialDate = Date.parse(document.querySelector("[name='date']").value)
+            const initialDate = Date.parse(document.querySelector("span[data-week-day]").dataset.weekDay)
             const startHour = parseInt(document.querySelector("[name='start-hour']").value)
             const endHour = parseInt(document.querySelector("[name='end-hour']").value)
             const days = parseInt(document.querySelector("[name='days']").value)
@@ -133,8 +131,6 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
               addSlots = 0;
             }
 
-            console.log(addDate);
-
             let hour = startHour + Math.floor(addSlots/4);
             const minutes = (addSlots % 4) * 15;
 
@@ -142,11 +138,8 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
             let time = `${hour}:${minutes === 0 ? '00' : minutes }`
 
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
-
-            console.log(document.querySelector("[name='date']").value)
-            console.log(date.getDate())
 
             return {date: `${year}-${month}-${day}`, time}
         }
