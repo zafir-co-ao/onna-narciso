@@ -21,6 +21,12 @@
                     swap: "outerHTML",
                 });
             });
+
+            document.addEventListener("htmx:responseError", (evt) => {
+                const xhr = evt.detail.xhr;
+                const message = xhr.responseText;
+                alert(message);
+            });
         </script>
     </head>
 
@@ -35,7 +41,7 @@
                                     class="ml-10 flex items-baseline space-x-4"
                                 >
                                     <a
-                                        hx-get="/daily-view"
+                                        hx-get="/daily-appointments"
                                         hx-trigger="click"
                                         hx-target="#content"
                                         hx-swap="outerHTML"
@@ -215,6 +221,7 @@
                     <div id="content"></div>
                 </div>
             </main>
+
             <dialog id="dialog"></dialog>
         </div>
     </body>
