@@ -8,16 +8,14 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func NewAppointmentCancelerHandler(u scheduling.AppointmentCanceler) func(w http.ResponseWriter, r *http.Request) {
+func NewAppointmentCancelerHandler(c scheduling.AppointmentCanceler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)
 			return
 		}
 
-		id := r.PathValue("id")
-
-		err := u.Execute(id)
+		err := c.Execute(r.PathValue("id"))
 
 		if errors.Is(scheduling.ErrInvalidStatusToCancel, err) {
 			_http.SendBadRequest(w, "Estado inválido para cancelar")

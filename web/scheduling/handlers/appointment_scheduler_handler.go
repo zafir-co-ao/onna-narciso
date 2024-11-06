@@ -10,7 +10,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
+func NewAppointmentSchedulerHandler(s scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)
@@ -34,7 +34,7 @@ func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w ht
 			Duration:       duration,
 		}
 
-		o, err := u.Schedule(input)
+		o, err := s.Schedule(input)
 
 		if errors.Is(scheduling.ErrCustomerNotFound, err) {
 			_http.SendNotFound(w, "Cliente não encontrado")
@@ -77,6 +77,6 @@ func NewAppointmentSchedulerHandler(u scheduling.AppointmentScheduler) func(w ht
 		}
 
 		_http.SendCreated(w)
-		components.Appointment(o, 8).Render(r.Context(), w)
+		components.Appointment(o, 6).Render(r.Context(), w)
 	}
 }
