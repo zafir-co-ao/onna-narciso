@@ -49,7 +49,7 @@ func getDayOfWeek(day, today string) string {
 
 func getMonthYear(date string) string {
 	t, _ := time.Parse("2006-01-02", date)
-	tz, _ := time.LoadLocation("Europe/Lisbon")
+	tz, _ := time.LoadLocation("Africa/Luanda")
 
 	return t.In(tz).Format("January 2006")
 }
@@ -115,14 +115,13 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
         function getAppointmentDatetime(event) {
             const calendar = event.target;
 
-            const initialDate = Date.parse(document.querySelector("span[data-week-day]").dataset.weekDay)
-            const startHour = parseInt(document.querySelector("[name='start-hour']").value)
-            const endHour = parseInt(document.querySelector("[name='end-hour']").value)
+            const initialDate = Date.parse(document.querySelector("[data-week-day]").dataset.weekDay)
             const days = parseInt(document.querySelector("[name='days']").value)
+            const startHour = parseInt(document.querySelector("[name='start-hour']").value)
+            const timeSlots = parseInt(document.querySelector("[data-rows]").dataset.rows)
 
             const dateSlot = calendar.clientWidth / days;
-            let timeSlot = calendar.clientHeight / ((endHour - startHour)*4 + 1);
-
+            let timeSlot = calendar.clientHeight / timeSlots;
 
             const addDate = Math.floor(event.layerX / dateSlot);
             let addSlots = Math.floor(event.layerY / timeSlot - 3);
@@ -272,7 +271,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 							<div
 								class={ "col-start-1 col-end-2 row-start-1 grid",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
 							>
-								<div class="row-span-1 border-b border-b-gray-200"></div>
+								<div class="row-span-1 border-b border-b-gray-300"></div>
 								for i := opts.StartHour; i < opts.EndHour; i++ {
 									<div class="border-b border-b-gray-100">
 										<div
@@ -284,7 +283,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 									</div>
 									<div class="border-b border-b-gray-100" data-time={ fmt.Sprintf("%d:15", i) }></div>
 									<div class="border-b border-b-gray-100" data-time={ fmt.Sprintf("%d:30", i) }></div>
-									<div class="border-b border-b-gray-200" data-time={ fmt.Sprintf("%d:45", i) }></div>
+									<div class="border-b border-b-gray-300" data-time={ fmt.Sprintf("%d:45", i) }></div>
 								}
 								<div class="row-span-1"></div>
 							</div>
