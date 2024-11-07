@@ -151,7 +151,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 				<time datetime={ opts.Date }>{ getMonthYear(opts.Date) }</time>
 			</h1>
 			<form
-				hx-post="/weekly-appointments"
+				hx-get="/weekly-appointments"
 				hx-trigger="change from:#service_id,change from:#professional_id"
 				hx-target="#weekly-view"
 				hx-swap="outerHTML"
@@ -306,7 +306,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 								}
 							>
 								for _, a := range opts.Appointments {
-									@_components.Appointment(a, opts.StartHour)
+									@_components.Appointment(a, opts.StartHour, _components.WithHxGet(fmt.Sprintf("/appointments/%v", a.ID)))
 								}
 							</ol>
 						</div>

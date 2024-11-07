@@ -10,7 +10,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func NewAppointmentSchedulerHandler(s scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
+func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)

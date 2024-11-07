@@ -8,7 +8,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func NewAppointmentCancelerHandler(c scheduling.AppointmentCanceler) func(w http.ResponseWriter, r *http.Request) {
+func HandleCancelAppointment(c scheduling.AppointmentCanceler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)

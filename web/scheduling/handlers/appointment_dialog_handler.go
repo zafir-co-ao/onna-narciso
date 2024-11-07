@@ -7,7 +7,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 )
 
-func HandleAppointmentDialog() func(w http.ResponseWriter, r *http.Request) {
+func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var s = components.AppointmentSchedulerState{

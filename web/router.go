@@ -19,13 +19,15 @@ func NewRouter(
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/appointments/{id}", handlers.NewAppointmentGetterHandler(g))
-	mux.HandleFunc("/appointments", handlers.NewAppointmentSchedulerHandler(s))
-	mux.HandleFunc("/appointments/reschedule", handlers.NewAppointmentReschedulerHandler(r))
-	mux.HandleFunc("/appointments/{id}/cancel", handlers.NewAppointmentCancelerHandler(c))
-	mux.HandleFunc("/daily-appointments", handlers.HandleDailyAppointments)
-	mux.HandleFunc("/weekly-appointments", handlers.HandleWeeklyAppointments(wg))
-	mux.HandleFunc("/appointment-dialog", handlers.HandleAppointmentDialog())
+	mux.HandleFunc("POST /appointments", handlers.HandleScheduleAppointment(s))
+	mux.HandleFunc("PUT /appointments/{id}", handlers.HandleRescheduleNewAppointment(r))
+	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(c))
+
+	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments)
+	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(wg))
+
+	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
+	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
 
 	mux.HandleFunc("/", NewStaticHandler())
 

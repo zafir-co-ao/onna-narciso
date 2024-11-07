@@ -13,9 +13,9 @@ templ AppointmentReschedulerDialog(o scheduling.AppointmentOutput) {
 templ AppointmentReschedulerForm(o scheduling.AppointmentOutput) {
 	<form hx-post="/appointments/reschedule" hx-trigger="submit" hx-target={ fmt.Sprintf("#%v", o.ID) } hx-swap="outerHTML">
 		<input type="hidden" name="id" value={ o.ID }/>
-		@components.InputHiddenDisplay(o.CustomerName, "", "")
-		@components.InputHiddenDisplay(o.ProfessionalName, "", "")
-		@components.InputHiddenDisplay(o.ServiceName, "", "")
+		@components.InputHiddenDisplay(o.CustomerName, "customer-name", o.CustomerName)
+		@components.InputHiddenDisplay(o.ProfessionalName, "professional-name", o.ProfessionalName)
+		@components.InputHiddenDisplay(o.ServiceName, "service-name", o.ServiceName)
 		<div class="mt-4">
 			<input
 				type="date"
@@ -56,7 +56,7 @@ templ AppointmentReschedulerForm(o scheduling.AppointmentOutput) {
 			</button>
 			<button
 				type="button"
-				hx-post={ fmt.Sprintf("/appointments/%v/cancel", o.ID) }
+				hx-delete={ fmt.Sprintf("/appointments/%v", o.ID) }
 				hx-trigger="click"
 				hx-target={ fmt.Sprintf("#%v", o.ID) }
 				hx-swap="outerHTML"
