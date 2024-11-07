@@ -109,16 +109,16 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 }
 
 func findApppointments(f scheduling.WeeklyAppointmentsFinder,
-	dateStart, serviceID, professionalID string) ([]scheduling.AppointmentOutput, error) {
-
-	if serviceID == "all" {
-		return make([]scheduling.AppointmentOutput, 0), nil
-	}
+	date, serviceID, professionalID string) ([]scheduling.AppointmentOutput, error) {
 
 	professionalIDS := make([]string, 0)
 	if professionalID != "all" {
 		professionalIDS = append(professionalIDS, professionalID)
 	}
 
-	return f.Find(dateStart, serviceID, professionalIDS)
+	if serviceID == "all" {
+		return make([]scheduling.AppointmentOutput, 0), nil
+	}
+
+	return f.Find(date, serviceID, professionalIDS)
 }
