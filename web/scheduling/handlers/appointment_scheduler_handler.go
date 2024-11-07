@@ -6,11 +6,15 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
+	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
+func HandleScheduleAppointment(
+	s scheduling.AppointmentScheduler,
+	wg scheduling.WeeklyAppointmentsFinder,
+) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)
@@ -34,7 +38,7 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 			Duration:       duration,
 		}
 
-		o, err := s.Schedule(input)
+		_, err = s.Schedule(input)
 
 		if errors.Is(scheduling.ErrCustomerNotFound, err) {
 			_http.SendNotFound(w, "Cliente não encontrado")
@@ -76,7 +80,34 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 			return
 		}
 
+		appointments, err := wg.Find(
+			input.Date,
+			input.ServiceID,
+			[]string{input.ProfessionalID},
+		)
+
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
 		_http.SendCreated(w)
-		components.Appointment(o, 6).Render(r.Context(), w)
+
+		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
+		professionals := testdata.FindProfessionalsByServiceID(input.ServiceID)
+
+		opts := pages.WeeklyAppointmentsOptions{
+			ServiceID:      input.ServiceID,
+			ProfessionalID: input.ProfessionalID,
+			Date:           input.Date,
+			StartHour:      6,
+			EndHour:        20,
+			Days:           5,
+			Appointments:   appointments,
+			Services:       testdata.Services,
+			Professionals:  professionals,
+		}
+
+		pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }

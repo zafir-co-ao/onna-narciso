@@ -6,14 +6,18 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 
-	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
+	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleRescheduleNewAppointment(re scheduling.AppointmentRescheduler) func(w http.ResponseWriter, r *http.Request) {
+func HandleRescheduleAppointment(
+	re scheduling.AppointmentRescheduler,
+	wg scheduling.WeeklyAppointmentsFinder,
+) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
+		if r.Method != http.MethodPut {
 			_http.SendMethodNotAllowed(w)
 			return
 		}
@@ -31,7 +35,7 @@ func HandleRescheduleNewAppointment(re scheduling.AppointmentRescheduler) func(w
 			Duration:  duration,
 		}
 
-		o, err := re.Reschedule(input)
+		_, err = re.Reschedule(input)
 		if errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
 			_http.SendBadRequest(w, "Estado inválido para reagendar")
 			return
@@ -62,7 +66,38 @@ func HandleRescheduleNewAppointment(re scheduling.AppointmentRescheduler) func(w
 			return
 		}
 
+		weekDay := r.FormValue("week-day")
+		serviceID := r.FormValue("service-id")
+		professionalID := r.FormValue("professional-id")
+
+		appointments, err := wg.Find(
+			weekDay,
+			serviceID,
+			[]string{professionalID},
+		)
+
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
+		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
+		professionals := testdata.FindProfessionalsByServiceID(serviceID)
+
 		_http.SendOk(w)
-		components.Appointment(o, 6).Render(r.Context(), w)
+
+		opts := pages.WeeklyAppointmentsOptions{
+			ServiceID:      serviceID,
+			ProfessionalID: professionalID,
+			Services:       testdata.Services,
+			Date:           weekDay,
+			Days:           5,
+			StartHour:      6,
+			EndHour:        20,
+			Appointments:   appointments,
+			Professionals:  professionals,
+		}
+
+		pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }

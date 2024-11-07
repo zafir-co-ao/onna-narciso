@@ -75,7 +75,8 @@ func professionalsToOptions(professionals []scheduling.Professional) []component
 }
 
 func getUrl(o scheduling.AppointmentOutput, opts WeeklyAppointmentsOptions) string {
-	return fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v?week-day=%v", o.ID, opts.Date)
+	base := "/scheduling/dialogs/edit-appointment-dialog"
+	return fmt.Sprintf("%v/%v?week-day=%v&hx-target=weekly-view&hx-swap=outerHTML", base, o.ID, opts.Date)
 }
 
 type WeeklyAppointmentsOptions struct {

@@ -60,6 +60,8 @@ templ _appointmentTempl(s *_appointmentState) {
 	<li
 		data-id={ s.appointment.ID }
 		class={ "appointment relative flex cursor-pointer z-[2000]", getAppointmentClass(s) }
+		hx-stop="true"
+		hx-swap="none"
 		if s.hxGet != "" {
 			hx-get={ s.hxGet }
 		} else {

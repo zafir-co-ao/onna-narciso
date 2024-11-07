@@ -21,7 +21,7 @@ templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
 }
 
 templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
-	<form method="post" hx-post="/appointments" hx-trigger="submit" hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
+	<form method="post" hx-post="/appointments" hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
 		@ChooseCustomer()
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)

@@ -28,7 +28,11 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 			return
 		}
 
+		weekDay := r.URL.Query().Get("week-day")
+		target := r.URL.Query().Get("hx-target")
+		swap := r.URL.Query().Get("hx-swap")
+
 		_http.SendOk(w)
-		components.AppointmentReschedulerDialog(o).Render(r.Context(), w)
+		components.AppointmentReschedulerDialog(o, weekDay, target, swap).Render(r.Context(), w)
 	}
 }
