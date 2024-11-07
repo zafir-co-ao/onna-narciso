@@ -356,7 +356,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_customer_not_found_if_customer_not_exists_in_repository", func(t *testing.T) {
+	t.Run("should_return_error_customer_not_found_if_customer_not_exists", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "4",
@@ -377,7 +377,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_professional_not_found_if_professional_not_exists_in_repository", func(t *testing.T) {
+	t.Run("should_return_error_professional_not_found_if_professional_not_exists", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "4",
 			CustomerID:     "100",
@@ -399,7 +399,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_service_not_found_if_service_not_exists_in_repository", func(t *testing.T) {
+	t.Run("should_return_error_service_not_found_if_service_not_exists", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			CustomerID:     "3",
@@ -467,8 +467,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(err, scheduling.ErrCustomerRegistration) {
-			t.Errorf("The error must be ErrCustomerRegistration, got %v", err)
+		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
+			t.Errorf("The error must be ErrCustomerNotFound, got %v", err)
 		}
 	})
 
@@ -707,6 +707,32 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentSchedulerInput{}) {
 			t.Error("The event payload must be logged")
+		}
+	})
+
+	t.Run("should_return_error_when_information_of_customer_is_empty", func(t *testing.T) {
+		i := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "1",
+			CustomerID:     "",
+			CustomerName:   "",
+			CustomerPhone:  "",
+			ServiceID:      "1",
+			Date:           "2024-02-11",
+			StartHour:      "15:00",
+			Duration:       60,
+		}
+		h := &FakeStorageHandler{}
+		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
+		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+
+		_, err := usecase.Schedule(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrCustomerNotFound, err) {
+			t.Errorf("Should return an ErrorCustomerNotFound, got %v", err)
 		}
 	})
 }

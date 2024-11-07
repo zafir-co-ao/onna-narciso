@@ -13,7 +13,7 @@ import (
 
 func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if http.MethodPost != r.Method {
+		if r.Method != http.MethodPost {
 			_http.SendMethodNotAllowed(w)
 			return
 		}
@@ -24,14 +24,14 @@ func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func
 			return
 		}
 
-		i := scheduling.AppointmentReschedulerInput{
+		input := scheduling.AppointmentReschedulerInput{
 			ID:        r.Form.Get("id"),
 			Date:      r.Form.Get("date"),
 			StartHour: r.Form.Get("start"),
 			Duration:  duration,
 		}
 
-		o, err := re.Reschedule(i)
+		o, err := re.Reschedule(input)
 		if errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
 			_http.SendBadRequest(w, "Estado inválido para reagendar")
 			return
@@ -63,6 +63,6 @@ func NewAppointmentReschedulerHandler(re scheduling.AppointmentRescheduler) func
 		}
 
 		_http.SendOk(w)
-		components.Appointment(o, 8).Render(r.Context(), w)
+		components.Appointment(o, 6).Render(r.Context(), w)
 	}
 }
