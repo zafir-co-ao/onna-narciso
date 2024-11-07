@@ -19,9 +19,9 @@ func NewRouter(
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("POST /appointments", handlers.HandleScheduleAppointment(s))
-	mux.HandleFunc("PUT /appointments/{id}", handlers.HandleRescheduleNewAppointment(r))
-	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(c))
+	mux.HandleFunc("POST /appointments", handlers.HandleScheduleAppointment(s, wg))
+	mux.HandleFunc("PUT /appointments/{id}", handlers.HandleRescheduleAppointment(r, wg))
+	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(c, wg))
 
 	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments)
 	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(wg))
