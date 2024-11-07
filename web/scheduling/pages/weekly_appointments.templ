@@ -74,6 +74,10 @@ func professionalsToOptions(professionals []scheduling.Professional) []component
 	})
 }
 
+func getUrl(o scheduling.AppointmentOutput, opts WeeklyAppointmentsOptions) string {
+	return fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v?week-day=%v", o.ID, opts.Date)
+}
+
 type WeeklyAppointmentsOptions struct {
 	Date           string
 	ServiceID      string
@@ -96,15 +100,16 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 
 				const { date, time } = getAppointmentDatetime(event)
 
-                htmx.ajax("GET", "/appointment-dialog", {
+                htmx.ajax("GET", "/scheduling/dialogs/schedule-appointment-dialog", {
                   target: "#appointments",
+                  swap: "none",
                   values: {
                     'service-id': document.querySelector("[name='service-id']").value,
                     'professional-id': document.querySelector("[name='professional-id']").value,
                     'date': date,
                     'start-hour': time,
-                    'hx-target': '#appointments',
-                    'hx-swap': 'beforeend',
+                    'hx-target': '#weekly-view',
+                    'hx-swap': 'outerHTML',
                 }})
 			}
 
@@ -232,7 +237,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 			</form>
 		</header>
 		<div class="flex h-full flex-col border border-gray-100">
-			<div id="week-view" class="isolate flex flex-auto flex-col overflow-auto bg-white">
+			<div class="isolate flex flex-auto flex-col overflow-auto bg-white">
 				<div
 					style="width: 165%"
 					class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full"
@@ -302,11 +307,15 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 								class={ "col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:pr-8", fmt.Sprintf("sm:grid-cols-%v", opts.Days), fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4) }
 								data-rows={ fmt.Sprintf("%v", (opts.EndHour-opts.StartHour)*4+1) }
 								if opts.ProfessionalID != "all" && opts.ServiceID != "all" {
-									onclick="getAppointmentDialog(event)"
+									ondblclick="getAppointmentDialog(event)"
 								}
 							>
 								for _, a := range opts.Appointments {
-									@_components.Appointment(a, opts.StartHour, _components.WithHxGet(fmt.Sprintf("/appointments/%v", a.ID)))
+									@_components.Appointment(
+										a,
+										opts.StartHour,
+										_components.WithHxGet(getUrl(a, opts)),
+									)
 								}
 							</ol>
 						</div>
