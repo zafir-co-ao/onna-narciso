@@ -15,11 +15,6 @@ func HandleCancelAppointment(
 	wg scheduling.WeeklyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			_http.SendMethodNotAllowed(w)
-			return
-		}
-
 		err := c.Execute(r.PathValue("id"))
 
 		if errors.Is(scheduling.ErrInvalidStatusToCancel, err) {

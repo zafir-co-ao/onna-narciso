@@ -16,11 +16,6 @@ func HandleScheduleAppointment(
 	wg scheduling.WeeklyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			_http.SendMethodNotAllowed(w)
-			return
-		}
-
 		duration, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
 			_http.SendBadRequest(w, "A duração da marcação está no formato inválido")

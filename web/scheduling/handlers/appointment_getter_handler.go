@@ -11,11 +11,6 @@ import (
 
 func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			_http.SendMethodNotAllowed(w)
-			return
-		}
-
 		o, err := g.Get(r.PathValue("id"))
 
 		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
