@@ -15,7 +15,7 @@ func HandleCancelAppointment(
 	wg scheduling.WeeklyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := c.Execute(r.PathValue("id"))
+		err := c.Cancel(r.PathValue("id"))
 
 		if errors.Is(scheduling.ErrInvalidStatusToCancel, err) {
 			_http.SendBadRequest(w, "Estado inválido para cancelar")

@@ -8,7 +8,7 @@ import (
 const EventAppointmentCanceled = "EventAppointmentCanceled"
 
 type AppointmentCanceler interface {
-	Execute(id string) error
+	Cancel(id string) error
 }
 
 type appointmentCancelerImpl struct {
@@ -20,7 +20,7 @@ func NewAppointmentCanceler(repo AppointmentRepository, bus event.Bus) Appointme
 	return &appointmentCancelerImpl{repo, bus}
 }
 
-func (u *appointmentCancelerImpl) Execute(appointmentId string) error {
+func (u *appointmentCancelerImpl) Cancel(appointmentId string) error {
 	a, err := u.repo.FindByID(id.NewID(appointmentId))
 	if err != nil {
 		return err
@@ -31,7 +31,10 @@ func (u *appointmentCancelerImpl) Execute(appointmentId string) error {
 		return err
 	}
 
-	u.repo.Save(a)
+	err = u.repo.Save(a)
+	if err != nil {
+		return err
+	}
 
 	e := event.New(
 		EventAppointmentCanceled,
