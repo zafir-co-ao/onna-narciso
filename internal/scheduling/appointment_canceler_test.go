@@ -69,7 +69,12 @@ func TestAppointmentCanceler(t *testing.T) {
 
 	t.Run("must_publish_the_canceled_appointment_event", func(t *testing.T) {
 		id := "3"
-		h := &FakeStorageHandler{}
+
+		evtAppointmentID := ""
+		var h event.HandlerFunc = func(e event.Event) {
+			evtAppointmentID = e.Header(event.HeaderAggregateID)
+		}
+
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
@@ -80,52 +85,14 @@ func TestAppointmentCanceler(t *testing.T) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if !h.WasPublished(id, scheduling.EventAppointmentCanceled) {
+		if evtAppointmentID == "" {
 			t.Error("The EventAppointmentCanceled must be published")
 		}
+
+		if evtAppointmentID != id {
+			t.Errorf("The EventAppointmentCanceled must be published with the appointment id, got %v", evtAppointmentID)
+		}
+
 	})
 
-	t.Run("must_entry_the_appointment_id_when_publish_event", func(t *testing.T) {
-		id := "4"
-		h := &FakeStorageHandler{}
-		bus := event.NewInmemEventBus()
-		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
-
-		usecase := scheduling.NewAppointmentCanceler(repo, bus)
-
-		err := usecase.Execute(id)
-		if !errors.Is(nil, err) {
-			t.Errorf("Should not return an error, got %v", err)
-		}
-
-		if !h.WasPublished(id, scheduling.EventAppointmentCanceled) {
-			t.Error("The EventAppointmentCanceled must be published")
-		}
-	})
-}
-
-type FakeStorageHandler struct {
-	events []event.Event
-}
-
-func (s *FakeStorageHandler) Handle(e event.Event) {
-	s.events = append(s.events, e)
-}
-
-func (s *FakeStorageHandler) WasPublished(id, name string) bool {
-	for _, e := range s.events {
-		if e.Name() == name && e.Header(event.HeaderAggregateID) == id {
-			return true
-		}
-	}
-	return false
-}
-
-func (s *FakeStorageHandler) FindEventByAggregateID(id string) (event.Event, error) {
-	for _, e := range s.events {
-		if e.Header(event.HeaderAggregateID) == id {
-			return e, nil
-		}
-	}
-	return event.Event{}, event.ErrEventNotFound
 }

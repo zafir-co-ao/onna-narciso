@@ -54,6 +54,10 @@ type Appointment struct {
 	Duration         int
 }
 
+func (a Appointment) GetID() id.ID {
+	return a.ID
+}
+
 func NewAppointment(
 	ID id.ID,
 	ProfessionalID id.ID,

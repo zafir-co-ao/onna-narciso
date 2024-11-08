@@ -6,13 +6,13 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
-type repo struct {
-	data map[string]scheduling.Appointment
+type inmemAppointmentRepositoryImpl struct {
+	shared.BaseRepository[scheduling.Appointment]
 }
 
 func NewAppointmentRepository(s ...scheduling.Appointment) scheduling.AppointmentRepository {
-	r := &repo{
-		data: make(map[string]scheduling.Appointment),
+	r := &inmemAppointmentRepositoryImpl{
+		BaseRepository: shared.NewBaseRepository[scheduling.Appointment](),
 	}
 
 	for _, a := range s {
@@ -22,25 +22,25 @@ func NewAppointmentRepository(s ...scheduling.Appointment) scheduling.Appointmen
 	return r
 }
 
-func (r *repo) FindByID(id id.ID) (scheduling.Appointment, error) {
+func (r *inmemAppointmentRepositoryImpl) FindByID(id id.ID) (scheduling.Appointment, error) {
 
-	if val, ok := r.data[id.String()]; ok {
+	if val, ok := r.Data[id]; ok {
 		return val, nil
 	}
 
 	return scheduling.EmptyAppointment, scheduling.ErrAppointmentNotFound
 }
 
-func (r *repo) Save(a scheduling.Appointment) error {
-	r.data[a.ID.String()] = a
+func (r *inmemAppointmentRepositoryImpl) Save(a scheduling.Appointment) error {
+	r.Data[a.ID] = a
 	return nil
 }
 
-func (r *repo) FindByDate(d scheduling.Date) ([]scheduling.Appointment, error) {
+func (r *inmemAppointmentRepositoryImpl) FindByDate(d scheduling.Date) ([]scheduling.Appointment, error) {
 	spec := scheduling.DateIsSpecificantion(d)
 
 	var appointments []scheduling.Appointment
-	for _, appointment := range r.data {
+	for _, appointment := range r.Data {
 		if spec.IsSatisfiedBy(appointment) {
 			appointments = append(appointments, appointment)
 		}
@@ -49,7 +49,7 @@ func (r *repo) FindByDate(d scheduling.Date) ([]scheduling.Appointment, error) {
 	return appointments, nil
 }
 
-func (r *repo) FindByWeekServiceAndProfessionals(date string, serviceID string, professionalsIDs []string) ([]scheduling.Appointment, error) {
+func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date string, serviceID string, professionalsIDs []string) ([]scheduling.Appointment, error) {
 	spec := shared.And(
 		scheduling.WeekIsSpecificantion(date),
 		scheduling.ServiceIsSpecificantion(serviceID),
@@ -57,7 +57,7 @@ func (r *repo) FindByWeekServiceAndProfessionals(date string, serviceID string, 
 	)
 
 	var appointments []scheduling.Appointment
-	for _, appointment := range r.data {
+	for _, appointment := range r.Data {
 		if spec.IsSatisfiedBy(appointment) {
 			appointments = append(appointments, appointment)
 		}
@@ -66,14 +66,14 @@ func (r *repo) FindByWeekServiceAndProfessionals(date string, serviceID string, 
 	return appointments, nil
 }
 
-func (r *repo) FindByDateAndStatus(date scheduling.Date, status scheduling.Status) ([]scheduling.Appointment, error) {
+func (r *inmemAppointmentRepositoryImpl) FindByDateAndStatus(date scheduling.Date, status scheduling.Status) ([]scheduling.Appointment, error) {
 	spec := shared.And(
 		scheduling.DateIsSpecificantion(date),
 		scheduling.StatusIsSpecificantion(status),
 	)
 
 	var appointments []scheduling.Appointment
-	for _, appointment := range r.data {
+	for _, appointment := range r.BaseRepository.Data {
 		if spec.IsSatisfiedBy(appointment) {
 			appointments = append(appointments, appointment)
 		}

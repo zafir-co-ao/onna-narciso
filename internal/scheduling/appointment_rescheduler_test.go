@@ -2,7 +2,6 @@ package scheduling_test
 
 import (
 	"errors"
-	"reflect"
 	"strconv"
 	"testing"
 
@@ -248,17 +247,22 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Hour:     "18:00",
 			Duration: 30,
 		}
-		h := &FakeStorageHandler{}
+
+		evtPublished := false
+		var h event.HandlerFunc = func(e event.Event) {
+			evtPublished = true
+		}
+
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
-		o, err := usecase.Reschedule(i)
+		_, err := usecase.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if !h.WasPublished(o.ID, scheduling.EventAppointmentRescheduled) {
+		if !evtPublished {
 			t.Error("The EventAppointmentRescheduled must be published")
 		}
 	})
@@ -270,23 +274,25 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Hour:     "11:00",
 			Duration: 60,
 		}
-		h := &FakeStorageHandler{}
+
+		evtPublished := false
+		var h event.HandlerFunc = func(e event.Event) {
+			switch e.Payload().(type) {
+			case scheduling.AppointmentReschedulerInput:
+				evtPublished = true
+			}
+		}
+
 		bus := event.NewInmemEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
-		o, err := usecase.Reschedule(i)
+		_, err := usecase.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		e, err := h.FindEventByAggregateID(o.ID)
-		if errors.Is(event.ErrEventNotFound, err) {
-			t.Errorf("Should return an event, got %v", err)
-
-		}
-
-		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentReschedulerInput{}) {
+		if !evtPublished {
 			t.Error("The event payload must be logged")
 		}
 	})

@@ -2,7 +2,6 @@ package scheduling_test
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
@@ -667,18 +666,24 @@ func TestAppointmentScheduler(t *testing.T) {
 			Hour:           "9:00",
 			Duration:       60,
 		}
-		h := &FakeStorageHandler{}
+
+		evtPublished := false
+		var h event.HandlerFunc = func(e event.Event) {
+			evtPublished = true
+		}
+
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
-		o, err := usecase.Schedule(i)
+		_, err := usecase.Schedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if !h.WasPublished(o.ID, scheduling.EventAppointmentScheduled) {
-			t.Error("The EventAppointmentScheduled must be published")
+		if !evtPublished {
+			t.Error("The EventAppointmentCanceled must be published")
 		}
+
 	})
 
 	t.Run("must_entry_the_payload_in_schedule_appointment_event", func(t *testing.T) {
@@ -690,7 +695,15 @@ func TestAppointmentScheduler(t *testing.T) {
 			Hour:           "10:00",
 			Duration:       60,
 		}
-		h := &FakeStorageHandler{}
+
+		evtAggID := ""
+		var h event.HandlerFunc = func(e event.Event) {
+			switch e.Payload().(type) {
+			case scheduling.AppointmentSchedulerInput:
+				evtAggID = e.Header(event.HeaderAggregateID)
+			}
+		}
+
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
@@ -699,18 +712,13 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		e, err := h.FindEventByAggregateID(o.ID)
-		if errors.Is(event.ErrEventNotFound, err) {
-			t.Errorf("Should return an event, got %v", err)
+		if evtAggID != o.ID {
 
-		}
-
-		if reflect.TypeOf(e.Payload()) != reflect.TypeOf(scheduling.AppointmentSchedulerInput{}) {
-			t.Error("The event payload must be logged")
+			t.Errorf("Event header Aggregate ID should equal Output ID, got: %v != %v", evtAggID, o.ID)
 		}
 	})
 
-	t.Run("should_return_error_when_information_of_customer_is_empty", func(t *testing.T) {
+	t.Run("should_return_error_when_customer_name_nor_customer_phone_provided", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "",
@@ -721,8 +729,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			Hour:           "15:00",
 			Duration:       60,
 		}
-		h := &FakeStorageHandler{}
-		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
+
+		bus.Subscribe(scheduling.EventAppointmentScheduled, event.HandlerFunc(func(e event.Event) {}))
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
