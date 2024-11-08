@@ -730,7 +730,6 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		bus.Subscribe(scheduling.EventAppointmentScheduled, event.HandlerFunc(func(e event.Event) {}))
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
