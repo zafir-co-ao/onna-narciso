@@ -27,8 +27,8 @@ func NewAppointmentRescheduler(r AppointmentRepository, b event.Bus) Appointment
 	return &appointmentRescheduler{repo: r, bus: b}
 }
 
-func (r *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
-	a, err := r.repo.FindByID(id.NewID(i.ID))
+func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
+	a, err := u.repo.FindByID(id.NewID(i.ID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -38,7 +38,7 @@ func (r *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := r.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -47,7 +47,10 @@ func (r *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
-	r.repo.Save(a)
+	err = u.repo.Save(a)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
 
 	e := event.New(
 		EventAppointmentRescheduled,
@@ -55,7 +58,7 @@ func (r *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		event.WithPayload(i),
 	)
 
-	r.bus.Publish(e)
+	u.bus.Publish(e)
 
 	return toAppointmentOutput(a), nil
 }

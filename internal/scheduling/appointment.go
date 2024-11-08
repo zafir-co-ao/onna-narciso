@@ -67,7 +67,7 @@ func NewAppointment(
 	ServiceID id.ID,
 	ServiceName Name,
 	Date Date,
-	Start Hour,
+	Hour Hour,
 	Duration int,
 ) (Appointment, error) {
 	app := Appointment{
@@ -79,7 +79,7 @@ func NewAppointment(
 		ServiceID:        ServiceID,
 		ServiceName:      ServiceName,
 		Date:             Date,
-		Hour:             Start,
+		Hour:             Hour,
 		Duration:         Duration,
 		Status:           StatusScheduled,
 	}
@@ -137,11 +137,11 @@ func (a *Appointment) IsCancelled() bool {
 
 func (a *Appointment) calculateEnd() {
 	parts := strings.Split(a.Hour.Value(), ":")
-	hour, _ := strconv.ParseInt(parts[0], 10, 8)
-	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
+	hour, _ := strconv.Atoi(parts[0])
+	minutes, _ := strconv.Atoi(parts[1])
 
 	totalMinutes := a.Duration + int(minutes)
-	endHour := hour + int64(totalMinutes)/60
+	endHour := hour + totalMinutes/60
 	endMinutes := totalMinutes % 60
 
 	if endMinutes < 10 {

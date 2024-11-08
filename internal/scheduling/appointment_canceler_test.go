@@ -26,7 +26,7 @@ func TestAppointmentCanceler(t *testing.T) {
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
-		err := usecase.Execute("1")
+		err := usecase.Cancel("1")
 		if err != nil {
 			t.Errorf("Canceling appointment should not return error: %v", err)
 		}
@@ -44,7 +44,7 @@ func TestAppointmentCanceler(t *testing.T) {
 	t.Run("should_return_error_if_appointment_status_is_canceled", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
-		err := usecase.Execute("2")
+		err := usecase.Cancel("2")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
@@ -57,7 +57,7 @@ func TestAppointmentCanceler(t *testing.T) {
 	t.Run("should_return_error_appointment_not_found_when_appointment_not_exists_in_repository", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
-		err := usecase.Execute("1000")
+		err := usecase.Cancel("1000")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
@@ -80,7 +80,7 @@ func TestAppointmentCanceler(t *testing.T) {
 
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
-		err := usecase.Execute(id)
+		err := usecase.Cancel(id)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}

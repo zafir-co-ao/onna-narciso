@@ -94,7 +94,10 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
-	u.repo.Save(a)
+	err = u.repo.Save(a)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
 
 	e := event.New(
 		EventAppointmentScheduled,
