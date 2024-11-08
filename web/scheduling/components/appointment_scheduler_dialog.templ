@@ -9,7 +9,7 @@ type AppointmentSchedulerState struct {
 	ProfessionalName string
 	ServiceID        string
 	ServiceName      string
-	StartHour        string
+	Hour             string
 	Date             string
 	HxTarget         string
 	HxSwap           string
@@ -26,7 +26,7 @@ templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
 		@components.InputHiddenDisplay(s.Date, "date", s.Date)
-		@components.InputHiddenDisplay(s.StartHour, "start", s.StartHour)
+		@components.InputHiddenDisplay(s.Hour, "start", s.Hour)
 		<div class="mt-4">
 			@components.Dropdown(
 				"duration",

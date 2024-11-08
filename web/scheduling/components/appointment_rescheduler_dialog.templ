@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+	"strconv"
 )
 
 templ AppointmentReschedulerDialog(o scheduling.AppointmentOutput, hxTarget, hxSwap string) {
@@ -33,13 +34,14 @@ templ AppointmentReschedulerForm(o scheduling.AppointmentOutput, hxTarget, hxSwa
 			<input
 				type="time"
 				name="start"
+				value={ o.Hour }
 				class="block w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div class="mt-4">
 			@components.Dropdown(
 				"duration",
-				"15",
+				strconv.Itoa(o.Duration),
 				components.WithOptions(
 					components.InputOption{"15 Minutos", "15"},
 					components.InputOption{"30 Minutos", "30"},

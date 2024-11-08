@@ -74,11 +74,6 @@ func professionalsToOptions(professionals []scheduling.Professional) []component
 	})
 }
 
-func getUrl(o scheduling.AppointmentOutput) string {
-	base := "/scheduling/dialogs/edit-appointment-dialog"
-	return fmt.Sprintf("%v/%v", base, o.ID)
-}
-
 type WeeklyAppointmentsOptions struct {
 	Date           string
 	ServiceID      string
@@ -99,7 +94,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 		<script type="text/javascript">
 		    function getAppointmentDialog(event) {
 
-				const { date, time } = getAppointmentDatetime(event)
+				const { date, hour } = getAppointmentDatetime(event)
 
                 htmx.ajax("GET", "/scheduling/dialogs/schedule-appointment-dialog", {
                   target: "#appointments",
@@ -108,7 +103,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
                     'service-id': document.querySelector("[name='service-id']").value,
                     'professional-id': document.querySelector("[name='professional-id']").value,
                     'date': date,
-                    'start-hour': time,
+                    'hour': time,
                     'hx-target': '#weekly-view',
                     'hx-swap': 'outerHTML',
                 }})
@@ -140,13 +135,13 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
             const minutes = (addSlots % 4) * 15;
 
             let date = new Date(initialDate + addDate * 24 * 60 * 60 * 1000)
-            let time = `${hour}:${minutes === 0 ? '00' : minutes }`
+            hour = `${hour}:${minutes === 0 ? '00' : minutes }`
 
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
 
-            return {date: `${year}-${month}-${day}`, time}
+            return {date: `${year}-${month}-${day}`, hour}
         }
 
         </script>
@@ -275,7 +270,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 						<div class="grid flex-auto grid-cols-1 grid-rows-1">
 							<!-- Horizontal lines -->
 							<div
-								class={ "col-start-1 col-end-2 row-start-1 grid",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4), templ.KV("bg-gray-100", opts.ProfessionalID == "all"), templ.KV("z-50", opts.ProfessionalID == "all") }
+								class={ "col-start-1 col-end-2 row-start-1 grid",  fmt.Sprintf("week-view-rows-%v", (opts.EndHour-opts.StartHour)*4), templ.KV("bg-gray-100", opts.ProfessionalID == "all") }
 							>
 								<div class="row-span-1 border-b border-b-gray-300"></div>
 								for i := opts.StartHour; i < opts.EndHour; i++ {
@@ -315,7 +310,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 									@_components.Appointment(
 										a,
 										opts.StartHour,
-										_components.WithHxGet(getUrl(a)),
+										_components.WithHxGet(fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v", a.ID)),
 										_components.WithTarget("#weekly-view"),
 										_components.WithSwap("outerHTML"),
 									)

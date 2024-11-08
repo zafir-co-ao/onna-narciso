@@ -15,7 +15,7 @@ type AppointmentSchedulerInput struct {
 	CustomerPhone  string
 	ServiceID      string
 	Date           string
-	StartHour      string
+	Hour           string
 	Duration       int
 }
 
@@ -77,7 +77,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		WithServiceID(s.ID).
 		WithServiceName(s.Name).
 		WithDate(i.Date).
-		WithStartHour(i.StartHour).
+		WithHour(i.Hour).
 		WithDuration(i.Duration).
 		Build()
 

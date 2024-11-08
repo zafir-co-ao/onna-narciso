@@ -49,7 +49,7 @@ type Appointment struct {
 	ServiceName      Name
 	Status           Status
 	Date             Date // Formato: 2024-10-01
-	Start            Hour // Formato 9:00
+	Hour             Hour // Formato 9:00
 	End              Hour
 	Duration         int
 }
@@ -75,7 +75,7 @@ func NewAppointment(
 		ServiceID:        ServiceID,
 		ServiceName:      ServiceName,
 		Date:             Date,
-		Start:            Start,
+		Hour:             Start,
 		Duration:         Duration,
 		Status:           StatusScheduled,
 	}
@@ -101,7 +101,7 @@ func (a *Appointment) Reschedule(date string, hour string, duration int) error {
 	}
 
 	a.Date = d
-	a.Start = h
+	a.Hour = h
 	a.Duration = duration
 	a.Status = StatusRescheduled
 
@@ -132,7 +132,7 @@ func (a *Appointment) IsCancelled() bool {
 }
 
 func (a *Appointment) calculateEnd() {
-	parts := strings.Split(a.Start.Value(), ":")
+	parts := strings.Split(a.Hour.Value(), ":")
 	hour, _ := strconv.ParseInt(parts[0], 10, 8)
 	minutes, _ := strconv.ParseInt(parts[1], 10, 8)
 

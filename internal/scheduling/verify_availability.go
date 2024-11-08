@@ -21,9 +21,9 @@ func VerifyAvailability(a Appointment, appointments []Appointment) bool {
 }
 
 func isNotAvailable(a, b Appointment) bool {
-	startTimeA, _ := time.Parse("15:04", a.Start.Value())
+	startTimeA, _ := time.Parse("15:04", a.Hour.Value())
 	endTimeA, _ := time.Parse("15:04", a.End.Value())
-	startTimeB, _ := time.Parse("15:04", b.Start.Value())
+	startTimeB, _ := time.Parse("15:04", b.Hour.Value())
 	endTimeB, _ := time.Parse("15:04", b.End.Value())
 
 	if startTimeA.Equal(startTimeB) {

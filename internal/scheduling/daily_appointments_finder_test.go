@@ -13,33 +13,33 @@ func TestDailyAppointments(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
 
 	repo.Save(scheduling.Appointment{
-		ID:    "1",
-		Date:  scheduling.Date("2024-10-10"),
-		Start: scheduling.Hour("11:00"),
+		ID:   "1",
+		Date: scheduling.Date("2024-10-10"),
+		Hour: scheduling.Hour("11:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
-		ID:    "4",
-		Date:  scheduling.Date("2024-10-10"),
-		Start: scheduling.Hour("10:00"),
+		ID:   "4",
+		Date: scheduling.Date("2024-10-10"),
+		Hour: scheduling.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
-		ID:    "5",
-		Date:  scheduling.Date("2024-10-11"),
-		Start: scheduling.Hour("10:00"),
+		ID:   "5",
+		Date: scheduling.Date("2024-10-11"),
+		Hour: scheduling.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
-		ID:    "6",
-		Date:  scheduling.Date("2024-10-12"),
-		Start: scheduling.Hour("10:00"),
+		ID:   "6",
+		Date: scheduling.Date("2024-10-12"),
+		Hour: scheduling.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
-		ID:    "7",
-		Date:  scheduling.Date("2024-10-12"),
-		Start: scheduling.Hour("09:00"),
+		ID:   "7",
+		Date: scheduling.Date("2024-10-12"),
+		Hour: scheduling.Hour("09:00"),
 	})
 
 	type dailyAppointmentsTestMatrix struct {

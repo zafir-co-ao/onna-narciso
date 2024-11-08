@@ -15,9 +15,9 @@ import (
 func TestAppointmentScheduler(t *testing.T) {
 	bus := event.NewInmemEventBus()
 	repo := inmem.NewAppointmentRepository()
-	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Start: "8:00", Duration: 90, Status: scheduling.StatusScheduled}
-	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Start: "8:00", Duration: 480, Status: scheduling.StatusScheduled}
-	a3 := scheduling.Appointment{ID: "6", Date: "2020-04-01", Start: "19:00", Duration: 60, Status: scheduling.StatusCanceled}
+	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Hour: "8:00", Duration: 90, Status: scheduling.StatusScheduled}
+	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled}
+	a3 := scheduling.Appointment{ID: "6", Date: "2020-04-01", Hour: "19:00", Duration: 60, Status: scheduling.StatusCanceled}
 
 	repo.Save(a1)
 	repo.Save(a2)
@@ -33,7 +33,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "1",
 			ServiceID:      "4",
 			Date:           "2024-10-09",
-			StartHour:      "11:00",
+			Hour:           "11:00",
 			Duration:       60,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -54,7 +54,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "1",
 			ServiceID:      "3",
 			Date:           "2024-09-09",
-			StartHour:      "11:00",
+			Hour:           "11:00",
 			Duration:       180,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -84,7 +84,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "1",
 			Date:           "2024-10-09",
-			StartHour:      "13:00",
+			Hour:           "13:00",
 			Duration:       60,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -110,7 +110,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "3",
 			Date:           "2024-10-12",
-			StartHour:      "12:00",
+			Hour:           "12:00",
 			Duration:       30,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -136,7 +136,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "2",
 			ServiceID:      "4",
 			Date:           "2024-10-12",
-			StartHour:      "10:00",
+			Hour:           "10:00",
 			Duration:       30,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -162,7 +162,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ServiceID:      "1",
 			CustomerID:     "2",
 			Date:           "2024-09-17",
-			StartHour:      "10:30",
+			Hour:           "10:30",
 			Duration:       30,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -188,7 +188,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ServiceID:      "4",
 			CustomerID:     "2",
 			Date:           "2024-05-05",
-			StartHour:      "18:00",
+			Hour:           "18:00",
 			Duration:       60,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -214,7 +214,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ServiceID:      "4",
 			CustomerID:     "2",
 			Date:           "2024-11-10",
-			StartHour:      "11:30",
+			Hour:           "11:30",
 			Duration:       120,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -229,8 +229,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Start.Value() != i.StartHour {
-			t.Errorf("The appointment start hour must be %s, got %s", i.StartHour, appointment.Start)
+		if appointment.Hour.Value() != i.Hour {
+			t.Errorf("The appointment start hour must be %s, got %s", i.Hour, appointment.Hour)
 		}
 	})
 
@@ -240,7 +240,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-10-25",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       30,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -266,7 +266,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-05-15",
-			StartHour:      "8:35",
+			Hour:           "8:35",
 			Duration:       90,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -292,7 +292,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-10-14",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       90,
 		}
 
@@ -315,7 +315,7 @@ func TestAppointmentScheduler(t *testing.T) {
 				CustomerID:     "3",
 				ServiceID:      "4",
 				Date:           "2024-10-15",
-				StartHour:      "9:00",
+				Hour:           "9:00",
 				Duration:       30,
 			},
 			{
@@ -323,7 +323,7 @@ func TestAppointmentScheduler(t *testing.T) {
 				CustomerID:     "3",
 				ServiceID:      "4",
 				Date:           "2024-10-15",
-				StartHour:      "9:30",
+				Hour:           "9:30",
 				Duration:       60,
 			},
 			{
@@ -331,7 +331,7 @@ func TestAppointmentScheduler(t *testing.T) {
 				CustomerID:     "3",
 				ServiceID:      "4",
 				Date:           "2024-10-15",
-				StartHour:      "7:30",
+				Hour:           "7:30",
 				Duration:       60,
 			},
 			{
@@ -339,7 +339,7 @@ func TestAppointmentScheduler(t *testing.T) {
 				CustomerID:     "2",
 				ServiceID:      "4",
 				Date:           "2024-10-15",
-				StartHour:      "11:30",
+				Hour:           "11:30",
 				Duration:       480,
 			},
 		}
@@ -362,7 +362,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "4",
 			ServiceID:      "4",
 			Date:           "2024-10-15",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       90,
 		}
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
@@ -383,7 +383,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "100",
 			ServiceID:      "4",
 			Date:           "2024-09-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -405,7 +405,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "5",
 			Date:           "2024-09-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -428,7 +428,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerPhone:  "123456789",
 			ServiceID:      "4",
 			Date:           "2024-09-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -456,7 +456,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			ServiceID:      "4",
 			Date:           "2024-08-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -478,7 +478,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "01/08/2024",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -500,7 +500,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-08-01",
-			StartHour:      "8h00",
+			Hour:           "8h00",
 			Duration:       60,
 		}
 
@@ -522,7 +522,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2024-08-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -549,7 +549,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "3",
 			ServiceID:      "4",
 			Date:           "2022-07-01",
-			StartHour:      "8:00",
+			Hour:           "8:00",
 			Duration:       60,
 		}
 
@@ -577,7 +577,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "4",
 			Date:           "2024-07-01",
-			StartHour:      "19:00",
+			Hour:           "19:00",
 			Duration:       60,
 		}
 
@@ -605,7 +605,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "4",
 			Date:           "2024-05-01",
-			StartHour:      "19:00",
+			Hour:           "19:00",
 			Duration:       60,
 		}
 
@@ -633,7 +633,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "4",
 			Date:           "2020-04-01",
-			StartHour:      "19:00",
+			Hour:           "19:00",
 			Duration:       60,
 		}
 
@@ -664,7 +664,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "1",
 			Date:           "2020-01-01",
-			StartHour:      "9:00",
+			Hour:           "9:00",
 			Duration:       60,
 		}
 		h := &FakeStorageHandler{}
@@ -687,7 +687,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "2",
 			ServiceID:      "1",
 			Date:           "2020-02-01",
-			StartHour:      "10:00",
+			Hour:           "10:00",
 			Duration:       60,
 		}
 		h := &FakeStorageHandler{}
@@ -718,7 +718,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerPhone:  "",
 			ServiceID:      "1",
 			Date:           "2024-02-11",
-			StartHour:      "15:00",
+			Hour:           "15:00",
 			Duration:       60,
 		}
 		h := &FakeStorageHandler{}

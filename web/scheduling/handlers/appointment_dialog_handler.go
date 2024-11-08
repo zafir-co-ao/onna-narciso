@@ -13,7 +13,7 @@ func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Reque
 		var s = components.AppointmentSchedulerState{
 			ProfessionalID: r.FormValue("professional-id"),
 			ServiceID:      r.FormValue("service-id"),
-			StartHour:      r.FormValue("start-hour"),
+			Hour:           r.FormValue("hour"),
 			Date:           r.FormValue("date"),
 			HxTarget:       r.FormValue("hx-target"),
 			HxSwap:         r.FormValue("hx-swap"),

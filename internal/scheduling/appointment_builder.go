@@ -11,7 +11,7 @@ type AppointmentBuilder interface {
 	WithServiceID(id id.ID) AppointmentBuilder
 	WithServiceName(name Name) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
-	WithStartHour(hour string) AppointmentBuilder
+	WithHour(hour string) AppointmentBuilder
 	WithDuration(duration int) AppointmentBuilder
 	Build() (Appointment, error)
 }
@@ -25,7 +25,7 @@ type appointmentBuilder struct {
 	ServiceID        id.ID
 	ServiceName      Name
 	Date             string
-	StartHour        string
+	Hour             string
 	Duration         int
 }
 
@@ -73,8 +73,8 @@ func (b *appointmentBuilder) WithDate(date string) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithStartHour(hour string) AppointmentBuilder {
-	b.StartHour = hour
+func (b *appointmentBuilder) WithHour(hour string) AppointmentBuilder {
+	b.Hour = hour
 	return b
 }
 
@@ -89,7 +89,7 @@ func (b *appointmentBuilder) Build() (Appointment, error) {
 		return EmptyAppointment, err
 	}
 
-	hour, err := NewHour(b.StartHour)
+	hour, err := NewHour(b.Hour)
 	if err != nil {
 		return EmptyAppointment, err
 	}

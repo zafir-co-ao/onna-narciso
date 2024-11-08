@@ -13,7 +13,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[0].ID,
 		ServiceName:      Services[0].Name,
 		Date:             "2024-11-04",
-		Start:            "08:00",
+		Hour:             "08:00",
 		Duration:         180,
 	},
 	{
@@ -25,7 +25,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[2].ID,
 		ServiceName:      Services[2].Name,
 		Date:             "2024-11-04",
-		Start:            "10:30",
+		Hour:             "10:30",
 		Duration:         90,
 	},
 	{
@@ -37,7 +37,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[3].ID,
 		ServiceName:      Services[3].Name,
 		Date:             "2024-11-06",
-		Start:            "12:00",
+		Hour:             "12:00",
 		Duration:         60,
 	},
 	{
@@ -49,7 +49,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[2].ID,
 		ServiceName:      Services[2].Name,
 		Date:             "2024-11-05",
-		Start:            "10:30",
+		Hour:             "10:30",
 		Duration:         90,
 	},
 }
