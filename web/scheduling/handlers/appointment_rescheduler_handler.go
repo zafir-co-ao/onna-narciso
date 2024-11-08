@@ -26,7 +26,7 @@ func HandleRescheduleAppointment(
 		input := scheduling.AppointmentReschedulerInput{
 			ID:       r.Form.Get("id"),
 			Date:     r.Form.Get("date"),
-			Hour:     r.Form.Get("start"),
+			Hour:     r.Form.Get("hour"),
 			Duration: duration,
 		}
 

@@ -26,7 +26,7 @@ func HandleScheduleAppointment(
 			ProfessionalID: r.Form.Get("professional-id"),
 			ServiceID:      r.Form.Get("service-id"),
 			Date:           r.Form.Get("date"),
-			Hour:           r.Form.Get("start"),
+			Hour:           r.Form.Get("hour"),
 			CustomerID:     r.Form.Get("customer-id"),
 			CustomerName:   r.Form.Get("customer-name"),
 			CustomerPhone:  r.Form.Get("customer-phone"),
