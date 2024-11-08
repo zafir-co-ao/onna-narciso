@@ -6,18 +6,18 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ AppointmentReschedulerDialog(o scheduling.AppointmentOutput, weekDay, hxTarget, hxSwap string) {
-	@components.Dialog("Editar marcação", AppointmentReschedulerForm(o, weekDay, hxTarget, hxSwap))
+templ AppointmentReschedulerDialog(o scheduling.AppointmentOutput, hxTarget, hxSwap string) {
+	@components.Dialog("Editar marcação", AppointmentReschedulerForm(o, hxTarget, hxSwap))
 }
 
 func getURL(o scheduling.AppointmentOutput) string {
 	return fmt.Sprintf("/appointments/%v", o.ID)
 }
 
-templ AppointmentReschedulerForm(o scheduling.AppointmentOutput, weekDay, hxTarget, hxSwap string) {
-	<form hx-put={ getURL(o) } hx-target={ fmt.Sprintf("#%v", hxTarget) } hx-swap={ hxSwap }>
+templ AppointmentReschedulerForm(o scheduling.AppointmentOutput, hxTarget, hxSwap string) {
+	<form hx-put={ getURL(o) } hx-target={ hxTarget } hx-swap={ hxSwap }>
 		<input type="hidden" name="id" value={ o.ID }/>
-		<input type="hidden" name="week-day" value={ weekDay }/>
+		<input type="hidden" name="week-day" value={ o.Date }/>
 		@components.InputHiddenDisplay(o.CustomerName, "customer-name", o.CustomerName)
 		@components.InputHiddenDisplay(o.ProfessionalName, "professional-id", o.ProfessionalID)
 		@components.InputHiddenDisplay(o.ServiceName, "service-id", o.ServiceID)

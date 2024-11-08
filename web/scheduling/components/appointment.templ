@@ -12,6 +12,8 @@ import (
 
 type _appointmentState struct {
 	hxGet       string
+	target      string
+	swap        string
 	startHour   int
 	appointment scheduling.AppointmentOutput
 }
@@ -21,6 +23,18 @@ type _appointmentStateOpt func(*_appointmentState)
 func WithHxGet(hxGet string) _appointmentStateOpt {
 	return func(s *_appointmentState) {
 		s.hxGet = hxGet
+	}
+}
+
+func WithTarget(target string) _appointmentStateOpt {
+	return func(s *_appointmentState) {
+		s.target = target
+	}
+}
+
+func WithSwap(swap string) _appointmentStateOpt {
+	return func(s *_appointmentState) {
+		s.swap = swap
 	}
 }
 
@@ -57,23 +71,23 @@ func getAppointmentClass(s *_appointmentState) string {
 }
 
 templ _appointmentTempl(s *_appointmentState) {
-	<li
-		data-id={ s.appointment.ID }
-		class={ "appointment relative flex cursor-pointer z-[2000]", getAppointmentClass(s) }
-		hx-stop="true"
+	<form
+		class={ "appointment relative flex cursor-pointer z-20", getAppointmentClass(s) }
+		hx-get={ s.hxGet }
+		hx-trigger="click"
 		hx-swap="none"
-		if s.hxGet != "" {
-			hx-get={ s.hxGet }
-		} else {
-			hx-on:click="this.dispatchEvent(new CustomEvent('scheduling:select-appointment', {detail : {id: target.dataset.id}}))"
-		}
+		hx-stop="true"
 	>
-		<a class="group absolute inset-1 flex flex-col overflow-y-auto border border-blue-200 rounded-lg bg-blue-50 p-2 leading-5 hover:bg-blue-100">
-			<p class="text-xs text-blue-500 group-hover:text-blue-500">
-				<time datetime="2022-01-12T06:00">{ s.appointment.Hour }</time>
-			</p>
-			<p class="text-sm font-semibold text-blue-700">{ s.appointment.CustomerName }</p>
-			<p class="text-blue-500 text-xs">{ s.appointment.ServiceName }<br/>{ s.appointment.ProfessionalName }</p>
-		</a>
-	</li>
+		<input type="hidden" name="hx-target" value={ s.target }/>
+		<input type="hidden" name="hx-swap" value={ s.swap }/>
+		<li>
+			<a class="group absolute inset-1 flex flex-col overflow-y-auto border border-blue-200 rounded-lg bg-blue-50 p-2 leading-5 hover:bg-blue-100">
+				<p class="text-xs text-blue-500 group-hover:text-blue-500">
+					<time datetime="2022-01-12T06:00">{ s.appointment.Hour }</time>
+				</p>
+				<p class="text-sm font-semibold text-blue-700">{ s.appointment.CustomerName }</p>
+				<p class="text-blue-500 text-xs">{ s.appointment.ServiceName }<br/>{ s.appointment.ProfessionalName }</p>
+			</a>
+		</li>
+	</form>
 }
