@@ -676,7 +676,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
-		if !errors.Is(nil, err) {
+		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
@@ -708,7 +708,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		o, err := usecase.Schedule(i)
-		if !errors.Is(nil, err) {
+		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
@@ -730,16 +730,15 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		bus.Subscribe(scheduling.EventAppointmentScheduled, event.HandlerFunc(func(e event.Event) {}))
 		usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 		_, err := usecase.Schedule(i)
 
-		if errors.Is(nil, err) {
+		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrCustomerNotFound, err) {
+		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
 			t.Errorf("Should return an ErrorCustomerNotFound, got %v", err)
 		}
 	})

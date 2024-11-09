@@ -9,5 +9,21 @@
     "bin",
     ".git",
     "tmp"
-  ]
+  ],
+
+  "lsp": {
+    "golangci-lint": {
+      "command": "golangci-lint-langserver",
+      "initialization_options": {
+        "command": [
+          "golangci-lint",
+          "run",
+          "--out-format",
+          "json",
+          "--presets",
+          "bugs,error,unused,complexity,test,format,metalinter"
+        ]
+      }
+    }
+  }
 }

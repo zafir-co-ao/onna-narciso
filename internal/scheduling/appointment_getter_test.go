@@ -21,7 +21,7 @@ func TestAppointmentGetter(t *testing.T) {
 			t.Errorf("Finder appointment should not return error: %v", err)
 		}
 
-		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("Should return appointment not an error, got %v", err)
 		}
 
@@ -38,7 +38,7 @@ func TestAppointmentGetter(t *testing.T) {
 			t.Errorf("Finder appointment should return error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if !errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
 		}
 	})

@@ -31,32 +31,32 @@ func HandleRescheduleAppointment(
 		}
 
 		_, err = re.Reschedule(input)
-		if errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
+		if errors.Is(err, scheduling.ErrInvalidStatusToReschedule) {
 			_http.SendBadRequest(w, "Estado inválido para reagendar")
 			return
 		}
 
-		if errors.Is(scheduling.ErrBusyTime, err) {
+		if errors.Is(err, scheduling.ErrBusyTime) {
 			_http.SendBadRequest(w, "Horário Indisponível")
 			return
 		}
 
-		if errors.Is(scheduling.ErrInvalidDate, err) {
+		if errors.Is(err, scheduling.ErrInvalidDate) {
 			_http.SendBadRequest(w, "A data para a marcação está no formato inválido")
 			return
 		}
 
-		if errors.Is(scheduling.ErrInvalidHour, err) {
+		if errors.Is(err, scheduling.ErrInvalidHour) {
 			_http.SendBadRequest(w, "A hora da marcação está no formato inválido")
 			return
 		}
 
-		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			_http.SendNotFound(w, "Marcação não encontrada")
 			return
 		}
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
@@ -71,7 +71,7 @@ func HandleRescheduleAppointment(
 			[]string{professionalID},
 		)
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
