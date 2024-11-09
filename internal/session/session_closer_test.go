@@ -7,20 +7,24 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/session"
 	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 func TestSessionCloser(t *testing.T) {
+	bus := event.NewInmemEventBus()
 	repo := inmem.NewSessionRepository()
-	u := session.NewSessionCloser(repo)
+	u := session.NewSessionCloser(repo, bus)
 
 	s1 := session.Session{ID: id.NewID("1")}
 	s2 := session.Session{ID: id.NewID("2")}
 	s3 := session.Session{ID: id.NewID("3"), Status: session.StatusClosed}
+	s4 := session.Session{ID: id.NewID("4")}
 
 	repo.Save(s1)
 	repo.Save(s2)
 	repo.Save(s3)
+	repo.Save(s4)
 
 	t.Run("should_close_the_session", func(t *testing.T) {
 		sessionID := "1"
@@ -57,6 +61,26 @@ func TestSessionCloser(t *testing.T) {
 
 		if s.CloseTime.Hour() != time.Now().Hour() {
 			t.Errorf("The session close hour should be equal with hour in clock, got %v", s.CloseTime.Hour())
+		}
+	})
+
+	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
+		var IsPublished bool = false
+
+		var h event.HandlerFunc = func(e event.Event) {
+			IsPublished = true
+		}
+
+		bus.Subscribe(session.EventSessionClosed, h)
+
+		err := u.Close("4")
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !IsPublished {
+			t.Errorf("The EventSessionClosed must be publised, got %v", IsPublished)
 		}
 	})
 

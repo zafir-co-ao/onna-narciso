@@ -1,8 +1,11 @@
 package session
 
 import (
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
+
+const EventSessionClosed = "EventSessionClosed"
 
 type SessionCloser interface {
 	Close(i string) error
@@ -10,10 +13,11 @@ type SessionCloser interface {
 
 type sessionCloserImpl struct {
 	repo SessionRepository
+	bus  event.Bus
 }
 
-func NewSessionCloser(r SessionRepository) SessionCloser {
-	return &sessionCloserImpl{repo: r}
+func NewSessionCloser(r SessionRepository, b event.Bus) SessionCloser {
+	return &sessionCloserImpl{repo: r, bus: b}
 }
 
 func (u *sessionCloserImpl) Close(i string) error {
@@ -31,6 +35,8 @@ func (u *sessionCloserImpl) Close(i string) error {
 	if err != nil {
 		return err
 	}
+
+	u.bus.Publish(event.New(EventSessionClosed))
 
 	return nil
 }
