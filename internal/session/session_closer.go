@@ -24,7 +24,10 @@ func (u *sessionCloserImpl) Close(i string) error {
 		return ErrSessionNotFound
 	}
 
-	s.Close()
+	err = s.Close()
+	if !errors.Is(nil, err) {
+		return err
+	}
 
 	err = u.repo.Save(s)
 	if !errors.Is(nil, err) {

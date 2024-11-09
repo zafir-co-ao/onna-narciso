@@ -15,9 +15,11 @@ func TestSessionCloser(t *testing.T) {
 
 	s1 := session.Session{ID: id.NewID("1")}
 	s2 := session.Session{ID: id.NewID("2")}
+	s3 := session.Session{ID: id.NewID("3"), Status: session.StatusClosed}
 
 	repo.Save(s1)
 	repo.Save(s2)
+	repo.Save(s3)
 
 	t.Run("should_close_the_session", func(t *testing.T) {
 		sessionID := "1"
@@ -71,6 +73,21 @@ func TestSessionCloser(t *testing.T) {
 
 		if !errors.Is(session.ErrSessionNotFound, err) {
 			t.Errorf("The error must be ErrSessionNotFound, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
+		sessionID := "3"
+		u := session.NewSessionCloser(repo)
+
+		err := u.Close(sessionID)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(session.ErrSessionClosed, err) {
+			t.Errorf("The error must be ErrSessionClosed, got %v", err)
 		}
 	})
 }
