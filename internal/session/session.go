@@ -18,12 +18,17 @@ type Session struct {
 	AppointmentID id.ID
 	Status        Status
 	CloseTime     time.Time
+	Services      []id.ID
 }
 
-func (s *Session) Close() error {
+func (s *Session) Close(services []string) error {
 
 	if s.IsClosed() {
 		return ErrSessionClosed
+	}
+
+	for _, v := range services {
+		s.Services = append(s.Services, id.NewID(v))
 	}
 
 	s.CloseTime = time.Now()

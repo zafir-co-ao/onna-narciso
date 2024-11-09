@@ -17,21 +17,24 @@ func TestSessionCloser(t *testing.T) {
 	repo := inmem.NewSessionRepository()
 	u := session.NewSessionCloser(repo, bus)
 
-	for i := range 4 {
+	for i := range 10 {
 		s := session.Session{ID: id.NewID(strconv.Itoa(i + 1))}
 		repo.Save(s)
 	}
 
 	t.Run("should_close_the_session", func(t *testing.T) {
-		sessionID := "1"
+		input := session.SessionCloserInput{
+			SessionID:   "1",
+			ServicesIDs: make([]string, 0),
+		}
 
-		err := u.Close(sessionID)
+		err := u.Close(input)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(sessionID))
+		s, err := repo.FindByID(id.NewID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -42,15 +45,18 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_record_the_closing_time_of_the_session", func(t *testing.T) {
-		sessionID := "2"
+		input := session.SessionCloserInput{
+			SessionID:   "2",
+			ServicesIDs: make([]string, 0),
+		}
 
-		err := u.Close(sessionID)
+		err := u.Close(input)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(sessionID))
+		s, err := repo.FindByID(id.NewID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -60,16 +66,47 @@ func TestSessionCloser(t *testing.T) {
 		}
 	})
 
-	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
-		var IsPublished bool = false
+	t.Run("must_entry_the_additional_services_in_session", func(t *testing.T) {
+		input := session.SessionCloserInput{
+			SessionID:   "5",
+			ServicesIDs: []string{"1", "2"},
+		}
 
+		err := u.Close(input)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(id.NewID(input.SessionID))
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Should return the session in repository, got %v", err)
+		}
+
+		if s.Services[0].String() != "1" {
+			t.Errorf("The Service ID must be 1, got %s", s.Services[0].String())
+		}
+
+		if s.Services[1].String() != "2" {
+			t.Errorf("The Service ID must be 2, got %s", s.Services[1].String())
+		}
+	})
+
+	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
+		input := session.SessionCloserInput{
+			SessionID:   "4",
+			ServicesIDs: make([]string, 0),
+		}
+
+		var IsPublished bool = false
 		var h event.HandlerFunc = func(e event.Event) {
 			IsPublished = true
 		}
 
 		bus.Subscribe(session.EventSessionClosed, h)
 
-		err := u.Close("4")
+		err := u.Close(input)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
@@ -81,9 +118,12 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_session_not_exists_in_repository", func(t *testing.T) {
-		sessionID := "200"
+		input := session.SessionCloserInput{
+			SessionID:   "200",
+			ServicesIDs: make([]string, 0),
+		}
 
-		err := u.Close(sessionID)
+		err := u.Close(input)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -95,11 +135,14 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
-		sessionID := "3"
+		input := session.SessionCloserInput{
+			SessionID:   "3",
+			ServicesIDs: make([]string, 0),
+		}
 
-		u.Close(sessionID)
+		u.Close(input)
 
-		err := u.Close(sessionID)
+		err := u.Close(input)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)

@@ -7,8 +7,13 @@ import (
 
 const EventSessionClosed = "EventSessionClosed"
 
+type SessionCloserInput struct {
+	SessionID   string
+	ServicesIDs []string
+}
+
 type SessionCloser interface {
-	Close(i string) error
+	Close(i SessionCloserInput) error
 }
 
 type sessionCloserImpl struct {
@@ -20,13 +25,13 @@ func NewSessionCloser(r SessionRepository, b event.Bus) SessionCloser {
 	return &sessionCloserImpl{repo: r, bus: b}
 }
 
-func (u *sessionCloserImpl) Close(i string) error {
-	s, err := u.repo.FindByID(id.NewID(i))
+func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
+	s, err := u.repo.FindByID(id.NewID(i.SessionID))
 	if err != nil {
 		return ErrSessionNotFound
 	}
 
-	err = s.Close()
+	err = s.Close(i.ServicesIDs)
 	if err != nil {
 		return err
 	}
