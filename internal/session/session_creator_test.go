@@ -5,6 +5,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/session"
 	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 )
@@ -17,9 +18,11 @@ func TestSessionCreator(t *testing.T) {
 		aid := testdata.Appointments[0].ID.String()
 
 		_, err := creator.Create(aid)
+
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
+
 	})
 
 	t.Run("should_store_session_in_the_repository", func(t *testing.T) {
@@ -45,6 +48,28 @@ func TestSessionCreator(t *testing.T) {
 			t.Errorf("Expected the session to have the appointment ID, got %v", s.AppointmentID)
 		}
 
+	})
+
+	t.Run("should_publish_SessionCheckedIn_event", func(t *testing.T) {
+		c := session.NewSessionCreator(inmem.NewSessionRepository())
+		b := event.NewInmemEventBus()
+		aid := testdata.Appointments[2].ID.String()
+
+		epublished := false
+		var h event.HandlerFunc = func(e event.Event) {
+			epublished = true
+		}
+
+		b.Subscribe("SessionCheckedIn", h)
+
+		_, err := c.Create(aid)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !epublished {
+			t.Errorf("Expected the event to be published")
+		}
 	})
 
 }

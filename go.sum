@@ -1,4 +1,6 @@
 github.com/a-h/templ v0.2.778 h1:VzhOuvWECrwOec4790lcLlZpP4Iptt5Q4K9aFxQmtaM=
 github.com/a-h/templ v0.2.778/go.mod h1:lq48JXoUvuQrU0VThrK31yFwdRjTCnIE5bcPCM9IP1w=
+github.com/kindalus/godx v0.0.0-20241109033347-2863d39eff02 h1:YlJVFhbao83d8kZZ2dMBaiIBZ81ZhMGPM+LiqeEQGNs=
+github.com/kindalus/godx v0.0.0-20241109033347-2863d39eff02/go.mod h1:TTtnLo4WLMjtul693miKgFEuPMkYJS4Q/q0XCy5qMJM=
 github.com/kindalus/gofunc v1.3.0 h1:PNSPoNTPVovnYrXRErcn0vTc2+YsEc0XpBwUglpfNiY=
 github.com/kindalus/gofunc v1.3.0/go.mod h1:0o3RWq7Kp7lLzQjLo2z36cFzWLYl5Tojh3gYabO39aM=

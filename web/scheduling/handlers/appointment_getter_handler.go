@@ -13,12 +13,12 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 	return func(w http.ResponseWriter, r *http.Request) {
 		o, err := g.Get(r.PathValue("id"))
 
-		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			_http.SendNotFound(w, "Marcação não encontrada")
 			return
 		}
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
