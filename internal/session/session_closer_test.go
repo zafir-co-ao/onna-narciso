@@ -2,6 +2,7 @@ package session_test
 
 import (
 	"errors"
+	"strconv"
 	"testing"
 	"time"
 
@@ -16,15 +17,10 @@ func TestSessionCloser(t *testing.T) {
 	repo := inmem.NewSessionRepository()
 	u := session.NewSessionCloser(repo, bus)
 
-	s1 := session.Session{ID: id.NewID("1")}
-	s2 := session.Session{ID: id.NewID("2")}
-	s3 := session.Session{ID: id.NewID("3"), Status: session.StatusClosed}
-	s4 := session.Session{ID: id.NewID("4")}
-
-	repo.Save(s1)
-	repo.Save(s2)
-	repo.Save(s3)
-	repo.Save(s4)
+	for i := range 4 {
+		s := session.Session{ID: id.NewID(strconv.Itoa(i + 1))}
+		repo.Save(s)
+	}
 
 	t.Run("should_close_the_session", func(t *testing.T) {
 		sessionID := "1"
@@ -100,6 +96,8 @@ func TestSessionCloser(t *testing.T) {
 
 	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
 		sessionID := "3"
+
+		u.Close(sessionID)
 
 		err := u.Close(sessionID)
 
