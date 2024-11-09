@@ -12,6 +12,7 @@ import (
 
 func TestSessionCloser(t *testing.T) {
 	repo := inmem.NewSessionRepository()
+	u := session.NewSessionCloser(repo)
 
 	s1 := session.Session{ID: id.NewID("1")}
 	s2 := session.Session{ID: id.NewID("2")}
@@ -23,7 +24,6 @@ func TestSessionCloser(t *testing.T) {
 
 	t.Run("should_close_the_session", func(t *testing.T) {
 		sessionID := "1"
-		u := session.NewSessionCloser(repo)
 
 		err := u.Close(sessionID)
 
@@ -43,7 +43,6 @@ func TestSessionCloser(t *testing.T) {
 
 	t.Run("must_record_the_closing_time_of_the_session", func(t *testing.T) {
 		sessionID := "2"
-		u := session.NewSessionCloser(repo)
 
 		err := u.Close(sessionID)
 
@@ -63,7 +62,6 @@ func TestSessionCloser(t *testing.T) {
 
 	t.Run("should_return_error_if_session_not_exists_in_repository", func(t *testing.T) {
 		sessionID := "200"
-		u := session.NewSessionCloser(repo)
 
 		err := u.Close(sessionID)
 
@@ -78,7 +76,6 @@ func TestSessionCloser(t *testing.T) {
 
 	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
 		sessionID := "3"
-		u := session.NewSessionCloser(repo)
 
 		err := u.Close(sessionID)
 

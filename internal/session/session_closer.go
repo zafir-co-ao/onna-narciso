@@ -1,8 +1,6 @@
 package session
 
 import (
-	"errors"
-
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
@@ -20,17 +18,17 @@ func NewSessionCloser(r SessionRepository) SessionCloser {
 
 func (u *sessionCloserImpl) Close(i string) error {
 	s, err := u.repo.FindByID(id.NewID(i))
-	if !errors.Is(nil, err) {
+	if err != nil {
 		return ErrSessionNotFound
 	}
 
 	err = s.Close()
-	if !errors.Is(nil, err) {
+	if err != nil {
 		return err
 	}
 
 	err = u.repo.Save(s)
-	if !errors.Is(nil, err) {
+	if err != nil {
 		return err
 	}
 
