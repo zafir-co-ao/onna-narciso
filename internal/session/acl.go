@@ -1,6 +1,12 @@
 package session
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"errors"
+
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
+
+var ErrServiceNotFound = errors.New("service not found")
 
 type ServiceAcl interface {
 	FindByIDs(i []id.ID) ([]Service, error)

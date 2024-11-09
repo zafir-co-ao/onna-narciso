@@ -15,18 +15,6 @@ import (
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewInmemEventBus()
 	repo := inmem.NewSessionRepository()
-	var sacl session.ServiceAclFunc = func(i []id.ID) ([]session.Service, error) {
-		return []session.Service{
-			session.Service{
-				ServiceID:      id.NewID("1"),
-				ProfessionalID: id.NewID("1"),
-			},
-			session.Service{
-				ServiceID:      id.NewID("2"),
-				ProfessionalID: id.NewID("1"),
-			},
-		}, nil
-	}
 	u := session.NewSessionCloser(repo, sacl, bus)
 
 	for i := range 10 {
@@ -37,7 +25,7 @@ func TestSessionCloser(t *testing.T) {
 	t.Run("should_close_the_session", func(t *testing.T) {
 		input := session.SessionCloserInput{
 			SessionID:   "1",
-			ServicesIDs: make([]string, 0),
+			ServicesIDs: []string{"1", "2"},
 		}
 
 		err := u.Close(input)
@@ -59,7 +47,7 @@ func TestSessionCloser(t *testing.T) {
 	t.Run("must_record_the_closing_time_of_the_session", func(t *testing.T) {
 		input := session.SessionCloserInput{
 			SessionID:   "2",
-			ServicesIDs: make([]string, 0),
+			ServicesIDs: []string{"2", "3"},
 		}
 
 		err := u.Close(input)
@@ -131,6 +119,23 @@ func TestSessionCloser(t *testing.T) {
 		}
 	})
 
+	t.Run("should_return_error_if_not_found_service_acl", func(t *testing.T) {
+		input := session.SessionCloserInput{
+			SessionID:   "7",
+			ServicesIDs: []string{"1", "2", "10"},
+		}
+
+		err := u.Close(input)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(session.ErrServiceNotFound, err) {
+			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
+		}
+	})
+
 	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
 		input := session.SessionCloserInput{
 			SessionID:   "4",
@@ -190,4 +195,33 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("The error must be ErrSessionClosed, got %v", err)
 		}
 	})
+}
+
+var services = map[string]session.Service{
+	"1": session.Service{
+		ServiceID:      id.NewID("1"),
+		ProfessionalID: id.NewID("1"),
+	},
+	"2": session.Service{
+		ServiceID:      id.NewID("2"),
+		ProfessionalID: id.NewID("1"),
+	},
+	"3": session.Service{
+		ServiceID:      id.NewID("3"),
+		ProfessionalID: id.NewID("1"),
+	},
+}
+
+var sacl session.ServiceAclFunc = func(ids []id.ID) ([]session.Service, error) {
+	selectedServices := make([]session.Service, 0)
+	for _, v := range ids {
+		s := services[v.String()]
+		if s.ServiceID.String() != v.String() {
+			return []session.Service{}, session.ErrServiceNotFound
+		}
+
+		selectedServices = append(selectedServices, s)
+	}
+
+	return selectedServices, nil
 }

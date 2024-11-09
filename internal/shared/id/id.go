@@ -38,3 +38,13 @@ func generate() (string, error) {
 	}
 	return string(code), nil
 }
+
+func ParseToIDs(v []string) []ID {
+	var ids []ID
+
+	for _, i := range v {
+		ids = append(ids, NewID(i))
+	}
+
+	return ids
+}

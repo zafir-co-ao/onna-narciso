@@ -32,13 +32,12 @@ func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
 		return ErrSessionNotFound
 	}
 
-	var ServiceIDs []id.ID
+	ids := id.ParseToIDs(i.ServicesIDs)
 
-	for _, v := range i.ServicesIDs {
-		ServiceIDs = append(ServiceIDs, id.NewID(v))
+	services, err := u.sacl.FindByIDs(ids)
+	if err != nil {
+		return err
 	}
-
-	services, _ := u.sacl.FindByIDs(ServiceIDs)
 
 	err = s.Close(services)
 	if err != nil {
