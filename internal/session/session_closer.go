@@ -22,8 +22,8 @@ type sessionCloserImpl struct {
 	bus  event.Bus
 }
 
-func NewSessionCloser(r SessionRepository, sacl ServiceAcl, b event.Bus) SessionCloser {
-	return &sessionCloserImpl{repo: r, sacl: sacl, bus: b}
+func NewSessionCloser(repo SessionRepository, sacl ServiceAcl, bus event.Bus) SessionCloser {
+	return &sessionCloserImpl{repo, sacl, bus}
 }
 
 func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
@@ -32,14 +32,12 @@ func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
 		return ErrSessionNotFound
 	}
 
-	ids := id.ParseToIDs(i.ServicesIDs)
-
-	services, err := u.sacl.FindByIDs(ids)
+	svc, err := u.findServices(i.ServicesIDs)
 	if err != nil {
 		return err
 	}
 
-	err = s.Close(services)
+	err = s.Close(svc)
 	if err != nil {
 		return err
 	}
@@ -49,7 +47,26 @@ func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
 		return err
 	}
 
-	u.bus.Publish(event.New(EventSessionClosed))
+	e := event.New(
+		EventSessionClosed,
+		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
+		event.WithPayload(i),
+	)
+	u.bus.Publish(e)
 
 	return nil
+}
+
+func (u *sessionCloserImpl) findServices(ids []string) ([]Service, error) {
+	if len(ids) == 0 {
+		return EmptyServices, nil
+	}
+
+	s, err := u.sacl.FindByIDs(id.ParseToIDs(ids))
+
+	if err != nil {
+		return EmptyServices, err
+	}
+
+	return s, nil
 }

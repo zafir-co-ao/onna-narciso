@@ -8,6 +8,8 @@ import (
 
 var ErrServiceNotFound = errors.New("service not found")
 
+var EmptyServices = []Service{}
+
 type ServiceAcl interface {
 	FindByIDs(i []id.ID) ([]Service, error)
 }

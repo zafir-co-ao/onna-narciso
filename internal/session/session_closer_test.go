@@ -119,6 +119,28 @@ func TestSessionCloser(t *testing.T) {
 		}
 	})
 
+	t.Run("should_close_the_session_without_additional_services", func(t *testing.T) {
+		input := session.SessionCloserInput{
+			SessionID:   "8",
+			ServicesIDs: []string{},
+		}
+
+		err := u.Close(input)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(id.NewID(input.SessionID))
+		if !errors.Is(nil, err) {
+			t.Errorf("Should return the session in repository, got %v", err)
+		}
+
+		if len(s.Services) != 0 {
+			t.Errorf("The session must be closed without services, got %v", len(s.Services))
+		}
+	})
+
 	t.Run("should_return_error_if_not_found_service_acl", func(t *testing.T) {
 		input := session.SessionCloserInput{
 			SessionID:   "7",
@@ -142,9 +164,14 @@ func TestSessionCloser(t *testing.T) {
 			ServicesIDs: make([]string, 0),
 		}
 
-		var IsPublished bool = false
+		evtAggID := ""
+		var isPublished bool = false
 		var h event.HandlerFunc = func(e event.Event) {
-			IsPublished = true
+			switch e.Payload().(type) {
+			case session.SessionCloserInput:
+				evtAggID = e.Header(event.HeaderAggregateID)
+				isPublished = true
+			}
 		}
 
 		bus.Subscribe(session.EventSessionClosed, h)
@@ -155,8 +182,12 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		if !IsPublished {
-			t.Errorf("The EventSessionClosed must be publised, got %v", IsPublished)
+		if !isPublished {
+			t.Errorf("The EventSessionClosed must be publised, got %v", isPublished)
+		}
+
+		if evtAggID != input.SessionID {
+			t.Errorf("Event header Aggregate ID should equal ID: %v, got: %v", input.SessionID, evtAggID)
 		}
 	})
 
