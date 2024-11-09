@@ -1,6 +1,10 @@
 package session
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"time"
+
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
 
 const StatusClosed Status = "closed"
 
@@ -10,9 +14,11 @@ type Session struct {
 	ID            id.ID
 	AppointmentID id.ID
 	Status        Status
+	CloseTime     time.Time
 }
 
 func (s *Session) Close() {
+	s.CloseTime = time.Now()
 	s.Status = StatusClosed
 }
 

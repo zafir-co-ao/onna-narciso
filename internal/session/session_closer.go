@@ -1,6 +1,10 @@
 package session
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"errors"
+
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+)
 
 type SessionCloser interface {
 	Close(i string) error
@@ -19,7 +23,10 @@ func (u *sessionCloserImpl) Close(i string) error {
 
 	s.Close()
 
-	u.repo.Save(s)
+	err := u.repo.Save(s)
+	if !errors.Is(nil, err) {
+		return err
+	}
 
 	return nil
 }
