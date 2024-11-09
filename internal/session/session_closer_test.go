@@ -15,7 +15,19 @@ import (
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewInmemEventBus()
 	repo := inmem.NewSessionRepository()
-	u := session.NewSessionCloser(repo, bus)
+	var sacl session.ServiceAclFunc = func(i []id.ID) ([]session.Service, error) {
+		return []session.Service{
+			session.Service{
+				ServiceID:      id.NewID("1"),
+				ProfessionalID: id.NewID("1"),
+			},
+			session.Service{
+				ServiceID:      id.NewID("2"),
+				ProfessionalID: id.NewID("1"),
+			},
+		}, nil
+	}
+	u := session.NewSessionCloser(repo, sacl, bus)
 
 	for i := range 10 {
 		s := session.Session{ID: id.NewID(strconv.Itoa(i + 1))}
@@ -84,12 +96,38 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
 
-		if s.Services[0].String() != "1" {
-			t.Errorf("The Service ID must be 1, got %s", s.Services[0].String())
+		if s.Services[0].ServiceID.String() != "1" {
+			t.Errorf("The Service ID must be 1, got %s", s.Services[0].ServiceID.String())
 		}
 
-		if s.Services[1].String() != "2" {
-			t.Errorf("The Service ID must be 2, got %s", s.Services[1].String())
+		if s.Services[1].ServiceID.String() != "2" {
+			t.Errorf("The Service ID must be 2, got %s", s.Services[1].ServiceID.String())
+		}
+	})
+
+	t.Run("must_entry_the_professional_in_session", func(t *testing.T) {
+		input := session.SessionCloserInput{
+			SessionID:   "6",
+			ServicesIDs: []string{"2", "3"},
+		}
+
+		err := u.Close(input)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(id.NewID(input.SessionID))
+		if !errors.Is(nil, err) {
+			t.Errorf("Should return the session in repository, got %v", err)
+		}
+
+		if s.Services[0].ProfessionalID.String() != "1" {
+			t.Errorf("The Professional ID must be 1, got %v", s.Services[0].ProfessionalID.String())
+		}
+
+		if s.Services[1].ProfessionalID.String() != "1" {
+			t.Errorf("The Professional ID must be 1, got %v", s.Services[1].ProfessionalID.String())
 		}
 	})
 

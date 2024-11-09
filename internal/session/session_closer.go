@@ -18,11 +18,12 @@ type SessionCloser interface {
 
 type sessionCloserImpl struct {
 	repo SessionRepository
+	sacl ServiceAcl
 	bus  event.Bus
 }
 
-func NewSessionCloser(r SessionRepository, b event.Bus) SessionCloser {
-	return &sessionCloserImpl{repo: r, bus: b}
+func NewSessionCloser(r SessionRepository, sacl ServiceAcl, b event.Bus) SessionCloser {
+	return &sessionCloserImpl{repo: r, sacl: sacl, bus: b}
 }
 
 func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
@@ -31,7 +32,15 @@ func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
 		return ErrSessionNotFound
 	}
 
-	err = s.Close(i.ServicesIDs)
+	var ServiceIDs []id.ID
+
+	for _, v := range i.ServicesIDs {
+		ServiceIDs = append(ServiceIDs, id.NewID(v))
+	}
+
+	services, _ := u.sacl.FindByIDs(ServiceIDs)
+
+	err = s.Close(services)
 	if err != nil {
 		return err
 	}

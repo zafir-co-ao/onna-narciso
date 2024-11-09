@@ -13,26 +13,32 @@ var ErrSessionClosed = errors.New("Session already closed")
 
 type Status string
 
+type Service struct {
+	ServiceID      id.ID
+	ProfessionalID id.ID
+}
+
 type Session struct {
 	ID            id.ID
 	AppointmentID id.ID
 	Status        Status
 	CloseTime     time.Time
-	Services      []id.ID
+	Services      []Service
 }
 
-func (s *Session) Close(services []string) error {
+func (s *Session) Close(services []Service) error {
 
 	if s.IsClosed() {
 		return ErrSessionClosed
 	}
 
-	for _, v := range services {
-		s.Services = append(s.Services, id.NewID(v))
-	}
-
 	s.CloseTime = time.Now()
 	s.Status = StatusClosed
+
+	for _, v := range services {
+		s.Services = append(s.Services, v)
+	}
+
 	return nil
 }
 
