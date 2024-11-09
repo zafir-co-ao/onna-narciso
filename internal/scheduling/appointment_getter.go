@@ -14,8 +14,8 @@ func NewAppointmentGetter(r AppointmentRepository) AppointmentGetter {
 	return &appointmentGetterImpl{repo: r}
 }
 
-func (f *appointmentGetterImpl) Get(appointmentId string) (AppointmentOutput, error) {
-	a, err := f.repo.FindByID(id.NewID(appointmentId))
+func (u *appointmentGetterImpl) Get(appointmentId string) (AppointmentOutput, error) {
+	a, err := u.repo.FindByID(id.NewID(appointmentId))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
