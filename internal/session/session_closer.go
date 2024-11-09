@@ -19,11 +19,14 @@ func NewSessionCloser(r SessionRepository) SessionCloser {
 }
 
 func (u *sessionCloserImpl) Close(i string) error {
-	s, _ := u.repo.FindByID(id.NewID(i))
+	s, err := u.repo.FindByID(id.NewID(i))
+	if !errors.Is(nil, err) {
+		return ErrSessionNotFound
+	}
 
 	s.Close()
 
-	err := u.repo.Save(s)
+	err = u.repo.Save(s)
 	if !errors.Is(nil, err) {
 		return err
 	}

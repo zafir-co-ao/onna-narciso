@@ -58,4 +58,19 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("The session close hour should be equal with hour in clock, got %v", s.CloseTime.Hour())
 		}
 	})
+
+	t.Run("should_return_error_if_session_not_exists_in_repository", func(t *testing.T) {
+		sessionID := "200"
+		u := session.NewSessionCloser(repo)
+
+		err := u.Close(sessionID)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(session.ErrSessionNotFound, err) {
+			t.Errorf("The error must be ErrSessionNotFound, got %v", err)
+		}
+	})
 }
