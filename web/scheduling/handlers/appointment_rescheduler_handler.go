@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
@@ -46,7 +47,7 @@ func HandleRescheduleAppointment(
 			return
 		}
 
-		if errors.Is(err, scheduling.ErrInvalidHour) {
+		if errors.Is(err, hour.ErrInvalidHour) {
 			_http.SendBadRequest(w, "A hora da marcação está no formato inválido")
 			return
 		}

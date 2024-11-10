@@ -7,4 +7,4 @@ require (
 	github.com/kindalus/gofunc v1.3.0
 )
 
-require github.com/kindalus/godx v0.0.0-20241109033347-2863d39eff02 // indirect
+require github.com/kindalus/godx v0.1.0

@@ -32,8 +32,8 @@ func toAppointmentOutput(a Appointment) AppointmentOutput {
 		ServiceName:      string(a.ServiceName),
 		ProfessionalID:   string(a.ProfessionalID),
 		ProfessionalName: string(a.ProfessionalName),
-		Date:             a.Date.Value(),
-		Hour:             a.Hour.Value(),
+		Date:             a.Date.String(),
+		Hour:             a.Hour.String(),
 		Duration:         a.Duration,
 	}
 }

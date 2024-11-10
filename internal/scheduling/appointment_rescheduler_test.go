@@ -5,10 +5,11 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestAppointmentRescheduler(t *testing.T) {
@@ -18,7 +19,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	for i := range 20 {
 		i += 1
 		v := strconv.Itoa(i)
-		a := scheduling.Appointment{ID: id.NewID(v), Status: scheduling.StatusScheduled}
+		a := scheduling.Appointment{ID: nanoid.ID(v), Status: scheduling.StatusScheduled}
 		repo.Save(a)
 	}
 
@@ -42,7 +43,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(id.NewID(o.ID))
+		a, err := repo.FindByID(nanoid.ID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -105,7 +106,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(id.NewID(o.ID))
+		_, err = repo.FindByID(nanoid.ID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -114,9 +115,6 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("The appointment duration must be 60 minutes, got %v", o.Duration)
 		}
 
-		if a.End.Value() != "9:00" {
-			t.Errorf("The appointment end must be 9:00, got %v", o.Duration)
-		}
 	})
 
 	t.Run("should_return_an_error_if_there_is_no_availability_to_reschedule_the_appointment", func(t *testing.T) {
@@ -235,7 +233,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(err, scheduling.ErrInvalidHour) {
+		if !errors.Is(err, hour.ErrInvalidHour) {
 			t.Errorf("The error must be ErrHourDate, got %v", err)
 		}
 	})

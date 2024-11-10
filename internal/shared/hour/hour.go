@@ -1,4 +1,4 @@
-package scheduling
+package hour
 
 import (
 	"errors"
@@ -10,17 +10,19 @@ var ErrInvalidHour = errors.New("Invalid hour")
 type Hour string
 
 func NewHour(v string) (Hour, error) {
-	if !isValidHour(v) {
+	_, err := time.Parse("15:04", v)
+
+	if err != nil {
 		return Hour(""), ErrInvalidHour
 	}
 	return Hour(v), nil
 }
 
-func (h Hour) Value() string {
+func (h Hour) String() string {
 	return string(h)
 }
 
-func isValidHour(v string) bool {
-	_, err := time.Parse("15:04", v)
-	return err == nil
+func AsTime(h Hour) time.Time {
+	t, _ := time.Parse("15:04", h.String())
+	return t
 }

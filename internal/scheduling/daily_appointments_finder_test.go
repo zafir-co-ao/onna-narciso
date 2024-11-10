@@ -6,6 +6,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestDailyAppointments(t *testing.T) {
@@ -15,31 +16,31 @@ func TestDailyAppointments(t *testing.T) {
 	repo.Save(scheduling.Appointment{
 		ID:   "1",
 		Date: scheduling.Date("2024-10-10"),
-		Hour: scheduling.Hour("11:00"),
+		Hour: hour.Hour("11:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:   "4",
 		Date: scheduling.Date("2024-10-10"),
-		Hour: scheduling.Hour("10:00"),
+		Hour: hour.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:   "5",
 		Date: scheduling.Date("2024-10-11"),
-		Hour: scheduling.Hour("10:00"),
+		Hour: hour.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:   "6",
 		Date: scheduling.Date("2024-10-12"),
-		Hour: scheduling.Hour("10:00"),
+		Hour: hour.Hour("10:00"),
 	})
 
 	repo.Save(scheduling.Appointment{
 		ID:   "7",
 		Date: scheduling.Date("2024-10-12"),
-		Hour: scheduling.Hour("09:00"),
+		Hour: hour.Hour("09:00"),
 	})
 
 	type dailyAppointmentsTestMatrix struct {

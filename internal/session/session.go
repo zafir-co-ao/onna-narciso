@@ -1,12 +1,14 @@
 package session
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+)
 
 type Session struct {
-	ID            id.ID
-	AppointmentID id.ID
+	ID            nanoid.ID
+	AppointmentID nanoid.ID
 }
 
-func (s Session) GetID() id.ID {
+func (s Session) GetID() nanoid.ID {
 	return s.ID
 }

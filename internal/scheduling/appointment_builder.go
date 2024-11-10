@@ -1,14 +1,17 @@
 package scheduling
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
+)
 
 type AppointmentBuilder interface {
-	WithAppointmentID(id id.ID) AppointmentBuilder
-	WithProfessionalID(id id.ID) AppointmentBuilder
+	WithAppointmentID(id nanoid.ID) AppointmentBuilder
+	WithProfessionalID(id nanoid.ID) AppointmentBuilder
 	WithProfessionalName(name Name) AppointmentBuilder
-	WithCustomerID(id id.ID) AppointmentBuilder
+	WithCustomerID(id nanoid.ID) AppointmentBuilder
 	WithCustomerName(name Name) AppointmentBuilder
-	WithServiceID(id id.ID) AppointmentBuilder
+	WithServiceID(id nanoid.ID) AppointmentBuilder
 	WithServiceName(name Name) AppointmentBuilder
 	WithDate(date string) AppointmentBuilder
 	WithHour(hour string) AppointmentBuilder
@@ -17,12 +20,12 @@ type AppointmentBuilder interface {
 }
 
 type appointmentBuilder struct {
-	ID               id.ID
-	ProfessionalID   id.ID
+	ID               nanoid.ID
+	ProfessionalID   nanoid.ID
 	ProfessionalName Name
-	CustomerID       id.ID
+	CustomerID       nanoid.ID
 	CustomerName     Name
-	ServiceID        id.ID
+	ServiceID        nanoid.ID
 	ServiceName      Name
 	Date             string
 	Hour             string
@@ -33,12 +36,12 @@ func NewAppointmentBuilder() AppointmentBuilder {
 	return &appointmentBuilder{}
 }
 
-func (b *appointmentBuilder) WithAppointmentID(id id.ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithAppointmentID(id nanoid.ID) AppointmentBuilder {
 	b.ID = id
 	return b
 }
 
-func (b *appointmentBuilder) WithProfessionalID(id id.ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithProfessionalID(id nanoid.ID) AppointmentBuilder {
 	b.ProfessionalID = id
 	return b
 }
@@ -48,7 +51,7 @@ func (b *appointmentBuilder) WithProfessionalName(name Name) AppointmentBuilder 
 	return b
 }
 
-func (b *appointmentBuilder) WithCustomerID(id id.ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithCustomerID(id nanoid.ID) AppointmentBuilder {
 	b.CustomerID = id
 	return b
 }
@@ -58,7 +61,7 @@ func (b *appointmentBuilder) WithCustomerName(name Name) AppointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithServiceID(id id.ID) AppointmentBuilder {
+func (b *appointmentBuilder) WithServiceID(id nanoid.ID) AppointmentBuilder {
 	b.ServiceID = id
 	return b
 }
@@ -89,7 +92,7 @@ func (b *appointmentBuilder) Build() (Appointment, error) {
 		return EmptyAppointment, err
 	}
 
-	hour, err := NewHour(b.Hour)
+	hour, err := hour.NewHour(b.Hour)
 	if err != nil {
 		return EmptyAppointment, err
 	}

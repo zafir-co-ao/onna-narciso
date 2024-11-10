@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/nanoid"
 )
 
 const (
@@ -63,7 +63,7 @@ type Event struct {
 
 func New(name string, opts ...EventOpt) Event {
 
-	id := id.MustRandom()
+	id := nanoid.New()
 
 	myHeaders := make(map[string]string)
 

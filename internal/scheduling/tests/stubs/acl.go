@@ -2,7 +2,7 @@ package stubs
 
 import "github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 
-var Pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Professional, error) {
+var Pacl scheduling.ProfessionalACLFunc = func(id string) (scheduling.Professional, error) {
 	switch id {
 	case "1":
 		return scheduling.Professional{ID: "1", Name: "Sara Gomes"}, nil
@@ -15,7 +15,7 @@ var Pacl scheduling.ProfessionalAclFunc = func(id string) (scheduling.Profession
 	}
 }
 
-var Sacl scheduling.ServiceAclFunc = func(id string) (scheduling.Service, error) {
+var Sacl scheduling.ServiceACLFunc = func(id string) (scheduling.Service, error) {
 	switch id {
 	case "1":
 		return scheduling.Service{ID: "1", Name: "Manicure"}, nil
@@ -30,9 +30,9 @@ var Sacl scheduling.ServiceAclFunc = func(id string) (scheduling.Service, error)
 	}
 }
 
-type CustomerAclStub struct{}
+type CustomerACLStub struct{}
 
-func (c CustomerAclStub) FindCustomerByID(id string) (scheduling.Customer, error) {
+func (c CustomerACLStub) FindCustomerByID(id string) (scheduling.Customer, error) {
 	switch id {
 	case "1":
 		return scheduling.Customer{ID: "1", Name: "João Silva"}, nil
@@ -45,7 +45,7 @@ func (c CustomerAclStub) FindCustomerByID(id string) (scheduling.Customer, error
 	}
 }
 
-func (c CustomerAclStub) RequestCustomerRegistration(name string, phone string) (scheduling.Customer, error) {
+func (c CustomerACLStub) RequestCustomerRegistration(name string, phone string) (scheduling.Customer, error) {
 	if name == "" || phone == "" {
 		return scheduling.Customer{}, scheduling.ErrCustomerRegistration
 	}

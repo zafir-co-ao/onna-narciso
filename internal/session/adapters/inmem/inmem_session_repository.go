@@ -1,16 +1,16 @@
 package inmem
 
 import (
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/session"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 type inmemeSessionRepositoryImpl struct {
 	shared.BaseRepository[session.Session]
 }
 
-func (s *inmemeSessionRepositoryImpl) FindByID(id id.ID) (session.Session, error) {
+func (s *inmemeSessionRepositoryImpl) FindByID(id nanoid.ID) (session.Session, error) {
 	for _, session := range s.Data {
 		if session.ID.String() == id.String() {
 			return session, nil
@@ -19,7 +19,7 @@ func (s *inmemeSessionRepositoryImpl) FindByID(id id.ID) (session.Session, error
 	return session.Session{}, session.ErrSessionNotFound
 }
 
-func NewSessionRepository(s ...session.Session) session.SessionRepository {
+func NewSessionRepository(s ...session.Session) session.Repository {
 	return &inmemeSessionRepositoryImpl{
 		BaseRepository: shared.NewBaseRepository[session.Session](s...),
 	}

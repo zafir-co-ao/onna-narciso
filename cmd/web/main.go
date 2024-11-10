@@ -14,7 +14,7 @@ import (
 func main() {
 	bus := event.NewInmemEventBus()
 	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
-	cacl := stubs.CustomerAclStub{}
+	cacl := stubs.CustomerACLStub{}
 	pacl := stubs.Pacl
 	sacl := stubs.Sacl
 

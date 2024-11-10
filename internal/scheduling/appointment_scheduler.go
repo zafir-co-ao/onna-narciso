@@ -1,8 +1,8 @@
 package scheduling
 
 import (
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 const EventAppointmentScheduled = "EventAppointmentScheduled"
@@ -25,35 +25,35 @@ type AppointmentScheduler interface {
 
 type appointmentScedulerImpl struct {
 	repo            AppointmentRepository
-	serviceAcl      ServiceAcl
-	customerAcl     CustomerAcl
-	professionalAcl ProfessionalAcl
+	serviceACL      ServiceACL
+	customerACL     CustomerACL
+	professionalACL ProfessionalACL
 	bus             event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
-	cacl CustomerAcl,
-	pacl ProfessionalAcl,
-	sacl ServiceAcl,
+	cacl CustomerACL,
+	pacl ProfessionalACL,
+	sacl ServiceACL,
 	bus event.Bus,
 ) AppointmentScheduler {
 	return &appointmentScedulerImpl{
 		repo:            repo,
-		customerAcl:     cacl,
-		professionalAcl: pacl,
-		serviceAcl:      sacl,
+		customerACL:     cacl,
+		professionalACL: pacl,
+		serviceACL:      sacl,
 		bus:             bus,
 	}
 }
 
 func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error) {
-	p, err := u.professionalAcl.FindProfessionalByID(i.ProfessionalID)
+	p, err := u.professionalACL.FindProfessionalByID(i.ProfessionalID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.serviceAcl.FindServiceByID(i.ServiceID)
+	s, err := u.serviceACL.FindServiceByID(i.ServiceID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -63,7 +63,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	id, err := id.Random()
+	id := nanoid.New()
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -85,12 +85,12 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	appointments, err := u.repo.FindByDateStatusAndProfessional(Date(i.Date), StatusScheduled, p.ID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	if !VerifyAvailability(a, appointments) {
+	if AppointmentsInterceptAny(a, appointments) {
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 
@@ -116,8 +116,8 @@ func (u *appointmentScedulerImpl) findOrRegistrationCustomer(i AppointmentSchedu
 	}
 
 	if len(i.CustomerID) > 0 && (len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0) {
-		return u.customerAcl.FindCustomerByID(i.CustomerID)
+		return u.customerACL.FindCustomerByID(i.CustomerID)
 	}
 
-	return u.customerAcl.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)
+	return u.customerACL.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)
 }

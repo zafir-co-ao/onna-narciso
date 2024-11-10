@@ -1,40 +1,51 @@
 package session
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
+)
 
-type SessionOutput struct {
+type CreatorOutput struct {
 	ID            string
 	AppointmentID string
 }
 
-type SessionCreator interface {
-	Create(appointmentID string) (SessionOutput, error)
+type Creator interface {
+	Create(appointmentID string) (CreatorOutput, error)
 }
 
-type sessionCreatorImpl struct {
-	repo SessionRepository
+type creatorImpl struct {
+	repo Repository
+	bus  event.Bus
 }
 
-func (c *sessionCreatorImpl) Create(appointmentID string) (SessionOutput, error) {
+func NewSessionCreator(r Repository, b event.Bus) Creator {
+	return &creatorImpl{repo: r, bus: b}
+}
 
-	_id, err := id.Random()
-	if err != nil {
-		return SessionOutput{}, err
-	}
+func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
+
+	_id := nanoid.New()
 
 	s := Session{
 		ID:            _id,
-		AppointmentID: id.NewID(appointmentID),
+		AppointmentID: nanoid.ID(appointmentID),
 	}
 
-	c.repo.Save(s)
+	err := c.repo.Save(s)
+	if err != nil {
+		return CreatorOutput{}, err
+	}
 
-	return SessionOutput{
+	c.bus.Publish(event.New("SessionCheckedIn",
+		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
+		event.WithPayload(struct{ AppointmentID string }{
+			AppointmentID: s.AppointmentID.String(),
+		}),
+	))
+
+	return CreatorOutput{
 		ID:            s.ID.String(),
 		AppointmentID: s.AppointmentID.String(),
 	}, nil
-}
-
-func NewSessionCreator(r SessionRepository) SessionCreator {
-	return &sessionCreatorImpl{repo: r}
 }

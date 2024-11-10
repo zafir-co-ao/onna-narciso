@@ -1,7 +1,9 @@
 package shared
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+)
 
 type Aggregate interface {
-	GetID() id.ID
+	GetID() nanoid.ID
 }

@@ -3,6 +3,7 @@ package scheduling
 import (
 	"time"
 
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
@@ -18,8 +19,8 @@ func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
 	}
 }
 
-func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
-	t1, err := time.Parse("2006-01-02", d)
+func WeekIsSpecificantion(d Date) shared.SpecificationFunc[Appointment] {
+	t1, err := time.Parse("2006-01-02", d.String())
 	w1, y1 := t1.ISOWeek()
 
 	if err != nil {
@@ -29,7 +30,7 @@ func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	}
 
 	return func(a Appointment) bool {
-		t2, err := time.Parse("2006-01-02", a.Date.Value())
+		t2, err := time.Parse("2006-01-02", a.Date.String())
 		if err != nil {
 			return false
 		}
@@ -40,24 +41,30 @@ func WeekIsSpecificantion(d string) shared.SpecificationFunc[Appointment] {
 	}
 }
 
-func ServiceIsSpecificantion(s string) shared.SpecificationFunc[Appointment] {
+func ServiceIsSpecificantion(sid nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
-		return a.ServiceID.String() == s
+		return a.ServiceID.String() == sid.String()
 	}
 }
 
-func ProfessionalsInSpecificantion(p []string) shared.SpecificationFunc[Appointment] {
+func ProfessionalsInSpecificantion(p []nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		if len(p) == 0 {
 			return true
 		}
 
 		for _, prof := range p {
-			if a.ProfessionalID.String() == prof {
+			if a.ProfessionalID.String() == prof.String() {
 				return true
 			}
 		}
 
 		return false
+	}
+}
+
+func ProfessionalIsSpecificantion(pid nanoid.ID) shared.SpecificationFunc[Appointment] {
+	return func(a Appointment) bool {
+		return a.ProfessionalID.String() == pid.String()
 	}
 }

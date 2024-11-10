@@ -17,7 +17,7 @@ func NewDate(v string) (Date, error) {
 	return Date(v), nil
 }
 
-func (d Date) Value() string {
+func (d Date) String() string {
 	return string(d)
 }
 
