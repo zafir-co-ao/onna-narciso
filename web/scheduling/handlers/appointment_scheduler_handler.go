@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
@@ -61,7 +62,7 @@ func HandleScheduleAppointment(
 			return
 		}
 
-		if errors.Is(err, scheduling.ErrInvalidDate) {
+		if errors.Is(err, date.ErrInvalidDate) {
 			_http.SendBadRequest(w, "A data para a marcação está no formato inválido")
 			return
 		}

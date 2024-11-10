@@ -2,6 +2,7 @@ package scheduling
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -87,12 +88,12 @@ func (b *appointmentBuilder) WithDuration(duration int) AppointmentBuilder {
 }
 
 func (b *appointmentBuilder) Build() (Appointment, error) {
-	date, err := NewDate(b.Date)
+	date, err := date.New(b.Date)
 	if err != nil {
 		return EmptyAppointment, err
 	}
 
-	hour, err := hour.NewHour(b.Hour)
+	hour, err := hour.New(b.Hour)
 	if err != nil {
 		return EmptyAppointment, err
 	}

@@ -3,6 +3,7 @@ package scheduling
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 type WeeklyAppointmentsFinder interface {
@@ -21,7 +22,7 @@ func (w *weeklyAppointmentsGetterImpl) Find(adate string, serviceID string, prof
 
 	pids := xslices.Map(professionalsIDs, func(x string) nanoid.ID { return nanoid.ID(x) })
 
-	a, e := w.repo.FindByWeekServiceAndProfessionals(Date(adate), nanoid.ID(serviceID), pids)
+	a, e := w.repo.FindByWeekServiceAndProfessionals(date.Date(adate), nanoid.ID(serviceID), pids)
 	if e != nil {
 		return nil, e
 	}

@@ -5,9 +5,10 @@ import (
 
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
-func DateIsSpecificantion(d Date) shared.SpecificationFunc[Appointment] {
+func DateIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		return a.Date == d
 	}
@@ -19,7 +20,7 @@ func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
 	}
 }
 
-func WeekIsSpecificantion(d Date) shared.SpecificationFunc[Appointment] {
+func WeekIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
 	t1, err := time.Parse("2006-01-02", d.String())
 	w1, y1 := t1.ISOWeek()
 

@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -430,7 +431,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(err, scheduling.ErrInvalidDate) {
+		if !errors.Is(err, date.ErrInvalidDate) {
 			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})

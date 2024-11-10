@@ -3,6 +3,7 @@ package scheduling
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 const EventAppointmentRescheduled = "EventAppointmentRescheduled"
@@ -38,7 +39,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := u.repo.FindByDateStatusAndProfessional(Date(i.Date), StatusScheduled, a.ProfessionalID)
+	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, a.ProfessionalID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

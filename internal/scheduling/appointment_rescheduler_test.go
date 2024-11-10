@@ -9,6 +9,7 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -214,7 +215,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(err, scheduling.ErrInvalidDate) {
+		if !errors.Is(err, date.ErrInvalidDate) {
 			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})

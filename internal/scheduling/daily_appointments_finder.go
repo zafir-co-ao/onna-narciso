@@ -1,6 +1,9 @@
 package scheduling
 
-import "github.com/kindalus/godx/pkg/xslices"
+import (
+	"github.com/kindalus/godx/pkg/xslices"
+	_date "github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+)
 
 type DailyAppointmentsFinder interface {
 	Find(day string) ([]AppointmentOutput, error)
@@ -15,7 +18,7 @@ func NewDailyAppointmentsGetter(repo AppointmentRepository) DailyAppointmentsFin
 }
 
 func (d *dailyAppointmentsFinderImpl) Find(date string) ([]AppointmentOutput, error) {
-	a, err := d.repo.FindByDate(Date(date))
+	a, err := d.repo.FindByDate(_date.Date(date))
 
 	if err != nil {
 		return nil, err
