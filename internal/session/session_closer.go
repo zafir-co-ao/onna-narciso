@@ -1,8 +1,9 @@
 package session
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
 )
 
 const EventSessionClosed = "EventSessionClosed"
@@ -17,17 +18,17 @@ type SessionCloser interface {
 }
 
 type sessionCloserImpl struct {
-	repo SessionRepository
-	sacl ServiceAcl
+	repo Repository
+	sacl ServiceACL
 	bus  event.Bus
 }
 
-func NewSessionCloser(repo SessionRepository, sacl ServiceAcl, bus event.Bus) SessionCloser {
+func NewSessionCloser(repo Repository, sacl ServiceACL, bus event.Bus) SessionCloser {
 	return &sessionCloserImpl{repo, sacl, bus}
 }
 
 func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
-	s, err := u.repo.FindByID(id.NewID(i.SessionID))
+	s, err := u.repo.FindByID(nanoid.ID(i.SessionID))
 	if err != nil {
 		return ErrSessionNotFound
 	}
@@ -62,7 +63,9 @@ func (u *sessionCloserImpl) findServices(ids []string) ([]Service, error) {
 		return EmptyServices, nil
 	}
 
-	s, err := u.sacl.FindByIDs(id.ParseToIDs(ids))
+	_ids := xslices.Map(ids, func(x string) nanoid.ID { return nanoid.ID(x) })
+
+	s, err := u.sacl.FindByIDs(_ids)
 
 	if err != nil {
 		return EmptyServices, err

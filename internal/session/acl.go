@@ -3,19 +3,19 @@ package session
 import (
 	"errors"
 
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/nanoid"
 )
 
 var ErrServiceNotFound = errors.New("service not found")
 
 var EmptyServices = []Service{}
 
-type ServiceAcl interface {
-	FindByIDs(i []id.ID) ([]Service, error)
+type ServiceACL interface {
+	FindByIDs(i []nanoid.ID) ([]Service, error)
 }
 
-type ServiceAclFunc func(i []id.ID) ([]Service, error)
+type ServiceACLFunc func(i []nanoid.ID) ([]Service, error)
 
-func (f ServiceAclFunc) FindByIDs(i []id.ID) ([]Service, error) {
+func (f ServiceACLFunc) FindByIDs(i []nanoid.ID) ([]Service, error) {
 	return f(i)
 }

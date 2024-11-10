@@ -6,19 +6,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/session"
 	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
 
 func TestSessionCloser(t *testing.T) {
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 	repo := inmem.NewSessionRepository()
 	u := session.NewSessionCloser(repo, sacl, bus)
 
 	for i := range 10 {
-		s := session.Session{ID: id.NewID(strconv.Itoa(i + 1))}
+		s := session.Session{ID: nanoid.ID(strconv.Itoa(i + 1))}
 		repo.Save(s)
 	}
 
@@ -34,7 +34,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(input.SessionID))
+		s, err := repo.FindByID(nanoid.ID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -56,7 +56,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(input.SessionID))
+		s, err := repo.FindByID(nanoid.ID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -78,7 +78,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(input.SessionID))
+		s, err := repo.FindByID(nanoid.ID(input.SessionID))
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
@@ -105,7 +105,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(input.SessionID))
+		s, err := repo.FindByID(nanoid.ID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -131,7 +131,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		s, err := repo.FindByID(id.NewID(input.SessionID))
+		s, err := repo.FindByID(nanoid.ID(input.SessionID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
@@ -229,21 +229,12 @@ func TestSessionCloser(t *testing.T) {
 }
 
 var services = map[string]session.Service{
-	"1": session.Service{
-		ServiceID:      id.NewID("1"),
-		ProfessionalID: id.NewID("1"),
-	},
-	"2": session.Service{
-		ServiceID:      id.NewID("2"),
-		ProfessionalID: id.NewID("1"),
-	},
-	"3": session.Service{
-		ServiceID:      id.NewID("3"),
-		ProfessionalID: id.NewID("1"),
-	},
+	"1": session.Service{ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
+	"2": session.Service{ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
+	"3": session.Service{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
 }
 
-var sacl session.ServiceAclFunc = func(ids []id.ID) ([]session.Service, error) {
+var sacl session.ServiceACLFunc = func(ids []nanoid.ID) ([]session.Service, error) {
 	selectedServices := make([]session.Service, 0)
 	for _, v := range ids {
 		s := services[v.String()]

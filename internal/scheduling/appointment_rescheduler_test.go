@@ -5,15 +5,15 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestAppointmentRescheduler(t *testing.T) {
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 	repo := inmem.NewAppointmentRepository()
 
 	for i := range 20 {
@@ -251,7 +251,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			evtPublished = true
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
@@ -281,7 +281,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			}
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 

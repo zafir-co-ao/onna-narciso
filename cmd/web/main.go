@@ -3,16 +3,16 @@ package main
 import (
 	"net/http"
 
+	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web"
 )
 
 func main() {
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	cacl := stubs.CustomerACLStub{}
 	pacl := stubs.Pacl

@@ -4,14 +4,14 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 )
 
 func TestAppointmentCanceler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 
 	a1 := scheduling.Appointment{ID: "1"}
 	a2 := scheduling.Appointment{ID: "2", Status: scheduling.StatusCanceled}
@@ -75,7 +75,7 @@ func TestAppointmentCanceler(t *testing.T) {
 			evtAppointmentID = e.Header(event.HeaderAggregateID)
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)

@@ -1,8 +1,8 @@
 package scheduling
 
 import (
+	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 )
 
 const EventAppointmentScheduled = "EventAppointmentScheduled"
