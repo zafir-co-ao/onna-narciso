@@ -6,11 +6,11 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
-type inmemeSessionRepositoryImpl struct {
+type inmemSessionRepositoryImpl struct {
 	shared.BaseRepository[session.Session]
 }
 
-func (s *inmemeSessionRepositoryImpl) FindByID(id nanoid.ID) (session.Session, error) {
+func (s *inmemSessionRepositoryImpl) FindByID(id nanoid.ID) (session.Session, error) {
 	for _, session := range s.Data {
 		if session.ID.String() == id.String() {
 			return session, nil
@@ -20,12 +20,12 @@ func (s *inmemeSessionRepositoryImpl) FindByID(id nanoid.ID) (session.Session, e
 }
 
 func NewSessionRepository(s ...session.Session) session.Repository {
-	return &inmemeSessionRepositoryImpl{
+	return &inmemSessionRepositoryImpl{
 		BaseRepository: shared.NewBaseRepository[session.Session](s...),
 	}
 }
 
-func (s *inmemeSessionRepositoryImpl) Save(session session.Session) error {
+func (s *inmemSessionRepositoryImpl) Save(session session.Session) error {
 	s.Data[session.ID] = session
 	return nil
 }
