@@ -9,7 +9,7 @@ var ErrInvalidHour = errors.New("Invalid hour")
 
 type Hour string
 
-func NewHour(v string) (Hour, error) {
+func New(v string) (Hour, error) {
 	_, err := time.Parse("15:04", v)
 
 	if err != nil {
