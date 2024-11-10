@@ -34,12 +34,20 @@ func (s *Session) Close(services []Service) error {
 
 	s.CloseTime = time.Now()
 	s.Status = StatusClosed
-
-	for _, v := range services {
-		s.Services = append(s.Services, v)
-	}
+	s.addServices(services)
 
 	return nil
+}
+
+func (s *Session) addServices(services []Service) {
+
+	if len(services) == 0 {
+		return
+	}
+
+	for _, svc := range services {
+		s.Services = append(s.Services, svc)
+	}
 }
 
 func (s *Session) IsClosed() bool {
