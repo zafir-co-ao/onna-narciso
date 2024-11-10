@@ -8,26 +8,26 @@ import (
 
 const EventSessionClosed = "EventSessionClosed"
 
-type SessionCloserInput struct {
+type CloserInput struct {
 	SessionID   string
 	ServicesIDs []string
 }
 
-type SessionCloser interface {
-	Close(i SessionCloserInput) error
+type Closer interface {
+	Close(i CloserInput) error
 }
 
-type sessionCloserImpl struct {
+type closerImpl struct {
 	repo Repository
 	sacl ServiceACL
 	bus  event.Bus
 }
 
-func NewSessionCloser(repo Repository, sacl ServiceACL, bus event.Bus) SessionCloser {
-	return &sessionCloserImpl{repo, sacl, bus}
+func NewSessionCloser(repo Repository, sacl ServiceACL, bus event.Bus) Closer {
+	return &closerImpl{repo, sacl, bus}
 }
 
-func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
+func (u *closerImpl) Close(i CloserInput) error {
 	s, err := u.repo.FindByID(nanoid.ID(i.SessionID))
 	if err != nil {
 		return ErrSessionNotFound
@@ -58,7 +58,7 @@ func (u *sessionCloserImpl) Close(i SessionCloserInput) error {
 	return nil
 }
 
-func (u *sessionCloserImpl) findServices(ids []string) ([]Service, error) {
+func (u *closerImpl) findServices(ids []string) ([]Service, error) {
 	if len(ids) == 0 {
 		return EmptyServices, nil
 	}

@@ -23,7 +23,7 @@ func TestSessionCloser(t *testing.T) {
 	}
 
 	t.Run("should_close_the_session", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "1",
 			ServicesIDs: []string{"1", "2"},
 		}
@@ -45,7 +45,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_record_the_closing_time_of_the_session", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "2",
 			ServicesIDs: []string{"2", "3"},
 		}
@@ -67,7 +67,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_entry_the_additional_services_in_session", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "5",
 			ServicesIDs: []string{"1", "2"},
 		}
@@ -94,7 +94,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_entry_the_professional_in_session", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "6",
 			ServicesIDs: []string{"2", "3"},
 		}
@@ -120,7 +120,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_close_the_session_without_additional_services", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "8",
 			ServicesIDs: []string{},
 		}
@@ -142,7 +142,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_not_found_service_acl", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "7",
 			ServicesIDs: []string{"1", "2", "10"},
 		}
@@ -159,7 +159,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "4",
 			ServicesIDs: make([]string, 0),
 		}
@@ -168,7 +168,7 @@ func TestSessionCloser(t *testing.T) {
 		var isPublished bool = false
 		var h event.HandlerFunc = func(e event.Event) {
 			switch e.Payload().(type) {
-			case session.SessionCloserInput:
+			case session.CloserInput:
 				evtAggID = e.Header(event.HeaderAggregateID)
 				isPublished = true
 			}
@@ -192,7 +192,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_session_not_exists_in_repository", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "200",
 			ServicesIDs: make([]string, 0),
 		}
@@ -209,7 +209,7 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
-		input := session.SessionCloserInput{
+		input := session.CloserInput{
 			SessionID:   "3",
 			ServicesIDs: make([]string, 0),
 		}
