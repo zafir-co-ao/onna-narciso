@@ -7,6 +7,8 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	_session "github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web"
 )
@@ -20,11 +22,15 @@ func main() {
 
 	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 	c := scheduling.NewAppointmentCanceler(repo, bus)
-	f := scheduling.NewAppointmentGetter(repo)
+	g := scheduling.NewAppointmentGetter(repo)
 	r := scheduling.NewAppointmentRescheduler(repo, bus)
 	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
 
-	http.Handle("/", web.NewRouter(s, c, f, r, wg))
+	fs := session.FakeServiceACL{}
+	sRepo := _session.NewSessionRepository()
+	sc := session.NewSessionCloser(sRepo, fs, bus)
+
+	http.Handle("/", web.NewRouter(s, c, g, r, wg, sc))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

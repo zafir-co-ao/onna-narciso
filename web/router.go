@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/session"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
+	_session "github.com/zafir-co-ao/onna-narciso/web/session/handlers"
 )
 
 var cwd string
@@ -15,6 +17,7 @@ func NewRouter(
 	g scheduling.AppointmentGetter,
 	r scheduling.AppointmentRescheduler,
 	wg scheduling.WeeklyAppointmentsFinder,
+	sc session.Closer,
 ) *http.ServeMux {
 
 	mux := http.NewServeMux()
@@ -28,6 +31,8 @@ func NewRouter(
 
 	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
 	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
+
+	mux.HandleFunc("DELETE /sessions/{id}", _session.HandleCloseSession(sc))
 
 	mux.HandleFunc("/", NewStaticHandler())
 
