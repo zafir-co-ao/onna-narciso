@@ -1,6 +1,6 @@
 package scheduling
 
-import "github.com/kindalus/gofunc/pkg/collections"
+import "github.com/kindalus/godx/pkg/xslices"
 
 type DailyAppointmentsFinder interface {
 	Find(day string) ([]AppointmentOutput, error)
@@ -21,5 +21,5 @@ func (d *dailyAppointmentsFinderImpl) Find(date string) ([]AppointmentOutput, er
 		return nil, err
 	}
 
-	return collections.Map(a, toAppointmentOutput), nil
+	return xslices.Map(a, toAppointmentOutput), nil
 }

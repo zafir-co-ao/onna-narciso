@@ -4,5 +4,3 @@ github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/kindalus/godx v0.1.0 h1:b7shO8L2WFmfHP+p4s8d97f6JzVtCl+NaOpH7drV9zs=
 github.com/kindalus/godx v0.1.0/go.mod h1:TTtnLo4WLMjtul693miKgFEuPMkYJS4Q/q0XCy5qMJM=
-github.com/kindalus/gofunc v1.3.0 h1:PNSPoNTPVovnYrXRErcn0vTc2+YsEc0XpBwUglpfNiY=
-github.com/kindalus/gofunc v1.3.0/go.mod h1:0o3RWq7Kp7lLzQjLo2z36cFzWLYl5Tojh3gYabO39aM=

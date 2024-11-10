@@ -3,7 +3,6 @@ package scheduling
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
-	"github.com/kindalus/gofunc/pkg/collections"
 )
 
 type WeeklyAppointmentsFinder interface {
@@ -27,5 +26,5 @@ func (w *weeklyAppointmentsGetterImpl) Find(adate string, serviceID string, prof
 		return nil, e
 	}
 
-	return collections.Map(a, toAppointmentOutput), nil
+	return xslices.Map(a, toAppointmentOutput), nil
 }
