@@ -13,7 +13,10 @@ const (
 	StatusClosed    Status = "closed"
 )
 
-var ErrSessionClosed = errors.New("Session already closed")
+var (
+	ErrSessionStarted = errors.New("Session already started")
+	ErrSessionClosed  = errors.New("Session already closed")
+)
 
 type Status string
 
@@ -26,8 +29,20 @@ type Session struct {
 	ID            nanoid.ID
 	AppointmentID nanoid.ID
 	Status        Status
+	StartTime     time.Time
 	CloseTime     time.Time
 	Services      []Service
+}
+
+func (s *Session) Start() error {
+
+	if s.IsStarted() {
+		return ErrSessionStarted
+	}
+
+	s.StartTime = time.Now()
+	s.Status = StatusStarted
+	return nil
 }
 
 func (s *Session) Close(services []Service) error {
@@ -43,6 +58,14 @@ func (s *Session) Close(services []Service) error {
 	return nil
 }
 
+func (s *Session) IsStarted() bool {
+	return s.Status == StatusStarted
+}
+
+func (s *Session) IsClosed() bool {
+	return s.Status == StatusClosed
+}
+
 func (s *Session) addServices(services []Service) {
 
 	if len(services) == 0 {
@@ -52,10 +75,6 @@ func (s *Session) addServices(services []Service) {
 	for _, svc := range services {
 		s.Services = append(s.Services, svc)
 	}
-}
-
-func (s *Session) IsClosed() bool {
-	return s.Status == StatusClosed
 }
 
 func (s Session) GetID() nanoid.ID {
