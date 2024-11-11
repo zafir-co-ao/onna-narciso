@@ -18,6 +18,7 @@ func NewRouter(
 	r scheduling.AppointmentRescheduler,
 	wg scheduling.WeeklyAppointmentsFinder,
 	dg scheduling.DailyAppointmentsFinder,
+	ss session.Starter,
 	sc session.Closer,
 	sf session.Finder,
 ) *http.ServeMux {
@@ -34,6 +35,7 @@ func NewRouter(
 	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
 	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
 
+	mux.HandleFunc("PUT /sessions/{id}", _session.HandleStartSession(ss, sf, dg))
 	mux.HandleFunc("DELETE /sessions/{id}", _session.HandleCloseSession(sc, sf, dg))
 
 	mux.HandleFunc("/", NewStaticHandler())
