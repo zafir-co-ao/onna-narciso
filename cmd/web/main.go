@@ -29,11 +29,12 @@ func main() {
 
 	fs := session.FakeServiceACL{}
 	sRepo := _session.NewSessionRepository(testdata.Sessions...)
-	sc := session.NewSessionCloser(sRepo, fs, bus)
+	sc := session.NewSessionCreator(sRepo, bus)
+	so := session.NewSessionCloser(sRepo, fs, bus)
 	sf := session.NewSessionFinder(sRepo)
 	ss := session.NewSessionStarter(sRepo, bus)
 
-	http.Handle("/", web.NewRouter(s, c, g, r, wg, dg, ss, sc, sf))
+	http.Handle("/", web.NewRouter(s, c, g, r, wg, dg, sc, ss, so, sf))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

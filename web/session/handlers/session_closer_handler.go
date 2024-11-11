@@ -65,7 +65,7 @@ func HandleCloseSession(
 		}
 
 		_http.SendOk(w)
-		result := shared.CombineAppointmentsAndSessions(appointments, sessions)
-		pages.DailyAppointments(result).Render(r.Context(), w)
+		opts := shared.CombineAppointmentsAndSessions(appointments, sessions)
+		pages.DailyAppointments(opts).Render(r.Context(), w)
 	}
 }

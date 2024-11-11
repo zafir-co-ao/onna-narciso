@@ -9,8 +9,8 @@ import (
 
 const (
 	StatusCheckedIn Status = "CheckedIn"
-	StatusStarted   Status = "started"
-	StatusClosed    Status = "closed"
+	StatusStarted   Status = "Started"
+	StatusClosed    Status = "Closed"
 )
 
 var (
