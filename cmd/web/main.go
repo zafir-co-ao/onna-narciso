@@ -25,12 +25,14 @@ func main() {
 	g := scheduling.NewAppointmentGetter(repo)
 	r := scheduling.NewAppointmentRescheduler(repo, bus)
 	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
+	dg := scheduling.NewDailyAppointmentsGetter(repo)
 
 	fs := session.FakeServiceACL{}
-	sRepo := _session.NewSessionRepository()
+	sRepo := _session.NewSessionRepository(testdata.Sessions...)
 	sc := session.NewSessionCloser(sRepo, fs, bus)
+	sf := session.NewSessionFinder(sRepo)
 
-	http.Handle("/", web.NewRouter(s, c, g, r, wg, sc))
+	http.Handle("/", web.NewRouter(s, c, g, r, wg, dg, sc, sf))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

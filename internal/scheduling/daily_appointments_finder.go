@@ -6,7 +6,7 @@ import (
 )
 
 type DailyAppointmentsFinder interface {
-	Find(day string) ([]AppointmentOutput, error)
+	Find(date string) ([]AppointmentOutput, error)
 }
 
 type dailyAppointmentsFinderImpl struct {

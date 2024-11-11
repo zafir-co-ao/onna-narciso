@@ -7,7 +7,11 @@ import (
 	"time"
 )
 
-const StatusClosed Status = "closed"
+const (
+	StatusCheckedIn Status = "CheckedIn"
+	StatusStarted   Status = "started"
+	StatusClosed    Status = "closed"
+)
 
 var ErrSessionClosed = errors.New("Session already closed")
 

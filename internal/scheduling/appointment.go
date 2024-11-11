@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	StatusScheduled   Status = "scheduled"
-	StatusCanceled    Status = "canceled"
-	StatusRescheduled Status = "rescheduled"
+	StatusScheduled   Status = "Agendado"
+	StatusCanceled    Status = "Cancelado"
+	StatusRescheduled Status = "Reagendado"
+	StatusClosed      Status = "Fechado"
 )
 
 var EmptyAppointment Appointment

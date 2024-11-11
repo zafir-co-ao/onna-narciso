@@ -18,6 +18,7 @@ type AppointmentOutput struct {
 	ServiceName      string
 	ProfessionalID   string
 	ProfessionalName string
+	Status           string
 	Date             string
 	Hour             string
 	Duration         int
@@ -32,6 +33,7 @@ func toAppointmentOutput(a Appointment) AppointmentOutput {
 		ServiceName:      string(a.ServiceName),
 		ProfessionalID:   string(a.ProfessionalID),
 		ProfessionalName: string(a.ProfessionalName),
+		Status:           string(a.Status),
 		Date:             a.Date.String(),
 		Hour:             a.Hour.String(),
 		Duration:         a.Duration,
