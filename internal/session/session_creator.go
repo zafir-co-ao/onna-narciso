@@ -24,11 +24,7 @@ func NewSessionCreator(r Repository, b event.Bus) Creator {
 }
 
 func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
-
-	s := Session{
-		ID:            nanoid.New(),
-		AppointmentID: nanoid.ID(appointmentID),
-	}
+	s := NewSession(nanoid.ID(appointmentID))
 
 	err := c.repo.Save(s)
 	if err != nil {

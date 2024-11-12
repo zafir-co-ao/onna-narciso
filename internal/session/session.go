@@ -29,9 +29,19 @@ type Session struct {
 	ID            nanoid.ID
 	AppointmentID nanoid.ID
 	Status        Status
+	CheckinTime   time.Time
 	StartTime     time.Time
 	CloseTime     time.Time
 	Services      []Service
+}
+
+func NewSession(appointmentID nanoid.ID) Session {
+	return Session{
+		ID:            nanoid.New(),
+		AppointmentID: appointmentID,
+		Status:        StatusCheckedIn,
+		CheckinTime:   time.Now(),
+	}
 }
 
 func (s *Session) Start() error {
