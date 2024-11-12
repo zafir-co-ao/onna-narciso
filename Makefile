@@ -22,3 +22,6 @@ build-dev: clean
 
 run-dev: build-dev
 	air
+
+generate: clean
+	templ generate

@@ -11,7 +11,6 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -323,7 +322,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 	t.Run("should_return_error_professional_not_found_if_professional_not_exists", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
-			ProfessionalID: "4",
+			ProfessionalID: "400",
 			CustomerID:     "100",
 			ServiceID:      "4",
 			Date:           "2024-09-01",

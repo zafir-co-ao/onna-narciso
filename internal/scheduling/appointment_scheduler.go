@@ -27,25 +27,15 @@ type AppointmentScheduler interface {
 type appointmentScedulerImpl struct {
 	repo            AppointmentRepository
 	serviceACL      ServiceACL
-<<<<<<< HEAD
 	customerACL     CustomersACL
 	professionalACL ProfessionalsACL
-=======
-	customerACL     CustomerACL
-	professionalACL ProfessionalACL
->>>>>>> 1da440272911f860c6c2354128b8ed904f112aa1
 	bus             event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
-<<<<<<< HEAD
 	cacl CustomersACL,
 	pacl ProfessionalsACL,
-=======
-	cacl CustomerACL,
-	pacl ProfessionalACL,
->>>>>>> 1da440272911f860c6c2354128b8ed904f112aa1
 	sacl ServiceACL,
 	bus event.Bus,
 ) AppointmentScheduler {
