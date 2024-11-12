@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/web/session/components"
 )
 
-type DailyAppointmentOpts struct {
+type DailyAppointmentOptions struct {
 	Appointment scheduling.AppointmentOutput
 	Session     session.SessionOutput
 }
 
-templ DailyAppointments(opts []DailyAppointmentOpts) {
+templ DailyAppointments(opts []DailyAppointmentOptions) {
 	<div id="content">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
@@ -463,14 +464,14 @@ templ DailyAppointments(opts []DailyAppointmentOpts) {
 			<ol class="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
 				for _, opt := range opts {
 					if opt.Appointment.Status == string(scheduling.StatusScheduled) {
-						@DailyAppointmentComponent(opt)
+						@DailyAppointment(opt)
 					}
 				}
 			</ol>
 			<ol class="mt-16 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
 				for _, opt := range opts {
 					if opt.Appointment.Status != string(scheduling.StatusScheduled) {
-						@DailyAppointmentComponent(opt)
+						@DailyAppointment(opt)
 					}
 				}
 			</ol>
@@ -478,10 +479,10 @@ templ DailyAppointments(opts []DailyAppointmentOpts) {
 	</div>
 }
 
-templ DailyAppointmentComponent(d DailyAppointmentOpts) {
+templ DailyAppointment(o DailyAppointmentOptions) {
 	<li class="relative flex space-x-6 py-6 xl:static">
 		<div class="flex-auto">
-			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ d.Appointment.CustomerName } - { d.Appointment.Status } </h3>
+			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.Appointment.CustomerName } - { o.Appointment.Status } </h3>
 			<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
 				<div class="flex items-start space-x-3">
 					<dt class="mt-0.5">
@@ -502,7 +503,7 @@ templ DailyAppointmentComponent(d DailyAppointmentOpts) {
 					</dt>
 					<dd>
 						<time datetime="2022-01-10T17:00">
-							{ d.Appointment.Date } às { d.Appointment.Hour }
+							{ o.Appointment.Date } às { o.Appointment.Hour }
 						</time>
 					</dd>
 				</div>
@@ -517,7 +518,7 @@ templ DailyAppointmentComponent(d DailyAppointmentOpts) {
 						</svg>
 					</dt>
 					<dd>
-						{ d.Appointment.ServiceName }
+						{ o.Appointment.ServiceName }
 					</dd>
 				</div>
 				<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
@@ -530,57 +531,20 @@ templ DailyAppointmentComponent(d DailyAppointmentOpts) {
 						</svg>
 					</dt>
 					<dd>
-						{ d.Appointment.ProfessionalName }
+						{ o.Appointment.ProfessionalName }
 					</dd>
 				</div>
 			</dl>
 		</div>
-		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-			if d.Session.ID == "" {
-				<form
-					hx-post="/sessions"
-					hx-target="#content"
-					hx-swap="outerHTML"
-				>
-					<input type="hidden" name="appointment-id" value={ d.Appointment.ID }/>
-					<button
-						type="submit"
-						class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-					>
-						Check In
-					</button>
-				</form>
-			}
-			if d.Session.Status == string(session.StatusCheckedIn) {
-				<form
-					hx-put={ fmt.Sprintf("/sessions/%v", d.Session.ID) }
-					hx-target="#content"
-					hx-swap="outerHTML"
-				>
-					<input type="hidden" name="session-id" value={ d.Session.ID }/>
-					<button
-						type="submit"
-						class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-					>
-						Iniciar sessão
-					</button>
-				</form>
-			}
-			if d.Session.Status == string(session.StatusStarted) {
-				<form
-					hx-delete={ fmt.Sprintf("/sessions/%v", d.Session.ID) }
-					hx-target="#content"
-					hx-swap="outerHTML"
-				>
-					<input type="hidden" name="session-id" value={ d.Session.ID }/>
-					<button
-						type="submit"
-						class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-					>
-						Fechar sessão
-					</button>
-				</form>
-			}
-		</div>
+		@components.SessionAction(
+			o.Appointment.ID,
+			components.WithID(o.Session.ID),
+			components.WithStatus(o.Session.Status),
+			components.WithHxPost("/sessions"),
+			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.Session.ID)),
+			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.Session.ID)),
+			components.WithHxTarget("#content"),
+			components.WithHxSwap("outerHTML"),
+		)
 	</li>
 }
