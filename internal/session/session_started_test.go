@@ -20,10 +20,10 @@ func TestSessionStarter(t *testing.T) {
 	s3 := session.Session{ID: "3"}
 	s4 := session.Session{ID: "4"}
 
-	repo.Save(s1)
-	repo.Save(s2)
-	repo.Save(s3)
-	repo.Save(s4)
+	_ = repo.Save(s1)
+	_ = repo.Save(s2)
+	_ = repo.Save(s3)
+	_ = repo.Save(s4)
 
 	u := session.NewSessionStarter(repo, bus)
 
