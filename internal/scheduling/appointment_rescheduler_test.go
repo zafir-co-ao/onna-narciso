@@ -27,8 +27,8 @@ func TestAppointmentRescheduler(t *testing.T) {
 	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
 	a3 := scheduling.Appointment{ID: "12", Status: scheduling.StatusScheduled, Date: "2024-10-27", Hour: "8:00", Duration: 240}
 
-	repo.Save(a2)
-	repo.Save(a3)
+	_ = repo.Save(a2)
+	_ = repo.Save(a3)
 
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
@@ -115,10 +115,29 @@ func TestAppointmentRescheduler(t *testing.T) {
 		if o.Duration != 60 {
 			t.Errorf("The appointment duration must be 60 minutes, got %v", o.Duration)
 		}
-
 	})
 
-	t.Run("should_return_an_error_if_there_is_no_availability_to_reschedule_the_appointment", func(t *testing.T) {
+	t.Run("must_reschedule_an_appointment_more_than_once", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:       "1",
+			Date:     "2024-07-01",
+			Hour:     "12:00",
+			Duration: 60,
+		}
+
+		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
+
+		o, err := usecase.Reschedule(i)
+		if err != nil {
+			t.Errorf("Should not return error, got %v", err)
+		}
+
+		if o.Status != string(scheduling.StatusRescheduled) {
+			t.Errorf("The appointment status must be %v, got %v", scheduling.StatusRescheduled, o.Status)
+		}
+	})
+
+	t.Run("should_return_an_error_if_exists_interception_of_appointments", func(t *testing.T) {
 		var inputs = []scheduling.AppointmentReschedulerInput{
 			{
 				ID:       "8",

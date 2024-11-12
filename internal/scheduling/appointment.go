@@ -88,7 +88,7 @@ func NewAppointment(
 }
 
 func (a *Appointment) Reschedule(date string, time string, duration int) error {
-	if !a.IsScheduled() {
+	if !a.IsScheduled() && !a.IsRescheduled() {
 		return ErrInvalidStatusToReschedule
 	}
 
