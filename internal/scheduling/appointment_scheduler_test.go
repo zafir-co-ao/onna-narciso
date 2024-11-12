@@ -6,7 +6,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 )
@@ -22,9 +22,9 @@ func TestAppointmentScheduler(t *testing.T) {
 	repo.Save(a2)
 	repo.Save(a3)
 
-	cacl := stubs.CustomerAclStub{}
-	pacl := stubs.Pacl
-	sacl := stubs.Sacl
+	cacl := stubs.NewCustomersACL()
+	pacl := stubs.NewProfessionalsACL()
+	sacl := stubs.NewServicesACL()
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{

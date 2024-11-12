@@ -9,27 +9,28 @@ var (
 	ErrCustomerRegistration = errors.New("Error registering customer")
 )
 
-type ProfessionalAcl interface {
+type ProfessionalsACL interface {
 	FindProfessionalByID(id string) (Professional, error)
 }
 
-type ServiceAcl interface {
+type ServiceACL interface {
 	FindServiceByID(id string) (Service, error)
 }
 
-type CustomerAcl interface {
+type CustomersACL interface {
 	FindCustomerByID(id string) (Customer, error)
 	RequestCustomerRegistration(name, phone string) (Customer, error)
 }
 
-type ProfessionalAclFunc func(id string) (Professional, error)
+type ProfessionalsACLFunc func(id string) (Professional, error)
 
-func (f ProfessionalAclFunc) FindProfessionalByID(id string) (Professional, error) {
+func (f ProfessionalsACLFunc) FindProfessionalByID(id string) (Professional, error) {
 	return f(id)
+
 }
 
-type ServiceAclFunc func(id string) (Service, error)
+type ServicesACLFunc func(id string) (Service, error)
 
-func (f ServiceAclFunc) FindServiceByID(id string) (Service, error) {
+func (f ServicesACLFunc) FindServiceByID(id string) (Service, error) {
 	return f(id)
 }

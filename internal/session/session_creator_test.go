@@ -46,5 +46,4 @@ func TestSessionCreator(t *testing.T) {
 		}
 
 	})
-
 }

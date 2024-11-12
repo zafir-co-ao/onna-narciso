@@ -5,7 +5,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/tests/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web"
@@ -14,9 +14,9 @@ import (
 func main() {
 	bus := event.NewInmemEventBus()
 	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
-	cacl := stubs.CustomerAclStub{}
-	pacl := stubs.Pacl
-	sacl := stubs.Sacl
+	cacl := stubs.NewCustomersACL()
+	pacl := stubs.NewProfessionalsACL()
+	sacl := stubs.NewServicesACL()
 
 	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 	c := scheduling.NewAppointmentCanceler(repo, bus)
