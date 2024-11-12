@@ -2,13 +2,13 @@ package testdata
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 )
 
-var Sessions []session.Session = []session.Session{
+var Sessions []sessions.Session = []sessions.Session{
 	{
 		ID:            nanoid.ID("1"),
 		AppointmentID: nanoid.ID("4"),
-		Status:        session.StatusStarted,
+		Status:        sessions.StatusStarted,
 	},
 }

@@ -1,4 +1,4 @@
-package session
+package sessions
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"

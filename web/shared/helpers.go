@@ -3,12 +3,12 @@ package shared
 import (
 	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 )
 
-func CombineAppointmentsAndSessions(appointments []scheduling.AppointmentOutput, sessions []session.SessionOutput) []pages.DailyAppointmentOptions {
-	sessionMap := make(map[string]session.SessionOutput)
+func CombineAppointmentsAndSessions(appointments []scheduling.AppointmentOutput, sessions []_sessions.SessionOutput) []pages.DailyAppointmentOptions {
+	sessionMap := make(map[string]_sessions.SessionOutput)
 	for _, session := range sessions {
 		sessionMap[session.AppointmentID] = session
 	}
@@ -21,6 +21,6 @@ func CombineAppointmentsAndSessions(appointments []scheduling.AppointmentOutput,
 			}
 		}
 
-		return pages.DailyAppointmentOptions{Appointment: appointment, Session: session.SessionOutput{ID: ""}}
+		return pages.DailyAppointmentOptions{Appointment: appointment, Session: _sessions.SessionOutput{ID: ""}}
 	})
 }

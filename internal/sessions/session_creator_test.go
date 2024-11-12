@@ -1,12 +1,12 @@
-package session_test
+package sessions_test
 
 import (
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
-	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 )
 
@@ -17,7 +17,7 @@ func TestSessionCreator(t *testing.T) {
 	t.Run("should_create_session", func(t *testing.T) {
 		repo := inmem.NewSessionRepository()
 
-		creator := session.NewSessionCreator(repo, bus)
+		creator := sessions.NewSessionCreator(repo, bus)
 		aid := testdata.Appointments[0].ID.String()
 
 		_, err := creator.Create(aid)
@@ -30,7 +30,7 @@ func TestSessionCreator(t *testing.T) {
 
 	t.Run("should_store_session_in_the_repository", func(t *testing.T) {
 		repo := inmem.NewSessionRepository()
-		creator := session.NewSessionCreator(repo, event.NewEventBus())
+		creator := sessions.NewSessionCreator(repo, event.NewEventBus())
 		aid := testdata.Appointments[1].ID.String()
 
 		session, err := creator.Create(aid)
@@ -55,7 +55,7 @@ func TestSessionCreator(t *testing.T) {
 
 	t.Run("should_publish_SessionCheckedIn_event", func(t *testing.T) {
 		b := event.NewEventBus()
-		c := session.NewSessionCreator(inmem.NewSessionRepository(), b)
+		c := sessions.NewSessionCreator(inmem.NewSessionRepository(), b)
 		aid := testdata.Appointments[2].ID.String()
 
 		epublished := false

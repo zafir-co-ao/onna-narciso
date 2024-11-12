@@ -6,10 +6,10 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	_session "github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web"
@@ -29,12 +29,12 @@ func main() {
 	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
 	dg := scheduling.NewDailyAppointmentsGetter(repo)
 
-	fs := session.FakeServiceACL{}
-	sRepo := _session.NewSessionRepository(testdata.Sessions...)
-	sc := session.NewSessionCreator(sRepo, bus)
-	so := session.NewSessionCloser(sRepo, fs, bus)
-	sf := session.NewSessionFinder(sRepo)
-	ss := session.NewSessionStarter(sRepo, bus)
+	fs := sessions.FakeServiceACL{}
+	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
+	sc := sessions.NewSessionCreator(sRepo, bus)
+	so := sessions.NewSessionCloser(sRepo, fs, bus)
+	sf := sessions.NewSessionFinder(sRepo)
+	ss := sessions.NewSessionStarter(sRepo, bus)
 
 	http.Handle("/", web.NewRouter(s, c, g, r, wg, dg, sc, ss, so, sf))
 

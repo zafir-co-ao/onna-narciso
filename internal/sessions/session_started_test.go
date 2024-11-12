@@ -1,4 +1,4 @@
-package session_test
+package sessions_test
 
 import (
 	"errors"
@@ -7,25 +7,25 @@ import (
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
-	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 )
 
 func TestSessionStarter(t *testing.T) {
 	repo := inmem.NewSessionRepository()
 	bus := event.NewEventBus()
 
-	s1 := session.Session{ID: "1"}
-	s2 := session.Session{ID: "2", Status: session.StatusStarted}
-	s3 := session.Session{ID: "3"}
-	s4 := session.Session{ID: "4"}
+	s1 := sessions.Session{ID: "1"}
+	s2 := sessions.Session{ID: "2", Status: sessions.StatusStarted}
+	s3 := sessions.Session{ID: "3"}
+	s4 := sessions.Session{ID: "4"}
 
 	_ = repo.Save(s1)
 	_ = repo.Save(s2)
 	_ = repo.Save(s3)
 	_ = repo.Save(s4)
 
-	u := session.NewSessionStarter(repo, bus)
+	u := sessions.NewSessionStarter(repo, bus)
 
 	t.Run("should_start_session", func(t *testing.T) {
 		id := "1"
@@ -74,7 +74,7 @@ func TestSessionStarter(t *testing.T) {
 			isPublished = true
 		}
 
-		bus.Subscribe(session.EventSessionStarted, h)
+		bus.Subscribe(sessions.EventSessionStarted, h)
 
 		err := u.Start(id)
 
@@ -100,7 +100,7 @@ func TestSessionStarter(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(session.ErrSessionNotFound, err) {
+		if !errors.Is(sessions.ErrSessionNotFound, err) {
 			t.Errorf("The error must be ErrSessionNotFound, got %v", err)
 		}
 	})
@@ -113,7 +113,7 @@ func TestSessionStarter(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(session.ErrSessionStarted, err) {
+		if !errors.Is(sessions.ErrSessionStarted, err) {
 			t.Errorf("The error must be ErrSessionStarted, got %v", err)
 		}
 	})

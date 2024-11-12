@@ -3,13 +3,13 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/session/components"
 )
 
 type DailyAppointmentOptions struct {
 	Appointment scheduling.AppointmentOutput
-	Session     session.SessionOutput
+	Session     sessions.SessionOutput
 }
 
 templ DailyAppointments(opts []DailyAppointmentOptions) {

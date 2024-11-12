@@ -1,14 +1,14 @@
-package session_test
+package sessions_test
 
 import (
 	"testing"
 
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
-	"github.com/zafir-co-ao/onna-narciso/internal/session/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 )
 
 func TestSessionFinder(t *testing.T) {
-	sessions := []session.Session{
+	_sessions := []sessions.Session{
 		{
 			ID:            "1",
 			AppointmentID: "1",
@@ -23,7 +23,7 @@ func TestSessionFinder(t *testing.T) {
 		},
 	}
 
-	repo := inmem.NewSessionRepository(sessions...)
+	repo := inmem.NewSessionRepository(_sessions...)
 
 	type sessionFinderTestMatrix struct {
 		appointmentIDs []string
@@ -36,7 +36,7 @@ func TestSessionFinder(t *testing.T) {
 		{appointmentIDs: []string{"1", "4"}, expectedIDs: []string{"1"}},
 	}
 
-	finder := session.NewSessionFinder(repo)
+	finder := sessions.NewSessionFinder(repo)
 
 	for _, test := range matrix {
 		t.Run("", func(t *testing.T) {

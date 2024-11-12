@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 	_session "github.com/zafir-co-ao/onna-narciso/web/session/handlers"
 )
@@ -18,10 +18,10 @@ func NewRouter(
 	r scheduling.AppointmentRescheduler,
 	wg scheduling.WeeklyAppointmentsFinder,
 	dg scheduling.DailyAppointmentsFinder,
-	sc session.Creator,
-	ss session.Starter,
-	so session.Closer,
-	sf session.Finder,
+	sc sessions.Creator,
+	ss sessions.Starter,
+	so sessions.Closer,
+	sf sessions.Finder,
 ) *http.ServeMux {
 
 	mux := http.NewServeMux()

@@ -2,7 +2,7 @@ package components
 
 import (
 	"context"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"io"
 )
 
@@ -113,7 +113,7 @@ templ _sessionActionTempl(s *_sessionActionState) {
 				</button>
 			</form>
 		}
-		if s.status == string(session.StatusCheckedIn) {
+		if s.status == string(sessions.StatusCheckedIn) {
 			<form
 				hx-put={ s.hxPut }
 				hx-target={ s.hxTarget }
@@ -128,7 +128,7 @@ templ _sessionActionTempl(s *_sessionActionState) {
 				</button>
 			</form>
 		}
-		if s.status == string(session.StatusStarted) {
+		if s.status == string(sessions.StatusStarted) {
 			<form
 				hx-delete={ s.hxDelete }
 				hx-target={ s.hxTarget }

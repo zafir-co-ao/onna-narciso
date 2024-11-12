@@ -7,26 +7,26 @@ import (
 
 	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	"github.com/zafir-co-ao/onna-narciso/web/shared"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
 func HandleStartSession(
-	ss session.Starter,
-	sf session.Finder,
+	ss sessions.Starter,
+	sf sessions.Finder,
 	dg scheduling.DailyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := ss.Start(r.FormValue("session-id"))
 
-		if errors.Is(session.ErrSessionStarted, err) {
+		if errors.Is(sessions.ErrSessionStarted, err) {
 			_http.SendBadRequest(w, "A sessão já foi iniciada")
 			return
 		}
 
-		if errors.Is(session.ErrSessionNotFound, err) {
+		if errors.Is(sessions.ErrSessionNotFound, err) {
 			_http.SendNotFound(w, "Sessão não encontrada")
 			return
 		}
