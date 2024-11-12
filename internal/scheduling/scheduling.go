@@ -4,6 +4,7 @@ import "errors"
 
 var (
 	ErrBusyTime                  = errors.New("Schedule time is busy")
+	ErrInvalidStatusToClose      = errors.New("Invalid status to close")
 	ErrInvalidStatusToCancel     = errors.New("Invalid status to cancel")
 	ErrInvalidStatusToReschedule = errors.New("Invalid status to reschedule")
 )

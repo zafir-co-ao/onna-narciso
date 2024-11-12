@@ -8,8 +8,8 @@ import (
 
 const (
 	StatusScheduled   Status = "Agendado"
-	StatusCanceled    Status = "Cancelado"
 	StatusRescheduled Status = "Reagendado"
+	StatusCanceled    Status = "Cancelado"
 	StatusClosed      Status = "Fechado"
 )
 
@@ -110,6 +110,16 @@ func (a *Appointment) Reschedule(date string, time string, duration int) error {
 	return nil
 }
 
+func (a *Appointment) Close() error {
+	if a.IsClosed() {
+		return ErrInvalidStatusToClose
+	}
+
+	a.Status = StatusClosed
+
+	return nil
+}
+
 func (a *Appointment) Cancel() error {
 	if a.IsCancelled() {
 		return ErrInvalidStatusToCancel
@@ -126,6 +136,10 @@ func (a *Appointment) IsScheduled() bool {
 
 func (a *Appointment) IsRescheduled() bool {
 	return a.Status == StatusRescheduled
+}
+
+func (a *Appointment) IsClosed() bool {
+	return a.Status == StatusClosed
 }
 
 func (a *Appointment) IsCancelled() bool {
