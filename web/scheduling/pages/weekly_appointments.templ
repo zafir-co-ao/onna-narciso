@@ -135,7 +135,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
             const minutes = (addSlots % 4) * 15;
 
             let date = new Date(initialDate + addDate * 24 * 60 * 60 * 1000)
-            hour = `${hour}:${minutes === 0 ? '00' : minutes }`
+            hour = `${hour.toString().length == 2 ? hour : '0' + hour.toString()}:${minutes === 0 ? '00' : minutes }`
 
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
