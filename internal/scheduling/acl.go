@@ -25,6 +25,7 @@ type CustomersACL interface {
 type ProfessionalsACLFunc func(id string) (Professional, error)
 
 func (f ProfessionalsACLFunc) FindProfessionalByID(id string) (Professional, error) {
+
 	return f(id)
 
 }
@@ -32,5 +33,6 @@ func (f ProfessionalsACLFunc) FindProfessionalByID(id string) (Professional, err
 type ServicesACLFunc func(id string) (Service, error)
 
 func (f ServicesACLFunc) FindServiceByID(id string) (Service, error) {
+
 	return f(id)
 }

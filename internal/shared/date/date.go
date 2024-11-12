@@ -1,4 +1,4 @@
-package scheduling
+package date
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ var ErrInvalidDate = errors.New("Invalid date")
 
 type Date string
 
-func NewDate(v string) (Date, error) {
+func New(v string) (Date, error) {
 	if !isValidDate(v) {
 		return Date(""), ErrInvalidDate
 	}
@@ -17,7 +17,7 @@ func NewDate(v string) (Date, error) {
 	return Date(v), nil
 }
 
-func (d Date) Value() string {
+func (d Date) String() string {
 	return string(d)
 }
 

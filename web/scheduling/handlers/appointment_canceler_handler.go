@@ -17,17 +17,17 @@ func HandleCancelAppointment(
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := c.Cancel(r.PathValue("id"))
 
-		if errors.Is(scheduling.ErrInvalidStatusToCancel, err) {
+		if errors.Is(err, scheduling.ErrInvalidStatusToCancel) {
 			_http.SendBadRequest(w, "Estado inválido para cancelar")
 			return
 		}
 
-		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			_http.SendBadRequest(w, "Marcação não encontrada")
 			return
 		}
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
@@ -38,7 +38,7 @@ func HandleCancelAppointment(
 
 		appointments, err := wg.Find(weekDay, serviceID, []string{professionalID})
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}

@@ -1,6 +1,18 @@
 package pages
 
-templ DailyAppointments() {
+import (
+	"fmt"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"github.com/zafir-co-ao/onna-narciso/web/session/components"
+)
+
+type DailyAppointmentOptions struct {
+	Appointment scheduling.AppointmentOutput
+	Session     session.SessionOutput
+}
+
+templ DailyAppointments(opts []DailyAppointmentOptions) {
 	<div id="content">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
@@ -450,433 +462,89 @@ templ DailyAppointments() {
 				</a>
 			</div>
 			<ol class="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">João Silva - Agendado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time datetime="2022-01-10T17:00">
-										2024-10-10 às 8:00
-									</time>
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Manicure + Pedicure
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Sara Gomes
-								</dd>
-							</div>
-						</dl>
-					</div>
-					<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-						<div>
-							<button
-								type="button"
-								class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-							>
-								Check In
-							</button>
-						</div>
-					</div>
-				</li>
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Manuel Carvalho - Agendado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time
-										datetime="2022-01-10T17:00"
-									>
-										2024-10-10 às 9:00
-									</time>
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Manicure + Pedicure
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Ana Silva
-								</dd>
-							</div>
-						</dl>
-					</div>
-					<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-						<div>
-							<button
-								type="button"
-								class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-							>
-								Check In
-							</button>
-						</div>
-					</div>
-				</li>
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Pedro Santos - Agendado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time
-										datetime="2022-01-10T17:00"
-									>
-										2024-10-10 às 11:00
-									</time>
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Pedicure
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Érica Cardoso
-								</dd>
-							</div>
-						</dl>
-					</div>
-					<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-						<div>
-							<button
-								type="button"
-								class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-							>
-								Check In
-							</button>
-						</div>
-					</div>
-				</li>
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Rita Manuel - Agendado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time
-										datetime="2022-01-10T17:00"
-									>
-										2024-10-10 às 14:00
-									</time>
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Manicure
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Carlos Eduardo
-								</dd>
-							</div>
-						</dl>
-					</div>
-					<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-						<div>
-							<button
-								type="button"
-								class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
-							>
-								Check In
-							</button>
-						</div>
-					</div>
-				</li>
+				for _, opt := range opts {
+					if opt.Appointment.Status == string(scheduling.StatusScheduled) {
+						@DailyAppointment(opt)
+					}
+				}
 			</ol>
 			<ol class="mt-16 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Maria Oliveira - Concluido</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time
-										datetime="2022-01-10T17:00"
-									>
-										2024-10-09 às 8:30
-									</time>
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Manicure + Pedicure
-								</dd>
-							</div>
-							<div
-								class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5"
-							>
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Érica Cardoso
-								</dd>
-							</div>
-						</dl>
-					</div>
-					<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-						<div>
-							<button
-								type="button"
-								class="inline-flex w-full justify-center rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto border"
-							>
-								Check Out
-							</button>
-						</div>
-					</div>
-				</li>
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Luísa Lima - Cancelado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time datetime="2022-01-10T17:00">
-										2024-10-09 às 9:30
-									</time>
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Manicure
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Sara Gomes
-								</dd>
-							</div>
-						</dl>
-					</div>
-				</li>
-				<li class="relative flex space-x-6 py-6 xl:static">
-					<div class="flex-auto">
-						<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">Sofia Fernandes - Cancelado</h3>
-						<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
-							<div class="flex items-start space-x-3">
-								<dt class="mt-0.5">
-									<span class="sr-only">Date</span>
-									<svg
-										class="h-5 w-5 text-gray-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-										data-slot="icon"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										></path>
-									</svg>
-								</dt>
-								<dd>
-									<time datetime="2022-01-10T17:00">
-										2024-10-09 às 18:00
-									</time>
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Location
-									</span>
-								</dt>
-								<dd>
-									Depilação
-								</dd>
-							</div>
-							<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-								<dt class="mt-0.5">
-									<span class="sr-only">
-										Profissional
-									</span>
-								</dt>
-								<dd>
-									Carlos Eduardo
-								</dd>
-							</div>
-						</dl>
-					</div>
-				</li>
+				for _, opt := range opts {
+					if opt.Appointment.Status != string(scheduling.StatusScheduled) {
+						@DailyAppointment(opt)
+					}
+				}
 			</ol>
 		</div>
 	</div>
+}
+
+templ DailyAppointment(o DailyAppointmentOptions) {
+	<li class="relative flex space-x-6 py-6 xl:static">
+		<div class="flex-auto">
+			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.Appointment.CustomerName } - { o.Appointment.Status } </h3>
+			<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
+				<div class="flex items-start space-x-3">
+					<dt class="mt-0.5">
+						<span class="sr-only">Date</span>
+						<svg
+							class="h-5 w-5 text-gray-400"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							aria-hidden="true"
+							data-slot="icon"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+								clip-rule="evenodd"
+							></path>
+						</svg>
+					</dt>
+					<dd>
+						<time datetime="2022-01-10T17:00">
+							{ o.Appointment.Date } às { o.Appointment.Hour }
+						</time>
+					</dd>
+				</div>
+				<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
+					<dt class="mt-0.5">
+						<span class="sr-only">
+							Service
+						</span>
+						<svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"></path>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"></path>
+						</svg>
+					</dt>
+					<dd>
+						{ o.Appointment.ServiceName }
+					</dd>
+				</div>
+				<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
+					<dt class="mt-0.5">
+						<span class="sr-only">
+							Profissional
+						</span>
+						<svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"></path>
+						</svg>
+					</dt>
+					<dd>
+						{ o.Appointment.ProfessionalName }
+					</dd>
+				</div>
+			</dl>
+		</div>
+		@components.SessionAction(
+			o.Appointment.ID,
+			components.WithID(o.Session.ID),
+			components.WithStatus(o.Session.Status),
+			components.WithHxPost("/sessions"),
+			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.Session.ID)),
+			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.Session.ID)),
+			components.WithHxTarget("#content"),
+			components.WithHxSwap("outerHTML"),
+		)
+	</li>
 }

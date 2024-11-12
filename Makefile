@@ -1,12 +1,9 @@
 APP_NAME = narciso
-GO = go
-GO_TEST = $(GO) test -cover
-TEST_DIR = ./...
 
 .PHONY: tests
 
 tests:
-	$(GO_TEST) $(TEST_DIR)
+	go list ./internal/*/ | xargs go test -cover -race -parallel 8
 
 
 clean:

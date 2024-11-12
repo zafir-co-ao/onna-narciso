@@ -1,0 +1,147 @@
+package components
+
+import (
+	"context"
+	"github.com/zafir-co-ao/onna-narciso/internal/session"
+	"io"
+)
+
+type _sessionActionState struct {
+	id            string
+	appointmentID string
+	status        string
+	hxPost        string
+	hxPut         string
+	hxDelete      string
+	hxSwap        string
+	hxTarget      string
+}
+
+type _sessionStateOpt func(v interface{})
+
+func WithID(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.id = v
+		}
+	}
+}
+
+func WithHxPost(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.hxPost = v
+		}
+	}
+}
+
+func WithHxPut(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.hxPut = v
+		}
+	}
+}
+
+func WithHxDelete(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.hxDelete = v
+		}
+	}
+}
+
+func WithHxTarget(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.hxTarget = v
+		}
+	}
+}
+
+func WithHxSwap(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.hxSwap = v
+		}
+	}
+}
+
+func WithStatus(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.status = v
+		}
+	}
+}
+
+func (s *_sessionActionState) Render(ctx context.Context, w io.Writer) error {
+	return _sessionActionTempl(s).Render(ctx, w)
+}
+
+func SessionAction(appointmentID string, opts ..._sessionStateOpt) templ.Component {
+	s := &_sessionActionState{appointmentID: appointmentID}
+
+	for _, opt := range opts {
+		opt(s)
+	}
+
+	return s
+}
+
+templ _sessionActionTempl(s *_sessionActionState) {
+	<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
+		if s.id == "" {
+			<form
+				hx-post={ s.hxPost }
+				hx-target={ s.hxTarget }
+				hx-swap={ s.hxSwap }
+			>
+				<input type="hidden" name="appointment-id" value={ s.appointmentID }/>
+				<button
+					type="submit"
+					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+				>
+					Check In
+				</button>
+			</form>
+		}
+		if s.status == string(session.StatusCheckedIn) {
+			<form
+				hx-put={ s.hxPut }
+				hx-target={ s.hxTarget }
+				hx-swap={ s.hxSwap }
+			>
+				<input type="hidden" name="session-id" value={ s.id }/>
+				<button
+					type="submit"
+					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+				>
+					Iniciar sessão
+				</button>
+			</form>
+		}
+		if s.status == string(session.StatusStarted) {
+			<form
+				hx-delete={ s.hxDelete }
+				hx-target={ s.hxTarget }
+				hx-swap={ s.hxSwap }
+			>
+				<input type="hidden" name="session-id" value={ s.id }/>
+				<button
+					type="submit"
+					class="inline-flex w-full justify-center rounded-md bg-gray-100 border text-gray-900 px-3 py-2 text-sm font-semibold hover:bg-gray-500 hover:text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+				>
+					Check Out
+				</button>
+			</form>
+		}
+	</div>
+}

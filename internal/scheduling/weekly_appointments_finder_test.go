@@ -6,46 +6,18 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestWeeklyAppointments(t *testing.T) {
-
-	repo := inmem.NewAppointmentRepository()
-
-	repo.Save(scheduling.Appointment{
-		ID:        "1",
-		Date:      scheduling.Date("2024-10-09"),
-		Hour:      scheduling.Hour("11:00"),
-		ServiceID: "3",
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:        "4",
-		Date:      scheduling.Date("2024-10-25"),
-		Hour:      scheduling.Hour("10:00"),
-		ServiceID: "3",
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:        "5",
-		Date:      scheduling.Date("2024-10-11"),
-		Hour:      scheduling.Hour("10:00"),
-		ServiceID: "3",
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:        "6",
-		Date:      scheduling.Date("2024-10-12"),
-		Hour:      scheduling.Hour("10:00"),
-		ServiceID: "3",
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:        "7",
-		Date:      scheduling.Date("2024-10-22"),
-		Hour:      scheduling.Hour("09:00"),
-		ServiceID: "3",
-	})
+	repo := inmem.NewAppointmentRepository(
+		scheduling.Appointment{ID: "1", Date: date.Date("2024-10-09"), Hour: hour.Hour("11:00"), ServiceID: "3"},
+		scheduling.Appointment{ID: "4", Date: date.Date("2024-10-25"), Hour: hour.Hour("10:00"), ServiceID: "3"},
+		scheduling.Appointment{ID: "5", Date: date.Date("2024-10-11"), Hour: hour.Hour("10:00"), ServiceID: "3"},
+		scheduling.Appointment{ID: "6", Date: date.Date("2024-10-12"), Hour: hour.Hour("10:00"), ServiceID: "3"},
+		scheduling.Appointment{ID: "7", Date: date.Date("2024-10-22"), Hour: hour.Hour("09:00"), ServiceID: "3"},
+	)
 
 	type weeklyAppointmentsTestMatrix struct {
 		date          string

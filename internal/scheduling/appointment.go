@@ -1,38 +1,39 @@
 package scheduling
 
 import (
-	"strconv"
-	"strings"
-
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/nanoid"
+	_date "github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 const (
-	StatusScheduled   Status = "scheduled"
-	StatusCanceled    Status = "canceled"
-	StatusRescheduled Status = "rescheduled"
+	StatusScheduled   Status = "Agendado"
+	StatusRescheduled Status = "Reagendado"
+	StatusCanceled    Status = "Cancelado"
+	StatusClosed      Status = "Fechado"
 )
 
-var EmptyAppointment = Appointment{}
+var EmptyAppointment Appointment
 
 type Service struct {
-	ID   id.ID
+	ID   nanoid.ID
 	Name Name
 }
 
 type Professional struct {
-	ID          id.ID
+	ID          nanoid.ID
 	Name        Name
-	ServicesIDS []id.ID
+	ServicesIDS []nanoid.ID
 }
 
 type Customer struct {
-	ID          id.ID
+	ID          nanoid.ID
 	Name        Name
 	PhoneNumber string
 }
 
 type Status string
+
 type Name string
 
 func (n Name) String() string {
@@ -40,66 +41,63 @@ func (n Name) String() string {
 }
 
 type Appointment struct {
-	ID               id.ID
-	ProfessionalID   id.ID
+	ID               nanoid.ID
+	ProfessionalID   nanoid.ID
 	ProfessionalName Name
-	CustomerID       id.ID
+	CustomerID       nanoid.ID
 	CustomerName     Name
-	ServiceID        id.ID
+	ServiceID        nanoid.ID
 	ServiceName      Name
 	Status           Status
-	Date             Date // Formato: 2024-10-01
-	Hour             Hour // Formato 9:00
-	End              Hour
+	Date             _date.Date // Formato: 2024-10-01
+	Hour             hour.Hour  // Formato 9:00
 	Duration         int
 }
 
-func (a Appointment) GetID() id.ID {
+func (a Appointment) GetID() nanoid.ID {
 	return a.ID
 }
 
 func NewAppointment(
-	ID id.ID,
-	ProfessionalID id.ID,
-	ProfessionalName Name,
-	CustomerID id.ID,
-	CustomerName Name,
-	ServiceID id.ID,
-	ServiceName Name,
-	Date Date,
-	Hour Hour,
-	Duration int,
+	id nanoid.ID,
+	professionalID nanoid.ID,
+	professionalName Name,
+	customerID nanoid.ID,
+	customerName Name,
+	serviceID nanoid.ID,
+	serviceName Name,
+	date _date.Date,
+	hour hour.Hour,
+	duration int,
 ) (Appointment, error) {
 	app := Appointment{
-		ID:               ID,
-		ProfessionalID:   ProfessionalID,
-		ProfessionalName: ProfessionalName,
-		CustomerID:       CustomerID,
-		CustomerName:     CustomerName,
-		ServiceID:        ServiceID,
-		ServiceName:      ServiceName,
-		Date:             Date,
-		Hour:             Hour,
-		Duration:         Duration,
+		ID:               id,
+		ProfessionalID:   professionalID,
+		ProfessionalName: professionalName,
+		CustomerID:       customerID,
+		CustomerName:     customerName,
+		ServiceID:        serviceID,
+		ServiceName:      serviceName,
+		Date:             date,
+		Hour:             hour,
+		Duration:         duration,
 		Status:           StatusScheduled,
 	}
-
-	app.calculateEnd()
 
 	return app, nil
 }
 
-func (a *Appointment) Reschedule(date string, hour string, duration int) error {
+func (a *Appointment) Reschedule(date string, time string, duration int) error {
 	if !a.IsScheduled() {
 		return ErrInvalidStatusToReschedule
 	}
 
-	d, err := NewDate(date)
+	d, err := _date.New(date)
 	if err != nil {
 		return err
 	}
 
-	h, err := NewHour(hour)
+	h, err := hour.New(time)
 	if err != nil {
 		return err
 	}
@@ -109,7 +107,16 @@ func (a *Appointment) Reschedule(date string, hour string, duration int) error {
 	a.Duration = duration
 	a.Status = StatusRescheduled
 
-	a.calculateEnd()
+	return nil
+}
+
+func (a *Appointment) Close() error {
+	if a.IsClosed() {
+		return ErrInvalidStatusToClose
+	}
+
+	a.Status = StatusClosed
+
 	return nil
 }
 
@@ -131,23 +138,10 @@ func (a *Appointment) IsRescheduled() bool {
 	return a.Status == StatusRescheduled
 }
 
-func (a *Appointment) IsCancelled() bool {
-	return a.Status == StatusCanceled
+func (a *Appointment) IsClosed() bool {
+	return a.Status == StatusClosed
 }
 
-func (a *Appointment) calculateEnd() {
-	parts := strings.Split(a.Hour.Value(), ":")
-	hour, _ := strconv.Atoi(parts[0])
-	minutes, _ := strconv.Atoi(parts[1])
-
-	totalMinutes := a.Duration + int(minutes)
-	endHour := hour + totalMinutes/60
-	endMinutes := totalMinutes % 60
-
-	if endMinutes < 10 {
-		a.End, _ = NewHour(strconv.Itoa(int(endHour)) + ":0" + strconv.Itoa(int(endMinutes)))
-		return
-	}
-
-	a.End, _ = NewHour(strconv.Itoa(int(endHour)) + ":" + strconv.Itoa(int(endMinutes)))
+func (a *Appointment) IsCancelled() bool {
+	return a.Status == StatusCanceled
 }

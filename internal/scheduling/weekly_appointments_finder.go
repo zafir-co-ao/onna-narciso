@@ -1,7 +1,9 @@
 package scheduling
 
 import (
-	"github.com/kindalus/gofunc/pkg/collections"
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 type WeeklyAppointmentsFinder interface {
@@ -16,11 +18,14 @@ func NewWeeklyAppointmentsGetter(repo AppointmentRepository) WeeklyAppointmentsF
 	return &weeklyAppointmentsGetterImpl{repo: repo}
 }
 
-func (w *weeklyAppointmentsGetterImpl) Find(week string, serviceID string, professionalsIDs []string) ([]AppointmentOutput, error) {
-	a, e := w.repo.FindByWeekServiceAndProfessionals(week, serviceID, professionalsIDs)
+func (w *weeklyAppointmentsGetterImpl) Find(adate string, serviceID string, professionalsIDs []string) ([]AppointmentOutput, error) {
+
+	pids := xslices.Map(professionalsIDs, func(x string) nanoid.ID { return nanoid.ID(x) })
+
+	a, e := w.repo.FindByWeekServiceAndProfessionals(date.Date(adate), nanoid.ID(serviceID), pids)
 	if e != nil {
 		return nil, e
 	}
 
-	return collections.Map(a, toAppointmentOutput), nil
+	return xslices.Map(a, toAppointmentOutput), nil
 }

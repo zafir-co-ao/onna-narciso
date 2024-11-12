@@ -5,20 +5,22 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestAppointmentRescheduler(t *testing.T) {
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 	repo := inmem.NewAppointmentRepository()
 
 	for i := range 20 {
 		i += 1
 		v := strconv.Itoa(i)
-		a := scheduling.Appointment{ID: id.NewID(v), Status: scheduling.StatusScheduled}
+		a := scheduling.Appointment{ID: nanoid.ID(v), Status: scheduling.StatusScheduled}
 		repo.Save(a)
 	}
 
@@ -42,7 +44,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(id.NewID(o.ID))
+		a, err := repo.FindByID(nanoid.ID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -105,7 +107,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(id.NewID(o.ID))
+		_, err = repo.FindByID(nanoid.ID(o.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -114,9 +116,6 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("The appointment duration must be 60 minutes, got %v", o.Duration)
 		}
 
-		if a.End.Value() != "9:00" {
-			t.Errorf("The appointment end must be 9:00, got %v", o.Duration)
-		}
 	})
 
 	t.Run("should_return_an_error_if_there_is_no_availability_to_reschedule_the_appointment", func(t *testing.T) {
@@ -152,11 +151,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 		for _, i := range inputs {
 			_, err := usecase.Reschedule(i)
 
-			if errors.Is(nil, err) {
+			if err == nil {
 				t.Errorf("Shoud return an error, got %v", err)
 			}
 
-			if !errors.Is(scheduling.ErrBusyTime, err) {
+			if !errors.Is(err, scheduling.ErrBusyTime) {
 				t.Errorf("The error must be ErrBusyTime, got %v", err)
 			}
 		}
@@ -177,7 +176,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if !errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
 		}
 	})
@@ -197,7 +196,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrInvalidStatusToReschedule, err) {
+		if !errors.Is(err, scheduling.ErrInvalidStatusToReschedule) {
 			t.Errorf("The error must be ErrInvalidStatusToReschedule, got %v", err)
 		}
 	})
@@ -212,11 +211,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
 		_, err := usecase.Reschedule(i)
-		if errors.Is(nil, err) {
+		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrInvalidDate, err) {
+		if !errors.Is(err, date.ErrInvalidDate) {
 			t.Errorf("The error must be ErrInvalidDate, got %v", err)
 		}
 	})
@@ -231,11 +230,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
 		_, err := usecase.Reschedule(i)
-		if errors.Is(nil, err) {
+		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrInvalidHour, err) {
+		if !errors.Is(err, hour.ErrInvalidHour) {
 			t.Errorf("The error must be ErrHourDate, got %v", err)
 		}
 	})
@@ -253,12 +252,12 @@ func TestAppointmentRescheduler(t *testing.T) {
 			evtPublished = true
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
 		_, err := usecase.Reschedule(i)
-		if !errors.Is(nil, err) {
+		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
@@ -283,12 +282,12 @@ func TestAppointmentRescheduler(t *testing.T) {
 			}
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
 
 		_, err := usecase.Reschedule(i)
-		if !errors.Is(nil, err) {
+		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 

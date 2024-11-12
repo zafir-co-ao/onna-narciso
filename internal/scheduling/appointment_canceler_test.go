@@ -4,24 +4,24 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
 )
 
 func TestAppointmentCanceler(t *testing.T) {
 	repo := inmem.NewAppointmentRepository()
-	bus := event.NewInmemEventBus()
+	bus := event.NewEventBus()
 
 	a1 := scheduling.Appointment{ID: "1"}
 	a2 := scheduling.Appointment{ID: "2", Status: scheduling.StatusCanceled}
 	a3 := scheduling.Appointment{ID: "3"}
 	a4 := scheduling.Appointment{ID: "4"}
 
-	repo.Save(a1)
-	repo.Save(a2)
-	repo.Save(a3)
-	repo.Save(a4)
+	_ = repo.Save(a1)
+	_ = repo.Save(a2)
+	_ = repo.Save(a3)
+	_ = repo.Save(a4)
 
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
@@ -32,7 +32,7 @@ func TestAppointmentCanceler(t *testing.T) {
 		}
 
 		app, err := repo.FindByID("1")
-		if errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("Appointment should be stored in repository")
 		}
 
@@ -49,7 +49,7 @@ func TestAppointmentCanceler(t *testing.T) {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrInvalidStatusToCancel, err) {
+		if !errors.Is(err, scheduling.ErrInvalidStatusToCancel) {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
 	})
@@ -62,7 +62,7 @@ func TestAppointmentCanceler(t *testing.T) {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrAppointmentNotFound, err) {
+		if !errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
 	})
@@ -75,13 +75,13 @@ func TestAppointmentCanceler(t *testing.T) {
 			evtAppointmentID = e.Header(event.HeaderAggregateID)
 		}
 
-		bus := event.NewInmemEventBus()
+		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
 		usecase := scheduling.NewAppointmentCanceler(repo, bus)
 
 		err := usecase.Cancel(id)
-		if !errors.Is(nil, err) {
+		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 

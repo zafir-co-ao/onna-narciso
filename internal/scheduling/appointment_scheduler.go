@@ -1,8 +1,9 @@
 package scheduling
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 const EventAppointmentScheduled = "EventAppointmentScheduled"
@@ -26,15 +27,25 @@ type AppointmentScheduler interface {
 type appointmentScedulerImpl struct {
 	repo            AppointmentRepository
 	serviceACL      ServiceACL
+<<<<<<< HEAD
 	customerACL     CustomersACL
 	professionalACL ProfessionalsACL
+=======
+	customerACL     CustomerACL
+	professionalACL ProfessionalACL
+>>>>>>> 1da440272911f860c6c2354128b8ed904f112aa1
 	bus             event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
+<<<<<<< HEAD
 	cacl CustomersACL,
 	pacl ProfessionalsACL,
+=======
+	cacl CustomerACL,
+	pacl ProfessionalACL,
+>>>>>>> 1da440272911f860c6c2354128b8ed904f112aa1
 	sacl ServiceACL,
 	bus event.Bus,
 ) AppointmentScheduler {
@@ -63,7 +74,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	id, err := id.Random()
+	id := nanoid.New()
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -85,12 +96,12 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, p.ID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	if !VerifyAvailability(a, appointments) {
+	if AppointmentsInterceptAny(a, appointments) {
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 

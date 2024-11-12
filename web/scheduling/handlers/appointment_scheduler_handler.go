@@ -6,6 +6,8 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -35,42 +37,42 @@ func HandleScheduleAppointment(
 
 		_, err = s.Schedule(input)
 
-		if errors.Is(scheduling.ErrCustomerNotFound, err) {
+		if errors.Is(err, scheduling.ErrCustomerNotFound) {
 			_http.SendNotFound(w, "Cliente não encontrado")
 			return
 		}
 
-		if errors.Is(scheduling.ErrCustomerRegistration, err) {
+		if errors.Is(err, scheduling.ErrCustomerRegistration) {
 			_http.SendReponse(w, "Não foi possível registar o cliente", http.StatusInternalServerError)
 			return
 		}
 
-		if errors.Is(scheduling.ErrProfessionalNotFound, err) {
+		if errors.Is(err, scheduling.ErrProfessionalNotFound) {
 			_http.SendNotFound(w, "Profissional não encontrado")
 			return
 		}
 
-		if errors.Is(scheduling.ErrServiceNotFound, err) {
+		if errors.Is(err, scheduling.ErrServiceNotFound) {
 			_http.SendNotFound(w, "Serviço não encontrado")
 			return
 		}
 
-		if errors.Is(scheduling.ErrBusyTime, err) {
+		if errors.Is(err, scheduling.ErrBusyTime) {
 			_http.SendBadRequest(w, "Horarário Indisponível")
 			return
 		}
 
-		if errors.Is(scheduling.ErrInvalidDate, err) {
+		if errors.Is(err, date.ErrInvalidDate) {
 			_http.SendBadRequest(w, "A data para a marcação está no formato inválido")
 			return
 		}
 
-		if errors.Is(scheduling.ErrInvalidHour, err) {
+		if errors.Is(err, hour.ErrInvalidHour) {
 			_http.SendBadRequest(w, "A hora da marcação está no formato inválido")
 			return
 		}
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
@@ -81,7 +83,7 @@ func HandleScheduleAppointment(
 			[]string{input.ProfessionalID},
 		)
 
-		if !errors.Is(nil, err) {
+		if err != nil {
 			_http.SendServerError(w)
 			return
 		}

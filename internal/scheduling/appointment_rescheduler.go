@@ -1,8 +1,9 @@
 package scheduling
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 const EventAppointmentRescheduled = "EventAppointmentRescheduled"
@@ -28,7 +29,7 @@ func NewAppointmentRescheduler(r AppointmentRepository, b event.Bus) Appointment
 }
 
 func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
-	a, err := u.repo.FindByID(id.NewID(i.ID))
+	a, err := u.repo.FindByID(nanoid.ID(i.ID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -38,12 +39,12 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := u.repo.FindByDateAndStatus(Date(i.Date), StatusScheduled)
+	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, a.ProfessionalID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	if !VerifyAvailability(a, appointments) {
+	if AppointmentsInterceptAny(a, appointments) {
 		return EmptyAppointmentOutput, ErrBusyTime
 	}
 

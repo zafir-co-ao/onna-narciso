@@ -5,8 +5,8 @@ import (
 	"slices"
 	"time"
 
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 )
@@ -67,7 +67,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 		}
 
 		if date != previousDate {
-			date, serviceID, professionalID = date, "all", "all"
+			serviceID, professionalID = "all", "all"
 		}
 
 		professionals := make([]scheduling.Professional, 0)
@@ -76,7 +76,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
 			tmp := make([]scheduling.Professional, 0)
 			for _, professional := range professionals {
-				if slices.Contains(professional.ServicesIDS, id.ID(serviceID)) {
+				if slices.Contains(professional.ServicesIDS, nanoid.ID(serviceID)) {
 					tmp = append(tmp, professional)
 				}
 			}

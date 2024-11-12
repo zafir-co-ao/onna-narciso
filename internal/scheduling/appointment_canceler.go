@@ -1,8 +1,8 @@
 package scheduling
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 )
 
 const EventAppointmentCanceled = "EventAppointmentCanceled"
@@ -21,7 +21,7 @@ func NewAppointmentCanceler(repo AppointmentRepository, bus event.Bus) Appointme
 }
 
 func (u *appointmentCancelerImpl) Cancel(appointmentId string) error {
-	a, err := u.repo.FindByID(id.NewID(appointmentId))
+	a, err := u.repo.FindByID(nanoid.ID(appointmentId))
 	if err != nil {
 		return err
 	}

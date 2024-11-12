@@ -1,6 +1,6 @@
 package scheduling
 
-import "github.com/zafir-co-ao/onna-narciso/internal/shared/id"
+import "github.com/kindalus/godx/pkg/nanoid"
 
 type AppointmentGetter interface {
 	Get(id string) (AppointmentOutput, error)
@@ -15,7 +15,7 @@ func NewAppointmentGetter(r AppointmentRepository) AppointmentGetter {
 }
 
 func (f *appointmentGetterImpl) Get(appointmentId string) (AppointmentOutput, error) {
-	a, err := f.repo.FindByID(id.NewID(appointmentId))
+	a, err := f.repo.FindByID(nanoid.ID(appointmentId))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
