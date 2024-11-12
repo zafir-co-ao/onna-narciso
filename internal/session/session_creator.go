@@ -25,10 +25,8 @@ func NewSessionCreator(r Repository, b event.Bus) Creator {
 
 func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
 
-	_id := nanoid.New()
-
 	s := Session{
-		ID:            _id,
+		ID:            nanoid.New(),
 		AppointmentID: nanoid.ID(appointmentID),
 	}
 
