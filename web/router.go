@@ -6,7 +6,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
-	_session "github.com/zafir-co-ao/onna-narciso/web/session/handlers"
+	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
 )
 
 var cwd string
@@ -36,9 +36,9 @@ func NewRouter(
 	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
 	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
 
-	mux.HandleFunc("POST /sessions", _session.HandleCreateSession(sc, sf, dg))
-	mux.HandleFunc("PUT /sessions/{id}", _session.HandleStartSession(ss, sf, dg))
-	mux.HandleFunc("DELETE /sessions/{id}", _session.HandleCloseSession(so, sf, dg))
+	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(sc, sf, dg))
+	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(ss, sf, dg))
+	mux.HandleFunc("DELETE /sessions/{id}", _sessions.HandleCloseSession(so, sf, dg))
 
 	mux.HandleFunc("/", NewStaticHandler())
 
