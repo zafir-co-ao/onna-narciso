@@ -26,3 +26,7 @@ func AsTime(h Hour) time.Time {
 	t, _ := time.Parse("15:04", h.String())
 	return t
 }
+
+func Now() Hour {
+	return Hour(time.Now().Format("15:04"))
+}

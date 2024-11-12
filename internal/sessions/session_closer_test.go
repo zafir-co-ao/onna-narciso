@@ -4,12 +4,12 @@ import (
 	"errors"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionCloser(t *testing.T) {
@@ -61,8 +61,8 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
 
-		if s.CloseTime.Hour() != time.Now().Hour() {
-			t.Errorf("The session close hour should be equal with hour in clock, got %v", s.CloseTime.Hour())
+		if s.CloseTime != hour.Now() {
+			t.Errorf("The session close hour should be equal with hour in clock, got %v", s.CloseTime)
 		}
 	})
 
@@ -228,18 +228,18 @@ func TestSessionCloser(t *testing.T) {
 	})
 }
 
-var services = map[string]sessions.Service{
-	"1": sessions.Service{ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
-	"2": sessions.Service{ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
-	"3": sessions.Service{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
+var services = map[string]sessions.SessionService{
+	"1": sessions.SessionService{ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
+	"2": sessions.SessionService{ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
+	"3": sessions.SessionService{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
 }
 
-var sacl sessions.ServiceACLFunc = func(ids []nanoid.ID) ([]sessions.Service, error) {
-	selectedServices := make([]sessions.Service, 0)
+var sacl sessions.ServiceACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
+	selectedServices := make([]sessions.SessionService, 0)
 	for _, v := range ids {
 		s := services[v.String()]
 		if s.ServiceID.String() != v.String() {
-			return []sessions.Service{}, sessions.ErrServiceNotFound
+			return []sessions.SessionService{}, sessions.ErrServiceNotFound
 		}
 
 		selectedServices = append(selectedServices, s)

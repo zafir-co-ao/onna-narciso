@@ -3,12 +3,12 @@ package sessions_test
 import (
 	"errors"
 	"testing"
-	"time"
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionStarter(t *testing.T) {
@@ -59,8 +59,8 @@ func TestSessionStarter(t *testing.T) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
 
-		if s.StartTime.Hour() != time.Now().Hour() {
-			t.Errorf("The session start hour should be equal with hour in clock, got %v", s.StartTime.Hour())
+		if s.StartTime != hour.Now() {
+			t.Errorf("The session start hour should be equal with hour in clock, got %v", s.StartTime)
 		}
 	})
 

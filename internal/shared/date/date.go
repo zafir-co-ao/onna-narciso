@@ -25,3 +25,7 @@ func isValidDate(v string) bool {
 	_, err := time.Parse("2006-01-02", v)
 	return err == nil
 }
+
+func Today() Date {
+	return Date(time.Now().Format("2006-01-02"))
+}

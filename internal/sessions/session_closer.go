@@ -58,7 +58,7 @@ func (u *closerImpl) Close(i CloserInput) error {
 	return nil
 }
 
-func (u *closerImpl) findServices(ids []string) ([]Service, error) {
+func (u *closerImpl) findServices(ids []string) ([]SessionService, error) {
 	if len(ids) == 0 {
 		return EmptyServices, nil
 	}

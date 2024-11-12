@@ -2,9 +2,10 @@ package sessions
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 
 	"errors"
-	"time"
 )
 
 const (
@@ -18,21 +19,36 @@ var (
 	ErrSessionClosed  = errors.New("Session already closed")
 )
 
+type Appointment struct {
+	ID               nanoid.ID
+	CustomerID       nanoid.ID
+	CustomerName     string
+	ProfessionalID   nanoid.ID
+	ProfessionalName string
+	ServiceID        nanoid.ID
+	ServiceName      string
+}
+
 type Status string
 
-type Service struct {
-	ServiceID      nanoid.ID
-	ProfessionalID nanoid.ID
+type SessionService struct {
+	ServiceID        nanoid.ID
+	ServiceName      string
+	ProfessionalID   nanoid.ID
+	ProfessionalName string
 }
 
 type Session struct {
 	ID            nanoid.ID
 	AppointmentID nanoid.ID
 	Status        Status
-	CheckinTime   time.Time
-	StartTime     time.Time
-	CloseTime     time.Time
-	Services      []Service
+	Date          date.Date
+	CheckinTime   hour.Hour
+	StartTime     hour.Hour
+	CloseTime     hour.Hour
+	Services      []SessionService
+	CustomerID    nanoid.ID
+	CustomerName  string
 }
 
 func NewSession(appointmentID nanoid.ID) Session {
@@ -40,7 +56,7 @@ func NewSession(appointmentID nanoid.ID) Session {
 		ID:            nanoid.New(),
 		AppointmentID: appointmentID,
 		Status:        StatusCheckedIn,
-		CheckinTime:   time.Now(),
+		CheckinTime:   hour.Now(),
 	}
 }
 
@@ -50,18 +66,18 @@ func (s *Session) Start() error {
 		return ErrSessionStarted
 	}
 
-	s.StartTime = time.Now()
+	s.StartTime = hour.Now()
 	s.Status = StatusStarted
 	return nil
 }
 
-func (s *Session) Close(services []Service) error {
+func (s *Session) Close(services []SessionService) error {
 
 	if s.IsClosed() {
 		return ErrSessionClosed
 	}
 
-	s.CloseTime = time.Now()
+	s.CloseTime = hour.Now()
 	s.Status = StatusClosed
 	s.addServices(services)
 
@@ -76,7 +92,7 @@ func (s *Session) IsClosed() bool {
 	return s.Status == StatusClosed
 }
 
-func (s *Session) addServices(services []Service) {
+func (s *Session) addServices(services []SessionService) {
 
 	if len(services) == 0 {
 		return

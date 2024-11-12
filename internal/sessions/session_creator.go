@@ -17,16 +17,27 @@ type Creator interface {
 type creatorImpl struct {
 	repo Repository
 	bus  event.Bus
+	aacl AppointmentsACL
 }
 
-func NewSessionCreator(r Repository, b event.Bus) Creator {
-	return &creatorImpl{repo: r, bus: b}
+func NewSessionCreator(r Repository, b event.Bus, aacl AppointmentsACL) Creator {
+	return &creatorImpl{repo: r, bus: b, aacl: aacl}
 }
 
 func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
-	s := NewSession(nanoid.ID(appointmentID))
 
-	err := c.repo.Save(s)
+	a, err := c.aacl.FindByID(nanoid.ID(appointmentID))
+	if err != nil {
+		return CreatorOutput{}, err
+	}
+
+	s := NewSessionBuilder().
+		WithAppointmentID(nanoid.ID(appointmentID)).
+		WithCustomer(a.CustomerID, a.CustomerName).
+		WithService(a.ServiceID, a.ServiceName, a.ProfessionalID, a.ProfessionalName).
+		Build()
+
+	err = c.repo.Save(s)
 	if err != nil {
 		return CreatorOutput{}, err
 	}
