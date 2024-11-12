@@ -51,15 +51,6 @@ type Session struct {
 	CustomerName  string
 }
 
-func NewSession(appointmentID nanoid.ID) Session {
-	return Session{
-		ID:            nanoid.New(),
-		AppointmentID: appointmentID,
-		Status:        StatusCheckedIn,
-		CheckinTime:   hour.Now(),
-	}
-}
-
 func (s *Session) Start() error {
 
 	if s.IsStarted() {

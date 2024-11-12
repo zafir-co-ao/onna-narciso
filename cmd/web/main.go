@@ -38,7 +38,7 @@ func main() {
 	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
 	dg := scheduling.NewDailyAppointmentsGetter(repo)
 
-	fs := sessions.FakeServiceACL{}
+	fs := _stubs.NewServiceACL()
 	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	sc := sessions.NewSessionCreator(sRepo, bus, aacl)
 	so := sessions.NewSessionCloser(sRepo, fs, bus)

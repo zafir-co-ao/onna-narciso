@@ -9,12 +9,14 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewEventBus()
 	repo := inmem.NewSessionRepository()
+	sacl := stubs.NewServiceACL()
 	u := sessions.NewSessionCloser(repo, sacl, bus)
 
 	for i := range 10 {
@@ -226,24 +228,4 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("The error must be ErrSessionClosed, got %v", err)
 		}
 	})
-}
-
-var services = map[string]sessions.SessionService{
-	"1": sessions.SessionService{ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
-	"2": sessions.SessionService{ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
-	"3": sessions.SessionService{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
-}
-
-var sacl sessions.ServiceACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
-	selectedServices := make([]sessions.SessionService, 0)
-	for _, v := range ids {
-		s := services[v.String()]
-		if s.ServiceID.String() != v.String() {
-			return []sessions.SessionService{}, sessions.ErrServiceNotFound
-		}
-
-		selectedServices = append(selectedServices, s)
-	}
-
-	return selectedServices, nil
 }
