@@ -1,0 +1,181 @@
+package components
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
+const numberOfDays int = 42
+
+type day struct {
+	day            int
+	date           string
+	isCurrentMonth bool
+}
+
+var months = map[time.Month]string{
+	time.January:   "Janeiro",
+	time.February:  "Fevereiro",
+	time.March:     "Março",
+	time.April:     "Abril",
+	time.May:       "Maio",
+	time.June:      "Junho",
+	time.July:      "Julho",
+	time.August:    "Agosto",
+	time.September: "Setembro",
+	time.October:   "Outubro",
+	time.November:  "Novembro",
+	time.December:  "Dezembro",
+}
+
+func getCurrentMonth(date string) string {
+	today, _ := time.Parse("2006-01-02", date)
+	return fmt.Sprintf("%v - %d", months[today.Month()], today.Year())
+}
+
+func getStartDate(date string) time.Time {
+	var startDate time.Time
+
+	today, _ := time.Parse("2006-01-02", date)
+
+	day := 0
+	for true {
+		date := time.Date(today.Year(), today.Month(), day, 0, 0, 0, 0, time.UTC)
+		if date.Weekday() == time.Monday {
+			startDate = date
+			break
+		}
+		day -= 1
+	}
+
+	return startDate
+}
+
+func getDaysOfMonth(date string) []day {
+	today, _ := time.Parse("2006-01-02", date)
+	_date := getStartDate(date)
+
+	days := make([]day, 0)
+	for range numberOfDays {
+		day := day{
+			day:            _date.Day(),
+			date:           fmt.Sprintf("%d-%02d-%02d", _date.Year(), _date.Month(), _date.Day()),
+			isCurrentMonth: _date.Month() == today.Month(),
+		}
+		days = append(days, day)
+		_date = _date.AddDate(0, 0, 1)
+	}
+
+	return days
+}
+
+func isRounded(number int) string {
+	switch number {
+	case 0:
+		return "rounded-tl-lg"
+	case 6:
+		return "rounded-tr-lg"
+	case 35:
+		return "rounded-bl-lg"
+	case 41:
+		return "rounded-br-lg"
+	}
+	return ""
+}
+
+type CalendarState struct {
+	Date     string
+	HxGet    string
+	HxTarget string
+	HxSwap   string
+}
+
+templ Calendar(s CalendarState) {
+	<div id="calendar">
+		<div class="flex items-center text-gray-900">
+			<form hx-get="/scheduling/daily-appointments-calendar" hx-target="#calendar" hx-swap="outerHTML">
+				<input type="hidden" name="operation" value="previous-month"/>
+				<input type="hidden" name="date" value={ s.Date }/>
+				<input type="hidden" name="hx-get" value={ s.HxGet }/>
+				<input type="hidden" name="hx-target" value={ s.HxTarget }/>
+				<input type="hidden" name="hx-swap" value={ s.HxSwap }/>
+				<button type="submit" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+					<span class="sr-only">Previous month</span>
+					<svg
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+						data-slot="icon"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+							clip-rule="evenodd"
+						></path>
+					</svg>
+				</button>
+			</form>
+			<div class="flex-auto text-sm font-semibold">
+				{ getCurrentMonth(s.Date) }
+			</div>
+			<form hx-get="/scheduling/daily-appointments-calendar" hx-target="#calendar" hx-swap="outerHTML">
+				<input type="hidden" name="operation" value="next-month"/>
+				<input type="hidden" name="date" value={ s.Date }/>
+				<input type="hidden" name="hx-get" value={ s.HxGet }/>
+				<input type="hidden" name="hx-target" value={ s.HxTarget }/>
+				<input type="hidden" name="hx-swap" value={ s.HxSwap }/>
+				<button type="submit" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+					<span class="sr-only">Next month</span>
+					<svg
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+						data-slot="icon"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+							clip-rule="evenodd"
+						></path>
+					</svg>
+				</button>
+			</form>
+		</div>
+		<div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
+			<div>S</div>
+			<div>T</div>
+			<div>Q</div>
+			<div>Q</div>
+			<div>S</div>
+			<div>S</div>
+			<div>D</div>
+		</div>
+		<div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+			for i, d := range getDaysOfMonth(s.Date) {
+				<form
+					class={ "py-1.5 focus:z-10",
+        				fmt.Sprintf("%s", isRounded(i)),
+        				templ.KV("bg-gray-50 text-gray-400 cursor-not-allowed", !d.isCurrentMonth),
+        				templ.KV("bg-white text-gray-900 hover:bg-gray-100 cursor-pointer", d.isCurrentMonth) }
+					hx-get={ s.HxGet }
+					hx-target={ s.HxTarget }
+					hx-swap={ s.HxSwap }
+				>
+					<input type="hidden" name="date" value={ d.date }/>
+					<button type="submit">
+						<time
+							datetime={ d.date }
+							class={ "mx-auto flex h-7 w-7 items-center justify-center",
+    					   templ.KV("rounded-full bg-gray-900 text-white font-semibold", d.date == time.Now().Format("2006-01-02")) }
+						>
+							{ strconv.Itoa(d.day) }
+						</time>
+					</button>
+				</form>
+			}
+		</div>
+	</div>
+}

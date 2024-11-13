@@ -3,454 +3,33 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	_scheduling "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 	"github.com/zafir-co-ao/onna-narciso/web/sessions/components"
 )
 
 type DailyAppointmentOptions struct {
-	Appointment scheduling.AppointmentOutput
-	Session     sessions.SessionOutput
+	AppointmentID     string
+	AppointmentStatus string
+	AppointmentDate   string
+	AppointmentHour   string
+	CustomerName      string
+	ServiceName       string
+	ProfessionalName  string
+	SessionID         string
+	SessionStatus     string
 }
 
-templ DailyAppointments(opts []DailyAppointmentOptions) {
+templ DailyAppointments(date string, opts []DailyAppointmentOptions) {
 	<div id="content">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
 			<div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
-				<div class="flex items-center text-gray-900">
-					<button
-						type="button"
-						class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-					>
-						<span class="sr-only">Previous month</span>
-						<svg
-							class="h-5 w-5"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							aria-hidden="true"
-							data-slot="icon"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-								clip-rule="evenodd"
-							></path>
-						</svg>
-					</button>
-					<div class="flex-auto text-sm font-semibold">
-						Outubro
-					</div>
-					<button
-						type="button"
-						class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-					>
-						<span class="sr-only">Next month</span>
-						<svg
-							class="h-5 w-5"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							aria-hidden="true"
-							data-slot="icon"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-								clip-rule="evenodd"
-							></path>
-						</svg>
-					</button>
-				</div>
-				<div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-					<div>S</div>
-					<div>T</div>
-					<div>Q</div>
-					<div>Q</div>
-					<div>S</div>
-					<div>S</div>
-					<div>D</div>
-				</div>
-				<div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-					<button
-						type="button"
-						class="rounded-tl-lg bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2021-12-27"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>
-							27
-						</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2021-12-28"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>28</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2021-12-29"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>29</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2021-12-30"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>30</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2021-12-31"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>31</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-01"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>1</time>
-					</button>
-					<button
-						type="button"
-						class="rounded-tr-lg bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-01"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>2</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-02"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>3</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-04"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>4</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-05"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>5</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-06"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>6</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-07"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>7</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-08"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>8</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-09"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>9</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-10"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 font-semibold text-white"
-						>10</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-11"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>11</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-12"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>12</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-13"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>13</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-14"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>14</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-15"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>15</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-16"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>16</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-17"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>17</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-18"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>18</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-19"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>19</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-20"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>20</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-21"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>21</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-22"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>22</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-23"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>23</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-24"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>24</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-25"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>25</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-26"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>26</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-27"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>27</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-28"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>28</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-29"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>29</time>
-					</button>
-					<button
-						type="button"
-						class="bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-30"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>30</time>
-					</button>
-					<button
-						type="button"
-						class="rounded-bl-lg bg-white py-1.5 text-gray-900 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-01-31"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>31</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-01"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>1</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-02"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>2</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-03"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>3</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-04"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>4</time>
-					</button>
-					<button
-						type="button"
-						class="bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-05"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>5</time>
-					</button>
-					<button
-						type="button"
-						class="rounded-br-lg bg-gray-50 py-1.5 text-gray-400 hover:bg-gray-100 focus:z-10"
-					>
-						<time
-							datetime="2022-02-06"
-							class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
-						>6</time>
-					</button>
-				</div>
+				@_scheduling.Calendar(_scheduling.CalendarState{
+					Date:     date,
+					HxGet:    fmt.Sprintf("/daily-appointments"),
+					HxTarget: "#content",
+					HxSwap:   "outerHTML",
+				})
 				<a
 					hx-get="/weekly-appointments"
 					hx-target="#content"
@@ -463,14 +42,14 @@ templ DailyAppointments(opts []DailyAppointmentOptions) {
 			</div>
 			<ol class="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
 				for _, opt := range opts {
-					if opt.Appointment.Status == string(scheduling.StatusScheduled) {
+					if opt.AppointmentStatus == string(scheduling.StatusScheduled) {
 						@DailyAppointment(opt)
 					}
 				}
 			</ol>
 			<ol class="mt-16 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
 				for _, opt := range opts {
-					if opt.Appointment.Status != string(scheduling.StatusScheduled) {
+					if opt.AppointmentStatus != string(scheduling.StatusScheduled) {
 						@DailyAppointment(opt)
 					}
 				}
@@ -482,7 +61,7 @@ templ DailyAppointments(opts []DailyAppointmentOptions) {
 templ DailyAppointment(o DailyAppointmentOptions) {
 	<li class="relative flex space-x-6 py-6 xl:static">
 		<div class="flex-auto">
-			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.Appointment.CustomerName } - { o.Appointment.Status } </h3>
+			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.CustomerName } - { o.AppointmentStatus }</h3>
 			<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
 				<div class="flex items-start space-x-3">
 					<dt class="mt-0.5">
@@ -503,7 +82,7 @@ templ DailyAppointment(o DailyAppointmentOptions) {
 					</dt>
 					<dd>
 						<time datetime="2022-01-10T17:00">
-							{ o.Appointment.Date } às { o.Appointment.Hour }
+							{ o.AppointmentDate } às { o.AppointmentHour }
 						</time>
 					</dd>
 				</div>
@@ -518,7 +97,7 @@ templ DailyAppointment(o DailyAppointmentOptions) {
 						</svg>
 					</dt>
 					<dd>
-						{ o.Appointment.ServiceName }
+						{ o.ServiceName }
 					</dd>
 				</div>
 				<div class="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
@@ -531,18 +110,18 @@ templ DailyAppointment(o DailyAppointmentOptions) {
 						</svg>
 					</dt>
 					<dd>
-						{ o.Appointment.ProfessionalName }
+						{ o.ProfessionalName }
 					</dd>
 				</div>
 			</dl>
 		</div>
 		@components.SessionAction(
-			o.Appointment.ID,
-			components.WithID(o.Session.ID),
-			components.WithStatus(o.Session.Status),
+			o.AppointmentID,
+			components.WithID(o.SessionID),
+			components.WithStatus(o.SessionStatus),
 			components.WithHxPost("/sessions"),
-			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.Session.ID)),
-			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.Session.ID)),
+			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.SessionID)),
+			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.SessionID)),
 			components.WithHxTarget("#content"),
 			components.WithHxSwap("outerHTML"),
 		)
