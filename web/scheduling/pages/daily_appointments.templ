@@ -25,10 +25,11 @@ templ DailyAppointments(date string, opts []DailyAppointmentOptions) {
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
 			<div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
 				@_scheduling.Calendar(_scheduling.CalendarState{
-					Date:     date,
-					HxGet:    fmt.Sprintf("/daily-appointments"),
-					HxTarget: "#content",
-					HxSwap:   "outerHTML",
+					Date:      date,
+					HxGet:     fmt.Sprintf("/daily-appointments"),
+					HxTarget:  "#content",
+					HxSwap:    "outerHTML",
+					HxTrigger: "click",
 				})
 				<a
 					hx-get="/weekly-appointments"

@@ -14,10 +14,11 @@ func HandleDailyAppointmentsCalendar() func(w http.ResponseWriter, r *http.Reque
 		value := r.FormValue("operation")
 		date, err := time.Parse("2006-01-02", r.FormValue("date"))
 		state := components.CalendarState{
-			HxGet:    r.FormValue("hx-get"),
-			HxTarget: r.FormValue("hx-target"),
-			HxSwap:   r.FormValue("hx-swap"),
-			Date:     date.Format("2006-01-02"),
+			HxGet:     r.FormValue("hx-get"),
+			HxTarget:  r.FormValue("hx-target"),
+			HxSwap:    r.FormValue("hx-swap"),
+			HxTrigger: r.FormValue("hx-trigger"),
+			Date:      date.Format("2006-01-02"),
 		}
 
 		if !errors.Is(nil, err) {

@@ -85,10 +85,11 @@ func isRounded(number int) string {
 }
 
 type CalendarState struct {
-	Date     string
-	HxGet    string
-	HxTarget string
-	HxSwap   string
+	Date      string
+	HxGet     string
+	HxTarget  string
+	HxSwap    string
+	HxTrigger string
 }
 
 templ Calendar(s CalendarState) {
@@ -100,6 +101,7 @@ templ Calendar(s CalendarState) {
 				<input type="hidden" name="hx-get" value={ s.HxGet }/>
 				<input type="hidden" name="hx-target" value={ s.HxTarget }/>
 				<input type="hidden" name="hx-swap" value={ s.HxSwap }/>
+				<input type="hidden" name="hx-trigger" value={ s.HxTrigger }/>
 				<button type="submit" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
 					<span class="sr-only">Previous month</span>
 					<svg
@@ -126,6 +128,7 @@ templ Calendar(s CalendarState) {
 				<input type="hidden" name="hx-get" value={ s.HxGet }/>
 				<input type="hidden" name="hx-target" value={ s.HxTarget }/>
 				<input type="hidden" name="hx-swap" value={ s.HxSwap }/>
+				<input type="hidden" name="hx-trigger" value={ s.HxTrigger }/>
 				<button type="submit" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
 					<span class="sr-only">Next month</span>
 					<svg
@@ -163,9 +166,10 @@ templ Calendar(s CalendarState) {
 					hx-get={ s.HxGet }
 					hx-target={ s.HxTarget }
 					hx-swap={ s.HxSwap }
+					hx-trigger={ s.HxTrigger }
 				>
 					<input type="hidden" name="date" value={ d.date }/>
-					<button type="submit">
+					<span>
 						<time
 							datetime={ d.date }
 							class={ "mx-auto flex h-7 w-7 items-center justify-center",
@@ -173,7 +177,7 @@ templ Calendar(s CalendarState) {
 						>
 							{ strconv.Itoa(d.day) }
 						</time>
-					</button>
+					</span>
 				</form>
 			}
 		</div>
