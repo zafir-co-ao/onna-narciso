@@ -1,6 +1,9 @@
 package testdata
 
-import "github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+)
 
 var Appointments = []scheduling.Appointment{
 
@@ -12,7 +15,7 @@ var Appointments = []scheduling.Appointment{
 		ProfessionalName: Professionals[0].Name,
 		ServiceID:        Services[0].ID,
 		ServiceName:      Services[0].Name,
-		Date:             "2024-11-12",
+		Date:             date.Today(),
 		Status:           scheduling.StatusScheduled,
 		Hour:             "08:00",
 		Duration:         180,
@@ -26,7 +29,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[2].ID,
 		ServiceName:      Services[2].Name,
 		Status:           scheduling.StatusScheduled,
-		Date:             "2024-11-12",
+		Date:             date.Today(),
 		Hour:             "10:30",
 		Duration:         90,
 	},
@@ -39,7 +42,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[3].ID,
 		ServiceName:      Services[3].Name,
 		Status:           scheduling.StatusScheduled,
-		Date:             "2024-11-12",
+		Date:             date.Today(),
 		Hour:             "12:00",
 		Duration:         60,
 	},
@@ -52,7 +55,7 @@ var Appointments = []scheduling.Appointment{
 		ServiceID:        Services[2].ID,
 		ServiceName:      Services[2].Name,
 		Status:           scheduling.StatusClosed,
-		Date:             "2024-11-12",
+		Date:             date.Today(),
 		Hour:             "10:30",
 		Duration:         90,
 	},
