@@ -12,17 +12,16 @@ func HandleDailyAppointmentsCalendar() func(w http.ResponseWriter, r *http.Reque
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		value := r.FormValue("operation")
-		date, err := time.Parse("2006-01-02", r.FormValue("date"))
 		state := components.CalendarState{
 			HxGet:     r.FormValue("hx-get"),
 			HxTarget:  r.FormValue("hx-target"),
 			HxSwap:    r.FormValue("hx-swap"),
 			HxTrigger: r.FormValue("hx-trigger"),
-			Date:      date.Format("2006-01-02"),
 		}
 
+		date, err := time.Parse("2006-01-02", r.FormValue("date"))
 		if !errors.Is(nil, err) {
-			state.Date = date.Format("2006-01-02")
+			state.Date = time.Now().Format("2006-01-02")
 			components.Calendar(state).Render(r.Context(), w)
 		}
 
