@@ -9,6 +9,7 @@ type AppointmentSchedulerState struct {
 	ProfessionalName string
 	ServiceID        string
 	ServiceName      string
+	ServiceDuration  string
 	Hour             string
 	Date             string
 	HxTarget         string
@@ -28,20 +29,37 @@ templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 		@components.InputHiddenDisplay(s.Date, "date", s.Date)
 		@components.InputHiddenDisplay(s.Hour, "hour", s.Hour)
 		<div class="mt-4">
-			@components.Dropdown(
-				"duration",
-				"15",
-				components.WithOptions(
-					components.InputOption{"15 Minutos", "15"},
-					components.InputOption{"30 Minutos", "30"},
-					components.InputOption{"45 Minutos", "45"},
-					components.InputOption{"1 Hora", "60"},
-					components.InputOption{"1 Hora e 30 Minutos", "90"},
-					components.InputOption{"2 Horas", "120"},
-					components.InputOption{"2 Horas e 30 Minutos", "150"},
-					components.InputOption{"3 Horas", "180"},
-				),
-			)
+			if s.ServiceDuration != "" {
+				@components.Dropdown(
+					"duration",
+					s.ServiceDuration,
+					components.WithOptions(
+						components.InputOption{"15 Minutos", "15"},
+						components.InputOption{"30 Minutos", "30"},
+						components.InputOption{"45 Minutos", "45"},
+						components.InputOption{"1 Hora", "60"},
+						components.InputOption{"1 Hora e 30 Minutos", "90"},
+						components.InputOption{"2 Horas", "120"},
+						components.InputOption{"2 Horas e 30 Minutos", "150"},
+						components.InputOption{"3 Horas", "180"},
+					),
+				)
+			} else {
+				@components.Dropdown(
+					"duration",
+					"90",
+					components.WithOptions(
+						components.InputOption{"15 Minutos", "15"},
+						components.InputOption{"30 Minutos", "30"},
+						components.InputOption{"45 Minutos", "45"},
+						components.InputOption{"1 Hora", "60"},
+						components.InputOption{"1 Hora e 30 Minutos", "90"},
+						components.InputOption{"2 Horas", "120"},
+						components.InputOption{"2 Horas e 30 Minutos", "150"},
+						components.InputOption{"3 Horas", "180"},
+					),
+				)
+			}
 		</div>
 		<div class="bg-gray-100 mt-8 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-10 -mx-10">
 			<button

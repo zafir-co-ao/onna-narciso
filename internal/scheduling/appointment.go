@@ -16,8 +16,9 @@ const (
 var EmptyAppointment Appointment
 
 type Service struct {
-	ID   nanoid.ID
-	Name Name
+	ID       nanoid.ID
+	Name     Name
+	Duration int
 }
 
 type Professional struct {

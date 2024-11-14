@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
@@ -29,6 +30,7 @@ func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Reque
 		for _, svc := range testdata.Services {
 			if svc.ID.String() == s.ServiceID {
 				s.ServiceName = svc.Name.String()
+				s.ServiceDuration = strconv.Itoa(svc.Duration)
 				break
 			}
 		}
