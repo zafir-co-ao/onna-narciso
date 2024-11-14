@@ -18,7 +18,7 @@ var EmptyAppointment Appointment
 type Service struct {
 	ID       nanoid.ID
 	Name     Name
-	Duration int
+	Duration string
 }
 
 type Professional struct {
