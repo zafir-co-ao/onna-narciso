@@ -158,27 +158,33 @@ templ Calendar(s CalendarState) {
 		</div>
 		<div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
 			for i, d := range getDaysOfMonth(s.Date) {
-				<form
-					class={ "py-1.5 focus:z-10",
-        				fmt.Sprintf("%s", isRounded(i)),
-        				templ.KV("bg-gray-50 text-gray-400 cursor-not-allowed", !d.isCurrentMonth),
-        				templ.KV("bg-white text-gray-900 hover:bg-gray-100 cursor-pointer", d.isCurrentMonth) }
-					hx-get={ s.HxGet }
-					hx-target={ s.HxTarget }
-					hx-swap={ s.HxSwap }
-					hx-trigger={ s.HxTrigger }
-				>
-					<input type="hidden" name="date" value={ d.date }/>
-					<span>
-						<time
-							datetime={ d.date }
-							class={ "mx-auto flex h-7 w-7 items-center justify-center",
-    					   templ.KV("rounded-full bg-gray-900 text-white font-semibold", d.date == time.Now().Format("2006-01-02")) }
-						>
+				if !d.isCurrentMonth {
+					<span class={ "py-1.5 focus:z-10 bg-gray-50 text-gray-400 cursor-not-allowed", fmt.Sprintf("%s", isRounded(i)) }>
+						<time datetime={ d.date }>
 							{ strconv.Itoa(d.day) }
 						</time>
 					</span>
-				</form>
+				} else {
+					<form
+						class={ "py-1.5 focus:z-10 bg-white text-gray-900 hover:bg-gray-200 cursor-pointer", fmt.Sprintf("%s", isRounded(i)) }
+						hx-get={ s.HxGet }
+						hx-target={ s.HxTarget }
+						hx-swap={ s.HxSwap }
+						hx-trigger={ s.HxTrigger }
+					>
+						<input type="hidden" name="date" value={ d.date }/>
+						<span>
+							<time
+								datetime={ d.date }
+								class={ "mx-auto flex h-7 w-7 items-center justify-center",
+    					    templ.KV("rounded-full bg-gray-900 text-white font-semibold", d.date == time.Now().Format("2006-01-02")),
+                            templ.KV("rounded-full bg-gray-200 text-black font-semibold", d.date == s.Date) }
+							>
+								{ strconv.Itoa(d.day) }
+							</time>
+						</span>
+					</form>
+				}
 			}
 		</div>
 	</div>
