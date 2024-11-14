@@ -35,21 +35,15 @@ func getCurrentMonth(date string) string {
 }
 
 func getStartDate(date string) time.Time {
-	var startDate time.Time
+	t, _ := time.Parse("2006-01-02", date)
 
-	today, _ := time.Parse("2006-01-02", date)
+	d := time.Date(t.Year(), t.Month(), 0, 0, 0, 0, 0, time.UTC)
 
-	day := 0
-	for true {
-		date := time.Date(today.Year(), today.Month(), day, 0, 0, 0, 0, time.UTC)
-		if date.Weekday() == time.Monday {
-			startDate = date
-			break
-		}
-		day -= 1
+	for d.Weekday() != time.Monday {
+		d = d.AddDate(0, 0, -1)
 	}
 
-	return startDate
+	return d
 }
 
 func getDaysOfMonth(date string) []day {

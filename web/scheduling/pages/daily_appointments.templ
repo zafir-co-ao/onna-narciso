@@ -32,7 +32,7 @@ templ DailyAppointments(date string, opts []DailyAppointmentOptions) {
 					HxTrigger: "click",
 				})
 				<a
-					hx-get="/weekly-appointments"
+					hx-get={ fmt.Sprintf("/weekly-appointments?date=%v", date) }
 					hx-target="#content"
 					hx-trigger="click"
 					hx-swap="innerHTML"
