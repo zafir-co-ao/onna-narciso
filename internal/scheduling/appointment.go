@@ -59,35 +59,6 @@ func (a Appointment) GetID() nanoid.ID {
 	return a.ID
 }
 
-func NewAppointment(
-	id nanoid.ID,
-	professionalID nanoid.ID,
-	professionalName Name,
-	customerID nanoid.ID,
-	customerName Name,
-	serviceID nanoid.ID,
-	serviceName Name,
-	date _date.Date,
-	hour hour.Hour,
-	duration int,
-) (Appointment, error) {
-	app := Appointment{
-		ID:               id,
-		ProfessionalID:   professionalID,
-		ProfessionalName: professionalName,
-		CustomerID:       customerID,
-		CustomerName:     customerName,
-		ServiceID:        serviceID,
-		ServiceName:      serviceName,
-		Date:             date,
-		Hour:             hour,
-		Duration:         duration,
-		Status:           StatusScheduled,
-	}
-
-	return app, nil
-}
-
 func (a *Appointment) Reschedule(date string, time string, duration int) error {
 	if !a.IsScheduled() && !a.IsRescheduled() {
 		return ErrInvalidStatusToReschedule

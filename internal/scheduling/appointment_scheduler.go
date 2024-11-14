@@ -2,8 +2,8 @@ package scheduling
 
 import (
 	"github.com/kindalus/godx/pkg/event"
-	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 const EventAppointmentScheduled = "EventAppointmentScheduled"
@@ -64,27 +64,24 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
-	id := nanoid.New()
+	d, err := date.New(i.Date)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	a, err := NewAppointmentBuilder().
-		WithAppointmentID(id).
-		WithProfessionalID(p.ID).
-		WithProfessionalName(p.Name).
-		WithCustomerID(c.ID).
-		WithCustomerName(c.Name).
-		WithServiceID(s.ID).
-		WithServiceName(s.Name).
-		WithDate(i.Date).
-		WithHour(i.Hour).
+	h, err := hour.New(i.Hour)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
+
+	a := NewAppointmentBuilder().
+		WithProfessional(p.ID, p.Name).
+		WithCustomer(c.ID, c.Name).
+		WithService(s.ID, s.Name).
+		WithDate(d).
+		WithHour(h).
 		WithDuration(i.Duration).
 		Build()
-
-	if err != nil {
-		return EmptyAppointmentOutput, err
-	}
 
 	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, p.ID)
 	if err != nil {
