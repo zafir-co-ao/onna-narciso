@@ -160,7 +160,7 @@ templ Calendar(s CalendarState) {
 			for i, d := range getDaysOfMonth(s.Date) {
 				if !d.isCurrentMonth {
 					<span class={ "py-1.5 focus:z-10 bg-gray-50 text-gray-400 cursor-not-allowed", fmt.Sprintf("%s", isRounded(i)) }>
-						<time datetime={ d.date }>
+						<time class="mx-auto flex h-7 w-7 items-center justify-center" datetime={ d.date }>
 							{ strconv.Itoa(d.day) }
 						</time>
 					</span>
