@@ -384,12 +384,12 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		a, _ := repo.FindByID(nanoid.ID(o.ID))
 
-		customer, err := cacl.FindCustomerByID(a.CustomerID.String())
+		customer, err := cacl.FindCustomerByID(a.CustomerID)
 		if err != nil {
 			t.Errorf("Should return customer: %v", err)
 		}
 
-		if customer.ID.String() != a.CustomerID.String() {
+		if customer.ID != a.CustomerID {
 			t.Errorf("The customer must be the same as the appointment")
 		}
 	})
@@ -508,7 +508,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		p, _ := pacl.FindProfessionalByID(a.ProfessionalID.String())
+		p, _ := pacl.FindProfessionalByID(a.ProfessionalID)
 		if a.ProfessionalName != p.Name {
 			t.Errorf("The professional name must be the same as the appointment: %v", a.ProfessionalName)
 		}
@@ -536,7 +536,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		c, _ := cacl.FindCustomerByID(a.CustomerID.String())
+		c, _ := cacl.FindCustomerByID(a.CustomerID)
 		if a.CustomerName != c.Name {
 			t.Errorf("The customer name must be the same as the appointment: %v", a.CustomerName)
 		}
@@ -564,7 +564,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
-		s, _ := sacl.FindServiceByID(a.ServiceID.String())
+		s, _ := sacl.FindServiceByID(a.ServiceID)
 		if a.ServiceName != s.Name {
 			t.Errorf("The service name must be the same as the appointment: %v", a.ServiceName)
 		}

@@ -1,6 +1,8 @@
 package scheduling
 
 import (
+	"slices"
+
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
@@ -44,14 +46,18 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	p, err := u.pacl.FindProfessionalByID(i.ProfessionalID)
+	p, err := u.pacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.sacl.FindServiceByID(i.ServiceID)
+	s, err := u.sacl.FindServiceByID(nanoid.ID(i.ServiceID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
+	}
+
+	if !slices.Contains(p.ServicesIDS, s.ID) {
+		return EmptyAppointmentOutput, ErrInvalidService
 	}
 
 	d, err := date.New(i.Date)

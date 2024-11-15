@@ -23,8 +23,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	for i := range 20 {
 		i += 1
-		v := strconv.Itoa(i)
-		a := scheduling.Appointment{ID: nanoid.ID(v), Status: scheduling.StatusScheduled}
+		a := scheduling.Appointment{ID: nanoid.ID(strconv.Itoa(i)), Status: scheduling.StatusScheduled}
 		repo.Save(a)
 	}
 
@@ -65,9 +64,10 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2020-10-10",
 			Hour:           "9:30",
 			ProfessionalID: "2",
-			ServiceID:      "1",
+			ServiceID:      "3",
 			Duration:       120,
 		}
+
 		o, err := usecase.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
@@ -84,9 +84,10 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2021-11-10",
 			Hour:           "10:00",
 			ProfessionalID: "3",
-			ServiceID:      "3",
+			ServiceID:      "4",
 			Duration:       120,
 		}
+
 		o, err := usecase.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
@@ -237,9 +238,10 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "10-07-2001",
 			Hour:           "11:00",
 			ProfessionalID: "2",
-			ServiceID:      "1",
+			ServiceID:      "3",
 			Duration:       30,
 		}
+
 		_, err := usecase.Reschedule(i)
 		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
@@ -302,7 +304,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2018-05-10",
 			Hour:           "11:00",
 			ProfessionalID: "3",
-			ServiceID:      "3",
+			ServiceID:      "4",
 			Duration:       60,
 		}
 
@@ -345,7 +347,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("The Professional ID of appointment must be equal to %s, got %s", i.ProfessionalID, o.ProfessionalID)
 		}
 
-		p, err := pacl.FindProfessionalByID(i.ProfessionalID)
+		p, err := pacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 		if err != nil {
 			t.Errorf("Should return the professional, got %v", err)
 		}
@@ -374,7 +376,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("The Service ID of appointment must be equal to %s, got %s", i.ServiceID, o.ServiceID)
 		}
 
-		s, err := sacl.FindServiceByID(i.ServiceID)
+		s, err := sacl.FindServiceByID(nanoid.ID(i.ServiceID))
 		if err != nil {
 			t.Errorf("Should return the service, got %v", err)
 		}
@@ -416,11 +418,31 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		_, err := usecase.Reschedule(i)
 		if err == nil {
-			t.Errorf("Shoud return an error, got %v", err)
+			t.Errorf("Should return an error, got %v", err)
 		}
 
 		if !errors.Is(scheduling.ErrServiceNotFound, err) {
 			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_the_service_is_not_from_the_chosen_professional", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "4",
+			Date:           "2012-05-04",
+			ProfessionalID: "1",
+			ServiceID:      "4",
+			Hour:           "10:00",
+			Duration:       90,
+		}
+
+		_, err := usecase.Reschedule(i)
+		if err == nil {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrInvalidService, err) {
+			t.Errorf("The error must be ErrInvalidService, got %v", err)
 		}
 	})
 }

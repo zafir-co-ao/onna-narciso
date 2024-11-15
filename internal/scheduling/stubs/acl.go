@@ -1,14 +1,15 @@
 package stubs
 
 import (
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 )
 
 func NewProfessionalsACL() scheduling.ProfessionalsACL {
-	f := func(id string) (scheduling.Professional, error) {
+	f := func(id nanoid.ID) (scheduling.Professional, error) {
 		for _, p := range testdata.Professionals {
-			if p.ID.String() == id {
+			if p.ID == id {
 				return p, nil
 			}
 		}
@@ -20,9 +21,9 @@ func NewProfessionalsACL() scheduling.ProfessionalsACL {
 }
 
 func NewServicesACL() scheduling.ServiceACL {
-	f := func(id string) (scheduling.Service, error) {
+	f := func(id nanoid.ID) (scheduling.Service, error) {
 		for _, s := range testdata.Services {
-			if s.ID.String() == id {
+			if s.ID == id {
 				return s, nil
 			}
 		}
@@ -39,8 +40,8 @@ func NewCustomersACL() scheduling.CustomersACL {
 
 type customerACLStub struct{}
 
-func (c customerACLStub) FindCustomerByID(id string) (scheduling.Customer, error) {
-	switch id {
+func (c customerACLStub) FindCustomerByID(id nanoid.ID) (scheduling.Customer, error) {
+	switch id.String() {
 	case "1":
 		return scheduling.Customer{ID: "1", Name: "João Silva"}, nil
 	case "2":

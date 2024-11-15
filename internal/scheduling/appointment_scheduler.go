@@ -2,6 +2,7 @@ package scheduling
 
 import (
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
@@ -49,12 +50,12 @@ func NewAppointmentScheduler(
 }
 
 func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error) {
-	p, err := u.professionalACL.FindProfessionalByID(i.ProfessionalID)
+	p, err := u.professionalACL.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.serviceACL.FindServiceByID(i.ServiceID)
+	s, err := u.serviceACL.FindServiceByID(nanoid.ID(i.ServiceID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -114,7 +115,7 @@ func (u *appointmentScedulerImpl) findOrRegistrationCustomer(i AppointmentSchedu
 	}
 
 	if len(i.CustomerID) > 0 && (len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0) {
-		return u.customerACL.FindCustomerByID(i.CustomerID)
+		return u.customerACL.FindCustomerByID(nanoid.ID(i.CustomerID))
 	}
 
 	return u.customerACL.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)

@@ -1,8 +1,13 @@
 package scheduling
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/kindalus/godx/pkg/nanoid"
+)
 
 var (
+	ErrInvalidService       = errors.New("invalid service")
 	ErrServiceNotFound      = errors.New("service not found")
 	ErrCustomerNotFound     = errors.New("customer not found")
 	ErrProfessionalNotFound = errors.New("professional not found")
@@ -10,29 +15,26 @@ var (
 )
 
 type ProfessionalsACL interface {
-	FindProfessionalByID(id string) (Professional, error)
+	FindProfessionalByID(id nanoid.ID) (Professional, error)
 }
 
 type ServiceACL interface {
-	FindServiceByID(id string) (Service, error)
+	FindServiceByID(id nanoid.ID) (Service, error)
 }
 
 type CustomersACL interface {
-	FindCustomerByID(id string) (Customer, error)
+	FindCustomerByID(id nanoid.ID) (Customer, error)
 	RequestCustomerRegistration(name, phone string) (Customer, error)
 }
 
-type ProfessionalsACLFunc func(id string) (Professional, error)
+type ProfessionalsACLFunc func(id nanoid.ID) (Professional, error)
 
-func (f ProfessionalsACLFunc) FindProfessionalByID(id string) (Professional, error) {
-
+func (f ProfessionalsACLFunc) FindProfessionalByID(id nanoid.ID) (Professional, error) {
 	return f(id)
-
 }
 
-type ServicesACLFunc func(id string) (Service, error)
+type ServicesACLFunc func(id nanoid.ID) (Service, error)
 
-func (f ServicesACLFunc) FindServiceByID(id string) (Service, error) {
-
+func (f ServicesACLFunc) FindServiceByID(id nanoid.ID) (Service, error) {
 	return f(id)
 }
