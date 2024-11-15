@@ -5,21 +5,10 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	_scheduling "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 	"github.com/zafir-co-ao/onna-narciso/web/sessions/components"
+	"github.com/zafir-co-ao/onna-narciso/web/shared"
 )
 
-type DailyAppointmentOptions struct {
-	AppointmentID     string
-	AppointmentStatus string
-	AppointmentDate   string
-	AppointmentHour   string
-	CustomerName      string
-	ServiceName       string
-	ProfessionalName  string
-	SessionID         string
-	SessionStatus     string
-}
-
-templ DailyAppointments(date string, opts []DailyAppointmentOptions) {
+templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
 	<div id="content">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
@@ -59,7 +48,7 @@ templ DailyAppointments(date string, opts []DailyAppointmentOptions) {
 	</div>
 }
 
-templ DailyAppointment(o DailyAppointmentOptions) {
+templ DailyAppointment(o shared.DailyAppointmentOptions) {
 	<li class="relative flex space-x-6 py-6 xl:static">
 		<div class="flex-auto">
 			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.CustomerName } - { o.AppointmentStatus }</h3>

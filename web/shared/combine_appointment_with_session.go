@@ -4,20 +4,31 @@ import (
 	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 )
+
+type DailyAppointmentOptions struct {
+	AppointmentID     string
+	AppointmentStatus string
+	AppointmentDate   string
+	AppointmentHour   string
+	CustomerName      string
+	ServiceName       string
+	ProfessionalName  string
+	SessionID         string
+	SessionStatus     string
+}
 
 func CombineAppointmentsAndSessions(
 	appointments []scheduling.AppointmentOutput,
 	sessions []_sessions.SessionOutput,
-) []pages.DailyAppointmentOptions {
+) []DailyAppointmentOptions {
 	sessionMap := make(map[string]_sessions.SessionOutput)
 	for _, session := range sessions {
 		sessionMap[session.AppointmentID] = session
 	}
 
-	return xslices.Map(appointments, func(appointment scheduling.AppointmentOutput) pages.DailyAppointmentOptions {
-		opts := pages.DailyAppointmentOptions{
+	return xslices.Map(appointments, func(appointment scheduling.AppointmentOutput) DailyAppointmentOptions {
+		opts := DailyAppointmentOptions{
 			AppointmentID:     appointment.ID,
 			AppointmentStatus: appointment.Status,
 			AppointmentDate:   appointment.Date,

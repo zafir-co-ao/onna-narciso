@@ -15,6 +15,7 @@ type AppointmentSchedulerState struct {
 	HxTarget         string
 	HxSwap           string
 	HxTrigger        string
+	HxPost           string
 }
 
 templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
@@ -22,7 +23,7 @@ templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
 }
 
 templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
-	<form hx-post="/appointments" hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
+	<form hx-post={ s.HxPost } hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
 		@ChooseCustomer()
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
