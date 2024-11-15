@@ -13,7 +13,7 @@ var services = map[string]sessions.SessionService{
 
 type serviceACLStub struct{}
 
-func NewServiceACL() sessions.ServiceACL {
+func NewServicesACL() sessions.ServiceACL {
 	return serviceACLStub{}
 }
 

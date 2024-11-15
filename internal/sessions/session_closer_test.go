@@ -16,7 +16,7 @@ import (
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewEventBus()
 	repo := inmem.NewSessionRepository()
-	sacl := stubs.NewServiceACL()
+	sacl := stubs.NewServicesACL()
 	u := sessions.NewSessionCloser(repo, sacl, bus)
 
 	for i := range 10 {
