@@ -29,17 +29,18 @@ func TestAppointmentRescheduler(t *testing.T) {
 	}
 
 	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
-	a3 := scheduling.Appointment{ID: "12", Status: scheduling.StatusScheduled, Date: "2024-10-27", Hour: "8:00", Duration: 240}
+	a3 := scheduling.Appointment{ID: "12", ProfessionalID: "1", Status: scheduling.StatusScheduled, Date: "2024-10-27", Hour: "8:00", Duration: 240}
 
 	_ = repo.Save(a2)
 	_ = repo.Save(a3)
 
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "1",
-			Date:     "2024-04-11",
-			Hour:     "8:30",
-			Duration: 120,
+			ID:             "1",
+			Date:           "2024-04-11",
+			Hour:           "8:30",
+			ProfessionalID: "1",
+			Duration:       120,
 		}
 
 		o, err := usecase.Reschedule(i)
@@ -59,10 +60,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_enter_the_reschedule_date", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "3",
-			Date:     "2020-10-10",
-			Hour:     "9:30",
-			Duration: 120,
+			ID:             "3",
+			Date:           "2020-10-10",
+			Hour:           "9:30",
+			ProfessionalID: "2",
+			Duration:       120,
 		}
 		o, err := usecase.Reschedule(i)
 		if err != nil {
@@ -76,10 +78,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_enter_the_reschedule_hour", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "4",
-			Date:     "2021-11-10",
-			Hour:     "10:00",
-			Duration: 120,
+			ID:             "4",
+			Date:           "2021-11-10",
+			Hour:           "10:00",
+			ProfessionalID: "3",
+			Duration:       120,
 		}
 		o, err := usecase.Reschedule(i)
 		if err != nil {
@@ -93,10 +96,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_enter_the_reschedule_duration", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "5",
-			Date:     "2022-12-10",
-			Hour:     "8:00",
-			Duration: 60,
+			ID:             "5",
+			Date:           "2022-12-10",
+			Hour:           "8:00",
+			ProfessionalID: "1",
+			Duration:       60,
 		}
 
 		o, err := usecase.Reschedule(i)
@@ -116,10 +120,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_reschedule_an_appointment_more_than_once", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "1",
-			Date:     "2024-07-01",
-			Hour:     "12:00",
-			Duration: 60,
+			ID:             "1",
+			Date:           "2024-07-01",
+			Hour:           "12:00",
+			ProfessionalID: "2",
+			Duration:       60,
 		}
 
 		o, err := usecase.Reschedule(i)
@@ -135,28 +140,32 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("should_return_an_error_if_exists_interception_of_appointments", func(t *testing.T) {
 		var inputs = []scheduling.AppointmentReschedulerInput{
 			{
-				ID:       "8",
-				Date:     "2024-10-27",
-				Hour:     "8:00",
-				Duration: 60,
+				ID:             "8",
+				Date:           "2024-10-27",
+				Hour:           "8:00",
+				ProfessionalID: "1",
+				Duration:       60,
 			},
 			{
-				ID:       "9",
-				Date:     "2024-10-27",
-				Hour:     "9:30",
-				Duration: 60,
+				ID:             "9",
+				Date:           "2024-10-27",
+				Hour:           "9:30",
+				ProfessionalID: "1",
+				Duration:       60,
 			},
 			{
-				ID:       "10",
-				Date:     "2024-10-27",
-				Hour:     "11:00",
-				Duration: 60,
+				ID:             "10",
+				Date:           "2024-10-27",
+				Hour:           "11:00",
+				ProfessionalID: "1",
+				Duration:       60,
 			},
 			{
-				ID:       "10",
-				Date:     "2024-10-27",
-				Hour:     "7:00",
-				Duration: 90,
+				ID:             "10",
+				Date:           "2024-10-27",
+				Hour:           "7:00",
+				ProfessionalID: "1",
+				Duration:       90,
 			},
 		}
 
@@ -175,10 +184,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "1000",
-			Date:     "2023-11-31",
-			Hour:     "9:15",
-			Duration: 120,
+			ID:             "1000",
+			Date:           "2023-11-31",
+			Hour:           "9:15",
+			ProfessionalID: "3",
+			Duration:       120,
 		}
 
 		_, err := usecase.Reschedule(i)
@@ -193,10 +203,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("should_return_error_if_appointment_status_is_different_of_scheduled", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "20",
-			Date:     "2010-09-18",
-			Hour:     "19:15",
-			Duration: 60,
+			ID:             "20",
+			Date:           "2010-09-18",
+			Hour:           "19:15",
+			ProfessionalID: "4",
+			Duration:       60,
 		}
 
 		_, err := usecase.Reschedule(i)
@@ -211,10 +222,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("should_return_an_error_if_the_date_is_in_an_invalid_format", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "6",
-			Date:     "10-07-2001",
-			Hour:     "11:00",
-			Duration: 30,
+			ID:             "6",
+			Date:           "10-07-2001",
+			Hour:           "11:00",
+			ProfessionalID: "2",
+			Duration:       30,
 		}
 		_, err := usecase.Reschedule(i)
 		if err == nil {
@@ -228,10 +240,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("should_return_an_error_if_the_hour_is_in_an_invalid_format", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "2",
-			Date:     "2021-07-01",
-			Hour:     "11h00",
-			Duration: 30,
+			ID:             "2",
+			Date:           "2021-07-01",
+			Hour:           "11h00",
+			ProfessionalID: "1",
+			Duration:       30,
 		}
 		_, err := usecase.Reschedule(i)
 		if err == nil {
@@ -245,10 +258,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_publish_the_rescheduled_appointment_event", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "13",
-			Date:     "2018-09-15",
-			Hour:     "18:00",
-			Duration: 30,
+			ID:             "13",
+			Date:           "2018-09-15",
+			Hour:           "18:00",
+			ProfessionalID: "4",
+			Duration:       30,
 		}
 
 		evtPublished := false
@@ -270,10 +284,11 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 	t.Run("must_entry_the_payload_in_reschedule_appointment_event", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
-			ID:       "12",
-			Date:     "2018-05-10",
-			Hour:     "11:00",
-			Duration: 60,
+			ID:             "12",
+			Date:           "2018-05-10",
+			Hour:           "11:00",
+			ProfessionalID: "3",
+			Duration:       60,
 		}
 
 		evtPublished := false
@@ -350,6 +365,26 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if o.ServiceName != string(s.Name) {
 			t.Errorf("The Service Name of appointment must be equal to %s, got %s", s.Name, o.ServiceName)
+		}
+	})
+
+	t.Run("should_return_error_if_professional_not_found_in_acl", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "4",
+			Date:           "2021-05-04",
+			ProfessionalID: "10",
+			ServiceID:      "3",
+			Hour:           "16:00",
+			Duration:       30,
+		}
+
+		_, err := usecase.Reschedule(i)
+		if err == nil {
+			t.Errorf("Shoud return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrProfessionalNotFound, err) {
+			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
 		}
 	})
 }

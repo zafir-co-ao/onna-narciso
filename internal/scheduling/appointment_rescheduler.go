@@ -44,7 +44,10 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	p, _ := u.pacl.FindProfessionalByID(i.ProfessionalID)
+	p, err := u.pacl.FindProfessionalByID(i.ProfessionalID)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
 
 	s, _ := u.sacl.FindServiceByID(i.ServiceID)
 
