@@ -314,4 +314,25 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Error("The event payload must be logged")
 		}
 	})
+
+	t.Run("should_reschedule_the_appointment_with_different_professional", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "2",
+			Date:           "2018-02-10",
+			ProfessionalID: "1",
+			Hour:           "06:00",
+			Duration:       60,
+		}
+
+		usecase := scheduling.NewAppointmentRescheduler(repo, bus)
+
+		o, err := usecase.Reschedule(i)
+		if err != nil {
+			t.Errorf("Should not return an error, got %v", err)
+		}
+
+		if o.ProfessionalID != i.ProfessionalID {
+			t.Errorf("The Professional ID appointment must be equal to %s, got %s", i.ProfessionalID, o.ProfessionalID)
+		}
+	})
 }

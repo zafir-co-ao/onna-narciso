@@ -9,10 +9,11 @@ import (
 const EventAppointmentRescheduled = "EventAppointmentRescheduled"
 
 type AppointmentReschedulerInput struct {
-	ID       string
-	Date     string
-	Hour     string
-	Duration int
+	ID             string
+	ProfessionalID string
+	Date           string
+	Hour           string
+	Duration       int
 }
 
 type AppointmentRescheduler interface {
@@ -34,7 +35,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	err = a.Reschedule(i.Date, i.Hour, i.Duration)
+	err = a.Reschedule(i.ProfessionalID, i.Date, i.Hour, i.Duration)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

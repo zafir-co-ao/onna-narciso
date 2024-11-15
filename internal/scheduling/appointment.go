@@ -59,7 +59,7 @@ func (a Appointment) GetID() nanoid.ID {
 	return a.ID
 }
 
-func (a *Appointment) Reschedule(date string, time string, duration int) error {
+func (a *Appointment) Reschedule(professionalID, date, time string, duration int) error {
 	if !a.IsScheduled() && !a.IsRescheduled() {
 		return ErrInvalidStatusToReschedule
 	}
@@ -77,6 +77,7 @@ func (a *Appointment) Reschedule(date string, time string, duration int) error {
 	a.Date = d
 	a.Hour = h
 	a.Duration = duration
+	a.ProfessionalID = nanoid.ID(professionalID)
 	a.Status = StatusRescheduled
 
 	return nil
