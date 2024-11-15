@@ -40,6 +40,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2024-04-11",
 			Hour:           "8:30",
 			ProfessionalID: "1",
+			ServiceID:      "1",
 			Duration:       120,
 		}
 
@@ -64,6 +65,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2020-10-10",
 			Hour:           "9:30",
 			ProfessionalID: "2",
+			ServiceID:      "1",
 			Duration:       120,
 		}
 		o, err := usecase.Reschedule(i)
@@ -82,6 +84,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2021-11-10",
 			Hour:           "10:00",
 			ProfessionalID: "3",
+			ServiceID:      "3",
 			Duration:       120,
 		}
 		o, err := usecase.Reschedule(i)
@@ -100,6 +103,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2022-12-10",
 			Hour:           "8:00",
 			ProfessionalID: "1",
+			ServiceID:      "1",
 			Duration:       60,
 		}
 
@@ -124,6 +128,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2024-07-01",
 			Hour:           "12:00",
 			ProfessionalID: "2",
+			ServiceID:      "3",
 			Duration:       60,
 		}
 
@@ -144,6 +149,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 				Date:           "2024-10-27",
 				Hour:           "8:00",
 				ProfessionalID: "1",
+				ServiceID:      "1",
 				Duration:       60,
 			},
 			{
@@ -151,6 +157,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 				Date:           "2024-10-27",
 				Hour:           "9:30",
 				ProfessionalID: "1",
+				ServiceID:      "1",
 				Duration:       60,
 			},
 			{
@@ -158,6 +165,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 				Date:           "2024-10-27",
 				Hour:           "11:00",
 				ProfessionalID: "1",
+				ServiceID:      "1",
 				Duration:       60,
 			},
 			{
@@ -165,6 +173,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 				Date:           "2024-10-27",
 				Hour:           "7:00",
 				ProfessionalID: "1",
+				ServiceID:      "1",
 				Duration:       90,
 			},
 		}
@@ -188,6 +197,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2023-11-31",
 			Hour:           "9:15",
 			ProfessionalID: "3",
+			ServiceID:      "2",
 			Duration:       120,
 		}
 
@@ -207,6 +217,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2010-09-18",
 			Hour:           "19:15",
 			ProfessionalID: "4",
+			ServiceID:      "3",
 			Duration:       60,
 		}
 
@@ -226,6 +237,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "10-07-2001",
 			Hour:           "11:00",
 			ProfessionalID: "2",
+			ServiceID:      "1",
 			Duration:       30,
 		}
 		_, err := usecase.Reschedule(i)
@@ -244,6 +256,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2021-07-01",
 			Hour:           "11h00",
 			ProfessionalID: "1",
+			ServiceID:      "2",
 			Duration:       30,
 		}
 		_, err := usecase.Reschedule(i)
@@ -262,6 +275,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2018-09-15",
 			Hour:           "18:00",
 			ProfessionalID: "4",
+			ServiceID:      "1",
 			Duration:       30,
 		}
 
@@ -288,6 +302,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Date:           "2018-05-10",
 			Hour:           "11:00",
 			ProfessionalID: "3",
+			ServiceID:      "3",
 			Duration:       60,
 		}
 
@@ -316,6 +331,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			ID:             "2",
 			Date:           "2018-02-10",
 			ProfessionalID: "1",
+			ServiceID:      "2",
 			Hour:           "06:00",
 			Duration:       60,
 		}
@@ -385,6 +401,26 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if !errors.Is(scheduling.ErrProfessionalNotFound, err) {
 			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_service_not_found_in_acl", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "7",
+			Date:           "2018-05-04",
+			ProfessionalID: "1",
+			ServiceID:      "10",
+			Hour:           "10:00",
+			Duration:       90,
+		}
+
+		_, err := usecase.Reschedule(i)
+		if err == nil {
+			t.Errorf("Shoud return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrServiceNotFound, err) {
+			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
 		}
 	})
 }

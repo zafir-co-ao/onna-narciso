@@ -49,7 +49,10 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	s, _ := u.sacl.FindServiceByID(i.ServiceID)
+	s, err := u.sacl.FindServiceByID(i.ServiceID)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
 
 	d, err := date.New(i.Date)
 	if err != nil {
