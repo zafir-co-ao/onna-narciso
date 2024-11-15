@@ -43,6 +43,11 @@ func (b *appointmentBuilder) WithDate(date date.Date) *appointmentBuilder {
 	return b
 }
 
+func (b *appointmentBuilder) WithStatus(status Status) *appointmentBuilder {
+	b.Status = status
+	return b
+}
+
 func (b *appointmentBuilder) WithHour(hour hour.Hour) *appointmentBuilder {
 	b.Hour = hour
 	return b

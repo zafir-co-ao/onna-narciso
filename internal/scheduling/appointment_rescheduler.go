@@ -4,6 +4,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 const EventAppointmentRescheduled = "EventAppointmentRescheduled"
@@ -11,6 +12,7 @@ const EventAppointmentRescheduled = "EventAppointmentRescheduled"
 type AppointmentReschedulerInput struct {
 	ID             string
 	ProfessionalID string
+	ServiceID      string
 	Date           string
 	Hour           string
 	Duration       int
@@ -22,11 +24,18 @@ type AppointmentRescheduler interface {
 
 type appointmentRescheduler struct {
 	repo AppointmentRepository
+	pacl ProfessionalsACL
+	sacl ServiceACL
 	bus  event.Bus
 }
 
-func NewAppointmentRescheduler(r AppointmentRepository, b event.Bus) AppointmentRescheduler {
-	return &appointmentRescheduler{repo: r, bus: b}
+func NewAppointmentRescheduler(
+	repo AppointmentRepository,
+	pacl ProfessionalsACL,
+	sacl ServiceACL,
+	bus event.Bus,
+) AppointmentRescheduler {
+	return &appointmentRescheduler{repo, pacl, sacl, bus}
 }
 
 func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
@@ -35,7 +44,32 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	err = a.Reschedule(i.ProfessionalID, i.Date, i.Hour, i.Duration)
+	p, _ := u.pacl.FindProfessionalByID(i.ProfessionalID)
+
+	s, _ := u.sacl.FindServiceByID(i.ServiceID)
+
+	d, err := date.New(i.Date)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
+
+	h, err := hour.New(i.Hour)
+	if err != nil {
+		return EmptyAppointmentOutput, err
+	}
+
+	a = NewAppointmentBuilder().
+		WithAppointmentID(a.ID).
+		WithCustomer(a.CustomerID, a.CustomerName).
+		WithProfessional(p.ID, p.Name).
+		WithService(s.ID, s.Name).
+		WithDuration(i.Duration).
+		WithStatus(a.Status).
+		WithDate(d).
+		WithHour(h).
+		Build()
+
+	err = a.Reschedule()
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

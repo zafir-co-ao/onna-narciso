@@ -2,7 +2,7 @@ package scheduling
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
-	_date "github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -13,7 +13,7 @@ const (
 	StatusClosed      Status = "Fechado"
 )
 
-var EmptyAppointment Appointment
+var EmptyAppointment = Appointment{}
 
 type Service struct {
 	ID       nanoid.ID
@@ -50,8 +50,8 @@ type Appointment struct {
 	ServiceID        nanoid.ID
 	ServiceName      Name
 	Status           Status
-	Date             _date.Date // Formato: 2024-10-01
-	Hour             hour.Hour  // Formato 9:00
+	Date             date.Date // Formato: 2024-10-01
+	Hour             hour.Hour // Formato 9:00
 	Duration         int
 }
 
@@ -59,25 +59,11 @@ func (a Appointment) GetID() nanoid.ID {
 	return a.ID
 }
 
-func (a *Appointment) Reschedule(professionalID, date, time string, duration int) error {
+func (a *Appointment) Reschedule() error {
 	if !a.IsScheduled() && !a.IsRescheduled() {
 		return ErrInvalidStatusToReschedule
 	}
 
-	d, err := _date.New(date)
-	if err != nil {
-		return err
-	}
-
-	h, err := hour.New(time)
-	if err != nil {
-		return err
-	}
-
-	a.Date = d
-	a.Hour = h
-	a.Duration = duration
-	a.ProfessionalID = nanoid.ID(professionalID)
 	a.Status = StatusRescheduled
 
 	return nil
