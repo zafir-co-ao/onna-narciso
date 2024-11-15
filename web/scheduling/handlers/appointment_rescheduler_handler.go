@@ -26,10 +26,12 @@ func HandleRescheduleAppointment(
 		}
 
 		input := scheduling.AppointmentReschedulerInput{
-			ID:       r.Form.Get("id"),
-			Date:     r.Form.Get("date"),
-			Hour:     r.Form.Get("hour"),
-			Duration: duration,
+			ID:             r.Form.Get("id"),
+			Date:           r.Form.Get("date"),
+			Hour:           r.Form.Get("hour"),
+			ProfessionalID: r.Form.Get("professional-id"),
+			ServiceID:      r.Form.Get("service-id"),
+			Duration:       duration,
 		}
 
 		_, err = re.Reschedule(input)
@@ -53,12 +55,27 @@ func HandleRescheduleAppointment(
 			return
 		}
 
+		if errors.Is(err, scheduling.ErrInvalidService) {
+			_http.SendBadRequest(w, "Indisponibilidade do serviço para o profissional")
+			return
+		}
+
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			_http.SendNotFound(w, "Marcação não encontrada")
 			return
 		}
 
-		if err != nil {
+		if errors.Is(err, scheduling.ErrProfessionalNotFound) {
+			_http.SendNotFound(w, "Profissional não encontrado")
+			return
+		}
+
+		if errors.Is(err, scheduling.ErrServiceNotFound) {
+			_http.SendNotFound(w, "Serviço não encontrado")
+			return
+		}
+
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}
