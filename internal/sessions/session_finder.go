@@ -12,7 +12,7 @@ type SessionOutput struct {
 }
 
 type Finder interface {
-	Find(apointmentIDs []string) ([]SessionOutput, error)
+	Find(appointmentIDs []string) ([]SessionOutput, error)
 }
 
 type finderImpl struct {
