@@ -34,11 +34,11 @@ func main() {
 	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 	c := scheduling.NewAppointmentCanceler(repo, bus)
 	g := scheduling.NewAppointmentGetter(repo)
-	r := scheduling.NewAppointmentRescheduler(repo, bus)
+	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
 	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
 	dg := scheduling.NewDailyAppointmentsGetter(repo)
 
-	fs := _stubs.NewServiceACL()
+	fs := _stubs.NewServicesACL()
 	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	sc := sessions.NewSessionCreator(sRepo, bus, aacl)
 	so := sessions.NewSessionCloser(sRepo, fs, bus)
