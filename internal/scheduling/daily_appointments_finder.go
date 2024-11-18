@@ -2,11 +2,11 @@ package scheduling
 
 import (
 	"github.com/kindalus/godx/pkg/xslices"
-	_date "github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 type DailyAppointmentsFinder interface {
-	Find(date string) ([]AppointmentOutput, error)
+	Find(theDate string) ([]AppointmentOutput, error)
 }
 
 type dailyAppointmentsFinderImpl struct {
@@ -17,8 +17,8 @@ func NewDailyAppointmentsGetter(repo AppointmentRepository) DailyAppointmentsFin
 	return &dailyAppointmentsFinderImpl{repo: repo}
 }
 
-func (d *dailyAppointmentsFinderImpl) Find(date string) ([]AppointmentOutput, error) {
-	a, err := d.repo.FindByDate(_date.Date(date))
+func (d *dailyAppointmentsFinderImpl) Find(theDate string) ([]AppointmentOutput, error) {
+	a, err := d.repo.FindByDate(date.Date(theDate))
 
 	if err != nil {
 		return nil, err
