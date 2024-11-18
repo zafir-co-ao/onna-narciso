@@ -12,10 +12,9 @@ type AppointmentReschedulerOptions struct {
 	Appointment          scheduling.AppointmentOutput
 	SelectedProfessional string
 	SelectedService      string
-	HxTarget             string
-	HxSwap               string
 	Professionals        []scheduling.Professional
 	Services             []scheduling.Service
+	HandlerURL           string
 }
 
 templ AppointmentReschedulerDialog(opts AppointmentReschedulerOptions) {
@@ -23,32 +22,26 @@ templ AppointmentReschedulerDialog(opts AppointmentReschedulerOptions) {
 }
 
 templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
-	<form hx-put={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) } hx-target={ opts.HxTarget } hx-swap={ opts.HxSwap }>
+	<form hx-put={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) }>
 		<input type="hidden" name="id" value={ opts.Appointment.ID }/>
 		<input type="hidden" name="week-day" value={ opts.Appointment.Date }/>
 		<input type="hidden" name="professional-id" value={ opts.SelectedProfessional }/>
 		<input type="hidden" name="service-id" value={ opts.SelectedService }/>
 		@components.InputHiddenDisplay(opts.Appointment.CustomerName, "customer-name", opts.Appointment.CustomerName)
-		<form
-			hx-get={ fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v", opts.Appointment.ID) }
-			hx-swap="outerHTML"
-			hx-target="#dialog"
-			hx-trigger="change from:#service_id"
-		>
-			<div class="mt-4">
-				@components.Dropdown("service-id",
-					opts.SelectedService,
-					components.WithId("service_id"),
-					components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
-				)
-			</div>
-			<div class="mt-4">
-				@components.Dropdown("professional-id",
-					opts.SelectedProfessional,
-					components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
-				)
-			</div>
-		</form>
+		<div class="mt-4">
+			@components.Dropdown("service-id",
+				opts.SelectedService,
+				components.WithId("service_id"),
+				components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
+				components.WithHxOn("change", fmt.Sprintf("htmx.ajax('GET', '%s', {target: 'body', swap: 'none', values: {'service-id': event.detail}})", opts.HandlerURL)),
+			)
+		</div>
+		<div class="mt-4">
+			@components.Dropdown("professional-id",
+				opts.SelectedProfessional,
+				components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
+			)
+		</div>
 		<div class="mt-4">
 			<input
 				type="date"
@@ -81,22 +74,20 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 				),
 			)
 		</div>
-		<div class="bg-gray-100 mt-8 px-4 py-3 sm:flex sm:justify-between sm:flex-row-reverse sm:px-10 -mx-10">
+		<div class="bg-gray-100 mt-8 px-4 py-3 sm:flex sm:justify-between sm:flex-row sm:px-10 -mx-10">
+			<button
+				type="submit"
+				hx-delete={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) }
+				hx-confirm="Confirme para cancelar a marcação, essa operação não pode ser revertida."
+				class="mt-3 inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-900 sm:mt-0 sm:w-auto"
+			>
+				Cancelar
+			</button>
 			<button
 				type="submit"
 				class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
 			>
 				Reagendar
-			</button>
-			<button
-				type="submit"
-				hx-delete={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) }
-				hx-target={ opts.HxTarget }
-				hx-swap={ opts.HxSwap }
-				hx-confirm="Confirme para cancelar a marcação, essa operação não pode ser revertida."
-				class="mt-3 inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-900 sm:mt-0 sm:w-auto"
-			>
-				Cancelar
 			</button>
 		</div>
 	</form>

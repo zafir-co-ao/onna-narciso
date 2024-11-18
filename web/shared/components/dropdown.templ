@@ -58,6 +58,7 @@ templ _dropdownTempl(s *_dropdownState) {
 		if s.hxSwap != "" {
 			hx-swap={ s.hxSwap }
 		}
+		{ ParseHxOn((*_inputState)(s))... }
 		x-data={ _dropdownGetData(s) }
 		x-bind:data-value="value"
 		x-ref="dropdown"
@@ -106,7 +107,7 @@ templ _dropdownTempl(s *_dropdownState) {
 						class="group relative select-none py-2 pl-8 pr-4 text-gray-900 cursor-pointer hover:bg-indigo-600 hover:text-white"
 						role="option"
 						x-bind:class={ fmt.Sprintf("{'selected': value === '%s'}", option[1]) }
-						x-on:mousedown={ fmt.Sprintf("$refs.input.value = value = '%s'; label = '%s'; open: false; $refs.dropdown.dispatchEvent(new Event('change'))", option[1], option[0]) }
+						x-on:mousedown={ fmt.Sprintf("$refs.input.value = value = '%s'; label = '%s'; open: false; $refs.dropdown.dispatchEvent(new CustomEvent('change', {detail: %s}))", option[1], option[0], option[1]) }
 					>
 						<span
 							class="block truncate font-normal group-[.selected]:font-semibold"

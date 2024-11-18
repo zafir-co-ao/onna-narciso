@@ -293,8 +293,6 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 										a,
 										opts.StartHour,
 										_components.WithHxGet(fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v", a.ID)),
-										_components.WithTarget("#weekly-view"),
-										_components.WithSwap("outerHTML"),
 									)
 								}
 							</ol>
@@ -304,5 +302,4 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 			</div>
 		</div>
 	</div>
-	<dialog id="dialog" hx-swap-oob="true"></dialog>
 }

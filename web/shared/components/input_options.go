@@ -1,5 +1,11 @@
 package components
 
+import (
+	"fmt"
+
+	"github.com/a-h/templ"
+)
+
 type _inputState struct {
 	id          string
 	label       string
@@ -11,13 +17,16 @@ type _inputState struct {
 	hxTarget    string
 	hxSwap      string
 	hxTrigger   string
+	hxOn        map[string]string
 	options     []InputOption
 }
 
 type _inputStateOpt func(s interface{})
 
 func newInputState(opts ..._inputStateOpt) *_inputState {
-	s := &_inputState{}
+	s := &_inputState{
+		hxOn: make(map[string]string),
+	}
 
 	for _, opt := range opts {
 		opt(s)
@@ -105,6 +114,27 @@ func WithHxTrigger(v string) _inputStateOpt {
 			s.hxTrigger = v
 		}
 	}
+}
+
+func WithHxOn(k, v string) _inputStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_inputState:
+			s.hxOn[k] = v
+		}
+	}
+}
+
+func ParseHxOn(s *_inputState) templ.Attributes {
+
+	attrs := templ.Attributes{}
+
+	for k, v := range s.hxOn {
+		key := fmt.Sprintf("hx-on:%s", k)
+		attrs[key] = v
+	}
+
+	return attrs
 }
 
 type InputOption [2]string

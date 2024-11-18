@@ -56,8 +56,7 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 			SelectedProfessional: professionalID,
 			SelectedService:      serviceID,
 			Services:             services,
-			HxTarget:             r.FormValue("hx-target"),
-			HxSwap:               r.FormValue("hx-swap"),
+			HandlerURL:           r.URL.Path,
 		}
 
 		_http.SendOk(w)
