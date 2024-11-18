@@ -36,16 +36,16 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 			hx-trigger="change from:#professional_id"
 		>
 			<div class="mt-4">
+				@components.Dropdown("service-id",
+					opts.SelectedService,
+					components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
+				)
+			</div>
+			<div class="mt-4">
 				@components.Dropdown("professional-id",
 					opts.SelectedProfessional,
 					components.WithId("professional_id"),
 					components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
-				)
-			</div>
-			<div class="mt-4">
-				@components.Dropdown("service-id",
-					opts.SelectedService,
-					components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
 				)
 			</div>
 		</form>
