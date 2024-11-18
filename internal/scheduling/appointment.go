@@ -28,9 +28,10 @@ type Professional struct {
 }
 
 type Customer struct {
-	ID          nanoid.ID
-	Name        Name
-	PhoneNumber string
+	ID          nanoid.ID `json:"id"`
+	Name        Name      `json:"name"`
+	PhoneNumber string    `json:"phoneNumber"`
+	Nif         string    `json:"nif"`
 }
 
 type Status string

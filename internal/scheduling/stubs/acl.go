@@ -41,16 +41,13 @@ func NewCustomersACL() scheduling.CustomersACL {
 type customerACLStub struct{}
 
 func (c customerACLStub) FindCustomerByID(id nanoid.ID) (scheduling.Customer, error) {
-	switch id.String() {
-	case "1":
-		return scheduling.Customer{ID: "1", Name: "João Silva"}, nil
-	case "2":
-		return scheduling.Customer{ID: "2", Name: "Maria Oliveira"}, nil
-	case "3":
-		return scheduling.Customer{ID: "3", Name: "Carlos Ferreira"}, nil
-	default:
-		return scheduling.Customer{}, scheduling.ErrCustomerNotFound
+	for _, c := range testdata.Customers {
+		if c.ID == id {
+			return c, nil
+		}
 	}
+
+	return scheduling.Customer{}, scheduling.ErrCustomerNotFound
 }
 
 func (c customerACLStub) RequestCustomerRegistration(name string, phone string) (scheduling.Customer, error) {
