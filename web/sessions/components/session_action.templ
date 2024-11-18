@@ -3,18 +3,20 @@ package components
 import (
 	"context"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"io"
 )
 
 type _sessionActionState struct {
-	id            string
-	appointmentID string
-	status        string
-	hxPost        string
-	hxPut         string
-	hxDelete      string
-	hxSwap        string
-	hxTarget      string
+	id              string
+	appointmentID   string
+	appointmentDate string
+	status          string
+	hxPost          string
+	hxPut           string
+	hxDelete        string
+	hxSwap          string
+	hxTarget        string
 }
 
 type _sessionStateOpt func(v interface{})
@@ -82,6 +84,15 @@ func WithStatus(v string) _sessionStateOpt {
 	}
 }
 
+func WithAppointmentDate(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.appointmentDate = v
+		}
+	}
+}
+
 func (s *_sessionActionState) Render(ctx context.Context, w io.Writer) error {
 	return _sessionActionTempl(s).Render(ctx, w)
 }
@@ -97,51 +108,63 @@ func SessionAction(appointmentID string, opts ..._sessionStateOpt) templ.Compone
 }
 
 templ _sessionActionTempl(s *_sessionActionState) {
-	<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-		if s.id == "" {
-			<form
-				hx-post={ s.hxPost }
-				hx-target={ s.hxTarget }
-				hx-swap={ s.hxSwap }
+	if s.appointmentDate != date.Today().String() {
+		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
+			<button
+				type="button"
+				disabled
+				class="inline-flex w-full justify-center cursor-not-allowed rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-400 shadow-sm sm:ml-3 sm:w-auto"
 			>
-				<input type="hidden" name="appointment-id" value={ s.appointmentID }/>
-				<button
-					type="submit"
-					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+				Check In
+			</button>
+		</div>
+	} else {
+		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
+			if s.id == "" {
+				<form
+					hx-post={ s.hxPost }
+					hx-target={ s.hxTarget }
+					hx-swap={ s.hxSwap }
 				>
-					Check In
-				</button>
-			</form>
-		}
-		if s.status == string(sessions.StatusCheckedIn) {
-			<form
-				hx-put={ s.hxPut }
-				hx-target={ s.hxTarget }
-				hx-swap={ s.hxSwap }
-			>
-				<input type="hidden" name="session-id" value={ s.id }/>
-				<button
-					type="submit"
-					class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+					<input type="hidden" name="appointment-id" value={ s.appointmentID }/>
+					<button
+						type="submit"
+						class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+					>
+						Check In
+					</button>
+				</form>
+			}
+			if s.status == string(sessions.StatusCheckedIn) {
+				<form
+					hx-put={ s.hxPut }
+					hx-target={ s.hxTarget }
+					hx-swap={ s.hxSwap }
 				>
-					Iniciar sessão
-				</button>
-			</form>
-		}
-		if s.status == string(sessions.StatusStarted) {
-			<form
-				hx-delete={ s.hxDelete }
-				hx-target={ s.hxTarget }
-				hx-swap={ s.hxSwap }
-			>
-				<input type="hidden" name="session-id" value={ s.id }/>
-				<button
-					type="submit"
-					class="inline-flex w-full justify-center rounded-md bg-gray-100 border text-gray-900 px-3 py-2 text-sm font-semibold hover:bg-gray-500 hover:text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+					<input type="hidden" name="session-id" value={ s.id }/>
+					<button
+						type="submit"
+						class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+					>
+						Iniciar sessão
+					</button>
+				</form>
+			}
+			if s.status == string(sessions.StatusStarted) {
+				<form
+					hx-delete={ s.hxDelete }
+					hx-target={ s.hxTarget }
+					hx-swap={ s.hxSwap }
 				>
-					Check Out
-				</button>
-			</form>
-		}
-	</div>
+					<input type="hidden" name="session-id" value={ s.id }/>
+					<button
+						type="submit"
+						class="inline-flex w-full justify-center rounded-md bg-gray-100 border text-gray-900 px-3 py-2 text-sm font-semibold hover:bg-gray-500 hover:text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+					>
+						Check Out
+					</button>
+				</form>
+			}
+		</div>
+	}
 }
