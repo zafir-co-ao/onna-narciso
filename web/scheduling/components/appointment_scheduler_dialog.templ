@@ -1,6 +1,9 @@
 package components
 
-import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
 
 type AppointmentSchedulerState struct {
 	CustomerID       string
@@ -16,6 +19,7 @@ type AppointmentSchedulerState struct {
 	HxSwap           string
 	HxTrigger        string
 	HxPost           string
+	Customers        []scheduling.Customer
 }
 
 templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
@@ -24,7 +28,7 @@ templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
 
 templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 	<form hx-post={ s.HxPost } hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
-		@ChooseCustomer()
+		@ChooseCustomer(s.Customers)
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
 		@components.InputHiddenDisplay(s.Date, "date", s.Date)

@@ -3,17 +3,10 @@ package components
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 )
 
-func _getCustomers() []map[string]string {
-	return []map[string]string{
-		{"id": "1", "name": "Paola Oliveira", "nif": "123456789", "phone": "900123456"},
-		{"id": "2", "name": "Gisele Bündchen", "nif": "987654321", "phone": "910123456"},
-		{"id": "3", "name": "Juliana Paes", "nif": "733456789", "phone": "920123456"},
-	}
-}
-
-func _chooseCustomerGetData(customers interface{}) string {
+func _getCustomerData(customers []scheduling.Customer) string {
 	c, _ := json.Marshal(customers)
 	return fmt.Sprintf(`{
 	    openCustomerDropdown: false,
@@ -29,14 +22,14 @@ func _chooseCustomerGetData(customers interface{}) string {
 			return this.customers.filter(
 				item => item.name.toLowerCase().includes(criteria) ||
 				        item.nif.includes(criteria) ||
-				        item.phone.includes(criteria)
+				        item.phoneNumber.includes(criteria)
 			);
 		}
 	}`, c)
 }
 
-templ ChooseCustomer() {
-	<div x-data={ _chooseCustomerGetData(_getCustomers()) }>
+templ ChooseCustomer(customers []scheduling.Customer) {
+	<div x-data={ _getCustomerData(customers) }>
 		<div class="relative mt-4">
 			<input type="hidden" name="customer-id" id="customer-id" x-model="selectedCustomer.id"/>
 			<button
@@ -66,7 +59,7 @@ templ ChooseCustomer() {
 					<input
 						type="text"
 						placeholder="Pesquisar por nome, nif e telefone"
-						class="block w-full py-2 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+						class="block w-full py-2 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:outline-none sm:text-sm sm:leading-6"
 						x-model="search"
 					/>
 					<ul class="overflow-y-auto h-48">
@@ -91,7 +84,7 @@ templ ChooseCustomer() {
 						<input
 							type="text"
 							name="customer-name"
-							class="block w-full rounded-md px-3 py-2 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+							class="block w-full rounded-md px-3 py-2 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:outline-none focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							placeholder="Nome do Cliente"
 						/>
 						<div class="absolute inset-y-0 right-0 mr-3 flex items-center cursor-pointer" @click="openCustomerForm = !openCustomerForm; openCustomerDropdown = !openCustomerDropdown">
@@ -107,7 +100,7 @@ templ ChooseCustomer() {
 					type="text"
 					name="customer-phone"
 					placeholder="Telefone"
-					class="block w-full py-2 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+					class="block w-full py-2 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:outline-none focus:ring-indigo-600 sm:text-sm sm:leading-6"
 				/>
 			</div>
 		</div>

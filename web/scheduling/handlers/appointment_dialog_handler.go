@@ -18,6 +18,7 @@ func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Reque
 			HxTarget:       r.FormValue("hx-target"),
 			HxSwap:         r.FormValue("hx-swap"),
 			HxPost:         r.FormValue("hx-post"),
+			Customers:      testdata.Customers,
 		}
 
 		for _, p := range testdata.Professionals {
