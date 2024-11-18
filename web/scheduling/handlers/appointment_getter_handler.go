@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"slices"
 
+	"github.com/kindalus/godx/pkg/coalesce"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -26,33 +27,34 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 			return
 		}
 
-		professionalID := r.FormValue("professional-id")
-		if professionalID == "" {
-			professionalID = o.ProfessionalID
-		}
+		serviceID := coalesce.Fallback(r.FormValue("service-id"), o.ServiceID)
+		professionalID := coalesce.Fallback(r.FormValue("professional-id"), o.ProfessionalID)
 
-		var services []scheduling.Service
-		var servicesIDs []nanoid.ID
+		services := slices.Clone(testdata.Services)
 
+		professionals := make([]scheduling.Professional, 0, 0)
 		// TODO - Utilizar o repositório de profissionais para encontrar os serviços com base no profissional
 		for _, p := range testdata.Professionals {
-			if p.ID.String() == professionalID {
-				servicesIDs = p.ServicesIDS
+			if slices.Contains(p.ServicesIDS, nanoid.ID(serviceID)) {
+				professionals = append(professionals, p)
 			}
+		}
+
+		constainsCurrentProfessional := func(p scheduling.Professional) bool {
+			return p.ID.String() == professionalID
+		}
+
+		if !slices.ContainsFunc(professionals, constainsCurrentProfessional) {
+			professionalID = professionals[0].ID.String()
 		}
 
 		// TODO - Usar o repositório dos serviços para filtrar os serviços
-		for _, s := range testdata.Services {
-			if slices.Contains(servicesIDs, s.ID) {
-				services = append(services, s)
-			}
-		}
 
 		opts := components.AppointmentReschedulerOptions{
 			Appointment:          o,
-			Professionals:        testdata.Professionals,
+			Professionals:        professionals,
 			SelectedProfessional: professionalID,
-			SelectedService:      services[0].ID.String(),
+			SelectedService:      serviceID,
 			Services:             services,
 			HxTarget:             r.FormValue("hx-target"),
 			HxSwap:               r.FormValue("hx-swap"),
