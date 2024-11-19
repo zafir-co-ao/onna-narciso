@@ -75,38 +75,11 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		// weekDay := r.FormValue("week-day")
-		// serviceID := r.FormValue("service-id")
-		// professionalID := r.FormValue("professional-id")
-
-		// appointments, err := wg.Find(
-		// 	weekDay,
-		// 	serviceID,
-		// 	[]string{professionalID},
-		// )
-
 		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
 
 		_http.SendOk(w)
-
-		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
-		// professionals := testdata.FindProfessionalsByServiceID(serviceID)
-
-		// opts := pages.WeeklyAppointmentsOptions{
-		// 	ServiceID:      serviceID,
-		// 	ProfessionalID: professionalID,
-		// 	Services:       testdata.Services,
-		// 	Date:           weekDay,
-		// 	Days:           5,
-		// 	StartHour:      6,
-		// 	EndHour:        20,
-		// 	Appointments:   appointments,
-		// 	Professionals:  professionals,
-		// }
-
-		// pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }
