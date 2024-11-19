@@ -6,7 +6,6 @@ import (
 )
 
 var Appointments = []scheduling.Appointment{
-
 	{
 		ID:               "1",
 		CustomerID:       "1",
@@ -58,5 +57,31 @@ var Appointments = []scheduling.Appointment{
 		Date:             date.Today(),
 		Hour:             "10:30",
 		Duration:         90,
+	},
+	{
+		ID:               "5",
+		CustomerID:       "2",
+		CustomerName:     "Juliana Paes",
+		ProfessionalID:   Professionals[2].ID,
+		ProfessionalName: Professionals[2].Name,
+		ServiceID:        Services[2].ID,
+		ServiceName:      Services[2].Name,
+		Status:           scheduling.StatusCanceled,
+		Date:             date.Today(),
+		Hour:             "06:00",
+		Duration:         30,
+	},
+	{
+		ID:               "6",
+		CustomerID:       "1",
+		CustomerName:     "Paola Oliveira",
+		ProfessionalID:   Professionals[0].ID,
+		ProfessionalName: Professionals[0].Name,
+		ServiceID:        Services[0].ID,
+		ServiceName:      Services[0].Name,
+		Status:           scheduling.StatusClosed,
+		Date:             date.Date("2024-01-01"),
+		Hour:             "06:00",
+		Duration:         30,
 	},
 }

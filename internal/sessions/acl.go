@@ -6,8 +6,12 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 )
 
-var ErrServiceNotFound = errors.New("service not found")
-var ErrAppointmentNotFound = errors.New("appointment not found")
+var (
+	ErrServiceNotFound     = errors.New("service not found")
+	ErrAppointmentNotFound = errors.New("appointment not found")
+	ErrAppointmentCanceled = errors.New("appointment canceled")
+)
+
 var EmptyServices = make([]SessionService, 0, 0)
 
 type ServiceACL interface {

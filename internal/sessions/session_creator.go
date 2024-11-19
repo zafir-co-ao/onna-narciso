@@ -25,10 +25,17 @@ func NewSessionCreator(r Repository, b event.Bus, aacl AppointmentsACL) Creator 
 }
 
 func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
-
 	a, err := c.aacl.FindByID(nanoid.ID(appointmentID))
 	if err != nil {
 		return CreatorOutput{}, err
+	}
+
+	if a.IsCanceled() {
+		return CreatorOutput{}, ErrAppointmentCanceled
+	}
+
+	if !a.ValidCheckinDate() {
+		return CreatorOutput{}, ErrInvalidCheckinDate
 	}
 
 	s := NewSessionBuilder().

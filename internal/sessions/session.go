@@ -9,14 +9,16 @@ import (
 )
 
 const (
-	StatusCheckedIn Status = "CheckedIn"
-	StatusStarted   Status = "Started"
-	StatusClosed    Status = "Closed"
+	StatusCheckedIn           Status = "CheckedIn"
+	StatusStarted             Status = "Started"
+	StatusClosed              Status = "Closed"
+	StatusAppointmentCanceled Status = "Cancelado"
 )
 
 var (
-	ErrSessionStarted = errors.New("Session already started")
-	ErrSessionClosed  = errors.New("Session already closed")
+	ErrSessionStarted     = errors.New("Session already started")
+	ErrSessionClosed      = errors.New("Session already closed")
+	ErrInvalidCheckinDate = errors.New("invalid checkin date")
 )
 
 type Appointment struct {
@@ -27,6 +29,16 @@ type Appointment struct {
 	ProfessionalName string
 	ServiceID        nanoid.ID
 	ServiceName      string
+	Status           Status
+	Date             date.Date
+}
+
+func (a *Appointment) IsCanceled() bool {
+	return a.Status == StatusAppointmentCanceled
+}
+
+func (a *Appointment) ValidCheckinDate() bool {
+	return a.Date == date.Today()
 }
 
 type Status string

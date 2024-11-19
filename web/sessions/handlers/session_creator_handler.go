@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	"github.com/zafir-co-ao/onna-narciso/web/shared"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -20,6 +22,21 @@ func HandleCreateSession(
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, err := sc.Create(r.FormValue("appointment-id"))
+
+		if errors.Is(sessions.ErrInvalidCheckinDate, err) {
+			_http.SendBadRequest(w, fmt.Sprintf("Não é possível fazer o CheckIn nesta data: %v", date.Today()))
+			return
+		}
+
+		if errors.Is(sessions.ErrAppointmentCanceled, err) {
+			_http.SendBadRequest(w, "A marcação foi cancelada. Não é possível fazer o Check In")
+			return
+		}
+
+		if errors.Is(sessions.ErrAppointmentNotFound, err) {
+			_http.SendNotFound(w, "Marcação não encontrada")
+			return
+		}
 
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)

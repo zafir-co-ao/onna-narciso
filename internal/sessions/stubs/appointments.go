@@ -18,6 +18,8 @@ func NewAppointmentsACL() sessions.AppointmentsACLFunc {
 					CustomerName:     string(a.CustomerName),
 					ProfessionalName: string(a.ProfessionalName),
 					ServiceName:      string(a.ServiceName),
+					Status:           sessions.Status(string(a.Status)),
+					Date:             a.Date,
 				}, nil
 			}
 		}

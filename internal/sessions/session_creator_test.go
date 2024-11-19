@@ -1,6 +1,7 @@
 package sessions_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -107,6 +108,36 @@ func TestSessionCreator(t *testing.T) {
 
 		if s.Services[0].ServiceID != appointment.ServiceID {
 			t.Errorf("Expected the session to have the service ID, got %v", s.Services[0].ServiceID.String())
+		}
+	})
+
+	t.Run("should_return_an_error_if_the_appointment_has_already_been_canceled", func(t *testing.T) {
+		repo := inmem.NewSessionRepository()
+		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
+		appointment := testdata.Appointments[4]
+
+		_, err := creator.Create(appointment.ID.String())
+		if err == nil {
+			t.Errorf("Expected an error, got %v", err)
+		}
+
+		if !errors.Is(sessions.ErrAppointmentCanceled, err) {
+			t.Errorf("The error must be ErrAppointmentCanceled, got %v", err)
+		}
+	})
+
+	t.Run("should_return_an_error_if_the_checkin_date_is_different_from_the_appointment_date", func(t *testing.T) {
+		repo := inmem.NewSessionRepository()
+		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
+		appointment := testdata.Appointments[5]
+
+		_, err := creator.Create(appointment.ID.String())
+		if err == nil {
+			t.Errorf("Expected an error, got %v", err)
+		}
+
+		if !errors.Is(sessions.ErrInvalidCheckinDate, err) {
+			t.Errorf("The error must be ErrSessionCheckinDate, got %v", err)
 		}
 	})
 }
