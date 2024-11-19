@@ -108,17 +108,7 @@ func SessionAction(appointmentID string, opts ..._sessionStateOpt) templ.Compone
 }
 
 templ _sessionActionTempl(s *_sessionActionState) {
-	if s.appointmentDate != date.Today().String() {
-		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-			<button
-				type="button"
-				disabled
-				class="inline-flex w-full justify-center cursor-not-allowed rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-400 shadow-sm sm:ml-3 sm:w-auto"
-			>
-				Check In
-			</button>
-		</div>
-	} else {
+	if s.appointmentDate == date.Today().String() {
 		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
 			if s.id == "" {
 				<form
