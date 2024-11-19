@@ -20,6 +20,12 @@ func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
 	}
 }
 
+func NotCanceledIsSpecification() shared.SpecificationFunc[Appointment] {
+	return func(a Appointment) bool {
+		return a.Status != StatusCanceled
+	}
+}
+
 func WeekIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
 	t1, err := time.Parse("2006-01-02", d.String())
 	w1, y1 := t1.ISOWeek()

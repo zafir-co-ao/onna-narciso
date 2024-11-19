@@ -55,7 +55,7 @@ func TestDailyAppointments(t *testing.T) {
 		{date: "2024-10-12", expectedIDs: []string{"6", "7"}},
 	}
 
-	appointmentsGetter := scheduling.NewDailyAppointmentsGetter(repo)
+	appointmentsGetter := scheduling.NewDailyAppointmentsFinder(repo)
 
 	for _, test := range matrix {
 

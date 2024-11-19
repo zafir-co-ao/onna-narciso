@@ -55,6 +55,7 @@ func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date 
 		scheduling.WeekIsSpecificantion(date),
 		scheduling.ServiceIsSpecificantion(serviceID),
 		scheduling.ProfessionalsInSpecificantion(professionalsIDs),
+		scheduling.NotCanceledIsSpecification(),
 	)
 
 	var appointments []scheduling.Appointment

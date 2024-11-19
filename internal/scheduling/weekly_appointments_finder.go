@@ -14,7 +14,7 @@ type weeklyAppointmentsGetterImpl struct {
 	repo AppointmentRepository
 }
 
-func NewWeeklyAppointmentsGetter(repo AppointmentRepository) WeeklyAppointmentsFinder {
+func NewWeeklyAppointmentsFinder(repo AppointmentRepository) WeeklyAppointmentsFinder {
 	return &weeklyAppointmentsGetterImpl{repo: repo}
 }
 

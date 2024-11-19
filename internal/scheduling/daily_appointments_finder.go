@@ -13,7 +13,7 @@ type dailyAppointmentsFinderImpl struct {
 	repo AppointmentRepository
 }
 
-func NewDailyAppointmentsGetter(repo AppointmentRepository) DailyAppointmentsFinder {
+func NewDailyAppointmentsFinder(repo AppointmentRepository) DailyAppointmentsFinder {
 	return &dailyAppointmentsFinderImpl{repo: repo}
 }
 
