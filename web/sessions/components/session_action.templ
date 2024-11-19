@@ -2,21 +2,23 @@ package components
 
 import (
 	"context"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"io"
 )
 
 type _sessionActionState struct {
-	id              string
-	appointmentID   string
-	appointmentDate string
-	status          string
-	hxPost          string
-	hxPut           string
-	hxDelete        string
-	hxSwap          string
-	hxTarget        string
+	id                string
+	appointmentID     string
+	appointmentDate   string
+	appointmentStatus string
+	status            string
+	hxPost            string
+	hxPut             string
+	hxDelete          string
+	hxSwap            string
+	hxTarget          string
 }
 
 type _sessionStateOpt func(v interface{})
@@ -93,6 +95,15 @@ func WithAppointmentDate(v string) _sessionStateOpt {
 	}
 }
 
+func WithAppointmentStatus(v string) _sessionStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_sessionActionState:
+			s.appointmentStatus = v
+		}
+	}
+}
+
 func (s *_sessionActionState) Render(ctx context.Context, w io.Writer) error {
 	return _sessionActionTempl(s).Render(ctx, w)
 }
@@ -107,8 +118,16 @@ func SessionAction(appointmentID string, opts ..._sessionStateOpt) templ.Compone
 	return s
 }
 
+func isCheckedIn(s *_sessionActionState) bool {
+	return s.status == string(sessions.StatusCheckedIn)
+}
+
+func isStarted(s *_sessionActionState) bool {
+	return s.status == string(sessions.StatusStarted)
+}
+
 templ _sessionActionTempl(s *_sessionActionState) {
-	if s.appointmentDate == date.Today().String() {
+	if s.appointmentDate == date.Today().String() && s.appointmentStatus != string(scheduling.StatusCanceled) {
 		<div class="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
 			if s.id == "" {
 				<form
@@ -125,7 +144,7 @@ templ _sessionActionTempl(s *_sessionActionState) {
 					</button>
 				</form>
 			}
-			if s.status == string(sessions.StatusCheckedIn) {
+			if isCheckedIn(s) {
 				<form
 					hx-put={ s.hxPut }
 					hx-target={ s.hxTarget }
@@ -140,7 +159,7 @@ templ _sessionActionTempl(s *_sessionActionState) {
 					</button>
 				</form>
 			}
-			if s.status == string(sessions.StatusStarted) {
+			if isStarted(s) {
 				<form
 					hx-delete={ s.hxDelete }
 					hx-target={ s.hxTarget }

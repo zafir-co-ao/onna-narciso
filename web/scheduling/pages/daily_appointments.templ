@@ -8,16 +8,27 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared"
 )
 
+var getDailyAppointmentsHandle = templ.NewOnceHandle()
+
 templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
-	<div id="content">
+	@getDailyAppointmentsHandle.Once() {
+		<script type="text/javascript">
+    		document.addEventListener("edit-appointment", (evt) => {
+                const date = document.querySelector("[name='current-date']").value
+    	        htmx.ajax("GET", "/daily-appointments", { target: '#content', swap: 'innerHTML', values: { date } })
+    		})
+    	</script>
+	}
+	<div id="daily-view">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
 			<div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
+				<input type="hidden" name="current-date" value={ date }/>
 				@_scheduling.Calendar(_scheduling.CalendarState{
 					Date:      date,
 					HxGet:     fmt.Sprintf("/daily-appointments"),
 					HxTarget:  "#content",
-					HxSwap:    "outerHTML",
+					HxSwap:    "innerHTML",
 					HxTrigger: "click",
 				})
 				<a
@@ -46,12 +57,20 @@ templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
 			</ol>
 		</div>
 	</div>
+	<dialog id="dialog" hx-swap-oob="true"></dialog>
 }
 
 templ DailyAppointment(o shared.DailyAppointmentOptions) {
 	<li class="relative flex space-x-6 py-6 xl:static">
 		<div class="flex-auto">
-			<h3 class="pr-10 font-semibold text-gray-900 xl:pr-0">{ o.CustomerName } - { o.AppointmentStatus }</h3>
+			<h3
+				hx-get={ fmt.Sprintf("/scheduling/dialogs/edit-appointment-dialog/%v", o.AppointmentID) }
+				hx-trigger="click"
+				hx-swap="none"
+				class="pr-10 font-semibold text-gray-900 underline cursor-pointer xl:pr-0"
+			>
+				{ o.CustomerName } - { o.AppointmentStatus }
+			</h3>
 			<dl class="mt-2 flex flex-col text-gray-500 xl:flex-row">
 				<div class="flex items-start space-x-3">
 					<dt class="mt-0.5">
@@ -110,11 +129,12 @@ templ DailyAppointment(o shared.DailyAppointmentOptions) {
 			components.WithID(o.SessionID),
 			components.WithStatus(o.SessionStatus),
 			components.WithAppointmentDate(o.AppointmentDate),
+			components.WithAppointmentStatus(o.AppointmentStatus),
 			components.WithHxPost("/sessions"),
 			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.SessionID)),
 			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.SessionID)),
 			components.WithHxTarget("#content"),
-			components.WithHxSwap("outerHTML"),
+			components.WithHxSwap("innerHTML"),
 		)
 	</li>
 }

@@ -18,7 +18,7 @@
             window.addEventListener("load", (evt) => {
                 htmx.ajax("GET", "/daily-appointments", {
                     target: "#content",
-                    swap: "outerHTML",
+                    swap: "innerHTML",
                 });
             });
 
@@ -44,7 +44,7 @@
                                         hx-get="/daily-appointments"
                                         hx-trigger="click"
                                         hx-target="#content"
-                                        hx-swap="outerHTML"
+                                        hx-swap="innerHTML"
                                         class="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-white"
                                         aria-current="page"
                                         >Agenda</a

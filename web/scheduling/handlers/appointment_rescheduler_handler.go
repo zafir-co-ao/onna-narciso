@@ -8,16 +8,11 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
-	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 
-	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleRescheduleAppointment(
-	re scheduling.AppointmentRescheduler,
-	wg scheduling.WeeklyAppointmentsFinder,
-) func(w http.ResponseWriter, r *http.Request) {
+func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		duration, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
@@ -80,38 +75,38 @@ func HandleRescheduleAppointment(
 			return
 		}
 
-		weekDay := r.FormValue("week-day")
-		serviceID := r.FormValue("service-id")
-		professionalID := r.FormValue("professional-id")
+		// weekDay := r.FormValue("week-day")
+		// serviceID := r.FormValue("service-id")
+		// professionalID := r.FormValue("professional-id")
 
-		appointments, err := wg.Find(
-			weekDay,
-			serviceID,
-			[]string{professionalID},
-		)
+		// appointments, err := wg.Find(
+		// 	weekDay,
+		// 	serviceID,
+		// 	[]string{professionalID},
+		// )
 
 		if err != nil {
 			_http.SendServerError(w)
 			return
 		}
 
-		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
-		professionals := testdata.FindProfessionalsByServiceID(serviceID)
-
 		_http.SendOk(w)
 
-		opts := pages.WeeklyAppointmentsOptions{
-			ServiceID:      serviceID,
-			ProfessionalID: professionalID,
-			Services:       testdata.Services,
-			Date:           weekDay,
-			Days:           5,
-			StartHour:      6,
-			EndHour:        20,
-			Appointments:   appointments,
-			Professionals:  professionals,
-		}
+		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
+		// professionals := testdata.FindProfessionalsByServiceID(serviceID)
 
-		pages.WeeklyAppointments(opts).Render(r.Context(), w)
+		// opts := pages.WeeklyAppointmentsOptions{
+		// 	ServiceID:      serviceID,
+		// 	ProfessionalID: professionalID,
+		// 	Services:       testdata.Services,
+		// 	Date:           weekDay,
+		// 	Days:           5,
+		// 	StartHour:      6,
+		// 	EndHour:        20,
+		// 	Appointments:   appointments,
+		// 	Professionals:  professionals,
+		// }
+
+		// pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }
