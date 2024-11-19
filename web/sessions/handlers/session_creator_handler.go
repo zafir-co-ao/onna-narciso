@@ -24,7 +24,7 @@ func HandleCreateSession(
 		_, err := sc.Create(r.FormValue("appointment-id"))
 
 		if errors.Is(sessions.ErrInvalidCheckinDate, err) {
-			_http.SendBadRequest(w, fmt.Sprintf("Não é possível fazer o CheckIn nesta data: %v", date.Today()))
+			_http.SendBadRequest(w, fmt.Sprintf("Não é possível fazer o CheckIn nesta data: %s", date.Today().String()))
 			return
 		}
 
