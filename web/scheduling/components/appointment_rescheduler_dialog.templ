@@ -3,7 +3,6 @@ package components
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	_shared "github.com/zafir-co-ao/onna-narciso/web/shared"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"strconv"
 )
@@ -15,7 +14,15 @@ type AppointmentReschedulerOptions struct {
 }
 
 func isCanceledOrClosed(opts AppointmentReschedulerOptions) bool {
-	return opts.Appointment.Status == string(scheduling.StatusCanceled) || opts.Appointment.Status == string(scheduling.StatusClosed)
+	if opts.Appointment.Status == string(scheduling.StatusCanceled) {
+		return true
+	}
+
+	if opts.Appointment.Status == string(scheduling.StatusClosed) {
+		return true
+	}
+
+	return false
 }
 
 templ AppointmentReschedulerDialog(opts AppointmentReschedulerOptions) {
@@ -27,11 +34,7 @@ templ AppointmentReschedulerDialog(opts AppointmentReschedulerOptions) {
 }
 
 templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
-	<form
-		hx-put={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) }
-		hx-swap="none"
-		hx-on:htmx:after-swap="this.dispatchEvent(new CustomEvent('edit-appointment', {'bubbles': true}))"
-	>
+	<form hx-put={ fmt.Sprintf("/appointments/%v", opts.Appointment.ID) } hx-swap="none">
 		<input type="hidden" name="id" value={ opts.Appointment.ID }/>
 		<input type="hidden" name="week-day" value={ opts.Appointment.Date }/>
 		@components.InputHiddenDisplay(opts.Appointment.CustomerName, "customer-name", opts.Appointment.CustomerName)
@@ -39,14 +42,14 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 			@components.Dropdown("service-id",
 				opts.Appointment.ServiceID,
 				components.WithId("service_id"),
-				components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
-				components.WithHxOn("change", fmt.Sprintf("htmx.ajax('GET', '/scheduling/list-professionals', {target: '#professionals', swap: 'innerHTML', values: {'service-id': event.detail}})")),
+				components.WithOptions(components.ServicesToOptions(opts.Services)...),
+				components.WithHxOn("change", fmt.Sprintf("htmx.ajax('GET', '/scheduling/find-professionals', {target: '#professionals', swap: 'innerHTML', values: {'service-id': event.detail}})")),
 			)
 		</div>
 		<div id="professionals" class="mt-4">
 			@components.Dropdown("professional-id",
 				opts.Appointment.ProfessionalID,
-				components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
+				components.WithOptions(components.ProfessionalsToOptions(opts.Professionals)...),
 			)
 		</div>
 		<div class="mt-4">
@@ -70,14 +73,7 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 				"duration",
 				strconv.Itoa(opts.Appointment.Duration),
 				components.WithOptions(
-					components.InputOption{"15 Minutos", "15"},
-					components.InputOption{"30 Minutos", "30"},
-					components.InputOption{"45 Minutos", "45"},
-					components.InputOption{"1 Hora", "60"},
-					components.InputOption{"1 Hora e 30 Minutos", "90"},
-					components.InputOption{"2 Horas", "120"},
-					components.InputOption{"2 Horas e 30 Minutos", "150"},
-					components.InputOption{"3 Horas", "180"},
+					components.AppointmentDurations...,
 				),
 			)
 		</div>
@@ -109,6 +105,10 @@ templ AppointmentView(opts AppointmentReschedulerOptions) {
 		@components.InputHiddenDisplay(opts.Appointment.ServiceName, "service-name", opts.Appointment.ProfessionalName)
 		@components.InputHiddenDisplay(opts.Appointment.Date, "date", opts.Appointment.Date)
 		@components.InputHiddenDisplay(opts.Appointment.Hour, "hour", opts.Appointment.Hour)
-		@components.InputHiddenDisplay("1 Hora e 30 Minutos", "duration", "1 Hora e 30 Minutos")
+		@components.InputHiddenDisplay(
+			components.FindDuration(strconv.Itoa(opts.Appointment.Duration))[0],
+			"duration",
+			components.FindDuration(strconv.Itoa(opts.Appointment.Duration))[0],
+		)
 	</div>
 }

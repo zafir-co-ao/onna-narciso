@@ -9,7 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
-	"github.com/zafir-co-ao/onna-narciso/web/shared"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
@@ -24,22 +24,22 @@ func HandleDailyAppointments(
 			date = time.Now().Format("2006-01-02")
 		}
 
-		appointments, err := dg.Find(date)
+		a, err := dg.Find(date)
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}
 
-		appointmentsIDs := xslices.Map(appointments, func(a scheduling.AppointmentOutput) string { return a.ID })
+		appointmentsIDs := xslices.Map(a, func(a scheduling.AppointmentOutput) string { return a.ID })
 
-		_sessions, err := sf.Find(appointmentsIDs)
+		s, err := sf.Find(appointmentsIDs)
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}
 
 		_http.SendOk(w)
-		opts := shared.CombineAppointmentsAndSessions(appointments, _sessions)
+		opts := components.CombineAppointmentsWithSessions(a, s)
 		pages.DailyAppointments(date, opts).Render(r.Context(), w)
 	}
 }

@@ -27,6 +27,7 @@ func HandleCancelAppointment(c scheduling.AppointmentCanceler) func(w http.Respo
 			return
 		}
 
+		w.Header().Set("X-Operation", "Canceled")
 		_http.SendOk(w)
 	}
 }

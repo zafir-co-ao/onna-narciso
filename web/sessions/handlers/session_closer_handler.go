@@ -9,7 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
-	"github.com/zafir-co-ao/onna-narciso/web/shared"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
@@ -65,7 +65,7 @@ func HandleCloseSession(
 		}
 
 		_http.SendOk(w)
-		opts := shared.CombineAppointmentsAndSessions(appointments, sessions)
+		opts := components.CombineAppointmentsWithSessions(appointments, sessions)
 		pages.DailyAppointments(date, opts).Render(r.Context(), w)
 	}
 }

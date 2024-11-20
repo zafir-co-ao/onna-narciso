@@ -72,6 +72,7 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 			return
 		}
 
+		w.Header().Set("X-Operation", "Scheduled")
 		_http.SendCreated(w)
 	}
 }

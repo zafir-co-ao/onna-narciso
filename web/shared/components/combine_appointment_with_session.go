@@ -1,4 +1,4 @@
-package shared
+package components
 
 import (
 	"github.com/kindalus/godx/pkg/xslices"
@@ -18,29 +18,26 @@ type DailyAppointmentOptions struct {
 	SessionStatus     string
 }
 
-func CombineAppointmentsAndSessions(
-	appointments []scheduling.AppointmentOutput,
-	sessions []_sessions.SessionOutput,
-) []DailyAppointmentOptions {
+func CombineAppointmentsWithSessions(a []scheduling.AppointmentOutput, s []_sessions.SessionOutput) []DailyAppointmentOptions {
 	sessionMap := make(map[string]_sessions.SessionOutput)
-	for _, session := range sessions {
+	for _, session := range s {
 		sessionMap[session.AppointmentID] = session
 	}
 
-	return xslices.Map(appointments, func(appointment scheduling.AppointmentOutput) DailyAppointmentOptions {
+	return xslices.Map(a, func(a scheduling.AppointmentOutput) DailyAppointmentOptions {
 		opts := DailyAppointmentOptions{
-			AppointmentID:     appointment.ID,
-			AppointmentStatus: appointment.Status,
-			AppointmentDate:   appointment.Date,
-			AppointmentHour:   appointment.Hour,
-			CustomerName:      appointment.CustomerName,
-			ServiceName:       appointment.ServiceName,
-			ProfessionalName:  appointment.ProfessionalName,
+			AppointmentID:     a.ID,
+			AppointmentStatus: a.Status,
+			AppointmentDate:   a.Date,
+			AppointmentHour:   a.Hour,
+			CustomerName:      a.CustomerName,
+			ServiceName:       a.ServiceName,
+			ProfessionalName:  a.ProfessionalName,
 			SessionID:         "",
 			SessionStatus:     "",
 		}
 
-		if session, found := sessionMap[appointment.ID]; found {
+		if session, found := sessionMap[a.ID]; found {
 			opts.SessionID = session.ID
 			opts.SessionStatus = session.Status
 			return opts

@@ -5,22 +5,29 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	_scheduling "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 	"github.com/zafir-co-ao/onna-narciso/web/sessions/components"
-	"github.com/zafir-co-ao/onna-narciso/web/shared"
+	_components "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
 var getDailyAppointmentsHandle = templ.NewOnceHandle()
 
-templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
+templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions) {
 	@getDailyAppointmentsHandle.Once() {
 		<script type="text/javascript">
-    		document.addEventListener("edit-appointment", (evt) => {
-                const date = document.querySelector("[name='current-date']").value
-    	        htmx.ajax("GET", "/daily-appointments", {
+		    document.addEventListener("htmx:afterOnLoad", (evt) => {
+				let xhr = evt.detail.xhr
+
+                let header = xhr.getResponseHeader("X-Operation");
+
+                if (!header) return
+
+				let date = document.querySelector("[name='current-date']")
+
+                htmx.ajax("GET", "/daily-appointments", {
                     target: '#content',
                     swap: 'innerHTML',
-                    values: { date },
+                    values: { date: date.value },
                 })
-    		})
+			})
     	</script>
 	}
 	<div id="daily-view">
@@ -64,7 +71,7 @@ templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
 	<dialog id="dialog" hx-swap-oob="true"></dialog>
 }
 
-templ DailyAppointment(o shared.DailyAppointmentOptions) {
+templ DailyAppointment(o _components.DailyAppointmentOptions) {
 	<li class="relative flex space-x-6 py-6 xl:static">
 		<div class="flex-auto">
 			<h3

@@ -7,11 +7,10 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
-	"github.com/zafir-co-ao/onna-narciso/web/shared"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-func HandleListProfessionals() func(w http.ResponseWriter, r *http.Request) {
+func HandleFindProfessionals() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		serviceID := r.FormValue("service-id")
 
@@ -26,7 +25,7 @@ func HandleListProfessionals() func(w http.ResponseWriter, r *http.Request) {
 		components.Dropdown(
 			"professional-id",
 			professionals[0].ID.String(),
-			components.WithOptions(shared.ProfessionalsToOptions(professionals)...),
+			components.WithOptions(components.ProfessionalsToOptions(professionals)...),
 		).Render(r.Context(), w)
 	}
 }

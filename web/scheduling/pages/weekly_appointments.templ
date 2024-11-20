@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	_components "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
-	_shared "github.com/zafir-co-ao/onna-narciso/web/shared"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"time"
 )
@@ -74,26 +73,17 @@ var getWeeklyAppointmentsHandle = templ.NewOnceHandle()
 templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 	@getWeeklyAppointmentsHandle.Once() {
 		<script type="text/javascript">
-			const date = document.querySelector("[name='date']").value
-			const serviceId = document.querySelector("[name='service-id']").value
-			const professionalId = document.querySelector("[name='professional-id']").value
+		    document.addEventListener("htmx:afterOnLoad", (evt) => {
+				let xhr = evt.detail.xhr
 
-		    document.addEventListener("schedule-appointment", (evt) => {
-				htmx.ajax("GET", "/weekly-appointments", {
-				    target: '#content',
-					swap: 'innerHTML',
-					values: {
-    				    'date': date,
-    					'service-id': serviceId,
-    				    'professional-id': professionalId,
-                        'previous-date': date,
-                        'previous-service-id': serviceId,
-                        'previous-professional-id': professionalId
-					}
-				})
-			})
+                let header = xhr.getResponseHeader("X-Operation");
 
-		    document.addEventListener("edit-appointment", (evt) => {
+                if (!header) return
+
+				let date = document.querySelector("[name='date']").value
+    			let serviceId = document.querySelector("[name='service-id']").value
+    			let professionalId = document.querySelector("[name='professional-id']").value
+
     	        htmx.ajax("GET", "/weekly-appointments", {
                     target: '#content',
                     swap: 'innerHTML',
@@ -106,7 +96,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
                         'previous-professional-id': professionalId
                     }
                 })
-    		})
+			})
 		</script>
 	}
 	@getAppointmentDialogHandle.Once() {
@@ -241,7 +231,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 							opts.ServiceID,
 							components.WithId("service_id"),
 							components.WithOptions(components.InputOption{"[ Serviços ]", "all"}),
-							components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
+							components.WithOptions(components.ServicesToOptions(opts.Services)...),
 						)
 						<input type="hidden" name="previous-service-id" value={ opts.ServiceID }/>
 					</div>
@@ -251,7 +241,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 							opts.ProfessionalID,
 							components.WithId("professional_id"),
 							components.WithOptions(components.InputOption{"[ Profissionais ]", "all"}),
-							components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
+							components.WithOptions(components.ProfessionalsToOptions(opts.Professionals)...),
 						)
 						<input type="hidden" name="previous-professional-id" value={ opts.ProfessionalID }/>
 					</div>

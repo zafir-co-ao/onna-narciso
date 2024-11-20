@@ -36,7 +36,7 @@ func NewRouter(
 	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
 	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
 	mux.HandleFunc("GET /scheduling/daily-appointments-calendar", handlers.HandleDailyAppointmentsCalendar())
-	mux.HandleFunc("GET /scheduling/list-professionals/", handlers.HandleListProfessionals())
+	mux.HandleFunc("GET /scheduling/find-professionals/", handlers.HandleFindProfessionals())
 
 	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(sc, sf, dg))
 	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(ss, sf, dg))

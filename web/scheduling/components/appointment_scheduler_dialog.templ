@@ -24,11 +24,7 @@ templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
 }
 
 templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
-	<form
-		hx-post={ s.HxPost }
-		hx-swap="none"
-		hx-on:htmx:after-swap="this.dispatchEvent(new CustomEvent('schedule-appointment', {'bubbles': true}))"
-	>
+	<form hx-post={ s.HxPost } hx-swap="none">
 		@ChooseCustomer(s.Customers)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)
@@ -40,14 +36,7 @@ templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 					"duration",
 					s.ServiceDuration,
 					components.WithOptions(
-						components.InputOption{"15 Minutos", "15"},
-						components.InputOption{"30 Minutos", "30"},
-						components.InputOption{"45 Minutos", "45"},
-						components.InputOption{"1 Hora", "60"},
-						components.InputOption{"1 Hora e 30 Minutos", "90"},
-						components.InputOption{"2 Horas", "120"},
-						components.InputOption{"2 Horas e 30 Minutos", "150"},
-						components.InputOption{"3 Horas", "180"},
+						components.AppointmentDurations...,
 					),
 				)
 			} else {
@@ -55,14 +44,7 @@ templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 					"duration",
 					"90",
 					components.WithOptions(
-						components.InputOption{"15 Minutos", "15"},
-						components.InputOption{"30 Minutos", "30"},
-						components.InputOption{"45 Minutos", "45"},
-						components.InputOption{"1 Hora", "60"},
-						components.InputOption{"1 Hora e 30 Minutos", "90"},
-						components.InputOption{"2 Horas", "120"},
-						components.InputOption{"2 Horas e 30 Minutos", "150"},
-						components.InputOption{"3 Horas", "180"},
+						components.AppointmentDurations...,
 					),
 				)
 			}
