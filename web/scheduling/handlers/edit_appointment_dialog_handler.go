@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/kindalus/godx/pkg/coalesce"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -27,36 +26,20 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 			return
 		}
 
-		serviceID := coalesce.Fallback(r.FormValue("service-id"), o.ServiceID)
-		professionalID := coalesce.Fallback(r.FormValue("professional-id"), o.ProfessionalID)
-
 		services := slices.Clone(testdata.Services)
 
 		professionals := make([]scheduling.Professional, 0, 0)
 		// TODO - Utilizar o repositório de profissionais para encontrar os serviços com base no profissional
 		for _, p := range testdata.Professionals {
-			if slices.Contains(p.ServicesIDS, nanoid.ID(serviceID)) {
+			if slices.Contains(p.ServicesIDS, nanoid.ID(o.ServiceID)) {
 				professionals = append(professionals, p)
 			}
 		}
 
-		constainsCurrentProfessional := func(p scheduling.Professional) bool {
-			return p.ID.String() == professionalID
-		}
-
-		if !slices.ContainsFunc(professionals, constainsCurrentProfessional) {
-			professionalID = professionals[0].ID.String()
-		}
-
-		// TODO - Usar o repositório dos serviços para filtrar os serviços
-
 		opts := components.AppointmentReschedulerOptions{
-			Appointment:          o,
-			Professionals:        professionals,
-			SelectedProfessional: professionalID,
-			SelectedService:      serviceID,
-			Services:             services,
-			HandlerURL:           r.URL.Path,
+			Appointment:   o,
+			Professionals: professionals,
+			Services:      services,
 		}
 
 		_http.SendOk(w)

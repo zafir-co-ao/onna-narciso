@@ -9,12 +9,9 @@ import (
 )
 
 type AppointmentReschedulerOptions struct {
-	Appointment          scheduling.AppointmentOutput
-	SelectedProfessional string
-	SelectedService      string
-	Professionals        []scheduling.Professional
-	Services             []scheduling.Service
-	HandlerURL           string
+	Appointment   scheduling.AppointmentOutput
+	Professionals []scheduling.Professional
+	Services      []scheduling.Service
 }
 
 func isCanceledOrClosed(opts AppointmentReschedulerOptions) bool {
@@ -37,20 +34,18 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 	>
 		<input type="hidden" name="id" value={ opts.Appointment.ID }/>
 		<input type="hidden" name="week-day" value={ opts.Appointment.Date }/>
-		<input type="hidden" name="professional-id" value={ opts.SelectedProfessional }/>
-		<input type="hidden" name="service-id" value={ opts.SelectedService }/>
 		@components.InputHiddenDisplay(opts.Appointment.CustomerName, "customer-name", opts.Appointment.CustomerName)
 		<div class="mt-4">
 			@components.Dropdown("service-id",
-				opts.SelectedService,
+				opts.Appointment.ServiceID,
 				components.WithId("service_id"),
 				components.WithOptions(_shared.ServicesToOptions(opts.Services)...),
-				components.WithHxOn("change", fmt.Sprintf("htmx.ajax('GET', '%s', {target: 'body', swap: 'none', values: {'service-id': event.detail}})", opts.HandlerURL)),
+				components.WithHxOn("change", fmt.Sprintf("htmx.ajax('GET', '/scheduling/list-professionals', {target: '#professionals', swap: 'innerHTML', values: {'service-id': event.detail}})")),
 			)
 		</div>
-		<div class="mt-4">
+		<div id="professionals" class="mt-4">
 			@components.Dropdown("professional-id",
-				opts.SelectedProfessional,
+				opts.Appointment.ProfessionalID,
 				components.WithOptions(_shared.ProfessionalsToOptions(opts.Professionals)...),
 			)
 		</div>

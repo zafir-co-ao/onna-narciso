@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"slices"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
@@ -10,15 +11,16 @@ import (
 func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: Recuperar os clientes no repositório
+		customers := slices.Clone(testdata.Customers)
+
 		var s = components.AppointmentSchedulerState{
 			ProfessionalID: r.FormValue("professional-id"),
 			ServiceID:      r.FormValue("service-id"),
 			Hour:           r.FormValue("hour"),
 			Date:           r.FormValue("date"),
-			HxTarget:       r.FormValue("hx-target"),
-			HxSwap:         r.FormValue("hx-swap"),
 			HxPost:         r.FormValue("hx-post"),
-			Customers:      testdata.Customers,
+			Customers:      customers,
 		}
 
 		for _, p := range testdata.Professionals {

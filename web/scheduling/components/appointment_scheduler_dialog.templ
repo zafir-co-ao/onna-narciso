@@ -15,9 +15,6 @@ type AppointmentSchedulerState struct {
 	ServiceDuration  string
 	Hour             string
 	Date             string
-	HxTarget         string
-	HxSwap           string
-	HxTrigger        string
 	HxPost           string
 	Customers        []scheduling.Customer
 }
@@ -27,7 +24,11 @@ templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {
 }
 
 templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
-	<form hx-post={ s.HxPost } hx-target={ s.HxTarget } hx-swap={ s.HxSwap }>
+	<form
+		hx-post={ s.HxPost }
+		hx-swap="none"
+		hx-on:htmx:after-swap="this.dispatchEvent(new CustomEvent('schedule-appointment', {'bubbles': true}))"
+	>
 		@ChooseCustomer(s.Customers)
 		@components.InputHiddenDisplay(s.ServiceName, "service-id", s.ServiceID)
 		@components.InputHiddenDisplay(s.ProfessionalName, "professional-id", s.ProfessionalID)

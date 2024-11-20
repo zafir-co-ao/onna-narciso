@@ -8,15 +8,10 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
-	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
-	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleScheduleAppointment(
-	s scheduling.AppointmentScheduler,
-	wg scheduling.WeeklyAppointmentsFinder,
-) func(w http.ResponseWriter, r *http.Request) {
+func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		duration, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
@@ -24,7 +19,7 @@ func HandleScheduleAppointment(
 			return
 		}
 
-		input := scheduling.AppointmentSchedulerInput{
+		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: r.Form.Get("professional-id"),
 			ServiceID:      r.Form.Get("service-id"),
 			Date:           r.Form.Get("date"),
@@ -35,7 +30,7 @@ func HandleScheduleAppointment(
 			Duration:       duration,
 		}
 
-		_, err = s.Schedule(input)
+		_, err = s.Schedule(i)
 
 		if errors.Is(err, scheduling.ErrCustomerNotFound) {
 			_http.SendNotFound(w, "Cliente não encontrado")
@@ -77,34 +72,6 @@ func HandleScheduleAppointment(
 			return
 		}
 
-		appointments, err := wg.Find(
-			input.Date,
-			input.ServiceID,
-			[]string{input.ProfessionalID},
-		)
-
-		if err != nil {
-			_http.SendServerError(w)
-			return
-		}
-
 		_http.SendCreated(w)
-
-		//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
-		professionals := testdata.FindProfessionalsByServiceID(input.ServiceID)
-
-		opts := pages.WeeklyAppointmentsOptions{
-			ServiceID:      input.ServiceID,
-			ProfessionalID: input.ProfessionalID,
-			Date:           input.Date,
-			StartHour:      6,
-			EndHour:        20,
-			Days:           5,
-			Appointments:   appointments,
-			Services:       testdata.Services,
-			Professionals:  professionals,
-		}
-
-		pages.WeeklyAppointments(opts).Render(r.Context(), w)
 	}
 }

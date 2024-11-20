@@ -15,7 +15,11 @@ templ DailyAppointments(date string, opts []shared.DailyAppointmentOptions) {
 		<script type="text/javascript">
     		document.addEventListener("edit-appointment", (evt) => {
                 const date = document.querySelector("[name='current-date']").value
-    	        htmx.ajax("GET", "/daily-appointments", { target: '#content', swap: 'innerHTML', values: { date } })
+    	        htmx.ajax("GET", "/daily-appointments", {
+                    target: '#content',
+                    swap: 'innerHTML',
+                    values: { date },
+                })
     		})
     	</script>
 	}

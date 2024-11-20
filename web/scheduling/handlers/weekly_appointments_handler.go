@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
+	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
 func weeklyAppointmentsServiceChanged(date string, serviceID string) (string, string, string) {
@@ -33,6 +34,18 @@ func weeklyAppointmentsProfessionalChanged(date, serviceID, professionalID strin
 	return date, serviceID, professionalID
 }
 
+func nextWeek(date string) string {
+	d, _ := time.Parse("2006-01-02", date)
+	d = d.AddDate(0, 0, 7)
+	return d.Format("2006-01-02")
+}
+
+func previousWeek(date string) string {
+	d, _ := time.Parse("2006-01-02", date)
+	d = d.AddDate(0, 0, -7)
+	return d.Format("2006-01-02")
+}
+
 func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -43,9 +56,18 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 		previousServiceID := r.FormValue("previous-service-id")
 		professionalID := r.FormValue("professional-id")
 		previousProfessionalID := r.FormValue("previous-professional-id")
+		operation := r.FormValue("operation")
 
 		if date == "" {
 			date = time.Now().Format("2006-01-02")
+		}
+
+		if operation == "previous-week" {
+			date = previousWeek(date)
+		}
+
+		if operation == "next-week" {
+			date = nextWeek(date)
 		}
 
 		if serviceID == "" {
@@ -85,7 +107,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 
 		appointments, err := findApppointments(g, date, serviceID, professionalID)
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			_http.SendServerError(w)
 			return
 		}
 		opts := pages.WeeklyAppointmentsOptions{
