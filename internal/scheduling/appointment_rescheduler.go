@@ -27,14 +27,14 @@ type AppointmentRescheduler interface {
 type appointmentRescheduler struct {
 	repo AppointmentRepository
 	pacl ProfessionalsACL
-	sacl ServiceACL
+	sacl ServicesACL
 	bus  event.Bus
 }
 
 func NewAppointmentRescheduler(
 	repo AppointmentRepository,
 	pacl ProfessionalsACL,
-	sacl ServiceACL,
+	sacl ServicesACL,
 	bus event.Bus,
 ) AppointmentRescheduler {
 	return &appointmentRescheduler{repo, pacl, sacl, bus}

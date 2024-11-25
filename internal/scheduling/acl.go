@@ -18,7 +18,7 @@ type ProfessionalsACL interface {
 	FindProfessionalByID(id nanoid.ID) (Professional, error)
 }
 
-type ServiceACL interface {
+type ServicesACL interface {
 	FindServiceByID(id nanoid.ID) (Service, error)
 }
 

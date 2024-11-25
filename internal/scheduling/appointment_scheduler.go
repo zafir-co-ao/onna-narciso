@@ -26,36 +26,36 @@ type AppointmentScheduler interface {
 }
 
 type appointmentScedulerImpl struct {
-	repo            AppointmentRepository
-	serviceACL      ServiceACL
-	customerACL     CustomersACL
-	professionalACL ProfessionalsACL
-	bus             event.Bus
+	repo AppointmentRepository
+	sacl ServicesACL
+	cacl CustomersACL
+	pacl ProfessionalsACL
+	bus  event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
 	cacl CustomersACL,
 	pacl ProfessionalsACL,
-	sacl ServiceACL,
+	sacl ServicesACL,
 	bus event.Bus,
 ) AppointmentScheduler {
 	return &appointmentScedulerImpl{
-		repo:            repo,
-		customerACL:     cacl,
-		professionalACL: pacl,
-		serviceACL:      sacl,
-		bus:             bus,
+		repo: repo,
+		cacl: cacl,
+		pacl: pacl,
+		sacl: sacl,
+		bus:  bus,
 	}
 }
 
 func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (AppointmentOutput, error) {
-	p, err := u.professionalACL.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
+	p, err := u.pacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
 
-	s, err := u.serviceACL.FindServiceByID(nanoid.ID(i.ServiceID))
+	s, err := u.sacl.FindServiceByID(nanoid.ID(i.ServiceID))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
@@ -115,8 +115,8 @@ func (u *appointmentScedulerImpl) findOrRegistrationCustomer(i AppointmentSchedu
 	}
 
 	if len(i.CustomerID) > 0 && (len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0) {
-		return u.customerACL.FindCustomerByID(nanoid.ID(i.CustomerID))
+		return u.cacl.FindCustomerByID(nanoid.ID(i.CustomerID))
 	}
 
-	return u.customerACL.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)
+	return u.cacl.RequestCustomerRegistration(i.CustomerName, i.CustomerPhone)
 }
