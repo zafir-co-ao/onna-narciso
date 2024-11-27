@@ -35,8 +35,8 @@ func main() {
 	c := scheduling.NewAppointmentCanceler(repo, bus)
 	g := scheduling.NewAppointmentGetter(repo)
 	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
-	wg := scheduling.NewWeeklyAppointmentsGetter(repo)
-	dg := scheduling.NewDailyAppointmentsGetter(repo)
+	wg := scheduling.NewWeeklyAppointmentsFinder(repo)
+	dg := scheduling.NewDailyAppointmentsFinder(repo)
 
 	fs := _stubs.NewServicesACL()
 	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
