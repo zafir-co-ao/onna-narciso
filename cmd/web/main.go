@@ -9,10 +9,12 @@ import (
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/clock"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/console"
 	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
@@ -25,27 +27,29 @@ func main() {
 
 	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
 
+	clock := clock.New()
 	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
 	aacl := _stubs.NewAppointmentsACL()
 
-	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus, clock)
 	c := scheduling.NewAppointmentCanceler(repo, bus)
 	g := scheduling.NewAppointmentGetter(repo)
-	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
-	wg := scheduling.NewWeeklyAppointmentsFinder(repo)
-	dg := scheduling.NewDailyAppointmentsFinder(repo)
+	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus, clock)
+	wf := scheduling.NewWeeklyAppointmentsFinder(repo)
+	df := scheduling.NewDailyAppointmentsFinder(repo)
 
+	invoicing := console.NewInvoicing()
 	fs := _stubs.NewServicesACL()
 	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	sc := sessions.NewSessionCreator(sRepo, bus, aacl)
-	so := sessions.NewSessionCloser(sRepo, fs, bus)
+	so := sessions.NewSessionCloser(sRepo, fs, invoicing, bus)
 	sf := sessions.NewSessionFinder(sRepo)
 	ss := sessions.NewSessionStarter(sRepo, bus)
 
-	http.Handle("/", web.NewRouter(s, c, g, r, wg, dg, sc, ss, so, sf))
+	http.Handle("/", web.NewRouter(s, c, g, r, wf, df, sc, ss, so, sf))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
