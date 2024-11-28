@@ -14,13 +14,13 @@ var (
 
 var EmptyServices = make([]SessionService, 0, 0)
 
-type ServiceACL interface {
+type ServicesACL interface {
 	FindByIDs(i []nanoid.ID) ([]SessionService, error)
 }
 
-type ServiceACLFunc func(i []nanoid.ID) ([]SessionService, error)
+type ServicesACLFunc func(i []nanoid.ID) ([]SessionService, error)
 
-func (f ServiceACLFunc) FindByIDs(i []nanoid.ID) ([]SessionService, error) {
+func (f ServicesACLFunc) FindByIDs(i []nanoid.ID) ([]SessionService, error) {
 	return f(i)
 }
 

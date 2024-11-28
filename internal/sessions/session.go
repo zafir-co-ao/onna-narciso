@@ -18,7 +18,8 @@ const (
 var (
 	ErrSessionStarted     = errors.New("Session already started")
 	ErrSessionClosed      = errors.New("Session already closed")
-	ErrInvalidCheckinDate = errors.New("invalid checkin date")
+	ErrInvalidCheckinDate = errors.New("Invalid checkin date")
+	ErrInvoiceNotBeIssued = errors.New("Invoice not be issued")
 )
 
 type Appointment struct {

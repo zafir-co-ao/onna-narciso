@@ -11,19 +11,18 @@ var services = map[string]sessions.SessionService{
 	"3": sessions.SessionService{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
 }
 
-type serviceACLStub struct{}
-
-func NewServicesACL() sessions.ServiceACL {
-	return serviceACLStub{}
-}
-
-func (f serviceACLStub) FindByIDs(ids []nanoid.ID) ([]sessions.SessionService, error) {
-	selected := make([]sessions.SessionService, 0)
-	for _, id := range ids {
-		if services[id.String()].ServiceID.String() != id.String() {
-			return sessions.EmptyServices, sessions.ErrServiceNotFound
+func NewServicesACL() sessions.ServicesACL {
+	var f sessions.ServicesACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
+		selected := make([]sessions.SessionService, 0)
+		for _, id := range ids {
+			if services[id.String()].ServiceID.String() != id.String() {
+				return sessions.EmptyServices, sessions.ErrServiceNotFound
+			}
+			selected = append(selected, services[id.String()])
 		}
-		selected = append(selected, services[id.String()])
+
+		return selected, nil
 	}
-	return selected, nil
+
+	return sessions.ServicesACLFunc(f)
 }

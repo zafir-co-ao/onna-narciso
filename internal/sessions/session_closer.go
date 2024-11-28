@@ -18,13 +18,19 @@ type Closer interface {
 }
 
 type closerImpl struct {
-	repo Repository
-	sacl ServiceACL
-	bus  event.Bus
+	repo      Repository
+	sacl      ServicesACL
+	invoicing Invoicing
+	bus       event.Bus
 }
 
-func NewSessionCloser(repo Repository, sacl ServiceACL, bus event.Bus) Closer {
-	return &closerImpl{repo, sacl, bus}
+func NewSessionCloser(
+	repo Repository,
+	sacl ServicesACL,
+	invoicing Invoicing,
+	bus event.Bus,
+) Closer {
+	return &closerImpl{repo, sacl, invoicing, bus}
 }
 
 func (u *closerImpl) Close(i CloserInput) error {
@@ -53,7 +59,13 @@ func (u *closerImpl) Close(i CloserInput) error {
 		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
 		event.WithPayload(i),
 	)
+
 	u.bus.Publish(e)
+
+	err = u.invoicing.Issue(s)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
