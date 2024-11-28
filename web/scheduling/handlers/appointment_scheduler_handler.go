@@ -67,7 +67,12 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 			return
 		}
 
-		if err != nil {
+		if errors.Is(err, scheduling.ErrScheduleInPast) {
+			_http.SendBadRequest(w, "A marcação não pode ser feita para uma data no passado")
+			return
+		}
+
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}

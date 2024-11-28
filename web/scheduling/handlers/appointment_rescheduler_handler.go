@@ -20,7 +20,7 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		input := scheduling.AppointmentReschedulerInput{
+		i := scheduling.AppointmentReschedulerInput{
 			ID:             r.Form.Get("id"),
 			Date:           r.Form.Get("date"),
 			Hour:           r.Form.Get("hour"),
@@ -29,7 +29,7 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			Duration:       duration,
 		}
 
-		_, err = re.Reschedule(input)
+		_, err = re.Reschedule(i)
 		if errors.Is(err, scheduling.ErrInvalidStatusToReschedule) {
 			_http.SendBadRequest(w, "Estado inválido para reagendar")
 			return
@@ -70,12 +70,12 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		if !errors.Is(nil, err) {
-			_http.SendServerError(w)
+		if errors.Is(err, scheduling.ErrScheduleInPast) {
+			_http.SendBadRequest(w, "A marcação não pode ser feita para uma data no passado")
 			return
 		}
 
-		if err != nil {
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}

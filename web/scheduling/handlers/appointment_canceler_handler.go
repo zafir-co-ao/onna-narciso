@@ -22,7 +22,7 @@ func HandleCancelAppointment(c scheduling.AppointmentCanceler) func(w http.Respo
 			return
 		}
 
-		if err != nil {
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}

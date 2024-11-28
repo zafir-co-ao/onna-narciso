@@ -21,11 +21,17 @@ func (d Date) String() string {
 	return string(d)
 }
 
-func isValidDate(v string) bool {
-	_, err := time.Parse("2006-01-02", v)
-	return err == nil
+func (d Date) Before(v Date) bool {
+	a, _ := time.Parse("2006-01-02", d.String())
+	b, _ := time.Parse("2006-01-02", v.String())
+	return a.Before(b)
 }
 
 func Today() Date {
 	return Date(time.Now().Format("2006-01-02"))
+}
+
+func isValidDate(v string) bool {
+	_, err := time.Parse("2006-01-02", v)
+	return err == nil
 }
