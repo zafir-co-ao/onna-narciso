@@ -20,8 +20,9 @@ func TestAppointmentScheduler(t *testing.T) {
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
+	clock := stubs.NewClock()
 
-	usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+	usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus, clock)
 
 	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Hour: "8:00", Duration: 90, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("3")}
 	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("2")}
@@ -639,12 +640,32 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := usecase.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
-			t.Errorf("Should return an ErrorCustomerNotFound, got %v", err)
+			t.Errorf("Should return ErrCustomerNotFound, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_scheduling_an_appointment_in_the_past", func(t *testing.T) {
+		i := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "1",
+			CustomerID:     "1",
+			ServiceID:      "1",
+			Date:           "2015-12-31",
+			Hour:           "15:00",
+			Duration:       60,
+		}
+
+		_, err := usecase.Schedule(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrScheduleInPast, err) {
+			t.Errorf("Should return ErrPastScheduleNotAllowed, got %v", err)
 		}
 	})
 }

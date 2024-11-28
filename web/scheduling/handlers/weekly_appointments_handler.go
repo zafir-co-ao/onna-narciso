@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"slices"
 	"time"
@@ -106,7 +107,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 		}
 
 		appointments, err := findApppointments(g, date, serviceID, professionalID)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}

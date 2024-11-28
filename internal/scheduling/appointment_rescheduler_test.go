@@ -19,7 +19,8 @@ func TestAppointmentRescheduler(t *testing.T) {
 	sacl := stubs.NewServicesACL()
 	pacl := stubs.NewProfessionalsACL()
 	repo := inmem.NewAppointmentRepository()
-	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
+	clock := stubs.NewClock()
+	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus, clock)
 
 	for i := range 20 {
 		i += 1
@@ -215,7 +216,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("should_return_error_if_appointment_status_is_different_of_scheduled", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "20",
-			Date:           "2010-09-18",
+			Date:           "2020-09-18",
 			Hour:           "19:15",
 			ProfessionalID: "4",
 			ServiceID:      "3",
@@ -443,6 +444,26 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if !errors.Is(scheduling.ErrInvalidService, err) {
 			t.Errorf("The error must be ErrInvalidService, got %v", err)
+		}
+	})
+
+	t.Run("should_return_error_if_rescheduling_an_appointment_in_the_past", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "4",
+			Date:           "2014-05-04",
+			ProfessionalID: "1",
+			ServiceID:      "1",
+			Hour:           "10:00",
+			Duration:       90,
+		}
+
+		_, err := usecase.Reschedule(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(scheduling.ErrScheduleInPast, err) {
+			t.Errorf("Should return ErrPastScheduleNotAllowed, got %v", err)
 		}
 	})
 }

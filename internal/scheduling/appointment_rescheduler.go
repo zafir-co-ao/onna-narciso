@@ -25,10 +25,11 @@ type AppointmentRescheduler interface {
 }
 
 type appointmentRescheduler struct {
-	repo AppointmentRepository
-	pacl ProfessionalsACL
-	sacl ServicesACL
-	bus  event.Bus
+	repo  AppointmentRepository
+	pacl  ProfessionalsACL
+	sacl  ServicesACL
+	bus   event.Bus
+	clock Clock
 }
 
 func NewAppointmentRescheduler(
@@ -36,8 +37,9 @@ func NewAppointmentRescheduler(
 	pacl ProfessionalsACL,
 	sacl ServicesACL,
 	bus event.Bus,
+	clock Clock,
 ) AppointmentRescheduler {
-	return &appointmentRescheduler{repo, pacl, sacl, bus}
+	return &appointmentRescheduler{repo, pacl, sacl, bus, clock}
 }
 
 func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
@@ -63,6 +65,10 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 	d, err := date.New(i.Date)
 	if err != nil {
 		return EmptyAppointmentOutput, err
+	}
+
+	if d.Before(u.clock.Today()) {
+		return EmptyAppointmentOutput, ErrScheduleInPast
 	}
 
 	h, err := hour.New(i.Hour)

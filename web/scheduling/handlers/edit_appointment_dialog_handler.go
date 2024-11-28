@@ -21,7 +21,7 @@ func HandleEditAppointmentDialog(g scheduling.AppointmentGetter) func(w http.Res
 			return
 		}
 
-		if err != nil {
+		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}
