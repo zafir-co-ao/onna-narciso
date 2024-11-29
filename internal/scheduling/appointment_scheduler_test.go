@@ -20,12 +20,13 @@ func TestAppointmentScheduler(t *testing.T) {
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
-	clock := stubs.NewClock()
 
-	usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus, clock)
+	today := date.Today()
+
+	usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Hour: "8:00", Duration: 90, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("3")}
-	a2 := scheduling.Appointment{ID: "2", Date: "2024-10-15", Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("2")}
+	a2 := scheduling.Appointment{ID: "2", Date: today.AddDate(0, 0, 2), Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("2")}
 	a3 := scheduling.Appointment{ID: "6", Date: "2020-04-01", Hour: "19:00", Duration: 60, Status: scheduling.StatusCanceled}
 
 	_ = repo.Save(a1)
@@ -37,7 +38,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "1",
 			CustomerID:     "1",
 			ServiceID:      "4",
-			Date:           "2024-10-09",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "11:00",
 			Duration:       60,
 		}
@@ -57,7 +58,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "1",
 			CustomerID:     "1",
 			ServiceID:      "3",
-			Date:           "2024-09-09",
+			Date:           today.AddDate(0, 5, 5).String(),
 			Hour:           "11:00",
 			Duration:       180,
 		}
@@ -86,7 +87,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "1",
 			CustomerID:     "3",
 			ServiceID:      "1",
-			Date:           "2024-10-09",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "13:00",
 			Duration:       60,
 		}
@@ -101,8 +102,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.IsScheduled() == false {
-			t.Errorf("Appointment status should be Scheduled, got %s", appointment.Status)
+		if !appointment.IsScheduled() {
+			t.Errorf("Appointment status should be %s, got %s", scheduling.StatusScheduled, appointment.Status)
 		}
 	})
 
@@ -111,7 +112,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "1",
 			CustomerID:     "2",
 			ServiceID:      "3",
-			Date:           "2024-10-12",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "12:00",
 			Duration:       30,
 		}
@@ -136,7 +137,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerID:     "1",
 			ProfessionalID: "2",
 			ServiceID:      "4",
-			Date:           "2024-10-12",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "10:00",
 			Duration:       30,
 		}
@@ -161,7 +162,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			ServiceID:      "1",
 			CustomerID:     "2",
-			Date:           "2024-09-17",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "10:30",
 			Duration:       30,
 		}
@@ -186,7 +187,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			ServiceID:      "4",
 			CustomerID:     "2",
-			Date:           "2024-05-05",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "18:00",
 			Duration:       60,
 		}
@@ -211,7 +212,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "2",
 			ServiceID:      "4",
 			CustomerID:     "2",
-			Date:           "2024-11-10",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "11:30",
 			Duration:       120,
 		}
@@ -236,7 +237,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-10-25",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       30,
 		}
@@ -252,7 +253,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if appointment.Duration != i.Duration {
-			t.Errorf("The appointment duration must be 30, got %d", appointment.Duration)
+			t.Errorf("The appointment duration must be %d, got %d", i.Duration, appointment.Duration)
 		}
 	})
 
@@ -261,30 +262,30 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-10-14",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       90,
 		}
 
 		_, err := usecase.Schedule(i)
 		if !errors.Is(err, scheduling.ErrBusyTime) {
-			t.Errorf("The error must be ErrBusyTime, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
 		}
 	})
 
 	t.Run("should_return_the_busy_time_error_when_the_appointment_clashes_with_one_on_schedule", func(t *testing.T) {
 		var inputs = []scheduling.AppointmentSchedulerInput{
-			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: "2024-10-15", Hour: "9:00", Duration: 30},
-			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: "2024-10-15", Hour: "9:30", Duration: 60},
-			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: "2024-10-15", Hour: "7:30", Duration: 60},
-			{ProfessionalID: "2", CustomerID: "2", ServiceID: "4", Date: "2024-10-15", Hour: "11:30", Duration: 480},
+			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: today.AddDate(0, 0, 2).String(), Hour: "9:00", Duration: 30},
+			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: today.AddDate(0, 0, 2).String(), Hour: "9:30", Duration: 60},
+			{ProfessionalID: "2", CustomerID: "3", ServiceID: "4", Date: today.AddDate(0, 0, 2).String(), Hour: "7:30", Duration: 60},
+			{ProfessionalID: "2", CustomerID: "2", ServiceID: "4", Date: today.AddDate(0, 0, 2).String(), Hour: "11:30", Duration: 480},
 		}
 
 		for _, i := range inputs {
 			_, err := usecase.Schedule(i)
 
 			if !errors.Is(err, scheduling.ErrBusyTime) {
-				t.Errorf("The error must be ErrBusyTime, got %v", err)
+				t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
 			}
 		}
 	})
@@ -294,7 +295,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "4",
 			ServiceID:      "4",
-			Date:           "2024-10-15",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       90,
 		}
@@ -305,7 +306,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
-			t.Errorf("The error must be ErrCustomerNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrCustomerNotFound, err)
 		}
 	})
 
@@ -314,7 +315,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "400",
 			CustomerID:     "100",
 			ServiceID:      "4",
-			Date:           "2024-09-01",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -325,7 +326,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrProfessionalNotFound) {
-			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrProfessionalNotFound, err)
 		}
 	})
 
@@ -334,7 +335,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "5",
-			Date:           "2024-09-01",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -345,7 +346,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrServiceNotFound) {
-			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrServiceNotFound, err)
 		}
 	})
 
@@ -355,7 +356,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerName:   "John Doe",
 			CustomerPhone:  "123456789",
 			ServiceID:      "4",
-			Date:           "2024-09-01",
+			Date:           today.AddDate(0, 1, 8).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -381,7 +382,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "3",
 			ServiceID:      "4",
-			Date:           "2024-08-01",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -392,7 +393,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
-			t.Errorf("The error must be ErrCustomerNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrCustomerNotFound, err)
 		}
 	})
 
@@ -411,8 +412,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(err, date.ErrInvalidDate) {
-			t.Errorf("The error must be ErrInvalidDate, got %v", err)
+		if !errors.Is(err, date.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
 		}
 	})
 
@@ -421,7 +422,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-08-01",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "8h00",
 			Duration:       60,
 		}
@@ -431,8 +432,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
-		if !errors.Is(err, hour.ErrInvalidHour) {
-			t.Errorf("The error must be ErrInvalidHour, got %v", err)
+		if !errors.Is(err, hour.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", hour.ErrInvalidFormat, err)
 		}
 	})
 
@@ -441,7 +442,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2024-08-01",
+			Date:           today.AddDate(0, 1, 2).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -466,7 +467,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "3",
 			ServiceID:      "4",
-			Date:           "2022-07-01",
+			Date:           today.AddDate(0, 0, 6).String(),
 			Hour:           "8:00",
 			Duration:       60,
 		}
@@ -492,7 +493,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
-			Date:           "2024-07-01",
+			Date:           today.AddDate(0, 2, 1).String(),
 			Hour:           "19:00",
 			Duration:       60,
 		}
@@ -518,7 +519,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
-			Date:           "2024-05-01",
+			Date:           today.AddDate(1, 5, 15).String(),
 			Hour:           "19:00",
 			Duration:       60,
 		}
@@ -544,7 +545,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "4",
-			Date:           "2020-04-01",
+			Date:           today.AddDate(0, 3, 7).String(),
 			Hour:           "19:00",
 			Duration:       60,
 		}
@@ -573,7 +574,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "3",
 			CustomerID:     "2",
 			ServiceID:      "1",
-			Date:           "2020-01-01",
+			Date:           today.AddDate(0, 3, 7).String(),
 			Hour:           "9:00",
 			Duration:       60,
 		}
@@ -591,9 +592,8 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !evtPublished {
-			t.Error("The EventAppointmentCanceled must be published")
+			t.Errorf("The %s must be published", scheduling.EventAppointmentScheduled)
 		}
-
 	})
 
 	t.Run("must_entry_the_payload_in_schedule_appointment_event", func(t *testing.T) {
@@ -601,7 +601,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			ProfessionalID: "1",
 			CustomerID:     "2",
 			ServiceID:      "1",
-			Date:           "2020-02-01",
+			Date:           today.AddDate(0, 3, 7).String(),
 			Hour:           "10:00",
 			Duration:       60,
 		}
@@ -622,7 +622,6 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if evtAggID != o.ID {
-
 			t.Errorf("Event header Aggregate ID should equal Output ID, got: %v != %v", evtAggID, o.ID)
 		}
 	})
@@ -634,7 +633,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			CustomerName:   "",
 			CustomerPhone:  "",
 			ServiceID:      "1",
-			Date:           "2024-02-11",
+			Date:           today.AddDate(0, 2, 10).String(),
 			Hour:           "15:00",
 			Duration:       60,
 		}
@@ -645,7 +644,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrCustomerNotFound) {
-			t.Errorf("Should return ErrCustomerNotFound, got %v", err)
+			t.Errorf("Should return %v, got %v", scheduling.ErrCustomerNotFound, err)
 		}
 	})
 
@@ -664,8 +663,8 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrScheduleInPast, err) {
-			t.Errorf("Should return ErrPastScheduleNotAllowed, got %v", err)
+		if !errors.Is(date.ErrDateInPast, err) {
+			t.Errorf("Should return %v, got %v", date.ErrDateInPast, err)
 		}
 	})
 }

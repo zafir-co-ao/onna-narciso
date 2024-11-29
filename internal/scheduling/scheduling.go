@@ -7,7 +7,6 @@ var (
 	ErrInvalidStatusToClose      = errors.New("Invalid status to close")
 	ErrInvalidStatusToCancel     = errors.New("Invalid status to cancel")
 	ErrInvalidStatusToReschedule = errors.New("Invalid status to reschedule")
-	ErrScheduleInPast            = errors.New("Past schedule not allowed")
 )
 
 var EmptyAppointmentOutput = AppointmentOutput{}

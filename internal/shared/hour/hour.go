@@ -5,21 +5,25 @@ import (
 	"time"
 )
 
-var ErrInvalidHour = errors.New("Invalid hour")
+var ErrInvalidFormat = errors.New("Invalid hour")
 
 type Hour string
 
 func New(v string) (Hour, error) {
-	_, err := time.Parse("15:04", v)
-
-	if err != nil {
-		return Hour(""), ErrInvalidHour
+	if !isValidFormat(v) {
+		return Hour(""), ErrInvalidFormat
 	}
+
 	return Hour(v), nil
 }
 
 func (h Hour) String() string {
 	return string(h)
+}
+
+func isValidFormat(v string) bool {
+	_, err := time.Parse("15:04", v)
+	return err == nil
 }
 
 func AsTime(h Hour) time.Time {

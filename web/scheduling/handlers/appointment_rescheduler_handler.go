@@ -40,12 +40,17 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		if errors.Is(err, date.ErrInvalidDate) {
+		if errors.Is(err, date.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "A data para a marcação está no formato inválido")
 			return
 		}
 
-		if errors.Is(err, hour.ErrInvalidHour) {
+		if errors.Is(err, date.ErrDateInPast) {
+			_http.SendBadRequest(w, "A marcação não pode ser feita para uma data no passado")
+			return
+		}
+
+		if errors.Is(err, hour.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "A hora da marcação está no formato inválido")
 			return
 		}
@@ -67,11 +72,6 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 
 		if errors.Is(err, scheduling.ErrServiceNotFound) {
 			_http.SendNotFound(w, "Serviço não encontrado")
-			return
-		}
-
-		if errors.Is(err, scheduling.ErrScheduleInPast) {
-			_http.SendBadRequest(w, "A marcação não pode ser feita para uma data no passado")
 			return
 		}
 

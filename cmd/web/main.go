@@ -9,7 +9,6 @@ import (
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/clock"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
@@ -27,17 +26,16 @@ func main() {
 
 	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
 
-	clock := clock.New()
 	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
 	aacl := _stubs.NewAppointmentsACL()
 
-	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus, clock)
+	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 	c := scheduling.NewAppointmentCanceler(repo, bus)
 	g := scheduling.NewAppointmentGetter(repo)
-	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus, clock)
+	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
 	wf := scheduling.NewWeeklyAppointmentsFinder(repo)
 	df := scheduling.NewDailyAppointmentsFinder(repo)
 

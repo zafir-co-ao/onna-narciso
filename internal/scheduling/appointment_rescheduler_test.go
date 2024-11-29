@@ -19,8 +19,9 @@ func TestAppointmentRescheduler(t *testing.T) {
 	sacl := stubs.NewServicesACL()
 	pacl := stubs.NewProfessionalsACL()
 	repo := inmem.NewAppointmentRepository()
-	clock := stubs.NewClock()
-	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus, clock)
+	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
+
+	today := date.Today()
 
 	for i := range 20 {
 		i += 1
@@ -29,7 +30,14 @@ func TestAppointmentRescheduler(t *testing.T) {
 	}
 
 	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
-	a3 := scheduling.Appointment{ID: "12", ProfessionalID: "1", Status: scheduling.StatusScheduled, Date: "2024-10-27", Hour: "8:00", Duration: 240}
+	a3 := scheduling.Appointment{
+		ID:             "12",
+		ProfessionalID: "1",
+		Status:         scheduling.StatusScheduled,
+		Date:           date.Date(today.AddDate(0, 1, 5).String()),
+		Hour:           "8:00",
+		Duration:       240,
+	}
 
 	_ = repo.Save(a2)
 	_ = repo.Save(a3)
@@ -37,7 +45,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "1",
-			Date:           "2024-04-11",
+			Date:           today.AddDate(0, 0, 10).String(),
 			Hour:           "8:30",
 			ProfessionalID: "1",
 			ServiceID:      "1",
@@ -62,7 +70,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("must_enter_the_reschedule_date", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "3",
-			Date:           "2020-10-10",
+			Date:           today.AddDate(0, 0, 1).String(),
 			Hour:           "9:30",
 			ProfessionalID: "2",
 			ServiceID:      "3",
@@ -74,15 +82,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		if o.Date != "2020-10-10" {
-			t.Errorf("The appointment date must be 2020-10-10, got %v", o.Date)
+		if o.Date != i.Date {
+			t.Errorf("The appointment date must be %v, got %v", i.Date, o.Date)
 		}
 	})
 
 	t.Run("must_enter_the_reschedule_hour", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "4",
-			Date:           "2021-11-10",
+			Date:           today.AddDate(0, 0, 3).String(),
 			Hour:           "10:00",
 			ProfessionalID: "3",
 			ServiceID:      "4",
@@ -102,7 +110,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("must_enter_the_reschedule_duration", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "5",
-			Date:           "2022-12-10",
+			Date:           today.AddDate(0, 1, 1).String(),
 			Hour:           "8:00",
 			ProfessionalID: "1",
 			ServiceID:      "1",
@@ -127,7 +135,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("must_reschedule_an_appointment_more_than_once", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "1",
-			Date:           "2024-07-01",
+			Date:           today.AddDate(0, 0, 5).String(),
 			Hour:           "12:00",
 			ProfessionalID: "2",
 			ServiceID:      "3",
@@ -148,7 +156,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		var inputs = []scheduling.AppointmentReschedulerInput{
 			{
 				ID:             "8",
-				Date:           "2024-10-27",
+				Date:           today.AddDate(0, 1, 5).String(),
 				Hour:           "8:00",
 				ProfessionalID: "1",
 				ServiceID:      "1",
@@ -156,7 +164,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			},
 			{
 				ID:             "9",
-				Date:           "2024-10-27",
+				Date:           today.AddDate(0, 1, 5).String(),
 				Hour:           "9:30",
 				ProfessionalID: "1",
 				ServiceID:      "1",
@@ -164,7 +172,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			},
 			{
 				ID:             "10",
-				Date:           "2024-10-27",
+				Date:           today.AddDate(0, 1, 5).String(),
 				Hour:           "11:00",
 				ProfessionalID: "1",
 				ServiceID:      "1",
@@ -172,7 +180,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			},
 			{
 				ID:             "10",
-				Date:           "2024-10-27",
+				Date:           today.AddDate(0, 1, 5).String(),
 				Hour:           "7:00",
 				ProfessionalID: "1",
 				ServiceID:      "1",
@@ -188,7 +196,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			}
 
 			if !errors.Is(err, scheduling.ErrBusyTime) {
-				t.Errorf("The error must be ErrBusyTime, got %v", err)
+				t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
 			}
 		}
 	})
@@ -209,14 +217,14 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrAppointmentNotFound) {
-			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrAppointmentNotFound, err)
 		}
 	})
 
 	t.Run("should_return_error_if_appointment_status_is_different_of_scheduled", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "20",
-			Date:           "2020-09-18",
+			Date:           today.AddDate(1, 0, 8).String(),
 			Hour:           "19:15",
 			ProfessionalID: "4",
 			ServiceID:      "3",
@@ -229,7 +237,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !errors.Is(err, scheduling.ErrInvalidStatusToReschedule) {
-			t.Errorf("The error must be ErrInvalidStatusToReschedule, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrInvalidStatusToReschedule, err)
 		}
 	})
 
@@ -248,15 +256,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(err, date.ErrInvalidDate) {
-			t.Errorf("The error must be ErrInvalidDate, got %v", err)
+		if !errors.Is(err, date.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
 		}
 	})
 
 	t.Run("should_return_an_error_if_the_hour_is_in_an_invalid_format", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "2",
-			Date:           "2021-07-01",
+			Date:           today.AddDate(1, 0, 8).String(),
 			Hour:           "11h00",
 			ProfessionalID: "1",
 			ServiceID:      "2",
@@ -267,15 +275,15 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(err, hour.ErrInvalidHour) {
-			t.Errorf("The error must be ErrHourDate, got %v", err)
+		if !errors.Is(err, hour.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", hour.ErrInvalidFormat, err)
 		}
 	})
 
 	t.Run("must_publish_the_rescheduled_appointment_event", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "13",
-			Date:           "2018-09-15",
+			Date:           today.AddDate(1, 1, 8).String(),
 			Hour:           "18:00",
 			ProfessionalID: "4",
 			ServiceID:      "1",
@@ -295,14 +303,14 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !evtPublished {
-			t.Error("The EventAppointmentRescheduled must be published")
+			t.Errorf("The %s must be published", scheduling.EventAppointmentRescheduled)
 		}
 	})
 
 	t.Run("must_entry_the_payload_in_reschedule_appointment_event", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "12",
-			Date:           "2018-05-10",
+			Date:           today.AddDate(0, 2, 8).String(),
 			Hour:           "11:00",
 			ProfessionalID: "3",
 			ServiceID:      "4",
@@ -332,7 +340,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("should_reschedule_the_appointment_with_different_professional", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "2",
-			Date:           "2018-02-10",
+			Date:           today.AddDate(0, 0, 10).String(),
 			ProfessionalID: "1",
 			ServiceID:      "2",
 			Hour:           "06:00",
@@ -361,7 +369,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	t.Run("should_reschedule_the_appointment_with_different_service", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
 			ID:             "2",
-			Date:           "2020-12-23",
+			Date:           today.AddDate(0, 0, 1).String(),
 			ProfessionalID: "2",
 			ServiceID:      "3",
 			Hour:           "16:00",
@@ -403,7 +411,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !errors.Is(scheduling.ErrProfessionalNotFound, err) {
-			t.Errorf("The error must be ErrProfessionalNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrProfessionalNotFound, err)
 		}
 	})
 
@@ -423,7 +431,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !errors.Is(scheduling.ErrServiceNotFound, err) {
-			t.Errorf("The error must be ErrServiceNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrServiceNotFound, err)
 		}
 	})
 
@@ -443,7 +451,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		if !errors.Is(scheduling.ErrInvalidService, err) {
-			t.Errorf("The error must be ErrInvalidService, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrInvalidService, err)
 		}
 	})
 
@@ -462,8 +470,8 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrScheduleInPast, err) {
-			t.Errorf("Should return ErrPastScheduleNotAllowed, got %v", err)
+		if !errors.Is(date.ErrDateInPast, err) {
+			t.Errorf("The error must be %v, got %v", date.ErrDateInPast, err)
 		}
 	})
 }

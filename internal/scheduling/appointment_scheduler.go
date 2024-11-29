@@ -26,12 +26,11 @@ type AppointmentScheduler interface {
 }
 
 type appointmentScedulerImpl struct {
-	repo  AppointmentRepository
-	sacl  ServicesACL
-	cacl  CustomersACL
-	pacl  ProfessionalsACL
-	bus   event.Bus
-	clock Clock
+	repo AppointmentRepository
+	sacl ServicesACL
+	cacl CustomersACL
+	pacl ProfessionalsACL
+	bus  event.Bus
 }
 
 func NewAppointmentScheduler(
@@ -40,15 +39,13 @@ func NewAppointmentScheduler(
 	pacl ProfessionalsACL,
 	sacl ServicesACL,
 	bus event.Bus,
-	clock Clock,
 ) AppointmentScheduler {
 	return &appointmentScedulerImpl{
-		repo:  repo,
-		cacl:  cacl,
-		pacl:  pacl,
-		sacl:  sacl,
-		bus:   bus,
-		clock: clock,
+		repo: repo,
+		cacl: cacl,
+		pacl: pacl,
+		sacl: sacl,
+		bus:  bus,
 	}
 }
 
@@ -71,10 +68,6 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 	d, err := date.New(i.Date)
 	if err != nil {
 		return EmptyAppointmentOutput, err
-	}
-
-	if d.Before(u.clock.Today()) {
-		return EmptyAppointmentOutput, ErrScheduleInPast
 	}
 
 	h, err := hour.New(i.Hour)
