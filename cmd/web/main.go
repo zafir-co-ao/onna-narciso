@@ -13,7 +13,6 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/console"
 	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
@@ -39,11 +38,10 @@ func main() {
 	wf := scheduling.NewWeeklyAppointmentsFinder(repo)
 	df := scheduling.NewDailyAppointmentsFinder(repo)
 
-	invoicing := console.NewInvoicing()
 	fs := _stubs.NewServicesACL()
 	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	sc := sessions.NewSessionCreator(sRepo, bus, aacl)
-	so := sessions.NewSessionCloser(sRepo, fs, invoicing, bus)
+	so := sessions.NewSessionCloser(sRepo, fs, bus)
 	sf := sessions.NewSessionFinder(sRepo)
 	ss := sessions.NewSessionStarter(sRepo, bus)
 
