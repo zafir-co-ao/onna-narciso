@@ -8,6 +8,7 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -18,8 +19,9 @@ func TestServiceCreator(t *testing.T) {
 	u := services.NewServiceCreator(repo, bus)
 
 	t.Run("should_create_an_service", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "Manicure",
+			Price:    "1000",
 			Duration: 60,
 		}
 
@@ -31,8 +33,9 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("must_save_the_service_in_the_repository", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "Massagem",
+			Price:    "500",
 			Duration: 120,
 		}
 
@@ -49,8 +52,9 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_duration_of_service", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "Pedicure",
+			Price:    "1500",
 			Duration: 60,
 		}
 
@@ -66,8 +70,9 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_name_of_service", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "Manicure",
+			Price:    "2000",
 			Duration: 150,
 		}
 
@@ -81,10 +86,29 @@ func TestServiceCreator(t *testing.T) {
 		}
 	})
 
+	t.Run("must_register_the_price_of_service", func(t *testing.T) {
+		i := services.ServiceCreatorInput{
+			Name:        "Depilação",
+			Description: "Depilação a laser",
+			Price:       "1000",
+			Duration:    120,
+		}
+
+		o, err := u.Create(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if o.Price != i.Price {
+			t.Errorf("The price of service must be equal to %v, got %v", i.Price, o.Price)
+		}
+	})
+
 	t.Run("must_register_the_description_of_service", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:        "Manicure",
 			Description: "",
+			Price:       "1000",
 			Duration:    150,
 		}
 
@@ -99,8 +123,9 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("the_duration_of_service_must_be_90_minutes_when_duration_not_provided", func(t *testing.T) {
-		i := services.ServiceInput{
-			Name: "Manicure",
+		i := services.ServiceCreatorInput{
+			Name:  "Manicure",
+			Price: "1100",
 		}
 
 		o, err := u.Create(i)
@@ -126,8 +151,9 @@ func TestServiceCreator(t *testing.T) {
 			}
 		}
 
-		i := services.ServiceInput{
-			Name: "Manicure",
+		i := services.ServiceCreatorInput{
+			Name:  "Manicure",
+			Price: "1050",
 		}
 
 		bus.Subscribe(services.EventServiceCreated, h)
@@ -143,7 +169,7 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_name_of_service_is_empty", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "",
 			Duration: 90,
 		}
@@ -159,7 +185,7 @@ func TestServiceCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_duration_is_less_than_zero", func(t *testing.T) {
-		i := services.ServiceInput{
+		i := services.ServiceCreatorInput{
 			Name:     "Manicure",
 			Duration: -90,
 		}
@@ -171,6 +197,22 @@ func TestServiceCreator(t *testing.T) {
 
 		if !errors.Is(duration.ErrInvalidDuration, err) {
 			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
+		}
+	})
+
+	t.Run("should_return_error_if_price_is_empty", func(t *testing.T) {
+		i := services.ServiceCreatorInput{
+			Name:  "Manicure",
+			Price: "",
+		}
+
+		_, err := u.Create(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(price.ErrInvalidPrice, err) {
+			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
 	})
 }
