@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
+	_services "github.com/zafir-co-ao/onna-narciso/web/services/handlers"
 	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
 )
 
@@ -22,6 +24,7 @@ func NewRouter(
 	ss sessions.Starter,
 	so sessions.Closer,
 	sf sessions.Finder,
+	scr services.ServiceCreator,
 ) *http.ServeMux {
 
 	mux := http.NewServeMux()
@@ -41,6 +44,10 @@ func NewRouter(
 	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(sc, sf, dg))
 	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(ss, sf, dg))
 	mux.HandleFunc("DELETE /sessions/{id}", _sessions.HandleCloseSession(so, sf, dg))
+
+	mux.HandleFunc("GET /services", _services.HandleFindServices())
+	mux.HandleFunc("POST /services", _services.HandleCreateService(scr))
+	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
 
 	mux.HandleFunc("/", NewStaticHandler())
 
