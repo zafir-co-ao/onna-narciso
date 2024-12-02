@@ -10,9 +10,11 @@ import (
 	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
+	_services "github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
@@ -45,7 +47,10 @@ func main() {
 	sf := sessions.NewSessionFinder(sRepo)
 	ss := sessions.NewSessionStarter(sRepo, bus)
 
-	http.Handle("/", web.NewRouter(s, c, g, r, wf, df, sc, ss, so, sf))
+	scrRepo := _services.NewServiceRepository()
+	scr := services.NewServiceCreator(scrRepo, bus)
+
+	http.Handle("/", web.NewRouter(s, c, g, r, wf, df, sc, ss, so, sf, scr))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
