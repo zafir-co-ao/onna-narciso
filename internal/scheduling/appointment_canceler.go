@@ -20,8 +20,8 @@ func NewAppointmentCanceler(repo AppointmentRepository, bus event.Bus) Appointme
 	return &appointmentCancelerImpl{repo, bus}
 }
 
-func (u *appointmentCancelerImpl) Cancel(appointmentId string) error {
-	a, err := u.repo.FindByID(nanoid.ID(appointmentId))
+func (u *appointmentCancelerImpl) Cancel(id string) error {
+	a, err := u.repo.FindByID(nanoid.ID(id))
 	if err != nil {
 		return err
 	}
