@@ -16,6 +16,16 @@ func NewServiceRepository(s ...services.Service) services.Repository {
 	}
 }
 
+func (s *inmemServiceRepositoryImpl) FindAll() ([]services.Service, error) {
+	var services []services.Service
+
+	for _, s := range s.Data {
+		services = append(services, s)
+	}
+
+	return services, nil
+}
+
 func (s *inmemServiceRepositoryImpl) FindByID(id nanoid.ID) (services.Service, error) {
 	return s.Data[id], nil
 }

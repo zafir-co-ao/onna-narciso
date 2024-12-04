@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -10,14 +11,6 @@ import (
 const EventServiceCreated = "EventServiceCreated"
 
 type ServiceCreatorInput struct {
-	Name        string
-	Description string
-	Price       string
-	Duration    int
-}
-
-type ServiceOutput struct {
-	ID          string
 	Name        string
 	Description string
 	Price       string
@@ -53,12 +46,13 @@ func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error
 		return ServiceOutput{}, err
 	}
 
-	s := NewService(
-		_name,
-		_duration,
-		_price,
-		Description(i.Description),
-	)
+	s := NewServiceBuilder().
+		WithID(nanoid.New()).
+		WithName(_name).
+		WithPrice(_price).
+		WithDuration(_duration).
+		WithDescription(Description(i.Description)).
+		Build()
 
 	err = u.repo.Save(s)
 	if err != nil {
@@ -74,14 +68,4 @@ func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error
 	u.bus.Publish(e)
 
 	return toServiceOutput(s), nil
-}
-
-func toServiceOutput(s Service) ServiceOutput {
-	return ServiceOutput{
-		ID:          s.ID.String(),
-		Name:        s.Name.String(),
-		Duration:    s.Duration.Value(),
-		Description: string(s.Description),
-		Price:       string(s.Price),
-	}
 }
