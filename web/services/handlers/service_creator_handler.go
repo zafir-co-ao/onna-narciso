@@ -49,6 +49,7 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 			return
 		}
 
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }
