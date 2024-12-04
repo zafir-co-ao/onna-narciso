@@ -80,7 +80,7 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		w.Header().Set("X-Operation", "Rescheduled")
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

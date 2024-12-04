@@ -13,40 +13,43 @@ import (
 
 var cwd string
 
-func NewRouter(
-	s scheduling.AppointmentScheduler,
-	c scheduling.AppointmentCanceler,
-	g scheduling.AppointmentGetter,
-	r scheduling.AppointmentRescheduler,
-	wg scheduling.WeeklyAppointmentsFinder,
-	dg scheduling.DailyAppointmentsFinder,
-	sc sessions.Creator,
-	ss sessions.Starter,
-	so sessions.Closer,
-	sf sessions.Finder,
-	scr services.ServiceCreator,
-) *http.ServeMux {
+type UsecasesParams struct {
+	AppointmentScheduler     scheduling.AppointmentScheduler
+	AppointmentRescheduler   scheduling.AppointmentRescheduler
+	AppointmentCanceler      scheduling.AppointmentCanceler
+	AppointmentGetter        scheduling.AppointmentGetter
+	WeeklyAppointmentsFinder scheduling.WeeklyAppointmentsFinder
+	DailyAppointmentsFinder  scheduling.DailyAppointmentsFinder
+	SessionCreator           sessions.Creator
+	SessionStarter           sessions.Starter
+	SessionCloser            sessions.Closer
+	SessionFinder            sessions.Finder
+	ServiceFinder            services.ServiceFinder
+	ServiceCreator           services.ServiceCreator
+}
+
+func NewRouter(u UsecasesParams) *http.ServeMux {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("POST /appointments", handlers.HandleScheduleAppointment(s))
-	mux.HandleFunc("PUT /appointments/{id}", handlers.HandleRescheduleAppointment(r))
-	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(c))
+	mux.HandleFunc("POST /appointments", handlers.HandleScheduleAppointment(u.AppointmentScheduler))
+	mux.HandleFunc("PUT /appointments/{id}", handlers.HandleRescheduleAppointment(u.AppointmentRescheduler))
+	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(u.AppointmentCanceler))
 
-	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments(dg, sf))
-	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(wg))
+	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments(u.DailyAppointmentsFinder, u.SessionFinder))
+	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(u.WeeklyAppointmentsFinder))
 
 	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
-	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(g))
+	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(u.AppointmentGetter))
 	mux.HandleFunc("GET /scheduling/daily-appointments-calendar", handlers.HandleDailyAppointmentsCalendar())
 	mux.HandleFunc("GET /scheduling/find-professionals/", handlers.HandleFindProfessionals())
 
-	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(sc, sf, dg))
-	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(ss, sf, dg))
-	mux.HandleFunc("DELETE /sessions/{id}", _sessions.HandleCloseSession(so, sf, dg))
+	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(u.SessionCreator, u.SessionFinder, u.DailyAppointmentsFinder))
+	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(u.SessionStarter, u.SessionFinder, u.DailyAppointmentsFinder))
+	mux.HandleFunc("DELETE /sessions/{id}", _sessions.HandleCloseSession(u.SessionCloser, u.SessionFinder, u.DailyAppointmentsFinder))
 
-	mux.HandleFunc("GET /services", _services.HandleFindServices())
-	mux.HandleFunc("POST /services", _services.HandleCreateService(scr))
+	mux.HandleFunc("GET /services", _services.HandleFindServices(u.ServiceFinder))
+	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
 
 	mux.HandleFunc("/", NewStaticHandler())

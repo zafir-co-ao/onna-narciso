@@ -31,20 +31,20 @@ templ AppointmentSchedulerForm(s AppointmentSchedulerState) {
 		@components.InputHiddenDisplay(s.Date, "date", s.Date)
 		@components.InputHiddenDisplay(s.Hour, "hour", s.Hour)
 		<div class="mt-4">
-			if len(s.ServiceDuration) > 0 {
+			if len(s.ServiceDuration) == 1 {
 				@components.Dropdown(
 					"duration",
-					s.ServiceDuration,
+					"90",
 					components.WithOptions(
-						components.AppointmentDurations...,
+						components.Durations...,
 					),
 				)
 			} else {
 				@components.Dropdown(
 					"duration",
-					"90",
+					s.ServiceDuration,
 					components.WithOptions(
-						components.AppointmentDurations...,
+						components.Durations...,
 					),
 				)
 			}
