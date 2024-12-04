@@ -4,6 +4,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -81,7 +82,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		WithService(s.ID, s.Name).
 		WithDate(d).
 		WithHour(h).
-		WithDuration(i.Duration).
+		WithDuration(duration.Duration(i.Duration)).
 		Build()
 
 	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, p.ID)

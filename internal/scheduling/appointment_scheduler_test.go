@@ -252,7 +252,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Duration != i.Duration {
+		if appointment.Duration.Value() != i.Duration {
 			t.Errorf("The appointment duration must be %d, got %d", i.Duration, appointment.Duration)
 		}
 	})

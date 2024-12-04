@@ -6,6 +6,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
@@ -75,7 +76,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		WithCustomer(a.CustomerID, a.CustomerName).
 		WithProfessional(p.ID, p.Name).
 		WithService(s.ID, s.Name).
-		WithDuration(i.Duration).
+		WithDuration(duration.Duration(i.Duration)).
 		WithStatus(a.Status).
 		WithDate(d).
 		WithHour(h).
