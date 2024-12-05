@@ -16,7 +16,7 @@ func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 
-		d, err := strconv.Atoi(r.Form.Get("duration"))
+		d, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
 			_http.SendBadRequest(w, "A duração do serviço está no formato inválido")
 			return
@@ -44,10 +44,12 @@ func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *
 
 		if errors.Is(err, duration.ErrInvalidDuration) {
 			_http.SendBadRequest(w, "A duração do serviço não deve ser inferior a zero")
+			return
 		}
 
 		if errors.Is(err, services.ErrServiceNotFound) {
 			_http.SendBadRequest(w, "Serviço não encontrado")
+			return
 		}
 
 		if !errors.Is(nil, err) {
@@ -56,7 +58,7 @@ func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *
 		}
 
 		w.Header().Set("X-Reload-Page", "ReloadPage")
-		_http.SendCreated(w)
+		_http.SendOk(w)
 
 	}
 
