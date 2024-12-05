@@ -102,7 +102,7 @@ templ ListServices(services []services.ServiceOutput) {
 														</svg>
 													</button>
 													<input type="hidden" name="id" value={s.ID}/>
-													<input type="hidden" name="hx-post" value={fmt.Sprintf("/services/%s", s.ID)}>
+													<input type="hidden" name="hx-put" value={fmt.Sprintf("/services/%s", s.ID)}>
 												</form>
 											</td>
 										</tr>

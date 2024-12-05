@@ -13,7 +13,7 @@ func HandleEditServiceDialog(u services.ServiceGetter) func(w http.ResponseWrite
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		id := r.FormValue("id")
-		url := r.FormValue("hx-post")
+		url := r.FormValue("hx-put")
 
 		s, err := u.Get(id)
 		if !errors.Is(nil, err) {
