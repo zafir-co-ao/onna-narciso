@@ -1,13 +1,12 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 type ServiceEditor interface {
-	Edit(id string) error
+	Edit(id nanoid.ID, name string) error
 }
 
 type ServiceEditorImpl struct {
@@ -18,11 +17,23 @@ func NewServiceEditor(repo Repository) ServiceEditor {
 	return &ServiceEditorImpl{repo: repo}
 }
 
-func (u *ServiceEditorImpl) Edit(i string) error {
-	fmt.Print("O ID: ", i)
+func (u *ServiceEditorImpl) Edit(i nanoid.ID, newName string) error {
 
-	_, err := u.repo.FindByID(nanoid.ID(i))
+	_, err := u.repo.FindByID(i)
+	if err != nil {
+		return err
+	}
 
+	_name, err := name.New(newName)
+	if err != nil {
+		return err
+	}
+
+	s := NewServiceBuilder().WithID(i).
+		WithName(_name).
+		Build()
+
+	err = u.repo.Save(s)
 	if err != nil {
 		return err
 	}
