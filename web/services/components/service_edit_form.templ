@@ -14,7 +14,7 @@ templ ServiceEditForm(url string, s services.ServiceOutput) {
 				name="name"
 				placeholder="Nome do serviço"
 				class="form-control"
-                value={string(s.Name)}
+                value={s.Name}
 			/>
 		</div>
 		<div class="mt-4">
@@ -33,7 +33,7 @@ templ ServiceEditForm(url string, s services.ServiceOutput) {
 				name="description"
 				placeholder="Descrição (Opcional)"
 				class="form-control"
-                value={string(s.Description)}
+                value={s.Description}
 			/>
 		</div>
 		<div class="mt-4">
