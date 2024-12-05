@@ -16,120 +16,137 @@ import (
 func TestServiceEdit(t *testing.T) {
 	bus := event.NewEventBus()
 	repo := inmem.NewServiceRepository()
-	u := services.NewServiceCreator(repo, bus)
-	e := services.NewServiceEditor(repo, bus)
 
-	i := services.ServiceCreatorInput{
+	s := services.Service{
+		ID:       nanoid.ID("1"),
 		Name:     "Manicure",
 		Price:    "1000",
 		Duration: 60,
 	}
 
+	_ = repo.Save(s)
+
+	u := services.NewServiceEditor(repo, bus)
+
 	t.Run("should_recovery_service_with_id", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:       o.ID,
+			ID:       s.ID.String(),
 			Name:     "Manicure e Pedicure",
 			Price:    "1500",
 			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s.ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should be find service in repository")
+		}
+
+		if s.ID.String() != i.ID {
+			t.Errorf("expected %v, got %v", i.ID, s.ID.String())
 		}
 
 	})
 
 	t.Run("should_edit_name_of_service", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:       o.ID,
+			ID:       s.ID.String(),
 			Name:     "Manicure e Pedicure",
 			Price:    "1500",
 			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s.ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should be find service in repository")
+		}
+
+		if s.Name.String() != i.Name {
+			t.Errorf("expected %v, got %v", i.Name, s.Name.String())
 		}
 	})
 
 	t.Run("should_edit_price_of_service", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:       o.ID,
+			ID:       s.ID.String(),
 			Name:     "Manicure e Pedicure",
 			Price:    "1500",
 			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s.ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should be find service in repository")
+		}
+
+		if string(s.Price) != i.Price {
+			t.Errorf("expected %v, got %v", i.Price, string(s.Price))
 		}
 	})
 
 	t.Run("should_edit_description_of_service", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
+			ID:          s.ID.String(),
 			Name:        "Manicure e Pedicure",
 			Price:       "1500",
-			Description: "Com gelinho na no pé",
+			Description: "Com Gelinho no Pé",
 			Duration:    90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s.ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should be find service in repository")
+		}
+
+		if string(s.Description) != i.Description {
+			t.Errorf("expected %v, got %v", i.Description, string(s.Description))
 		}
 	})
 
 	t.Run("should_edit_duration_of_service", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
-			Name:        "Manicure e Pedicure",
-			Price:       "1500",
-			Description: "Com gelinho na no pé",
-			Duration:    120,
+			ID:       s.ID.String(),
+			Name:     "Manicure e Pedicure",
+			Price:    "1500",
+			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s.ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should be find service in repository")
+		}
+
+		if s.Duration.Value() != i.Duration {
+			t.Errorf("expected %v, got %v", i.Duration, s.Duration.Value())
 		}
 	})
 
@@ -141,23 +158,16 @@ func TestServiceEdit(t *testing.T) {
 			}
 		}
 
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
-			Name:        "Manicure e Pedicure",
-			Price:       "1500",
-			Description: "",
-			Duration:    90,
+			ID:       s.ID.String(),
+			Name:     "Manicure e Pedicure",
+			Price:    "1500",
+			Duration: 90,
 		}
 
 		bus.Subscribe(services.EventServiceEdited, h)
 
-		err = e.Edit(i)
+		err := u.Edit(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
 		}
@@ -168,20 +178,17 @@ func TestServiceEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_name_is_empty", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
-			Price:       "1500",
-			Description: "Com gelinho na no pé",
-			Duration:    120,
+			ID:       s.ID.String(),
+			Price:    "1500",
+			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
 
 		if !errors.Is(name.ErrInvalidName, err) {
 			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
@@ -189,20 +196,17 @@ func TestServiceEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_price_is_empty", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
-			Name:        "Manicure e Pedicure",
-			Description: "Com gelinho na no pé",
-			Duration:    120,
+			ID:       s.ID.String(),
+			Name:     "Manicure e Pedicure",
+			Duration: 90,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
 
 		if !errors.Is(price.ErrInvalidPrice, err) {
 			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
@@ -210,21 +214,18 @@ func TestServiceEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_duration_is_invalid", func(t *testing.T) {
-		o, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
-		}
-
 		i := services.ServiceEditorInput{
-			ID:          o.ID,
-			Name:        "Manicure e Pedicure",
-			Price:       "1500",
-			Description: "Com gelinho na no pé",
-			Duration:    -120,
+			ID:       s.ID.String(),
+			Name:     "Manicure e Pedicure",
+			Price:    "1500",
+			Duration: -120,
 		}
 
-		err = e.Edit(i)
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
 
 		if !errors.Is(duration.ErrInvalidDuration, err) {
 			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
@@ -232,18 +233,21 @@ func TestServiceEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_service_not_exit_in_repository", func(t *testing.T) {
-		ID := "lwd311"
-		_, err := u.Create(i)
-
-		if !errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+		i := services.ServiceEditorInput{
+			ID:       nanoid.New().String(),
+			Name:     "Manicure e Pedicure",
+			Price:    "1500",
+			Duration: 120,
 		}
 
-		_, err = repo.FindByID(nanoid.ID(ID))
+		err := u.Edit(i)
 
-		if errors.Is(services.ErrServiceNotFound, err) {
-			t.Errorf("Should return a error from repository, got %v", err)
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
 		}
 
+		if !errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("The error must be %v, got %v", services.ErrServiceNotFound, err)
+		}
 	})
 }

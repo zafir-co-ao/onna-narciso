@@ -50,6 +50,7 @@ func main() {
 		SessionFinder:            sessions.NewSessionFinder(sessionRepo),
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
+		ServiceEditor:            services.NewServiceEditor(serviceRepo, bus),
 	}
 
 	http.Handle("/", web.NewRouter(u))

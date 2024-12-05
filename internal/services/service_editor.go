@@ -53,7 +53,8 @@ func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
 		return err
 	}
 
-	s := NewServiceBuilder().WithID(nanoid.ID(i.ID)).
+	s := NewServiceBuilder().
+		WithID(nanoid.ID(i.ID)).
 		WithName(_name).
 		WithPrice(_price).
 		WithDuration(_duration).
