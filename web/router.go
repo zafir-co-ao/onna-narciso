@@ -51,6 +51,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /services", _services.HandleFindServices(u.ServiceFinder))
 	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
+	mux.HandleFunc("POST /services/dialogs/edit-service-dialog", _services.HandleEditServiceDialog)
 
 	mux.HandleFunc("/", NewStaticHandler())
 
