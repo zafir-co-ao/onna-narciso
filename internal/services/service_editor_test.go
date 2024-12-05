@@ -30,8 +30,9 @@ func TestServiceEdit(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 		newName := "Pedicure"
+		newPrice := "1500"
 
-		err = e.Edit(nanoid.ID(o.ID), newName)
+		err = e.Edit(nanoid.ID(o.ID), newName, newPrice)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
@@ -58,8 +59,37 @@ func TestServiceEdit(t *testing.T) {
 		}
 
 		newName := "Manicure e Pedicure"
+		newPrice := "1500"
 
-		err = e.Edit(nanoid.ID(o.ID), newName)
+		err = e.Edit(nanoid.ID(o.ID), newName, newPrice)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+	})
+
+	t.Run("should_edit_price_of_service", func(t *testing.T) {
+		bus := event.NewEventBus()
+		repo := inmem.NewServiceRepository()
+		u := services.NewServiceCreator(repo, bus)
+		e := services.NewServiceEditor(repo)
+
+		i := services.ServiceCreatorInput{
+			Name:     "Manicure",
+			Price:    "1000",
+			Duration: 60,
+		}
+
+		o, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		newName := "Manicure e Pedicure"
+		newprice := "1500"
+
+		err = e.Edit(nanoid.ID(o.ID), newName, newprice)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
