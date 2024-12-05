@@ -125,7 +125,7 @@ func TestServiceEdit(t *testing.T) {
 			ID:          o.ID,
 			Name:        "Manicure e Pedicure",
 			Price:       "1500",
-			Description: "Com gelinho na no pé",
+			Description: "",
 			Duration:    90,
 		}
 
