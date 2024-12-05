@@ -107,6 +107,28 @@ func TestServiceEdit(t *testing.T) {
 		}
 	})
 
+	t.Run("should_edit_duration_of_service", func(t *testing.T) {
+		o, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		i := services.ServiceEditorInput{
+			ID:          o.ID,
+			Name:        "Manicure e Pedicure",
+			Price:       "1500",
+			Description: "Com gelinho na no pé",
+			Duration:    120,
+		}
+
+		err = e.Edit(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+	})
+
 	t.Run("should_publish_the_domain_event_when_service_is_edited", func(t *testing.T) {
 		isPublished := false
 		var h event.HandlerFunc = func(e event.Event) {
