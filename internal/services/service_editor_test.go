@@ -203,7 +203,7 @@ func TestServiceEdit(t *testing.T) {
 		err = e.Edit(i)
 
 		if !errors.Is(price.ErrInvalidPrice, err) {
-			t.Errorf("The error must be %v, got %v", .ErrInvalidPrice, err)
+			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
 	})
 }
