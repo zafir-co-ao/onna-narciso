@@ -29,17 +29,17 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 
 		_, err = u.Create(i)
 
-		if errors.Is(name.ErrInvalidName, err) {
+		if errors.Is(err, name.ErrInvalidName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")
 			return
 		}
 
-		if errors.Is(price.ErrInvalidPrice, err) {
+		if errors.Is(err, price.ErrInvalidPrice) {
 			_http.SendBadRequest(w, "O preço do serviço está no formato inválido")
 			return
 		}
 
-		if errors.Is(duration.ErrInvalidDuration, err) {
+		if errors.Is(err, duration.ErrInvalidDuration) {
 			_http.SendBadRequest(w, "A duração do serviço não deve ser inferior a zero")
 			return
 		}

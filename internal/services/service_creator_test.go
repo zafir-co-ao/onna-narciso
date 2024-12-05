@@ -46,7 +46,7 @@ func TestServiceCreator(t *testing.T) {
 		}
 
 		_, err = repo.FindByID(nanoid.ID(o.ID))
-		if errors.Is(services.ErrServiceNotFound, err) {
+		if errors.Is(err, services.ErrServiceNotFound) {
 			t.Errorf("Should return a service from repository, got %v", err)
 		}
 	})
@@ -134,7 +134,7 @@ func TestServiceCreator(t *testing.T) {
 		}
 
 		s, err := repo.FindByID(nanoid.ID(o.ID))
-		if errors.Is(services.ErrServiceNotFound, err) {
+		if errors.Is(err, services.ErrServiceNotFound) {
 			t.Errorf("Should return a service from repository, got %v", err)
 		}
 
@@ -179,7 +179,7 @@ func TestServiceCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		if !errors.Is(name.ErrInvalidName, err) {
+		if !errors.Is(err, name.ErrInvalidName) {
 			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
 		}
 	})
@@ -195,7 +195,7 @@ func TestServiceCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		if !errors.Is(duration.ErrInvalidDuration, err) {
+		if !errors.Is(err, duration.ErrInvalidDuration) {
 			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
 		}
 	})
@@ -211,7 +211,7 @@ func TestServiceCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		if !errors.Is(price.ErrInvalidPrice, err) {
+		if !errors.Is(err, price.ErrInvalidPrice) {
 			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
 	})

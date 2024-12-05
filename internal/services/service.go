@@ -17,21 +17,6 @@ type Service struct {
 	Description Description
 }
 
-func NewService(
-	name name.Name,
-	duration duration.Duration,
-	price price.Price,
-	description Description,
-) Service {
-	return Service{
-		ID:          nanoid.New(),
-		Name:        name,
-		Duration:    duration,
-		Description: description,
-		Price:       price,
-	}
-}
-
 func (s Service) GetID() nanoid.ID {
 	return s.ID
 }
