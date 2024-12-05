@@ -190,7 +190,7 @@ func TestServiceEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(name.ErrInvalidName, err) {
+		if !errors.Is(err, name.ErrInvalidName) {
 			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
 		}
 	})
@@ -208,7 +208,7 @@ func TestServiceEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(price.ErrInvalidPrice, err) {
+		if !errors.Is(err, price.ErrInvalidPrice) {
 			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
 	})
@@ -227,7 +227,7 @@ func TestServiceEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(duration.ErrInvalidDuration, err) {
+		if !errors.Is(err, duration.ErrInvalidDuration) {
 			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
 		}
 	})
