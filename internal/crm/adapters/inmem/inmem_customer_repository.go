@@ -10,9 +10,9 @@ type inmemCustomerRepository struct {
 	shared.BaseRepository[crm.Customer]
 }
 
-func NewCustomerRepository() crm.Repository {
+func NewCustomerRepository(c ...crm.Customer) crm.Repository {
 	return &inmemCustomerRepository{
-		BaseRepository: shared.NewBaseRepository[crm.Customer](),
+		BaseRepository: shared.NewBaseRepository[crm.Customer](c...),
 	}
 }
 
@@ -37,4 +37,14 @@ func (c *inmemCustomerRepository) FindByNif(nif crm.Nif) (crm.Customer, error) {
 func (c *inmemCustomerRepository) Save(customer crm.Customer) error {
 	c.Data[customer.ID] = customer
 	return nil
+}
+
+func (c *inmemCustomerRepository) FindAll() ([]crm.Customer, error) {
+	var customers []crm.Customer
+
+	for _, customer := range c.Data {
+		customers = append(customers, customer)
+	}
+
+	return customers, nil
 }

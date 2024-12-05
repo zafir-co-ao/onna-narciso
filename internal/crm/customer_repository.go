@@ -15,4 +15,5 @@ type Repository interface {
 	FindByID(id nanoid.ID) (Customer, error)
 	FindByNif(nif Nif) (Customer, error)
 	Save(c Customer) error
+	FindAll() ([]Customer, error)
 }
