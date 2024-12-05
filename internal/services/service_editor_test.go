@@ -7,6 +7,8 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 func TestServiceEdit(t *testing.T) {
@@ -163,4 +165,45 @@ func TestServiceEdit(t *testing.T) {
 		}
 	})
 
+	t.Run("should_return_error_if_name_is_empty", func(t *testing.T) {
+		o, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		i := services.ServiceEditorInput{
+			ID:          o.ID,
+			Price:       "1500",
+			Description: "Com gelinho na no pé",
+			Duration:    120,
+		}
+
+		err = e.Edit(i)
+
+		if !errors.Is(name.ErrInvalidName, err) {
+			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
+		}
+	})
+
+	t.Run("should_return_error_if_price_is_empty", func(t *testing.T) {
+		o, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		i := services.ServiceEditorInput{
+			ID:          o.ID,
+			Name:        "Manicure e Pedicure",
+			Description: "Com gelinho na no pé",
+			Duration:    120,
+		}
+
+		err = e.Edit(i)
+
+		if !errors.Is(price.ErrInvalidPrice, err) {
+			t.Errorf("The error must be %v, got %v", .ErrInvalidPrice, err)
+		}
+	})
 }
