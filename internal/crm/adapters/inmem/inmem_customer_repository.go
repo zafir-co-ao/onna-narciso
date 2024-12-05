@@ -10,9 +10,9 @@ type inmemCustomerRepository struct {
 	shared.BaseRepository[crm.Customer]
 }
 
-func NewCustomerRepository() crm.Repository {
+func NewCustomerRepository(c ...crm.Customer) crm.Repository {
 	return &inmemCustomerRepository{
-		BaseRepository: shared.NewBaseRepository[crm.Customer](),
+		BaseRepository: shared.NewBaseRepository[crm.Customer](c ...),
 	}
 }
 
