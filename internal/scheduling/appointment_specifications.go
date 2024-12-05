@@ -8,13 +8,13 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
-func DateIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
+func DateIsSpecification(d date.Date) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		return a.Date == d
 	}
 }
 
-func StatusIsSpecificantion(s Status) shared.SpecificationFunc[Appointment] {
+func StatusIsSpecification(s Status) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		return a.Status == s
 	}
@@ -26,7 +26,7 @@ func NotCanceledIsSpecification() shared.SpecificationFunc[Appointment] {
 	}
 }
 
-func WeekIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
+func WeekIsSpecification(d date.Date) shared.SpecificationFunc[Appointment] {
 	t1, err := time.Parse("2006-01-02", d.String())
 	w1, y1 := t1.ISOWeek()
 
@@ -48,13 +48,13 @@ func WeekIsSpecificantion(d date.Date) shared.SpecificationFunc[Appointment] {
 	}
 }
 
-func ServiceIsSpecificantion(sid nanoid.ID) shared.SpecificationFunc[Appointment] {
+func ServiceIsSpecification(sid nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		return a.ServiceID.String() == sid.String()
 	}
 }
 
-func ProfessionalsInSpecificantion(p []nanoid.ID) shared.SpecificationFunc[Appointment] {
+func ProfessionalsInSpecification(p []nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		if len(p) == 0 {
 			return true
@@ -70,7 +70,7 @@ func ProfessionalsInSpecificantion(p []nanoid.ID) shared.SpecificationFunc[Appoi
 	}
 }
 
-func ProfessionalIsSpecificantion(pid nanoid.ID) shared.SpecificationFunc[Appointment] {
+func ProfessionalIsSpecification(pid nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		return a.ProfessionalID.String() == pid.String()
 	}
