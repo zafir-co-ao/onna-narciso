@@ -7,7 +7,7 @@ import (
 )
 
 templ ServiceEditForm(url string, s services.ServiceOutput) {
-	<form hx-post={ url } hx-swap="none">
+	<form hx-put={ url } hx-swap="none">
 		<div class="mt-4">
 			<input
 				type="text"
