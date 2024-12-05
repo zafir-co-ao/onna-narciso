@@ -176,7 +176,7 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
 		if !errors.Is(err, name.ErrInvalidName) {
@@ -192,7 +192,7 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
 		if !errors.Is(err, duration.ErrInvalidDuration) {
@@ -208,7 +208,7 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
 		if !errors.Is(err, price.ErrInvalidPrice) {
