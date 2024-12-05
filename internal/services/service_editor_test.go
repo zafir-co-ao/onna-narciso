@@ -5,9 +5,11 @@ import (
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -205,5 +207,43 @@ func TestServiceEdit(t *testing.T) {
 		if !errors.Is(price.ErrInvalidPrice, err) {
 			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
+	})
+
+	t.Run("should_return_error_if_duration_is_invalid", func(t *testing.T) {
+		o, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		i := services.ServiceEditorInput{
+			ID:          o.ID,
+			Name:        "Manicure e Pedicure",
+			Price:       "1500",
+			Description: "Com gelinho na no pé",
+			Duration:    -120,
+		}
+
+		err = e.Edit(i)
+
+		if !errors.Is(duration.ErrInvalidDuration, err) {
+			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
+		}
+	})
+
+	t.Run("should_return_error_if_service_not_exit_in_repository", func(t *testing.T) {
+		ID := "lwd311"
+		_, err := u.Create(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		_, err = repo.FindByID(nanoid.ID(ID))
+
+		if errors.Is(services.ErrServiceNotFound, err) {
+			t.Errorf("Should return a error from repository, got %v", err)
+		}
+
 	})
 }

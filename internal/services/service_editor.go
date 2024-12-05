@@ -57,6 +57,7 @@ func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
 		WithName(_name).
 		WithPrice(_price).
 		WithDuration(_duration).
+		WithDescription(Description(i.Description)).
 		Build()
 
 	err = u.repo.Save(s)
