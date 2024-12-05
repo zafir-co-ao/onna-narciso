@@ -38,7 +38,7 @@ func (r *inmemAppointmentRepositoryImpl) Save(a scheduling.Appointment) error {
 }
 
 func (r *inmemAppointmentRepositoryImpl) FindByDate(d date.Date) ([]scheduling.Appointment, error) {
-	spec := scheduling.DateIsSpecificantion(d)
+	spec := scheduling.DateIsSpecification(d)
 
 	var appointments []scheduling.Appointment
 	for _, appointment := range r.BaseRepository.Data {
@@ -52,9 +52,9 @@ func (r *inmemAppointmentRepositoryImpl) FindByDate(d date.Date) ([]scheduling.A
 
 func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date date.Date, serviceID nanoid.ID, professionalsIDs []nanoid.ID) ([]scheduling.Appointment, error) {
 	spec := shared.And(
-		scheduling.WeekIsSpecificantion(date),
-		scheduling.ServiceIsSpecificantion(serviceID),
-		scheduling.ProfessionalsInSpecificantion(professionalsIDs),
+		scheduling.WeekIsSpecification(date),
+		scheduling.ServiceIsSpecification(serviceID),
+		scheduling.ProfessionalsInSpecification(professionalsIDs),
 		scheduling.NotCanceledIsSpecification(),
 	)
 
@@ -70,9 +70,9 @@ func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date 
 
 func (r *inmemAppointmentRepositoryImpl) FindByDateStatusAndProfessional(date date.Date, status scheduling.Status, id nanoid.ID) ([]scheduling.Appointment, error) {
 	spec := shared.And(
-		scheduling.DateIsSpecificantion(date),
-		scheduling.StatusIsSpecificantion(status),
-		scheduling.ProfessionalIsSpecificantion(id),
+		scheduling.DateIsSpecification(date),
+		scheduling.StatusIsSpecification(status),
+		scheduling.ProfessionalIsSpecification(id),
 	)
 
 	var appointments []scheduling.Appointment
