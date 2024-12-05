@@ -10,11 +10,11 @@ type serviceGetterImpl struct {
 	repo Repository
 }
 
-func NewServiceGetter(r Repository) serviceGetterImpl {
-	return serviceGetterImpl{repo: r}
+func NewServiceGetter(repo Repository) ServiceGetter {
+	return &serviceGetterImpl{repo}
 }
 
-func (u serviceGetterImpl) Get(id string) (ServiceOutput, error) {
+func (u *serviceGetterImpl) Get(id string) (ServiceOutput, error) {
 	s, err := u.repo.FindByID(nanoid.ID(id))
 
 	if err != nil {
