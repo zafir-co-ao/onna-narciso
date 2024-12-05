@@ -66,6 +66,10 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
+	if d.Before() {
+		return EmptyAppointmentOutput, date.ErrDateInPast
+	}
+
 	h, err := hour.New(i.Hour)
 	if err != nil {
 		return EmptyAppointmentOutput, err
