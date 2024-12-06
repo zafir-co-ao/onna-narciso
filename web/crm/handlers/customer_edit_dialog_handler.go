@@ -8,7 +8,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleGetCustomer(u crm.CustomerGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleEditCustomerDialog(u crm.CustomerGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("id")
 
