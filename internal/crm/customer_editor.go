@@ -53,7 +53,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	p, _ := phone.New(i.PhoneNumber)
+	p, err := phone.New(i.PhoneNumber)
+	if err != nil {
+		return err
+	}
 
 	if !date.IsValidFormat(i.BirthDate) {
 		return date.ErrInvalidFormat

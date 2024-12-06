@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -310,6 +311,27 @@ func TestCustomerEdit(t *testing.T) {
 
 		if !errors.Is(err, name.ErrEmptyName) {
 			t.Errorf("The error must be %V, got %V", name.ErrEmptyName, err)
+		}
+	})
+
+	t.Run("should_return_error_if_phone_number_is_empty", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paulaoliveira.oliveira@domain.com",
+			PhoneNumber: "",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, phone.ErrEmptyPhoneNumber) {
+			t.Errorf("The error must be %V, got %V", phone.ErrEmptyPhoneNumber, err)
 		}
 	})
 }
