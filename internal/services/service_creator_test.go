@@ -179,8 +179,8 @@ func TestServiceCreator(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, name.ErrInvalidName) {
-			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
+		if !errors.Is(err, name.ErrEmptyName) {
+			t.Errorf("The error must be %v, got %v", name.ErrEmptyName, err)
 		}
 	})
 

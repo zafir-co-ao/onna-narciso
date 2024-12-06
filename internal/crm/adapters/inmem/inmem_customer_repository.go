@@ -3,6 +3,7 @@ package inmem
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
@@ -24,7 +25,7 @@ func (c *inmemCustomerRepository) FindByID(id nanoid.ID) (crm.Customer, error) {
 	return c.Data[id], nil
 }
 
-func (c *inmemCustomerRepository) FindByNif(nif crm.Nif) (crm.Customer, error) {
+func (c *inmemCustomerRepository) FindByNif(nif nif.Nif) (crm.Customer, error) {
 	for _, customer := range c.Data {
 		if customer.Nif == nif {
 			return customer, crm.ErrNifAlreadyUsed

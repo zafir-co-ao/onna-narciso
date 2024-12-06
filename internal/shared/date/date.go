@@ -13,15 +13,11 @@ var (
 type Date string
 
 func New(v string) (Date, error) {
-	if !isValidFormat(v) {
+	if !IsValidFormat(v) {
 		return Date(""), ErrInvalidFormat
 	}
 
 	d := Date(v)
-
-	if d.Before() {
-		return Date(""), ErrDateInPast
-	}
 
 	return d, nil
 }
@@ -45,7 +41,7 @@ func (d Date) AddDate(years, months, days int) Date {
 	return Date(a.AddDate(years, months, days).Format("2006-01-02"))
 }
 
-func isValidFormat(v string) bool {
+func IsValidFormat(v string) bool {
 	_, err := time.Parse("2006-01-02", v)
 	return err == nil
 }
