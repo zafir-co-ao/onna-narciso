@@ -49,6 +49,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 
 	p, _ := phone.New(i.PhoneNumber)
 
+	if !date.IsValidFormat(i.BirthDate) {
+		return date.ErrInvalidFormat
+	}
+
 	c = NewCustomerBuilder().
 		WithID(i.ID).
 		WithName(name).

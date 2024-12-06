@@ -8,6 +8,7 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
 func TestCustomerEdit(t *testing.T) {
@@ -244,6 +245,27 @@ func TestCustomerEdit(t *testing.T) {
 
 		if !isPublished {
 			t.Errorf("The %s must be published", crm.EventCustomerUpdated)
+		}
+	})
+
+	t.Run("should_return_error_if_birth_date_is_invalid", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001/01/02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, date.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", crm.ErrNifAlreadyUsed, err)
 		}
 	})
 }
