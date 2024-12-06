@@ -5,9 +5,28 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
+var listCustomersHandle = templ.NewOnceHandle()
+
 templ ListCustomers(customers []crm.CustomerOutput) {
+	@listCustomersHandle.Once() {
+		<script>
+            document.addEventListener("htmx:afterOnLoad", (evt) => {
+     			let xhr = evt.detail.xhr
+
+                let header = xhr.getResponseHeader("X-Reload-Page");
+
+                if (!header) return
+
+                htmx.ajax("GET", "/customers", {
+                    target: "#customers",
+                    swap: "outerHTML"
+                })
+            })
+
+		</script>
+	}
 	@components.PageHeader("Clientes")
-	<div id="services">
+	<div id="customers">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="sm:flex sm:items-center">
 				<div class="sm:flex-auto"></div>
