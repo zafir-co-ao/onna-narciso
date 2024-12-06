@@ -21,7 +21,7 @@ func TestCustomerCreator(t *testing.T) {
 	u := crm.NewCustomerCreator(repo, bus)
 
 	t.Run("should_create_a_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Paola Oliveira",
 			Nif:         "002223109LA033",
 			BirthDate:   "2000-01-02",
@@ -37,7 +37,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_save_customer_in_repository", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA023",
 			BirthDate:   "2005-05-10",
@@ -62,7 +62,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_name_of_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "John Doe",
 			Nif:         "002223109LA022",
 			BirthDate:   "2006-01-01",
@@ -82,7 +82,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_nif_of_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA021",
 			BirthDate:   "2006-08-12",
@@ -102,7 +102,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_birth_date_of_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA020",
 			BirthDate:   "1990-01-01",
@@ -122,7 +122,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_email_of_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA034",
 			BirthDate:   "1990-01-01",
@@ -142,7 +142,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("must_register_the_phone_number_of_customer", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA031",
 			BirthDate:   "1990-01-01",
@@ -164,7 +164,7 @@ func TestCustomerCreator(t *testing.T) {
 	t.Run("should_publish_the_domain_event_when_customer_was_created", func(t *testing.T) {
 		var isPublished bool = false
 
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Paola Oliveira",
 			Nif:         "002223109LA030",
 			BirthDate:   "1990-01-01",
@@ -192,7 +192,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_nif_already_exists_in_repository", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA033",
 			BirthDate:   "1990-01-01",
@@ -212,7 +212,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_birth_date_is_invalid", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA100",
 			BirthDate:   "10/10/2000",
@@ -232,7 +232,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_email_is_invalid", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA111",
 			BirthDate:   "2001-10-15",
@@ -252,7 +252,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_name_of_customer_is_empty", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Nif:         "002223109LA910",
 			BirthDate:   "2001-10-15",
 			Email:       "john.doe@domain.com",
@@ -271,7 +271,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_phone_number_of_customer_is_empy", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:      "Micheal Jordan",
 			Nif:       "002223109LA608",
 			BirthDate: "2001-10-15",
@@ -290,7 +290,7 @@ func TestCustomerCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_nif_of_customer_is_empty", func(t *testing.T) {
-		i := crm.CustomerCreatornput{
+		i := crm.CustomerCreatorInput{
 			Name:      "Micheal Jordan",
 			BirthDate: "2001-10-15",
 			Email:     "michael.jordan@domain.com",
