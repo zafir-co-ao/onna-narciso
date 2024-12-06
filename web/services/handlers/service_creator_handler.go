@@ -21,9 +21,9 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 		}
 
 		i := services.ServiceCreatorInput{
-			Name:        r.Form.Get("name"),
-			Price:       r.Form.Get("price"),
-			Description: r.Form.Get("description"),
+			Name:        r.FormValue("name"),
+			Price:       r.FormValue("price"),
+			Description: r.FormValue("description"),
 			Duration:    d,
 		}
 
