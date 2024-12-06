@@ -32,7 +32,7 @@ func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *
 
 		err = u.Edit(i)
 
-		if errors.Is(err, name.ErrInvalidName) {
+		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")
 			return
 		}
