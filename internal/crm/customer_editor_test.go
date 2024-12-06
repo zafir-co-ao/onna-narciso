@@ -37,7 +37,7 @@ func TestCustomerEdit(t *testing.T) {
 
 	})
 
-	t.Run("should_edit_name_of:customer", func(t *testing.T) {
+	t.Run("should_edit_name_of_customer", func(t *testing.T) {
 		c := crm.Customer{
 			ID:          nanoid.ID("1"),
 			Name:        "Paola Oliveira",
@@ -64,6 +64,7 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if f.Name != c.Name {
+			t.Errorf("The name of customer %s should equal to %s", c.Name, f.Name)
 
 		}
 
