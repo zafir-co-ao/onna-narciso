@@ -11,7 +11,7 @@ import (
 
 func HandleFindServices(u services.ServiceFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s, err := u.Find()
+		o, err := u.Find()
 
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
@@ -19,6 +19,6 @@ func HandleFindServices(u services.ServiceFinder) func(w http.ResponseWriter, r 
 		}
 
 		_http.SendOk(w)
-		pages.ListServices(s).Render(r.Context(), w)
+		pages.ListServices(o).Render(r.Context(), w)
 	}
 }
