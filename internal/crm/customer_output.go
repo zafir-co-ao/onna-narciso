@@ -15,7 +15,7 @@ func toCustomerOutput(c Customer) CustomerOutput {
 		Name:        c.Name.String(),
 		Nif:         c.Nif.String(),
 		BirthDate:   c.BirthDate.String(),
-		Email:       c.Email,
-		PhoneNumber: c.PhoneNumber,
+		Email:       c.Email.String(),
+		PhoneNumber: c.PhoneNumber.String(),
 	}
 }
