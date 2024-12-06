@@ -3,9 +3,11 @@ package web
 import (
 	"net/http"
 
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	_crm "github.com/zafir-co-ao/onna-narciso/web/crm/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 	_services "github.com/zafir-co-ao/onna-narciso/web/services/handlers"
 	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
@@ -26,6 +28,7 @@ type UsecasesParams struct {
 	SessionFinder            sessions.Finder
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
+	CustomerCreator          crm.CustomerCreator
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -51,6 +54,8 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /services", _services.HandleFindServices(u.ServiceFinder))
 	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
+
+	mux.HandleFunc("POST /customers", _crm.HandleCreateCustomer(u.CustomerCreator))
 
 	mux.HandleFunc("/", NewStaticHandler())
 
