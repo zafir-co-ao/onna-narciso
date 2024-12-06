@@ -4,16 +4,18 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 type CustomerEditorInput struct {
-	ID        nanoid.ID
-	Name      string
-	NIF       string
-	BirthDate string
-	Email     string
+	ID          nanoid.ID
+	Name        string
+	NIF         string
+	BirthDate   string
+	Email       string
+	PhoneNumber string
 }
 
 type CustomerEditor interface {
@@ -53,12 +55,18 @@ func (u *CustomerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
+	p, err := phone.New(i.PhoneNumber)
+	if err != nil {
+		return err
+	}
+
 	c := NewCustomerBuilder().
 		WithID(i.ID).
 		WithName(n).
 		WithNif(nif).
 		WithBirthDate(date.Date(i.BirthDate)).
 		WithEmail(email).
+		WithPhoneNumber(p).
 		Build()
 
 	err = u.repo.Save(c)

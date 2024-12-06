@@ -24,12 +24,13 @@ func TestCustomerEdit(t *testing.T) {
 	u := crm.NewCustomerEditor(repo)
 
 	t.Run("should_find_the_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:        "1",
-			Name:      "Paola Miguel",
-			NIF:       "002223109LA031",
-			BirthDate: "2001-01-02",
-			Email:     "paola123.oliveira@domain.com",
+	i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -45,12 +46,13 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_edit_name_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:        "1",
-			Name:      "Paola Miguel",
-			NIF:       "002223109LA031",
-			BirthDate: "2001-01-02",
-			Email:     "paola123.oliveira@domain.com",
+	i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -72,12 +74,13 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_edit_nif_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:        "1",
-			Name:      "Paola Miguel",
-			NIF:       "002223109LA031",
-			BirthDate: "2001-01-02",
-			Email:     "paola123.oliveira@domain.com",
+	i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -99,12 +102,13 @@ func TestCustomerEdit(t *testing.T) {
 
 	t.Run("should_edit_birthdate_of_customer", func(t *testing.T) {
 
-		i := crm.CustomerEditorInput{
-			ID:        "1",
-			Name:      "Paola Miguel",
-			NIF:       "002223109LA031",
-			BirthDate: "2001-01-02",
-			Email:     "paola123.oliveira@domain.com",
+	i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -119,18 +123,19 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if f.BirthDate.String() != i.BirthDate {
-			t.Errorf("The birthday of customer %s should equal to %s", f.BirthDate.String(), i.BirthDate)
+			t.Errorf("The birthdateof customer %s should equal to %s", f.BirthDate.String(), i.BirthDate)
 
 		}
 	})
 
 	t.Run("should_edit_email_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:        "1",
-			Name:      "Paola Miguel",
-			NIF:       "002223109LA031",
-			BirthDate: "2001-01-02",
-			Email:     "paola123.oliveira@domain.com",
+	i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -146,6 +151,33 @@ func TestCustomerEdit(t *testing.T) {
 
 		if f.Email.String() != i.Email {
 			t.Errorf("The email of customer %s should equal to %s", f.Email.String(), i.Email)
+
+		}
+	})
+
+	t.Run("should_edit_phonenumber_of_customer", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paola123.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
+		}
+
+		err := u.Edit(i)
+
+		if err != nil {
+			t.Errorf("expected no error, got %v", err)
+		}
+
+		f, err := repo.FindByID(c.ID)
+		if err != nil {
+			t.Errorf("expected no error, got %v", err)
+		}
+
+		if f.PhoneNumber.String() != i.PhoneNumber {
+			t.Errorf("The phonenumber of customer %s should equal to %s", f.PhoneNumber.String(), i.PhoneNumber)
 
 		}
 	})
