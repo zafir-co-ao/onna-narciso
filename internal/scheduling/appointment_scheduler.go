@@ -71,6 +71,10 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		return EmptyAppointmentOutput, err
 	}
 
+	if d.Before() {
+		return EmptyAppointmentOutput, date.ErrDateInPast
+	}
+
 	h, err := hour.New(i.Hour)
 	if err != nil {
 		return EmptyAppointmentOutput, err

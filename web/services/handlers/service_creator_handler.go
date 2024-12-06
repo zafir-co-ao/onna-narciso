@@ -29,7 +29,7 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 
 		_, err = u.Create(i)
 
-		if errors.Is(err, name.ErrInvalidName) {
+		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")
 			return
 		}
