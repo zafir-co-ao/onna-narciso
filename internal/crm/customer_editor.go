@@ -15,7 +15,7 @@ const EventCustomerUpdated = "EventCustomerUpdated"
 type CustomerEditorInput struct {
 	ID          nanoid.ID
 	Name        string
-	NIF         string
+	Nif         string
 	BirthDate   string
 	Email       string
 	PhoneNumber string
@@ -46,7 +46,7 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	nif, err := nif.New(i.NIF)
+	nif, err := nif.New(i.Nif)
 	if err != nil {
 		return err
 	}
@@ -88,10 +88,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 }
 
 func (u *customerEditorImpl) isUsedNif(c Customer, i CustomerEditorInput) bool {
-	if c.IsSameNif(nif.Nif(i.NIF)) {
+	if c.IsSameNif(nif.Nif(i.Nif)) {
 		return false
 	}
 
-	_, err := u.repo.FindByNif(nif.Nif(i.NIF))
+	_, err := u.repo.FindByNif(nif.Nif(i.Nif))
 	return err != nil
 }

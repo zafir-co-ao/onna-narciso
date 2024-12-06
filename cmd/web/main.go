@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
@@ -38,7 +39,17 @@ func main() {
 	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	serviceRepo := _services.NewServiceRepository()
-	customerRepo := _crm.NewCustomerRepository()
+	c := crm.Customer{
+
+		ID:          nanoid.ID("1"),
+		Name:        "Paola Oliveira",
+		Nif:         "002223109LA033",
+		BirthDate:   "2000-01-02",
+		Email:       "paola.oliveira@domain.com",
+		PhoneNumber: "+244911000022",
+	}
+
+	customerRepo := _crm.NewCustomerRepository(c)
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
@@ -54,6 +65,7 @@ func main() {
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
+		CustomerEditor:           crm.NewCustomerEditor(customerRepo, bus),
 	}
 
 	http.Handle("/", web.NewRouter(u))

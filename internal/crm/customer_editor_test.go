@@ -43,7 +43,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -65,7 +65,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -92,7 +92,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -109,8 +109,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
 
-		if c.Nif.String() != i.NIF {
-			t.Errorf("The nif of customer %s should equal to %s", c.Nif.String(), i.NIF)
+		if c.Nif.String() != i.Nif {
+			t.Errorf("The nif of customer %s should equal to %s", c.Nif.String(), i.Nif)
 
 		}
 	})
@@ -119,7 +119,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -146,7 +146,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -172,7 +172,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -199,7 +199,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "001123109LA033",
+			Nif:         "001123109LA033",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -222,7 +222,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -256,7 +256,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001/01/02",
 			Email:       "paola123.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -277,7 +277,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "p123.oliveira@domain",
 			PhoneNumber: "+244922000022",
@@ -298,7 +298,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paulaoliveira.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
@@ -319,7 +319,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "002223109LA031",
+			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "paulaoliveira.oliveira@domain.com",
 			PhoneNumber: "",
@@ -340,7 +340,7 @@ func TestCustomerEdit(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
-			NIF:         "",
+			Nif:         "",
 			BirthDate:   "2001-01-02",
 			Email:       "paulaoliveira.oliveira@domain.com",
 			PhoneNumber: "244922000022",
