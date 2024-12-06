@@ -10,7 +10,7 @@ templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 				name="name"
 				placeholder="Nome do cliente"
 				class="form-control"
-                value={customer.Name}
+				value={ customer.Name }
 				required
 			/>
 		</div>
@@ -20,8 +20,8 @@ templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 				name="nif"
 				placeholder="NIF"
 				class="form-control"
-				maxlength="14"
-                 value={customer.Nif}
+				maxlength="50"
+				value={ customer.Nif }
 				required
 			/>
 		</div>
@@ -30,7 +30,7 @@ templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 				type="date"
 				name="birth-date"
 				class="form-control"
-                 value={customer.BirthDate}
+				value={ customer.BirthDate }
 				required
 			/>
 		</div>
@@ -40,17 +40,17 @@ templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 				name="email"
 				placeholder="E-mail"
 				class="form-control"
-                 value={customer.Email}
+				value={ customer.Email }
 				required
 			/>
 		</div>
-        <div class="mt-4">
+		<div class="mt-4">
 			<input
 				type="number"
 				name="phone-number"
 				placeholder="Telefone"
 				class="form-control"
-                 value={customer.PhoneNumber}
+				value={ customer.PhoneNumber }
 				required
 			/>
 		</div>
@@ -64,4 +64,3 @@ templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 		</div>
 	</form>
 }
-
