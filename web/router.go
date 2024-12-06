@@ -56,6 +56,8 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 
 	mux.HandleFunc("POST /customers", _crm.HandleCreateCustomer(u.CustomerCreator))
 	mux.HandleFunc("GET /customers", _crm.HandleFindCustomer(u.CustomerFinder))
+	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
+	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleEditCustomerDialog())
 
 	mux.HandleFunc("/", NewStaticHandler())
 

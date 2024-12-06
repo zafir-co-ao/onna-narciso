@@ -1,0 +1,67 @@
+package components
+
+import "github.com/zafir-co-ao/onna-narciso/internal/crm"
+
+templ CustomerEditForm(url string, customer crm.CustomerOutput) {
+	<form hx-put={ url } hx-swap="none">
+		<div class="mt-4">
+			<input
+				type="text"
+				name="name"
+				placeholder="Nome do cliente"
+				class="form-control"
+                value={customer.Name}
+				required
+			/>
+		</div>
+		<div class="mt-4">
+			<input
+				type="text"
+				name="nif"
+				placeholder="NIF"
+				class="form-control"
+				maxlength="14"
+                 value={customer.Nif}
+				required
+			/>
+		</div>
+		<div class="mt-4">
+			<input
+				type="date"
+				name="birth-date"
+				class="form-control"
+                 value={customer.BirthDate}
+				required
+			/>
+		</div>
+		<div class="mt-4">
+			<input
+				type="email"
+				name="email"
+				placeholder="E-mail"
+				class="form-control"
+                 value={customer.Email}
+				required
+			/>
+		</div>
+        <div class="mt-4">
+			<input
+				type="number"
+				name="phone-number"
+				placeholder="Telefone"
+				class="form-control"
+                 value={customer.PhoneNumber}
+				required
+			/>
+		</div>
+		<div class="bg-gray-100 mt-8 px-4 py-3 sm:px-10 -mx-10 text-right">
+			<button
+				class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+				type="submit"
+			>
+				Salvar
+			</button>
+		</div>
+	</form>
+}
+
