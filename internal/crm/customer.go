@@ -18,6 +18,10 @@ type Customer struct {
 	PhoneNumber phone.PhoneNumber
 }
 
+func (c *Customer) IsSameNif(n nif.Nif) bool {
+	return c.Nif.String() == n.String()
+}
+
 func (c Customer) GetID() nanoid.ID {
 	return c.ID
 }
