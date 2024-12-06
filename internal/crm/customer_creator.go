@@ -11,7 +11,7 @@ import (
 
 const EventCustomerCreated = "EventCustomerCreated"
 
-type CustomerCreatornput struct {
+type CustomerCreatorInput struct {
 	Name        string
 	Nif         string
 	BirthDate   string
@@ -20,7 +20,7 @@ type CustomerCreatornput struct {
 }
 
 type CustomerCreator interface {
-	Create(i CustomerCreatornput) (CustomerOutput, error)
+	Create(i CustomerCreatorInput) (CustomerOutput, error)
 }
 
 type customerCreatorImpl struct {
@@ -32,7 +32,7 @@ func NewCustomerCreator(repo Repository, bus event.Bus) CustomerCreator {
 	return &customerCreatorImpl{repo, bus}
 }
 
-func (u *customerCreatorImpl) Create(i CustomerCreatornput) (CustomerOutput, error) {
+func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, error) {
 	_nif, err := nif.New(i.Nif)
 	if err != nil {
 		return CustomerOutput{}, err
