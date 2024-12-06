@@ -7,6 +7,6 @@ import (
 )
 
 func HandleCreateServiceDialog(w http.ResponseWriter, r *http.Request) {
-	url := "/services"
+	url := r.FormValue("hx-post")
 	components.ServiceCreateDialog(url).Render(r.Context(), w)
 }

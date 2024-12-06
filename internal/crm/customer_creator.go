@@ -2,6 +2,9 @@ package crm
 
 import (
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -30,17 +33,41 @@ func NewCustomerCreator(repo Repository, bus event.Bus) CustomerCreator {
 }
 
 func (u *customerCreatorImpl) Create(i CustomerCreatornput) (CustomerOutput, error) {
-	_, err := u.repo.FindByNif(Nif(i.Nif))
+	_nif, err := nif.New(i.Nif)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	_, err = u.repo.FindByNif(_nif)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	n, err := name.New(i.Name)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	if !date.IsValidFormat(i.BirthDate) {
+		return CustomerOutput{}, date.ErrInvalidFormat
+	}
+
+	email, err := email.New(i.Email)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	p, err := phone.New(i.PhoneNumber)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
 	c := NewCustomerBuilder().
-		WithName(name.Name(i.Name)).
-		WithNif(Nif(i.Nif)).
+		WithName(n).
+		WithNif(_nif).
 		WithBirthDate(date.Date(i.BirthDate)).
-		WithEmail(i.Email).
-		WithPhoneNumber(i.PhoneNumber).
+		WithEmail(email).
+		WithPhoneNumber(p).
 		Build()
 
 	err = u.repo.Save(c)

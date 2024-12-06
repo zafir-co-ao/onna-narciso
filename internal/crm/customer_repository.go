@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
 )
 
 var (
@@ -13,6 +14,6 @@ var (
 
 type Repository interface {
 	FindByID(id nanoid.ID) (Customer, error)
-	FindByNif(nif Nif) (Customer, error)
+	FindByNif(nif nif.Nif) (Customer, error)
 	Save(c Customer) error
 }
