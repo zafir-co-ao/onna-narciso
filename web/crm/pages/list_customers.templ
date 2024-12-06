@@ -1,48 +1,29 @@
 package pages
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
-	"strconv"
 )
 
-var listServicesHandle = templ.NewOnceHandle()
-
-templ ListServices(services []services.ServiceOutput) {
-	@listServicesHandle.Once() {
-		<script type="text/javascript">
-       	    document.addEventListener("htmx:afterOnLoad", (evt) => {
-     			let xhr = evt.detail.xhr
-
-                let header = xhr.getResponseHeader("X-Reload-Page");
-
-                if (!header) return
-
-                htmx.ajax("GET", "/services", {
-                    target: "#services",
-                    swap: "outerHTML"
-                })
-            })
-        </script>
-	}
-	@components.PageHeader("Serviços")
+templ ListCustomers(customers []crm.CustomerOutput) {
+	@components.PageHeader("Clientes")
 	<div id="services">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="sm:flex sm:items-center">
 				<div class="sm:flex-auto"></div>
 				<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 					<form
-						hx-get="/services/dialogs/create-service-dialog"
+						hx-get="/customers/dialogs/create-customer-dialog"
 						hx-trigger="click"
 						hx-target="#dialog"
 						hx-swap="outerHTML"
 					>
-						<input type="hidden" name="hx-post" value="/services"/>
+						<input type="hidden" name="hx-post" value="/customers"/>
 						<button
 							type="button"
 							class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 						>
-							Novo serviço
+							Novo cliente
 						</button>
 					</form>
 				</div>
@@ -63,42 +44,57 @@ templ ListServices(services []services.ServiceOutput) {
 										scope="col"
 										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 									>
-										Descrição
+										NIF
 									</th>
 									<th
 										scope="col"
 										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 									>
-										Preço
+										Data de nascimento
 									</th>
 									<th
 										scope="col"
 										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 									>
-										Duração
+										E-mail
+									</th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									>
+										Telefone
+									</th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									>
+										Telefone
 									</th>
 								</tr>
 							</thead>
 							<tbody class="bg-white">
-								if len(services) > 0 {
-									for _, s := range services {
+								if len(customers) > 0 {
+									for _, c := range customers {
 										<tr class="even:bg-gray-50">
 											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-												{ s.Name }
+												{ c.Name }
 											</td>
-											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ s.Description }</td>
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ c.Nif }</td>
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-												{ s.Price }
+												{ c.BirthDate }
 											</td>
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-												{ components.FindDuration(strconv.Itoa(s.Duration))[0] }
+												{ c.Email }
+											</td>
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+												{ c.PhoneNumber }
 											</td>
 										</tr>
 									}
 								} else {
 									<tr class="even:bg-gray-50 text-center">
-										<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-3" colspan="4">
-											Nenhum serviço de momento. Prima em criar para adicionar um novo serviço.
+										<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-3" colspan="5">
+											Nenhum cliente de momento. Prima em criar para adicionar um novo cliente.
 										</td>
 									</tr>
 								}
