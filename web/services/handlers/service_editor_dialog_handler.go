@@ -11,15 +11,21 @@ import (
 
 func HandleEditServiceDialog(u services.ServiceGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		id := r.FormValue("id")
 		url := r.FormValue("hx-put")
 
-		s, err := u.Get(id)
-		if !errors.Is(nil, err) {
+		o, err := u.Get(r.FormValue("id"))
+
+		if errors.Is(err, services.ErrServiceNotFound) {
 			_http.SendNotFound(w, "Serviço não encontrado")
+			return
 		}
 
-		components.ServiceEditDialog(url, s).Render(r.Context(), w)
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
+		_http.SendOk(w)
+		components.ServiceEditDialog(url, o).Render(r.Context(), w)
 	}
 }
