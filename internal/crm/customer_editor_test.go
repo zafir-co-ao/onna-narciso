@@ -10,6 +10,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 func TestCustomerEdit(t *testing.T) {
@@ -288,6 +289,27 @@ func TestCustomerEdit(t *testing.T) {
 
 		if !errors.Is(err, email.ErrInvalidFormat) {
 			t.Errorf("The error must be %V, got %V", email.ErrInvalidFormat, err)
+		}
+	})
+
+	t.Run("should_return_error_if_name_is_empty", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "",
+			NIF:         "002223109LA031",
+			BirthDate:   "2001-01-02",
+			Email:       "paulaoliveira.oliveira@domain.com",
+			PhoneNumber: "+244922000022",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, name.ErrEmptyName) {
+			t.Errorf("The error must be %V, got %V", name.ErrEmptyName, err)
 		}
 	})
 }

@@ -41,7 +41,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return ErrNifAlreadyUsed
 	}
 
-	name, _ := name.New(i.Name)
+	name, err := name.New(i.Name)
+	if err != nil {
+		return err
+	}
 
 	nif, _ := nif.New(i.NIF)
 
