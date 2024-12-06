@@ -20,6 +20,11 @@ func (c *customerBuilder) WithName(n name.Name) *customerBuilder {
 	return c
 }
 
+func (c *customerBuilder) WithID(id nanoid.ID) *customerBuilder {
+	c.ID = id
+	return c
+}
+
 func (c *customerBuilder) WithNif(nif nif.Nif) *customerBuilder {
 	c.Nif = nif
 	return c

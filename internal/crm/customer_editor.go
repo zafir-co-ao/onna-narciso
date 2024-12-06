@@ -3,11 +3,19 @@ package crm
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
+type CustomerEditorInput struct {
+	ID        nanoid.ID
+	Name      string
+	NIF       string
+	BirthDate string
+}
+
 type CustomerEditor interface {
-	Edit(id, newName, newNif string) error
+	Edit(i CustomerEditorInput) error
 }
 
 type CustomerEditorImpl struct {
@@ -18,21 +26,31 @@ func NewCustomerEditor(repo Repository) CustomerEditor {
 	return &CustomerEditorImpl{repo: repo}
 }
 
-func (u *CustomerEditorImpl) Edit(id, newName, newNif string) error {
-	_, err := u.repo.FindByID(nanoid.ID(id))
+func (u *CustomerEditorImpl) Edit(i CustomerEditorInput) error {
+	_, err := u.repo.FindByID(i.ID)
 	if err != nil {
 		return err
 	}
 
-	n, err := name.New(newName)
+	n, err := name.New(i.Name)
 	if err != nil {
 		return err
 	}
 
-	nif, err := nif.New(newNif)
+	nif, err := nif.New(i.NIF)
+	if err != nil {
+		return err
+	}
+
+	if !date.IsValidFormat(i.BirthDate) {
+		return date.ErrInvalidFormat
+	}
 
 	c := NewCustomerBuilder().
-		WithName(n).WithNif(nif).
+		WithID(i.ID).
+		WithName(n).
+		WithNif(nif).
+		WithBirthDate(date.Date(i.BirthDate)).
 		Build()
 
 	err = u.repo.Save(c)
