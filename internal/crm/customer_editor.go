@@ -2,6 +2,7 @@ package crm
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -12,6 +13,7 @@ type CustomerEditorInput struct {
 	Name      string
 	NIF       string
 	BirthDate string
+	Email     string
 }
 
 type CustomerEditor interface {
@@ -46,11 +48,17 @@ func (u *CustomerEditorImpl) Edit(i CustomerEditorInput) error {
 		return date.ErrInvalidFormat
 	}
 
+	email, err := email.New(i.Email)
+	if err != nil {
+		return err
+	}
+
 	c := NewCustomerBuilder().
 		WithID(i.ID).
 		WithName(n).
 		WithNif(nif).
 		WithBirthDate(date.Date(i.BirthDate)).
+		WithEmail(email).
 		Build()
 
 	err = u.repo.Save(c)

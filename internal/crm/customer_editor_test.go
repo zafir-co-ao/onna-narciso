@@ -23,13 +23,13 @@ func TestCustomerEdit(t *testing.T) {
 	repo := inmem.NewCustomerRepository(c)
 	u := crm.NewCustomerEditor(repo)
 
-
 	t.Run("should_find_the_customer", func(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:        "1",
 			Name:      "Paola Miguel",
 			NIF:       "002223109LA031",
 			BirthDate: "2001-01-02",
+			Email:     "paola123.oliveira@domain.com",
 		}
 
 		err := u.Edit(i)
@@ -50,6 +50,7 @@ func TestCustomerEdit(t *testing.T) {
 			Name:      "Paola Miguel",
 			NIF:       "002223109LA031",
 			BirthDate: "2001-01-02",
+			Email:     "paola123.oliveira@domain.com",
 		}
 
 		err := u.Edit(i)
@@ -64,7 +65,7 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if f.Name.String() != i.Name {
-			t.Errorf("The name of customer %s should equal to %s", i.Name, f.Name.String())
+			t.Errorf("The name of customer %s should equal to %s", f.Name.String(), i.Name)
 
 		}
 
@@ -76,6 +77,7 @@ func TestCustomerEdit(t *testing.T) {
 			Name:      "Paola Miguel",
 			NIF:       "002223109LA031",
 			BirthDate: "2001-01-02",
+			Email:     "paola123.oliveira@domain.com",
 		}
 
 		err := u.Edit(i)
@@ -90,7 +92,7 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if f.Nif.String() != i.NIF {
-			t.Errorf("The nif of customer %s should equal to %s", i.NIF, f.Nif.String())
+			t.Errorf("The nif of customer %s should equal to %s", f.Nif.String(), i.NIF)
 
 		}
 	})
@@ -102,6 +104,7 @@ func TestCustomerEdit(t *testing.T) {
 			Name:      "Paola Miguel",
 			NIF:       "002223109LA031",
 			BirthDate: "2001-01-02",
+			Email:     "paola123.oliveira@domain.com",
 		}
 
 		err := u.Edit(i)
@@ -116,7 +119,33 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if f.BirthDate.String() != i.BirthDate {
-			t.Errorf("The birthday of customer %s should equal to %s", i.BirthDate, f.BirthDate.String())
+			t.Errorf("The birthday of customer %s should equal to %s", f.BirthDate.String(), i.BirthDate)
+
+		}
+	})
+
+	t.Run("should_edit_email_of_customer", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:        "1",
+			Name:      "Paola Miguel",
+			NIF:       "002223109LA031",
+			BirthDate: "2001-01-02",
+			Email:     "paola123.oliveira@domain.com",
+		}
+
+		err := u.Edit(i)
+
+		if err != nil {
+			t.Errorf("expected no error, got %v", err)
+		}
+
+		f, err := repo.FindByID(c.ID)
+		if err != nil {
+			t.Errorf("expected no error, got %v", err)
+		}
+
+		if f.Email.String() != i.Email {
+			t.Errorf("The email of customer %s should equal to %s", f.Email.String(), i.Email)
 
 		}
 	})
