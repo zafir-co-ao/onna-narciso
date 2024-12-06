@@ -24,6 +24,10 @@ func (d Duration) Value() int {
 	return int(d)
 }
 
+func (d Duration) String() string {
+	return ""
+}
+
 func isLessThanZero(v int) bool {
 	return v < 0
 }
