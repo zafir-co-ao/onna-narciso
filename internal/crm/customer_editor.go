@@ -46,7 +46,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	nif, _ := nif.New(i.NIF)
+	nif, err := nif.New(i.NIF)
+	if err != nil {
+		return err
+	}
 
 	email, err := email.New(i.Email)
 	if err != nil {
