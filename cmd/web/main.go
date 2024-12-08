@@ -15,7 +15,6 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -34,7 +33,7 @@ func main() {
 	ssacl := _stubs.NewServicesACL()
 
 	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
-	sessionRepo := _sessions.NewSessionRepository(testdata.Sessions...)
+	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
 	serviceRepo := services.NewInmemRepository()
 	customerRepo := crm.NewInmemRepository()
 
