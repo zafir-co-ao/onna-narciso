@@ -14,7 +14,6 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
-	_crm "github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
@@ -37,7 +36,7 @@ func main() {
 	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	serviceRepo := services.NewInmemRepository()
-	customerRepo := _crm.NewCustomerRepository()
+	customerRepo := crm.NewInmemRepository()
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
