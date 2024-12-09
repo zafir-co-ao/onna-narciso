@@ -49,6 +49,7 @@ func main() {
 		SessionFinder:            sessions.NewSessionFinder(sessionRepo),
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
+		ServiceEditor:            services.NewServiceEditor(serviceRepo, bus),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
 		ServiceGetter:            services.NewServiceGetter(serviceRepo),
 		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
