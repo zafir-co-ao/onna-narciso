@@ -15,7 +15,7 @@ templ ServiceEditForm(url string, s services.ServiceOutput) {
 					components.WithPlaceholder("Nome do serviço"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
-					components.WithValue("Silvano Paulino"),
+					components.WithValue(s.Name),
 				)
 			</div>
 			<div>
