@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
@@ -25,8 +24,6 @@ func HandleEditServiceDialog(u services.ServiceGetter) func(w http.ResponseWrite
 			_http.SendServerError(w)
 			return
 		}
-
-		fmt.Println("Service: ", o)
 
 		_http.SendOk(w)
 		components.ServiceEditDialog(url, o).Render(r.Context(), w)
