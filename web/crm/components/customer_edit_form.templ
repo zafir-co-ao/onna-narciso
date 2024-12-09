@@ -1,66 +1,63 @@
 package components
 
-import "github.com/zafir-co-ao/onna-narciso/internal/crm"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
 
 templ CustomerEditForm(url string, customer crm.CustomerOutput) {
 	<form hx-put={ url } hx-swap="none">
-		<div class="mt-4">
-			<input
-				type="text"
-				name="name"
-				placeholder="Nome do cliente"
-				class="form-control"
-				value={ customer.Name }
-				required
-			/>
-		</div>
-		<div class="mt-4">
-			<input
-				type="text"
-				name="nif"
-				placeholder="NIF"
-				class="form-control"
-				maxlength="50"
-				value={ customer.Nif }
-				required
-			/>
-		</div>
-		<div class="mt-4">
-			<input
-				type="date"
-				name="birth-date"
-				class="form-control"
-				value={ customer.BirthDate }
-				required
-			/>
-		</div>
-		<div class="mt-4">
-			<input
-				type="email"
-				name="email"
-				placeholder="E-mail"
-				class="form-control"
-				value={ customer.Email }
-				required
-			/>
-		</div>
-		<div class="mt-4">
-			<input
-				type="number"
-				name="phone-number"
-				placeholder="Telefone"
-				class="form-control"
-				value={ customer.PhoneNumber }
-				required
-			/>
-		</div>
-		<div class="form-actions">
-			<button
-				class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
-				type="submit"
-			>
-				Salvar
-			</button>
+		<div class="mt-4 space-y-4">
+			<div>
+				@components.InputField(
+					components.WithName("name"),
+					components.WithPlaceholder("Nome do cliente"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+					components.WithValue(customer.Name),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithName("nif"),
+					components.WithPlaceholder("NIF"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+					components.WithValue(customer.Nif),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithType("date"),
+					components.WithName("birth-date"),
+					components.WithClass("form-control"),
+					components.WithValue(customer.BirthDate),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithType("email"),
+					components.WithName("email"),
+					components.WithClass("form-control"),
+					components.WithValue(customer.Email),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithType("number"),
+					components.WithName("phone-number"),
+					components.WithClass("form-control"),
+					components.WithValue(customer.PhoneNumber),
+				)
+			</div>
+			<div class="form-actions">
+				<button
+					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+					type="submit"
+				>
+					Salvar
+				</button>
+			</div>
 		</div>
 	</form>
 }
