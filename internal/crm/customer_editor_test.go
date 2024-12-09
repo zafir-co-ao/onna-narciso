@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
@@ -16,6 +15,9 @@ import (
 )
 
 func TestCustomerEdit(t *testing.T) {
+	bus := event.NewEventBus()
+	repo := crm.NewInmemRepository()
+
 	customers := []crm.Customer{
 		{
 			ID:          nanoid.ID("1"),
@@ -35,8 +37,9 @@ func TestCustomerEdit(t *testing.T) {
 		},
 	}
 
-	bus := event.NewEventBus()
-	repo := inmem.NewCustomerRepository(customers...)
+	_ = repo.Save(customers[0])
+	_ = repo.Save(customers[1])
+
 	u := crm.NewCustomerEditor(repo, bus)
 
 	t.Run("should_find_the_customer", func(t *testing.T) {

@@ -7,12 +7,11 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionStarter(t *testing.T) {
-	repo := inmem.NewSessionRepository()
+	repo := sessions.NewInmemRepository()
 	bus := event.NewEventBus()
 
 	s1 := sessions.Session{ID: "1"}

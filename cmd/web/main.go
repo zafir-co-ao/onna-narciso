@@ -15,10 +15,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
-	_crm "github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	_services "github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
-	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -37,6 +34,7 @@ func main() {
 	ssacl := _stubs.NewServicesACL()
 
 	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
+<<<<<<< HEAD
 	sessionRepo := _sessions.NewSessionRepository(testdata.Sessions...)
 	serviceRepo := _services.NewServiceRepository()
 	c := crm.Customer{
@@ -50,6 +48,11 @@ func main() {
 	}
 
 	customerRepo := _crm.NewCustomerRepository(c)
+=======
+	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
+	serviceRepo := services.NewInmemRepository()
+	customerRepo := crm.NewInmemRepository()
+>>>>>>> 94139c18549c640a1b4606c1ae542a4d4aa8345a
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
