@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 )
 
 func TestCustomerFinder(t *testing.T) {
@@ -23,7 +22,7 @@ func TestCustomerFinder(t *testing.T) {
 			},
 		}
 
-		repo := inmem.NewCustomerRepository(customers...)
+		repo := crm.NewInmemRepository(customers...)
 		u := crm.NewCustomerFinder(repo)
 
 		o, err := u.Find()

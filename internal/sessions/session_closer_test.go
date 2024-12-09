@@ -8,14 +8,13 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewSessionRepository()
+	repo := sessions.NewInmemRepository()
 	sacl := stubs.NewServicesACL()
 
 	u := sessions.NewSessionCloser(repo, sacl, bus)

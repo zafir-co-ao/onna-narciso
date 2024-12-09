@@ -13,8 +13,8 @@ var (
 )
 
 type Repository interface {
+	FindAll() ([]Customer, error)
 	FindByID(id nanoid.ID) (Customer, error)
 	FindByNif(nif nif.Nif) (Customer, error)
 	Save(c Customer) error
-	FindAll() ([]Customer, error)
 }
