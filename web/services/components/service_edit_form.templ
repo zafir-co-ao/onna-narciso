@@ -1,0 +1,59 @@
+package components
+
+import (
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+    "github.com/zafir-co-ao/onna-narciso/internal/services"
+	"strconv"
+)
+
+templ ServiceEditForm(url string, s services.ServiceOutput) {
+	<form hx-put={ url } hx-swap="none">
+		<div class="space-y-4 mt-4">
+			<div>
+				@components.InputField(
+					components.WithName("name"),
+					components.WithPlaceholder("Nome do serviço"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+					components.WithValue(s.Name),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithName("price"),
+					components.WithType("number"),
+					components.WithPlaceholder("Preço"),
+					components.WithClass("form-control"),
+					components.WithStep("0.50"),
+					components.WithRequired("true"),
+					components.WithValue(s.Price),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithName("description"),
+					components.WithPlaceholder("Descrição"),
+					components.WithClass("form-control"),
+					components.WithValue(s.Description),
+				)
+			</div>
+			<div>
+				@components.Dropdown(
+					"duration",
+					strconv.Itoa(s.Duration),
+					components.WithOptions(
+						components.Durations...,
+					),
+				)
+			</div>
+			<div class="bg-gray-100 mt-8 px-4 py-3 sm:px-10 -mx-10 text-right">
+				<button
+					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+					type="submit"
+				>
+					Salvar
+				</button>
+			</div>
+		</div>
+	</form>
+}

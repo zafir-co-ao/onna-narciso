@@ -27,7 +27,10 @@ type UsecasesParams struct {
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
 	ServiceEditor            services.ServiceEditor
+	ServiceGetter            services.ServiceGetter
 	CustomerCreator          crm.CustomerCreator
+	CustomerFinder           crm.CustomerFinder
+	CustomerGetter           crm.CustomerGetter
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -54,8 +57,13 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("PUT /services/{id}", _services.HandleEditService(u.ServiceEditor))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
+	mux.HandleFunc("GET /services/dialogs/edit-service-dialog", _services.HandleEditServiceDialog(u.ServiceGetter))
 
 	mux.HandleFunc("POST /customers", _crm.HandleCreateCustomer(u.CustomerCreator))
+	mux.HandleFunc("GET /customers", _crm.HandleFindCustomer(u.CustomerFinder))
+	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
+	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleEditCustomerDialog(u.CustomerGetter))
+	mux.HandleFunc("GET /customers/{id}", _crm.HandleEditCustomerDialog(u.CustomerGetter))
 
 	mux.HandleFunc("/", NewStaticHandler())
 

@@ -18,10 +18,6 @@ type ProfessionalsACL interface {
 	FindProfessionalByID(id nanoid.ID) (Professional, error)
 }
 
-type ServicesACL interface {
-	FindServiceByID(id nanoid.ID) (Service, error)
-}
-
 type CustomersACL interface {
 	FindCustomerByID(id nanoid.ID) (Customer, error)
 	RequestCustomerRegistration(name, phone string) (Customer, error)
@@ -33,8 +29,6 @@ func (f ProfessionalsACLFunc) FindProfessionalByID(id nanoid.ID) (Professional, 
 	return f(id)
 }
 
-type ServicesACLFunc func(id nanoid.ID) (Service, error)
-
-func (f ServicesACLFunc) FindServiceByID(id nanoid.ID) (Service, error) {
-	return f(id)
+type ServicesService interface {
+	FindServiceByID(id nanoid.ID) (Service, error)
 }

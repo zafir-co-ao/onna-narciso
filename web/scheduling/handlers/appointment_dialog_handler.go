@@ -33,7 +33,7 @@ func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Reque
 		for _, svc := range testdata.Services {
 			if svc.ID.String() == s.ServiceID {
 				s.ServiceName = svc.Name.String()
-				s.ServiceDuration = svc.Duration.ToString()
+				s.ServiceDuration = svc.Duration.String()
 				break
 			}
 		}

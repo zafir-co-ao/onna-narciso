@@ -6,11 +6,10 @@ import (
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 )
 
 func TestAppointmentCanceler(t *testing.T) {
-	repo := inmem.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository()
 	bus := event.NewEventBus()
 
 	a1 := scheduling.Appointment{ID: "1"}

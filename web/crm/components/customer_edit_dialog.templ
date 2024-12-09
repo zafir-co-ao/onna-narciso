@@ -1,0 +1,10 @@
+package components
+
+import (
+    "github.com/zafir-co-ao/onna-narciso/internal/crm"
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+templ HandleCustomerEditDialog(url string, c crm.CustomerOutput) {
+    @components.Dialog("Editar cliente", CustomerEditForm(url, c))
+}

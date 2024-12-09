@@ -29,6 +29,7 @@ func (s *inmemServiceRepositoryImpl) FindByID(id nanoid.ID) (Service, error) {
 	if _, ok := s.Data[id]; !ok {
 		return Service{}, ErrServiceNotFound
 	}
+	
 	return s.Data[id], nil
 }
 
