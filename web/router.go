@@ -29,6 +29,7 @@ type UsecasesParams struct {
 	ServiceEditor            services.ServiceEditor
 	ServiceGetter            services.ServiceGetter
 	CustomerCreator          crm.CustomerCreator
+	CustomerEditor           crm.CustomerEditor
 	CustomerFinder           crm.CustomerFinder
 	CustomerGetter           crm.CustomerGetter
 }
@@ -64,6 +65,8 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleEditCustomerDialog(u.CustomerGetter))
 	mux.HandleFunc("GET /customers/{id}", _crm.HandleEditCustomerDialog(u.CustomerGetter))
+
+	mux.HandleFunc("PUT /customers/{id}", _crm.HandleEditorCustomer(u.CustomerEditor))
 
 	mux.HandleFunc("/", NewStaticHandler())
 

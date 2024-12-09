@@ -51,6 +51,7 @@ func main() {
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
 		ServiceEditor:            services.NewServiceEditor(serviceRepo, bus),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
+		CustomerEditor:           crm.NewCustomerEditor(customerRepo, bus),
 		ServiceGetter:            services.NewServiceGetter(serviceRepo),
 		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
 		CustomerGetter:           crm.NewCustomerGetter(customerRepo),
