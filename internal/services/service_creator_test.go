@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -15,7 +14,7 @@ import (
 
 func TestServiceCreator(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewServiceRepository()
+	repo := services.NewInmemRepository()
 	u := services.NewServiceCreator(repo, bus)
 
 	t.Run("should_create_an_service", func(t *testing.T) {
@@ -46,7 +45,7 @@ func TestServiceCreator(t *testing.T) {
 		}
 
 		_, err = repo.FindByID(nanoid.ID(o.ID))
-		if errors.Is(services.ErrServiceNotFound, err) {
+		if errors.Is(err, services.ErrServiceNotFound) {
 			t.Errorf("Should return a service from repository, got %v", err)
 		}
 	})
@@ -134,7 +133,7 @@ func TestServiceCreator(t *testing.T) {
 		}
 
 		s, err := repo.FindByID(nanoid.ID(o.ID))
-		if errors.Is(services.ErrServiceNotFound, err) {
+		if errors.Is(err, services.ErrServiceNotFound) {
 			t.Errorf("Should return a service from repository, got %v", err)
 		}
 
@@ -176,11 +175,11 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(name.ErrInvalidName, err) {
-			t.Errorf("The error must be %v, got %v", name.ErrInvalidName, err)
+		if !errors.Is(err, name.ErrEmptyName) {
+			t.Errorf("The error must be %v, got %v", name.ErrEmptyName, err)
 		}
 	})
 
@@ -192,10 +191,10 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(duration.ErrInvalidDuration, err) {
+		if !errors.Is(err, duration.ErrInvalidDuration) {
 			t.Errorf("The error must be %v, got %v", duration.ErrInvalidDuration, err)
 		}
 	})
@@ -208,10 +207,10 @@ func TestServiceCreator(t *testing.T) {
 
 		_, err := u.Create(i)
 		if errors.Is(nil, err) {
-			t.Errorf("Expected no error, got %v", err)
+			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(price.ErrInvalidPrice, err) {
+		if !errors.Is(err, price.ErrInvalidPrice) {
 			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
 		}
 	})

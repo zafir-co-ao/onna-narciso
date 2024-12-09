@@ -10,8 +10,12 @@ type _inputState struct {
 	id          string
 	label       string
 	name        string
+	_type       string
+	class       string
+	step        string
 	value       string
 	placeholder string
+	required    string
 	hxGet       string
 	hxPost      string
 	hxTarget    string
@@ -64,6 +68,38 @@ func WithValue(v string) _inputStateOpt {
 		switch s := s.(type) {
 		case *_inputState:
 			s.value = v
+		}
+	}
+}
+func WithType(v string) _inputStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_inputState:
+			s._type = v
+		}
+	}
+}
+func WithClass(v string) _inputStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_inputState:
+			s.class = v
+		}
+	}
+}
+func WithStep(v string) _inputStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_inputState:
+			s.step = v
+		}
+	}
+}
+func WithRequired(v string) _inputStateOpt {
+	return func(s interface{}) {
+		switch s := s.(type) {
+		case *_inputState:
+			s.required = v
 		}
 	}
 }

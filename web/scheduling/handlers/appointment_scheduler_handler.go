@@ -20,13 +20,13 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 		}
 
 		i := scheduling.AppointmentSchedulerInput{
-			ProfessionalID: r.Form.Get("professional-id"),
-			ServiceID:      r.Form.Get("service-id"),
-			Date:           r.Form.Get("date"),
-			Hour:           r.Form.Get("hour"),
-			CustomerID:     r.Form.Get("customer-id"),
-			CustomerName:   r.Form.Get("customer-name"),
-			CustomerPhone:  r.Form.Get("customer-phone"),
+			ProfessionalID: r.FormValue("professional-id"),
+			ServiceID:      r.FormValue("service-id"),
+			Date:           r.FormValue("date"),
+			Hour:           r.FormValue("hour"),
+			CustomerID:     r.FormValue("customer-id"),
+			CustomerName:   r.FormValue("customer-name"),
+			CustomerPhone:  r.FormValue("customer-phone"),
 			Duration:       duration,
 		}
 
@@ -77,7 +77,7 @@ func HandleScheduleAppointment(s scheduling.AppointmentScheduler) func(w http.Re
 			return
 		}
 
-		w.Header().Set("X-Operation", "Scheduled")
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

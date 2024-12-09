@@ -73,7 +73,7 @@ templ AppointmentReschedulerForm(opts AppointmentReschedulerOptions) {
 				"duration",
 				strconv.Itoa(opts.Appointment.Duration),
 				components.WithOptions(
-					components.AppointmentDurations...,
+					components.Durations...,
 				),
 			)
 		</div>

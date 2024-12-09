@@ -76,7 +76,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 		    document.addEventListener("htmx:afterOnLoad", (evt) => {
 				let xhr = evt.detail.xhr
 
-                let header = xhr.getResponseHeader("X-Operation");
+                let header = xhr.getResponseHeader("X-Reload-Page");
 
                 if (!header) return
 
@@ -85,8 +85,8 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
     			let professionalId = document.querySelector("[name='professional-id']").value
 
     	        htmx.ajax("GET", "/weekly-appointments", {
-                    target: '#content',
-                    swap: 'innerHTML',
+                    target: '#weekly-view',
+                    swap: 'outerHTML',
                     values: {
                         'date': date,
                         'service-id': serviceId,

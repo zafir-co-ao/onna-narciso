@@ -8,14 +8,13 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestSessionCloser(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewSessionRepository()
+	repo := sessions.NewInmemRepository()
 	sacl := stubs.NewServicesACL()
 
 	u := sessions.NewSessionCloser(repo, sacl, bus)
@@ -229,52 +228,4 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("The error must be %v, got %v", sessions.ErrSessionClosed, err)
 		}
 	})
-
-	// t.Run("should_issue_invoice_when_session_is_closed", func(t *testing.T) {
-	// 	i := sessions.CloserInput{
-	// 		SessionID:   "10",
-	// 		ServicesIDs: make([]string, 0),
-	// 	}
-
-	// 	var isIssued bool
-	// 	var f sessions.InvoicingFunc = func(s sessions.Session) error {
-	// 		if s.ID.String() == i.SessionID {
-	// 			isIssued = true
-	// 		}
-	// 		return nil
-	// 	}
-
-	// 	u := sessions.NewSessionCloser(repo, sacl, f, bus)
-
-	// 	err := u.Close(i)
-	// 	if !errors.Is(nil, err) {
-	// 		t.Errorf("Expected no error, got %v", err)
-	// 	}
-
-	// 	if !isIssued {
-	// 		t.Errorf("Should issue invoice, got %v", isIssued)
-	// 	}
-	// })
-
-	// t.Run("should_return_error_when_the_invoice_cannot_be_issued", func(t *testing.T) {
-	// 	i := sessions.CloserInput{
-	// 		SessionID:   "9",
-	// 		ServicesIDs: make([]string, 0),
-	// 	}
-
-	// 	var f sessions.InvoicingFunc = func(s sessions.Session) error {
-	// 		return sessions.ErrInvoiceNotBeIssued
-	// 	}
-
-	// 	u := sessions.NewSessionCloser(repo, sacl, f, bus)
-
-	// 	err := u.Close(i)
-	// 	if errors.Is(nil, err) {
-	// 		t.Errorf("Expected no error, got %v", err)
-	// 	}
-
-	// 	if !errors.Is(sessions.ErrInvoiceNotBeIssued, err) {
-	// 		t.Errorf("The error must be %v, got %v", sessions.ErrInvoiceNotBeIssued, err)
-	// 	}
-	// })
 }

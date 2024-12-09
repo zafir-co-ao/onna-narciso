@@ -8,7 +8,8 @@ import (
 
 var ErrServiceNotFound = errors.New("service not found")
 
-type Repository interface{
+type Repository interface {
+	FindAll() ([]Service, error)
 	FindByID(id nanoid.ID) (Service, error)
 	Save(s Service) error
 }

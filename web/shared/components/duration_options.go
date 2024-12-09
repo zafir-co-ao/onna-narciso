@@ -1,6 +1,6 @@
 package components
 
-var AppointmentDurations = []InputOption{
+var Durations = []InputOption{
 	{"15 Minutos", "15"},
 	{"30 Minutos", "30"},
 	{"45 Minutos", "45"},
@@ -12,11 +12,11 @@ var AppointmentDurations = []InputOption{
 }
 
 func FindDuration(v string) InputOption {
-	for _, d := range AppointmentDurations {
+	for _, d := range Durations {
 		if d[1] == v {
 			return d
 		}
 	}
 
-	return AppointmentDurations[4]
+	return Durations[4]
 }

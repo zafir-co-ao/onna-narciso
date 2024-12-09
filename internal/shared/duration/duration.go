@@ -1,6 +1,9 @@
 package duration
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
 
 const DefaultDuration = 90
 
@@ -25,7 +28,7 @@ func (d Duration) Value() int {
 }
 
 func (d Duration) String() string {
-	return ""
+	return strconv.Itoa(d.Value())
 }
 
 func isLessThanZero(v int) bool {

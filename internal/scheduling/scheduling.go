@@ -37,6 +37,6 @@ func toAppointmentOutput(a Appointment) AppointmentOutput {
 		Status:           string(a.Status),
 		Date:             a.Date.String(),
 		Hour:             a.Hour.String(),
-		Duration:         a.Duration,
+		Duration:         a.Duration.Value(),
 	}
 }

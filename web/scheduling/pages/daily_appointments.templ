@@ -16,15 +16,17 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 		    document.addEventListener("htmx:afterOnLoad", (evt) => {
 				let xhr = evt.detail.xhr
 
-                let header = xhr.getResponseHeader("X-Operation");
+                let header = xhr.getResponseHeader("X-Reload-Page");
 
                 if (!header) return
 
 				let date = document.querySelector("[name='current-date']")
 
+				if (!date) return
+
                 htmx.ajax("GET", "/daily-appointments", {
-                    target: '#content',
-                    swap: 'innerHTML',
+                    target: '#daily-view',
+                    swap: 'outerHTML',
                     values: { date: date.value },
                 })
 			})
@@ -39,15 +41,15 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 				@_scheduling.Calendar(_scheduling.CalendarState{
 					Date:      date,
 					HxGet:     fmt.Sprintf("/daily-appointments"),
-					HxTarget:  "#content",
-					HxSwap:    "innerHTML",
+					HxTarget:  "#daily-view",
+					HxSwap:    "outerHTML",
 					HxTrigger: "click",
 				})
 				<a
 					hx-get={ fmt.Sprintf("/weekly-appointments?date=%v", date) }
-					hx-target="#content"
+					hx-target="#daily-view"
 					hx-trigger="click"
-					hx-swap="innerHTML"
+					hx-swap="outerHTML"
 					class="mt-8 block cursor-pointer w-full rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 				>
 					Ver Semana

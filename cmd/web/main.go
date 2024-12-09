@@ -8,14 +8,13 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	_services "github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
-	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -27,30 +26,34 @@ func main() {
 
 	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
 
-	repo := inmem.NewAppointmentRepository(testdata.Appointments...)
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
 	aacl := _stubs.NewAppointmentsACL()
+	ssacl := _stubs.NewServicesACL()
 
-	s := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
-	c := scheduling.NewAppointmentCanceler(repo, bus)
-	g := scheduling.NewAppointmentGetter(repo)
-	r := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
-	wf := scheduling.NewWeeklyAppointmentsFinder(repo)
-	df := scheduling.NewDailyAppointmentsFinder(repo)
+	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
+	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
+	serviceRepo := services.NewInmemRepository()
+	customerRepo := crm.NewInmemRepository()
 
-	fs := _stubs.NewServicesACL()
-	sRepo := _sessions.NewSessionRepository(testdata.Sessions...)
-	sc := sessions.NewSessionCreator(sRepo, bus, aacl)
-	so := sessions.NewSessionCloser(sRepo, fs, bus)
-	sf := sessions.NewSessionFinder(sRepo)
-	ss := sessions.NewSessionStarter(sRepo, bus)
+	u := web.UsecasesParams{
+		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
+		AppointmentRescheduler:   scheduling.NewAppointmentRescheduler(appointmentRepo, pacl, sacl, bus),
+		AppointmentCanceler:      scheduling.NewAppointmentCanceler(appointmentRepo, bus),
+		AppointmentGetter:        scheduling.NewAppointmentGetter(appointmentRepo),
+		WeeklyAppointmentsFinder: scheduling.NewWeeklyAppointmentsFinder(appointmentRepo),
+		DailyAppointmentsFinder:  scheduling.NewDailyAppointmentsFinder(appointmentRepo),
+		SessionCreator:           sessions.NewSessionCreator(sessionRepo, bus, aacl),
+		SessionStarter:           sessions.NewSessionStarter(sessionRepo, bus),
+		SessionCloser:            sessions.NewSessionCloser(sessionRepo, ssacl, bus),
+		SessionFinder:            sessions.NewSessionFinder(sessionRepo),
+		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
+		ServiceFinder:            services.NewServiceFinder(serviceRepo),
+		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
+	}
 
-	scrRepo := _services.NewServiceRepository()
-	scr := services.NewServiceCreator(scrRepo, bus)
-
-	http.Handle("/", web.NewRouter(s, c, g, r, wf, df, sc, ss, so, sf, scr))
+	http.Handle("/", web.NewRouter(u))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

@@ -3,7 +3,9 @@ package scheduling
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 const (
@@ -17,43 +19,37 @@ var EmptyAppointment = Appointment{}
 
 type Service struct {
 	ID       nanoid.ID
-	Name     Name
-	Duration string
+	Name     name.Name
+	Duration duration.Duration
 }
 
 type Professional struct {
 	ID          nanoid.ID
-	Name        Name
+	Name        name.Name
 	ServicesIDS []nanoid.ID
 }
 
 type Customer struct {
 	ID          nanoid.ID `json:"id"`
-	Name        Name      `json:"name"`
+	Name        name.Name `json:"name"`
 	PhoneNumber string    `json:"phoneNumber"`
 	Nif         string    `json:"nif"`
 }
 
 type Status string
 
-type Name string
-
-func (n Name) String() string {
-	return string(n)
-}
-
 type Appointment struct {
 	ID               nanoid.ID
 	ProfessionalID   nanoid.ID
-	ProfessionalName Name
+	ProfessionalName name.Name
 	CustomerID       nanoid.ID
-	CustomerName     Name
+	CustomerName     name.Name
 	ServiceID        nanoid.ID
-	ServiceName      Name
+	ServiceName      name.Name
 	Status           Status
 	Date             date.Date // Formato: 2024-10-01
 	Hour             hour.Hour // Formato 9:00
-	Duration         int
+	Duration         duration.Duration
 }
 
 func (a Appointment) GetID() nanoid.ID {

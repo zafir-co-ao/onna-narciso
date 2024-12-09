@@ -21,11 +21,11 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 		}
 
 		i := scheduling.AppointmentReschedulerInput{
-			ID:             r.Form.Get("id"),
-			Date:           r.Form.Get("date"),
-			Hour:           r.Form.Get("hour"),
-			ProfessionalID: r.Form.Get("professional-id"),
-			ServiceID:      r.Form.Get("service-id"),
+			ID:             r.FormValue("id"),
+			Date:           r.FormValue("date"),
+			Hour:           r.FormValue("hour"),
+			ProfessionalID: r.FormValue("professional-id"),
+			ServiceID:      r.FormValue("service-id"),
 			Duration:       duration,
 		}
 
@@ -80,7 +80,7 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			return
 		}
 
-		w.Header().Set("X-Operation", "Rescheduled")
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

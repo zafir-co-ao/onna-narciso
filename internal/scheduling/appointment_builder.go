@@ -3,7 +3,9 @@ package scheduling
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 type appointmentBuilder Appointment
@@ -20,19 +22,19 @@ func (b *appointmentBuilder) WithAppointmentID(id nanoid.ID) *appointmentBuilder
 	return b
 }
 
-func (b *appointmentBuilder) WithProfessional(id nanoid.ID, name Name) *appointmentBuilder {
+func (b *appointmentBuilder) WithProfessional(id nanoid.ID, name name.Name) *appointmentBuilder {
 	b.ProfessionalID = id
 	b.ProfessionalName = name
 	return b
 }
 
-func (b *appointmentBuilder) WithCustomer(id nanoid.ID, name Name) *appointmentBuilder {
+func (b *appointmentBuilder) WithCustomer(id nanoid.ID, name name.Name) *appointmentBuilder {
 	b.CustomerID = id
 	b.CustomerName = name
 	return b
 }
 
-func (b *appointmentBuilder) WithService(id nanoid.ID, name Name) *appointmentBuilder {
+func (b *appointmentBuilder) WithService(id nanoid.ID, name name.Name) *appointmentBuilder {
 	b.ServiceID = id
 	b.ServiceName = name
 	return b
@@ -53,7 +55,7 @@ func (b *appointmentBuilder) WithHour(hour hour.Hour) *appointmentBuilder {
 	return b
 }
 
-func (b *appointmentBuilder) WithDuration(duration int) *appointmentBuilder {
+func (b *appointmentBuilder) WithDuration(duration duration.Duration) *appointmentBuilder {
 	b.Duration = duration
 	return b
 }
