@@ -8,7 +8,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
@@ -18,7 +17,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	bus := event.NewEventBus()
 	sacl := stubs.NewServicesACL()
 	pacl := stubs.NewProfessionalsACL()
-	repo := inmem.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository()
 	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
 
 	today := date.Today()

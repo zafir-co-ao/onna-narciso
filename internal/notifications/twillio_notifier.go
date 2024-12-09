@@ -1,4 +1,4 @@
-package adapters
+package notifications
 
 import (
 	"log/slog"
@@ -7,17 +7,10 @@ import (
 	"github.com/kindalus/godx/pkg/assert"
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
-	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
 )
 
-type notifierFunc func(n, msg string) error
-
-func (f notifierFunc) Notify(n, msg string) error {
-	return f(n, msg)
-}
-
-func NewTwillioSMSNotifier() notifications.Notifier {
-	return notifierFunc(
+func NewTwillioSMSNotifier() Notifier {
+	return NotifierFunc(
 
 		func(n, msg string) error {
 

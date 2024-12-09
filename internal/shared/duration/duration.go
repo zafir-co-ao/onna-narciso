@@ -27,7 +27,7 @@ func (d Duration) Value() int {
 	return int(d)
 }
 
-func (d Duration) ToString() string {
+func (d Duration) String() string {
 	return strconv.Itoa(d.Value())
 }
 
