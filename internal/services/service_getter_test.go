@@ -6,7 +6,6 @@ import (
 
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 )
 
 func TestServiceGetter(t *testing.T) {
@@ -17,7 +16,7 @@ func TestServiceGetter(t *testing.T) {
 		Duration: 90,
 	}
 
-	repo := inmem.NewServiceRepository()
+	repo := services.NewInmemRepository(i)
 	u := services.NewServiceGetter(repo)
 
 	_ = repo.Save(i)

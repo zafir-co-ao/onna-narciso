@@ -1,0 +1,55 @@
+package components
+
+import (
+	"context"
+	"io"
+)
+
+type _inputFieldState _inputState
+
+func (s *_inputFieldState) Render(ctx context.Context, w io.Writer) error {
+	return _inputFieldTempl(s).Render(ctx, w)
+}
+
+func InputField(opts ..._inputStateOpt) templ.Component {
+
+	s := newInputState(opts...)
+
+	s._type = "text"
+
+	for _, opt := range opts {
+		opt(s)
+	}
+
+	return (*_inputFieldState)(s)
+}
+
+templ _inputFieldTempl(s *_inputFieldState) {
+	<input
+		if s.hxGet != "" {
+			hx-get={ s.hxGet }
+		}
+		if s.hxPost != "" {
+			hx-post={ s.hxPost }
+		}
+		if s.hxTrigger != "" {
+			hx-get={ s.hxTrigger }
+		}
+		if s.hxTarget != "" {
+			hx-get={ s.hxTarget }
+		}
+		if s.hxSwap != "" {
+			hx-get={ s.hxSwap }
+		}
+		if s.step != "" {
+			step={ s.step }
+		}
+		if s.required != "" {
+			required={ s.required }
+		}
+		type={ s._type }
+		name={ s.name }
+		placeholder={ s.placeholder }
+		class={ s.class }
+	/>
+}

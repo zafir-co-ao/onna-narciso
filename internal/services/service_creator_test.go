@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -15,7 +14,7 @@ import (
 
 func TestServiceCreator(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewServiceRepository()
+	repo := services.NewInmemRepository()
 	u := services.NewServiceCreator(repo, bus)
 
 	t.Run("should_create_an_service", func(t *testing.T) {

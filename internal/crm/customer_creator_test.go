@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
@@ -17,7 +16,7 @@ import (
 
 func TestCustomerCreator(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewCustomerRepository()
+	repo := crm.NewInmemRepository()
 	u := crm.NewCustomerCreator(repo, bus)
 
 	t.Run("should_create_a_customer", func(t *testing.T) {

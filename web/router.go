@@ -13,8 +13,6 @@ import (
 	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
 )
 
-var cwd string
-
 type UsecasesParams struct {
 	AppointmentScheduler     scheduling.AppointmentScheduler
 	AppointmentRescheduler   scheduling.AppointmentRescheduler

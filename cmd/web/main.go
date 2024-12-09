@@ -14,10 +14,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
-	_crm "github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
-	_services "github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
-	_sessions "github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
@@ -36,9 +33,9 @@ func main() {
 	ssacl := _stubs.NewServicesACL()
 
 	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
-	sessionRepo := _sessions.NewSessionRepository(testdata.Sessions...)
-	serviceRepo := _services.NewServiceRepository()
-	customerRepo := _crm.NewCustomerRepository()
+	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
+	serviceRepo := services.NewInmemRepository()
+	customerRepo := crm.NewInmemRepository()
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
@@ -53,11 +50,7 @@ func main() {
 		SessionFinder:            sessions.NewSessionFinder(sessionRepo),
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
-<<<<<<< HEAD
-		ServiceGetter:            services.NewServiceGetter(serviceRepo),
-=======
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
->>>>>>> 691ca1defd401a7a2a0ddffca06ee8c6620beaab
 	}
 
 	http.Handle("/", web.NewRouter(u))
