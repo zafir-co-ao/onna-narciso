@@ -10,10 +10,20 @@ type inmemCustomerRepository struct {
 	shared.BaseRepository[Customer]
 }
 
-func NewInmemRepository() Repository {
+func NewInmemRepository(c ...Customer) Repository {
 	return &inmemCustomerRepository{
-		BaseRepository: shared.NewBaseRepository[Customer](),
+		BaseRepository: shared.NewBaseRepository[Customer](c...),
 	}
+}
+
+func (c *inmemCustomerRepository) FindAll() ([]Customer, error) {
+	var customers []Customer
+
+	for _, customer := range c.Data {
+		customers = append(customers, customer)
+	}
+
+	return customers, nil
 }
 
 func (c *inmemCustomerRepository) FindByID(id nanoid.ID) (Customer, error) {

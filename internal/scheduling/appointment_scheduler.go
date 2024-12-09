@@ -28,7 +28,7 @@ type AppointmentScheduler interface {
 
 type appointmentScedulerImpl struct {
 	repo AppointmentRepository
-	sacl ServicesACL
+	sacl ServicesService
 	cacl CustomersACL
 	pacl ProfessionalsACL
 	bus  event.Bus
@@ -38,7 +38,7 @@ func NewAppointmentScheduler(
 	repo AppointmentRepository,
 	cacl CustomersACL,
 	pacl ProfessionalsACL,
-	sacl ServicesACL,
+	sacl ServicesService,
 	bus event.Bus,
 ) AppointmentScheduler {
 	return &appointmentScedulerImpl{

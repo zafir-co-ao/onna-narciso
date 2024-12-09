@@ -1,0 +1,10 @@
+package components
+
+import (
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+    "github.com/zafir-co-ao/onna-narciso/internal/services"
+)
+
+templ ServiceEditDialog(url string, s services.ServiceOutput){
+    @components.Dialog("Editar serviço", ServiceEditForm(url, s))
+}

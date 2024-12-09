@@ -13,3 +13,7 @@ func New(v string) (Price, error) {
 
 	return Price(v), nil
 }
+
+func (p Price) Value() string {
+	return string(p)
+}

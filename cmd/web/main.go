@@ -10,7 +10,6 @@ import (
 	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
@@ -32,7 +31,7 @@ func main() {
 	aacl := _stubs.NewAppointmentsACL()
 	ssacl := _stubs.NewServicesACL()
 
-	appointmentRepo := inmem.NewAppointmentRepository(testdata.Appointments...)
+	appointmentRepo := scheduling.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
 	serviceRepo := services.NewInmemRepository()
 	customerRepo := crm.NewInmemRepository()
@@ -52,6 +51,9 @@ func main() {
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
 		CustomerEditor:           crm.NewCustomerEditor(customerRepo, bus),
+		ServiceGetter:            services.NewServiceGetter(serviceRepo),
+		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
+		CustomerGetter:           crm.NewCustomerGetter(customerRepo),
 	}
 
 	http.Handle("/", web.NewRouter(u))

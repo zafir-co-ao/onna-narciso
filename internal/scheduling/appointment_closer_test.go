@@ -7,12 +7,11 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 )
 
 func TestAppointmentCloser(t *testing.T) {
 	bus := event.NewEventBus()
-	repo := inmem.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository()
 	u := scheduling.NewAppointmentCloser(repo, bus)
 
 	a1 := scheduling.Appointment{ID: "1"}
