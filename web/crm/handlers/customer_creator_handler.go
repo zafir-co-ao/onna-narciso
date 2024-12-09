@@ -5,9 +5,6 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -30,7 +27,7 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
-		if errors.Is(err, nif.ErrEmptyNif) {
+		if errors.Is(err, crm.ErrEmptyNif) {
 			_http.SendBadRequest(w, "O NIF do cliente não pode estar vazio")
 			return
 		}
@@ -40,12 +37,12 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
-		if errors.Is(err, email.ErrInvalidFormat) {
+		if errors.Is(err, crm.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
 			return
 		}
 
-		if errors.Is(err, phone.ErrEmptyPhoneNumber) {
+		if errors.Is(err, crm.ErrEmptyPhoneNumber) {
 			_http.SendBadRequest(w, "O telefone do cliente não pode estar vazio")
 			return
 		}
@@ -60,6 +57,7 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

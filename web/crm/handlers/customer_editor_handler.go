@@ -6,15 +6,12 @@ import (
 
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditorCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *http.Request) {
+func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 
@@ -34,7 +31,7 @@ func HandleEditorCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *h
 			return
 		}
 
-		if errors.Is(err, nif.ErrEmptyNif) {
+		if errors.Is(err, crm.ErrEmptyNif) {
 			_http.SendBadRequest(w, "O NIF do cliente não pode estar vazio")
 			return
 		}
@@ -44,12 +41,12 @@ func HandleEditorCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *h
 			return
 		}
 
-		if errors.Is(err, email.ErrInvalidFormat) {
+		if errors.Is(err, crm.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
 			return
 		}
 
-		if errors.Is(err, phone.ErrEmptyPhoneNumber) {
+		if errors.Is(err, crm.ErrEmptyPhoneNumber) {
 			_http.SendBadRequest(w, "O telefone do cliente não pode estar vazio")
 			return
 		}
@@ -64,6 +61,7 @@ func HandleEditorCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *h
 			return
 		}
 
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

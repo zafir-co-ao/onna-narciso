@@ -7,9 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -292,8 +289,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, email.ErrInvalidFormat) {
-			t.Errorf("The error must be %V, got %V", email.ErrInvalidFormat, err)
+		if !errors.Is(err, crm.ErrInvalidFormat) {
+			t.Errorf("The error must be %V, got %V", crm.ErrInvalidFormat, err)
 		}
 	})
 
@@ -334,8 +331,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, phone.ErrEmptyPhoneNumber) {
-			t.Errorf("The error must be %V, got %V", phone.ErrEmptyPhoneNumber, err)
+		if !errors.Is(err, crm.ErrEmptyPhoneNumber) {
+			t.Errorf("The error must be %V, got %V", crm.ErrEmptyPhoneNumber, err)
 		}
 	})
 
@@ -355,8 +352,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, nif.ErrEmptyNif) {
-			t.Errorf("The error must be %V, got %V", nif.ErrEmptyNif, err)
+		if !errors.Is(err, crm.ErrEmptyNif) {
+			t.Errorf("The error must be %V, got %V", crm.ErrEmptyNif, err)
 		}
 	})
 }

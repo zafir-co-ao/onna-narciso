@@ -2,9 +2,6 @@ package crm
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -12,13 +9,13 @@ import (
 type Customer struct {
 	ID          nanoid.ID
 	Name        name.Name
-	Nif         nif.Nif
+	Nif         Nif
 	BirthDate   date.Date
-	Email       email.Email
-	PhoneNumber phone.PhoneNumber
+	Email       Email
+	PhoneNumber PhoneNumber
 }
 
-func (c *Customer) IsSameNif(n nif.Nif) bool {
+func (c *Customer) IsSameNif(n Nif) bool {
 	return c.Nif.String() == n.String()
 }
 

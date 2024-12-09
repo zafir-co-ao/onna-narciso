@@ -3,9 +3,6 @@ package crm
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/email"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/nif"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/phone"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -46,17 +43,17 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	nif, err := nif.New(i.Nif)
+	nif, err := NewNif(i.Nif)
 	if err != nil {
 		return err
 	}
 
-	email, err := email.New(i.Email)
+	email, err := NewEmail(i.Email)
 	if err != nil {
 		return err
 	}
 
-	p, err := phone.New(i.PhoneNumber)
+	p, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return err
 	}
@@ -88,10 +85,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 }
 
 func (u *customerEditorImpl) isUsedNif(c Customer, i CustomerEditorInput) bool {
-	if c.IsSameNif(nif.Nif(i.Nif)) {
+	if c.IsSameNif(Nif(i.Nif)) {
 		return false
 	}
 
-	_, err := u.repo.FindByNif(nif.Nif(i.Nif))
+	_, err := u.repo.FindByNif(Nif(i.Nif))
 	return err != nil
 }

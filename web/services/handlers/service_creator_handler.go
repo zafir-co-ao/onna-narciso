@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -34,7 +33,7 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 			return
 		}
 
-		if errors.Is(err, price.ErrInvalidPrice) {
+		if errors.Is(err, services.ErrInvalidPrice) {
 			_http.SendBadRequest(w, "O preço do serviço está no formato inválido")
 			return
 		}

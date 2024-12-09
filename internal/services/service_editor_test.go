@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -207,8 +206,8 @@ func TestServiceEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, price.ErrInvalidPrice) {
-			t.Errorf("The error must be %v, got %v", price.ErrInvalidPrice, err)
+		if !errors.Is(err, services.ErrInvalidPrice) {
+			t.Errorf("The error must be %v, got %v", services.ErrInvalidPrice, err)
 		}
 	})
 

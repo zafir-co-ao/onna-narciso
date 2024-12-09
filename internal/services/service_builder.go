@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -28,7 +27,7 @@ func (s *serviceBuilder) WithDescription(d Description) *serviceBuilder {
 	return s
 }
 
-func (s *serviceBuilder) WithPrice(p price.Price) *serviceBuilder {
+func (s *serviceBuilder) WithPrice(p Price) *serviceBuilder {
 	s.Price = p
 	return s
 }

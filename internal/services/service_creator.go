@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/price"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
@@ -41,7 +40,7 @@ func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error
 		return ServiceOutput{}, err
 	}
 
-	_price, err := price.New(i.Price)
+	price, err := NewPrice(i.Price)
 	if err != nil {
 		return ServiceOutput{}, err
 	}
@@ -49,7 +48,7 @@ func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error
 	s := NewServiceBuilder().
 		WithID(nanoid.New()).
 		WithName(_name).
-		WithPrice(_price).
+		WithPrice(price).
 		WithDuration(_duration).
 		WithDescription(Description(i.Description)).
 		Build()
