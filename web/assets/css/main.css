@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .form-control {
-    @apply w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6;
+    @apply w-full py-2.5 px-3 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6;
 }

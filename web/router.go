@@ -3,15 +3,15 @@ package web
 import (
 	"net/http"
 
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	_crm "github.com/zafir-co-ao/onna-narciso/web/crm/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 	_services "github.com/zafir-co-ao/onna-narciso/web/services/handlers"
 	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
 )
-
-var cwd string
 
 type UsecasesParams struct {
 	AppointmentScheduler     scheduling.AppointmentScheduler
@@ -27,6 +27,7 @@ type UsecasesParams struct {
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
 	ServiceEditor            services.ServiceEditor
+	CustomerCreator          crm.CustomerCreator
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -53,6 +54,8 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("PUT /services/{id}", _services.HandleEditService(u.ServiceEditor))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
+
+	mux.HandleFunc("POST /customers", _crm.HandleCreateCustomer(u.CustomerCreator))
 
 	mux.HandleFunc("/", NewStaticHandler())
 
