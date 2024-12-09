@@ -37,7 +37,7 @@ func (r *inmemAppointmentRepositoryImpl) Save(a Appointment) error {
 }
 
 func (r *inmemAppointmentRepositoryImpl) FindByDate(d date.Date) ([]Appointment, error) {
-	spec := DateIsSpecificantion(d)
+	spec := DateIsSpecification(d)
 
 	var appointments []Appointment
 	for _, appointment := range r.BaseRepository.Data {
@@ -51,9 +51,9 @@ func (r *inmemAppointmentRepositoryImpl) FindByDate(d date.Date) ([]Appointment,
 
 func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date date.Date, serviceID nanoid.ID, professionalsIDs []nanoid.ID) ([]Appointment, error) {
 	spec := shared.And(
-		WeekIsSpecificantion(date),
-		ServiceIsSpecificantion(serviceID),
-		ProfessionalsInSpecificantion(professionalsIDs),
+		WeekIsSpecification(date),
+		ServiceIsSpecification(serviceID),
+		ProfessionalsInSpecification(professionalsIDs),
 		NotCanceledIsSpecification(),
 	)
 
@@ -69,9 +69,9 @@ func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date 
 
 func (r *inmemAppointmentRepositoryImpl) FindByDateStatusAndProfessional(date date.Date, status Status, id nanoid.ID) ([]Appointment, error) {
 	spec := shared.And(
-		DateIsSpecificantion(date),
-		StatusIsSpecificantion(status),
-		ProfessionalIsSpecificantion(id),
+		DateIsSpecification(date),
+		StatusIsSpecification(status),
+		ProfessionalIsSpecification(id),
 	)
 
 	var appointments []Appointment

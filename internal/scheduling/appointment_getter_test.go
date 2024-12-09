@@ -5,11 +5,10 @@ import (
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 )
 
 func TestAppointmentGetter(t *testing.T) {
-	repo := inmem.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository()
 
 	repo.Save(scheduling.Appointment{ID: "1"})
 

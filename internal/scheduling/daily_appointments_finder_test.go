@@ -5,14 +5,13 @@ import (
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/hour"
 )
 
 func TestDailyAppointments(t *testing.T) {
 
-	repo := inmem.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository()
 
 	repo.Save(scheduling.Appointment{
 		ID:   "1",

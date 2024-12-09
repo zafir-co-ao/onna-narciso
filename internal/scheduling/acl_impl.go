@@ -2,8 +2,11 @@ package scheduling
 
 import (
 	"fmt"
+
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 func NewMonoServicesService(r services.Repository) ServicesService {
@@ -24,8 +27,8 @@ func (i *servicesServiceImpl) FindServiceByID(id nanoid.ID) (Service, error) {
 
 	o := Service{
 		ID:       s.ID,
-		Name:     Name(s.Name),
-		Duration: s.Duration.String(),
+		Name:     name.Name(s.Name),
+		Duration: duration.Duration(s.Duration.Value()),
 	}
 
 	return o, nil

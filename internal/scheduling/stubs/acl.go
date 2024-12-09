@@ -21,18 +21,19 @@ func NewProfessionalsACL() scheduling.ProfessionalsACL {
 	return scheduling.ProfessionalsACLFunc(f)
 }
 
-func NewServicesACL() scheduling.ServicesService {
-	f := func(id nanoid.ID) (scheduling.Service, error) {
-		for _, s := range testdata.Services {
-			if s.ID == id {
-				return s, nil
-			}
+type serviceImpl struct{}
+
+func (s *serviceImpl) FindServiceByID(id nanoid.ID) (scheduling.Service, error) {
+	for _, s := range testdata.Services {
+		if s.ID == id {
+			return s, nil
 		}
-
-		return scheduling.Service{}, scheduling.ErrServiceNotFound
 	}
+	return scheduling.Service{}, scheduling.ErrServiceNotFound
+}
 
-	return scheduling.ServicesACLFunc(f)
+func NewServicesACL() scheduling.ServicesService {
+	return &serviceImpl{}
 }
 
 func NewCustomersACL() scheduling.CustomersACL {
