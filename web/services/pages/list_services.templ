@@ -96,7 +96,7 @@ templ ListServices(services []services.ServiceOutput) {
 											</td>
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 												<form
-													hx-post="/services/dialogs/edit-service-dialog"
+													hx-get="/services/dialogs/edit-service-dialog"
 													hx-target="#dialog"
 													hx-swap="outerHTML"
 												>
