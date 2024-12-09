@@ -20,7 +20,7 @@ func NewProfessionalsACL() scheduling.ProfessionalsACL {
 	return scheduling.ProfessionalsACLFunc(f)
 }
 
-func NewServicesACL() scheduling.ServicesACL {
+func NewServicesACL() scheduling.ServicesService {
 	f := func(id nanoid.ID) (scheduling.Service, error) {
 		for _, s := range testdata.Services {
 			if s.ID == id {
