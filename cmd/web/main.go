@@ -50,6 +50,8 @@ func main() {
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
+		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
+		CustomerGetter:           crm.NewCustomerGetter(customerRepo),
 	}
 
 	http.Handle("/", web.NewRouter(u))
