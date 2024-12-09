@@ -5,13 +5,12 @@ import (
 	"testing"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/crm/adapters/inmem"
 )
 
 func TestCustomerGetter(t *testing.T) {
 	c := crm.Customer{ID: "1"}
 
-	repo := inmem.NewCustomerRepository(c)
+	repo := crm.NewInmemRepository(c)
 	u := crm.NewCustomerGetter(repo)
 
 	t.Run("should_retrieve_a_customer_in_repository", func(t *testing.T) {

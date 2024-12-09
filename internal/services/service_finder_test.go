@@ -6,13 +6,12 @@ import (
 
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
-	"github.com/zafir-co-ao/onna-narciso/internal/services/adapters/inmem"
 )
 
 func TestServiceFinder(t *testing.T) {
 	s1 := services.Service{ID: nanoid.New()}
 	s2 := services.Service{ID: nanoid.New()}
-	repo := inmem.NewServiceRepository(s1, s2)
+	repo := services.NewInmemRepository(s1, s2)
 
 	t.Run("should find all services in repository", func(t *testing.T) {
 

@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/internal/sessions/adapters/inmem"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 )
@@ -19,7 +18,7 @@ func TestSessionCreator(t *testing.T) {
 	bus := event.NewEventBus()
 
 	t.Run("should_create_session", func(t *testing.T) {
-		repo := inmem.NewSessionRepository()
+		repo := sessions.NewInmemRepository()
 
 		creator := sessions.NewSessionCreator(repo, bus, aacl)
 		aid := testdata.Appointments[0].ID.String()
@@ -33,7 +32,7 @@ func TestSessionCreator(t *testing.T) {
 	})
 
 	t.Run("should_store_session_in_the_repository", func(t *testing.T) {
-		repo := inmem.NewSessionRepository()
+		repo := sessions.NewInmemRepository()
 		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
 		aid := testdata.Appointments[1].ID.String()
 
@@ -59,7 +58,7 @@ func TestSessionCreator(t *testing.T) {
 
 	t.Run("should_publish_SessionCheckedIn_event", func(t *testing.T) {
 		b := event.NewEventBus()
-		c := sessions.NewSessionCreator(inmem.NewSessionRepository(), b, aacl)
+		c := sessions.NewSessionCreator(sessions.NewInmemRepository(), b, aacl)
 		aid := testdata.Appointments[2].ID.String()
 
 		epublished := false
@@ -80,7 +79,7 @@ func TestSessionCreator(t *testing.T) {
 	})
 
 	t.Run("should_fill_session_with_appointment_client_professional_and_service", func(t *testing.T) {
-		repo := inmem.NewSessionRepository()
+		repo := sessions.NewInmemRepository()
 		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
 		appointment := testdata.Appointments[2]
 
@@ -112,7 +111,7 @@ func TestSessionCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_an_error_if_the_appointment_has_already_been_canceled", func(t *testing.T) {
-		repo := inmem.NewSessionRepository()
+		repo := sessions.NewInmemRepository()
 		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
 		appointment := testdata.Appointments[4]
 
@@ -127,7 +126,7 @@ func TestSessionCreator(t *testing.T) {
 	})
 
 	t.Run("should_return_an_error_if_the_checkin_date_is_different_from_the_appointment_date", func(t *testing.T) {
-		repo := inmem.NewSessionRepository()
+		repo := sessions.NewInmemRepository()
 		creator := sessions.NewSessionCreator(repo, event.NewEventBus(), aacl)
 		appointment := testdata.Appointments[5]
 

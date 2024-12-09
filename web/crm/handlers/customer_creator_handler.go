@@ -16,11 +16,11 @@ import (
 func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		i := crm.CustomerCreatorInput{
-			Name:        r.Form.Get("name"),
-			Nif:         r.Form.Get("nif"),
-			BirthDate:   r.Form.Get("birth-date"),
-			Email:       r.Form.Get("email"),
-			PhoneNumber: r.Form.Get("phone-number"),
+			Name:        r.FormValue("name"),
+			Nif:         r.FormValue("nif"),
+			BirthDate:   r.FormValue("birth-date"),
+			Email:       r.FormValue("email"),
+			PhoneNumber: r.FormValue("phone-number"),
 		}
 
 		_, err := u.Create(i)
