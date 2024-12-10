@@ -96,11 +96,11 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("must_register_the_birth_date_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_birth_date", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA020",
-			BirthDate:   "1990-01-01",
+			BirthDate:   "",
 			Email:       "juliana.paes@domain.com",
 			PhoneNumber: "+244922002324",
 		}
@@ -116,7 +116,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("must_register_the_email_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_email", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA034",
@@ -262,4 +262,6 @@ func TestCustomerCreator(t *testing.T) {
 			t.Errorf("The error must be %v, got %v", crm.ErrEmptyNif, err)
 		}
 	})
+
+	t.Run("should_return_error_if_birth_date_is_fomart_incorrect", func(t *testing.T) {})
 }

@@ -45,6 +45,8 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
+	d, _ := date.New(i.BirthDate)
+
 	email, err := NewEmail(i.Email)
 	if err != nil {
 		return CustomerOutput{}, err
@@ -58,7 +60,7 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	c := NewCustomerBuilder().
 		WithName(n).
 		WithNif(nif).
-		WithBirthDate(date.Date(i.BirthDate)).
+		WithBirthDate(d).
 		WithEmail(email).
 		WithPhoneNumber(p).
 		Build()
