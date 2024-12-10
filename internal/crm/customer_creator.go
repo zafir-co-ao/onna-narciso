@@ -1,12 +1,16 @@
 package crm
 
 import (
+	"errors"
+
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
 const EventCustomerCreated = "EventCustomerCreated"
+
+var ErrAgeNotAllowed = errors.New("Age is less than 12 not allowed")
 
 type CustomerCreatorInput struct {
 	Name        string
@@ -47,7 +51,11 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 
 	d, err := date.New(i.BirthDate)
 	if err != nil {
-		return CustomerOutput{},err
+		return CustomerOutput{}, err
+	}
+
+	if !d.IsOver12YearsOld() {
+		return CustomerOutput{}, ErrAgeNotAllowed
 	}
 
 	email, err := NewEmail(i.Email)

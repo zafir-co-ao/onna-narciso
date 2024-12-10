@@ -283,4 +283,24 @@ func TestCustomerCreator(t *testing.T) {
 			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
 		}
 	})
+
+	t.Run("should_return_error_if_age_is_less_than_12", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "2013-01-01",
+			Email:       "joana.doe10@domain.com",
+			PhoneNumber: "244912000011",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrAgeNotAllowed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrAgeNotAllowed, err)
+		}
+	})
 }
