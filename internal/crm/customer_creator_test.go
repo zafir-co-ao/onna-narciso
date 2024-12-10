@@ -7,6 +7,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -263,5 +264,23 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_birth_date_is_fomart_incorrect", func(t *testing.T) {})
+	t.Run("should_return_error_if_birth_date_format_is_incorrect", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "1990/01/01",
+			Email:       "joana.doe10@domain.com",
+			PhoneNumber: "244912000011",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, date.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
+		}
+	})
 }

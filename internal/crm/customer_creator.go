@@ -45,7 +45,10 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
-	d, _ := date.New(i.BirthDate)
+	d, err := date.New(i.BirthDate)
+	if err != nil {
+		return CustomerOutput{},err
+	}
 
 	email, err := NewEmail(i.Email)
 	if err != nil {
