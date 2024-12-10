@@ -40,7 +40,7 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 				<input type="hidden" name="current-date" value={ date }/>
 				@_scheduling.Calendar(_scheduling.CalendarState{
 					Date:      date,
-					HxGet:     fmt.Sprintf("/daily-appointments"),
+					HxGet:     "/daily-appointments",
 					HxTarget:  "#daily-view",
 					HxSwap:    "outerHTML",
 					HxTrigger: "click",
