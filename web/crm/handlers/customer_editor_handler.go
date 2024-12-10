@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
@@ -51,6 +52,21 @@ func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *htt
 
 		if errors.Is(err, date.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "A data de nascimento está no formato inválido")
+			return
+		}
+
+		if errors.Is(err, crm.ErrEmailAlreadyUsed) {
+			_http.SendBadRequest(w, "O e-mail fornecido já está sendo usado por um cliente diferente")
+			return
+		}
+
+		if errors.Is(err, crm.ErrPhoneNumberAlreadyUsed) {
+			_http.SendBadRequest(w, "O telefone fornecido já está sendo usado por um cliente diferente")
+			return
+		}
+
+		if errors.Is(err, crm.ErrAgeNotAllowed) {
+			_http.SendBadRequest(w, fmt.Sprintf("A idade mínima permitida é de %v anos", crm.MinimumAgeAllowed))
 			return
 		}
 
