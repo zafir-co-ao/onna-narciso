@@ -5,7 +5,10 @@ import (
 	"regexp"
 )
 
-var ErrInvalidEmailFormat = errors.New("invalid email format")
+var (
+	ErrInvalidEmailFormat = errors.New("Invalid email format")
+	ErrEmailAlreadyUsed   = errors.New("Email already used")
+)
 
 type Email string
 

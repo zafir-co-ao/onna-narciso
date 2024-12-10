@@ -61,6 +61,10 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
+	if u.isUsedEmail(email) {
+		return CustomerOutput{}, ErrEmailAlreadyUsed
+	}
+
 	p, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return CustomerOutput{}, err
@@ -94,12 +98,6 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	return toCustomerOutput(c), nil
 }
 
-func isAllowedAge(b date.Date) bool {
-	d, _ := time.Parse("2006-01-02", b.String())
-	age := time.Now().Year() - d.Year()
-	return age >= MinimumAgeAllowed
-}
-
 func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
 	customers, _ := u.repo.FindAll()
 
@@ -110,4 +108,22 @@ func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
 	}
 
 	return false
+}
+
+func (u *customerCreatorImpl) isUsedEmail(email Email) bool {
+	customers, _ := u.repo.FindAll()
+
+	for _, c := range customers {
+		if c.Email.String() == email.String() {
+			return true
+		}
+	}
+
+	return false
+}
+
+func isAllowedAge(b date.Date) bool {
+	d, _ := time.Parse("2006-01-02", b.String())
+	age := time.Now().Year() - d.Year()
+	return age >= MinimumAgeAllowed
 }

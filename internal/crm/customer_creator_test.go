@@ -309,7 +309,7 @@ func TestCustomerCreator(t *testing.T) {
 			Name:        "Joana Doe",
 			Nif:         "002223109LA011",
 			BirthDate:   "2000-01-01",
-			Email:       "joana.doe10@domain.com",
+			Email:       "joana1.doe10@domain.com",
 			PhoneNumber: "+244918888090",
 		}
 
@@ -323,5 +323,25 @@ func TestCustomerCreator(t *testing.T) {
 			t.Errorf("The error must be %v, got %v", crm.ErrPhoneNumberAlreadyUsed, err)
 		}
 
+	})
+
+	t.Run("should_return_erro_if_email_already_exists_in_repository", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "2000-01-01",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244942760864",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrEmailAlreadyUsed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrEmailAlreadyUsed, err)
+		}
 	})
 }
