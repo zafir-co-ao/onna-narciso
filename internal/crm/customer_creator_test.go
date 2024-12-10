@@ -121,7 +121,7 @@ func TestCustomerCreator(t *testing.T) {
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA034",
 			BirthDate:   "1990-01-01",
-			Email:       "juliana.paes1998@domain.com",
+			Email:       "",
 			PhoneNumber: "+244918888090",
 		}
 
