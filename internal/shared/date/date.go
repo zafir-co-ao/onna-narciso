@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrInvalidFormat = errors.New("Invalid format of date")
-	ErrDateInPast    = errors.New("Date in past not allowed")
+	ErrInvalidFormat = errors.New("invalid format of date")
+	ErrDateInPast    = errors.New("date in past not allowed")
 )
 
 type Date string
@@ -44,6 +44,11 @@ func (d Date) Before() bool {
 func (d Date) AddDate(years, months, days int) Date {
 	a, _ := time.Parse("2006-01-02", d.String())
 	return Date(a.AddDate(years, months, days).Format("2006-01-02"))
+}
+
+func (d Date) Year() int {
+	t, _ := time.Parse("2006-01-02", d.String())
+	return t.Year()
 }
 
 func IsValidFormat(v string) bool {

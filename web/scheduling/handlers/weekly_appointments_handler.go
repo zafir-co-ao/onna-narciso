@@ -63,14 +63,6 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			date = time.Now().Format("2006-01-02")
 		}
 
-		if operation == "previous-week" {
-			date = previousWeek(date)
-		}
-
-		if operation == "next-week" {
-			date = nextWeek(date)
-		}
-
 		if serviceID == "" {
 			serviceID = "all"
 			previousServiceID = "all"
@@ -91,6 +83,14 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 
 		if date != previousDate {
 			serviceID, professionalID = "all", "all"
+		}
+
+		if operation == "previous-week" {
+			date = previousWeek(date)
+		}
+
+		if operation == "next-week" {
+			date = nextWeek(date)
 		}
 
 		professionals := make([]scheduling.Professional, 0)

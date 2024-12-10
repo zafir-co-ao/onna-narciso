@@ -43,6 +43,26 @@ func (c *inmemCustomerRepository) FindByNif(nif Nif) (Customer, error) {
 	return Customer{}, nil
 }
 
+func (c *inmemCustomerRepository) FindByEmail(e Email) (Customer, error) {
+	for _, customer := range c.Data {
+		if customer.Email == e {
+			return customer, nil
+		}
+	}
+
+	return Customer{}, ErrCustomerNotFound
+}
+
+func(c *inmemCustomerRepository) FindByPhoneNumber(p PhoneNumber) (Customer, error) {
+	for _, customer := range c.Data {
+		if customer.PhoneNumber == p {
+			return customer, nil
+		}
+	}
+
+	return Customer{}, ErrCustomerNotFound
+}
+
 func (c *inmemCustomerRepository) Save(customer Customer) error {
 	c.Data[customer.ID] = customer
 	return nil

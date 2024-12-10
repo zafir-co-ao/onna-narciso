@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	_components "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"time"
@@ -52,6 +53,10 @@ func getMonthYear(date string) string {
 	tz, _ := time.LoadLocation("Africa/Luanda")
 
 	return t.In(tz).Format("January 2006")
+}
+
+func changeWeekUrl() string {
+	return "/weekly-appointments?operation=%v&date=%v&service-id=%v&professional-id=%v&previous-service-id=%v&previous-professional-id=%v&previous-date=%v"
 }
 
 type WeeklyAppointmentsOptions struct {
@@ -174,7 +179,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 					<div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
 						<button
 							type="button"
-							hx-get={ fmt.Sprintf("/weekly-appointments?operation=%v&date=%v", "previous-week", opts.Date) }
+							hx-get={ fmt.Sprintf(changeWeekUrl(), "previous-week", opts.Date, opts.ServiceID, opts.ProfessionalID, opts.ServiceID, opts.ProfessionalID, opts.Date) }
 							hx-target="#weekly-view"
 							hx-swap="outerHTML"
 							hx-trigger="click"
@@ -196,6 +201,10 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 							</svg>
 						</button>
 						<button
+							hx-get={ fmt.Sprintf(changeWeekUrl(), "current-week", date.Today().String(), opts.ServiceID, opts.ProfessionalID, opts.ServiceID, opts.ProfessionalID, date.Today().String()) }
+							hx-target="#weekly-view"
+							hx-swap="outerHTML"
+							hx-trigger="click"
 							type="button"
 							class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
 						>
@@ -203,7 +212,7 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 						</button>
 						<span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
 						<button
-							hx-get={ fmt.Sprintf("/weekly-appointments?operation=%v&date=%v", "next-week", opts.Date) }
+							hx-get={ fmt.Sprintf(changeWeekUrl(), "next-week", opts.Date, opts.ServiceID, opts.ProfessionalID, opts.ServiceID, opts.ProfessionalID, opts.Date) }
 							hx-target="#weekly-view"
 							hx-swap="outerHTML"
 							hx-trigger="click"
@@ -270,7 +279,10 @@ templ WeeklyAppointments(opts WeeklyAppointmentsOptions) {
 								<div class="flex items-center justify-center py-3">
 									<span>
 										{ day[1] }
-										<span class="items-center justify-center font-semibold text-gray-900 week-day-cell" data-week-day={ getDayOfWeek(day[0], opts.Date) }>
+										<span
+											class={ "items-center justify-center font-semibold text-gray-900 week-day-cell", templ.KV("bg-gray-800 rounded-full text-white text-center inline-block w-6 h-6", getDayOfWeek(day[0], opts.Date) == date.Today().String()) }
+											data-week-day={ getDayOfWeek(day[0], opts.Date) }
+										>
 											{ day[0] }
 										</span>
 									</span>
