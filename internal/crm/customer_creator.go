@@ -71,7 +71,7 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	e := event.New(
 		EventCustomerCreated,
 		event.WithHeader(event.HeaderAggregateID, c.ID.String()),
-		event.WithPayload(c),
+		event.WithPayload(i),
 	)
 
 	u.bus.Publish(e)
