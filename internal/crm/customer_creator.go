@@ -45,9 +45,22 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
+	b, err := date.New(i.BirthDate)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	if !isAllowedAge(b) {
+		return CustomerOutput{}, ErrAgeNotAllowed
+	}
+
 	email, err := NewEmail(i.Email)
 	if err != nil {
 		return CustomerOutput{}, err
+	}
+
+	if u.isUsedEmail(email) {
+		return CustomerOutput{}, ErrEmailAlreadyUsed
 	}
 
 	p, err := NewPhoneNumber(i.PhoneNumber)
@@ -55,10 +68,14 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
+	if u.isUsedPhoneNumber(p) {
+		return CustomerOutput{}, ErrPhoneNumberAlreadyUsed
+	}
+
 	c := NewCustomerBuilder().
 		WithName(n).
 		WithNif(nif).
-		WithBirthDate(date.Date(i.BirthDate)).
+		WithBirthDate(b).
 		WithEmail(email).
 		WithPhoneNumber(p).
 		Build()
@@ -77,4 +94,22 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	u.bus.Publish(e)
 
 	return toCustomerOutput(c), nil
+}
+
+func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
+	if len(number) == 0 {
+		return false
+	}
+
+	_, err := u.repo.FindByPhoneNumber(number)
+	return err == nil
+}
+
+func (u *customerCreatorImpl) isUsedEmail(email Email) bool {
+	if len(email) == 0 {
+		return false
+	}
+
+	_, err := u.repo.FindByEmail(email)
+	return err == nil
 }

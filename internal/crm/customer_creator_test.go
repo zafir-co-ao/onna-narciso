@@ -7,6 +7,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -96,11 +97,11 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("must_register_the_birth_date_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_birth_date", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA020",
-			BirthDate:   "1990-01-01",
+			BirthDate:   "",
 			Email:       "juliana.paes@domain.com",
 			PhoneNumber: "+244922002324",
 		}
@@ -112,16 +113,16 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.BirthDate != i.BirthDate {
-			t.Errorf("The birth date of customer %s should equal to %s", i.BirthDate, o.BirthDate)
+			t.Error("The birth date of customer should be empty")
 		}
 	})
 
-	t.Run("must_register_the_email_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_email", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
 			Nif:         "002223109LA034",
 			BirthDate:   "1990-01-01",
-			Email:       "juliana.paes1998@domain.com",
+			Email:       "",
 			PhoneNumber: "+244918888090",
 		}
 
@@ -132,17 +133,17 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.Email != i.Email {
-			t.Errorf("The email of customer %s should equal to %s", i.Email, o.Email)
+			t.Error("The email of customer should be empty")
 		}
 	})
 
-	t.Run("must_register_the_phone_number_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_phone_number", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA031",
 			BirthDate:   "1990-01-01",
 			Email:       "joana.doe10@domain.com",
-			PhoneNumber: "+244912000011",
+			PhoneNumber: "",
 		}
 
 		o, err := u.Create(i)
@@ -152,7 +153,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.PhoneNumber != i.PhoneNumber {
-			t.Errorf("The phoneNumber of customer %s should equal to %s", i.PhoneNumber, o.PhoneNumber)
+			t.Error("The phoneNumber of customer should be empty")
 		}
 	})
 
@@ -260,6 +261,86 @@ func TestCustomerCreator(t *testing.T) {
 
 		if !errors.Is(err, crm.ErrEmptyNif) {
 			t.Errorf("The error must be %v, got %v", crm.ErrEmptyNif, err)
+		}
+	})
+
+	t.Run("should_return_error_if_birth_date_format_is_incorrect", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "1990/01/01",
+			Email:       "joana.doe10@domain.com",
+			PhoneNumber: "244912000011",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, date.ErrInvalidFormat) {
+			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
+		}
+	})
+
+	t.Run("should_return_error_if_age_is_lower_than_minum_allowed_age", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "2013-01-01",
+			Email:       "joana.doe10@domain.com",
+			PhoneNumber: "244912000011",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrAgeNotAllowed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrAgeNotAllowed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_phone_number_already_exists_in_repository", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "2000-01-01",
+			Email:       "joana1.doe10@domain.com",
+			PhoneNumber: "+244918888090",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrPhoneNumberAlreadyUsed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrPhoneNumberAlreadyUsed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_email_already_exists_in_repository", func(t *testing.T) {
+		i := crm.CustomerCreatorInput{
+			Name:        "Joana Doe",
+			Nif:         "002223109LA011",
+			BirthDate:   "2000-01-01",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244942760864",
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrEmailAlreadyUsed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrEmailAlreadyUsed, err)
 		}
 	})
 }
