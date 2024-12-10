@@ -11,9 +11,6 @@ import (
 )
 
 func TestCustomerEdit(t *testing.T) {
-	bus := event.NewEventBus()
-	repo := crm.NewInmemRepository()
-
 	customers := []crm.Customer{
 		{
 			ID:          nanoid.ID("1"),
@@ -29,13 +26,12 @@ func TestCustomerEdit(t *testing.T) {
 			Nif:         "001123109LA033",
 			BirthDate:   "2000-01-02",
 			Email:       "monica12@domain.com",
-			PhoneNumber: "+244911000022",
+			PhoneNumber: "+244921000022",
 		},
 	}
 
-	_ = repo.Save(customers[0])
-	_ = repo.Save(customers[1])
-
+	bus := event.NewEventBus()
+	repo := crm.NewInmemRepository(customers...)
 	u := crm.NewCustomerEditor(repo, bus)
 
 	t.Run("should_find_the_customer", func(t *testing.T) {
@@ -44,8 +40,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -65,8 +61,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -91,8 +87,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -118,8 +114,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -144,8 +140,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -169,7 +165,7 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
+			Email:       "paola.oliveira@domain.com",
 			PhoneNumber: "+244922000022",
 		}
 
@@ -195,8 +191,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "001123109LA033",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -218,8 +214,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		var h event.HandlerFunc = func(e event.Event) {
@@ -241,14 +237,14 @@ func TestCustomerEdit(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_email_is_invalide", func(t *testing.T) {
+	t.Run("should_return_error_if_email_is_invalid", func(t *testing.T) {
 		i := crm.CustomerEditorInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
 			Email:       "p123.oliveira@domain",
-			PhoneNumber: "+244922000022",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -268,8 +264,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "",
 			Nif:         "002223109LA031",
 			BirthDate:   "2001-01-02",
-			Email:       "paulaoliveira.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -289,8 +285,8 @@ func TestCustomerEdit(t *testing.T) {
 			Name:        "Paola Miguel",
 			Nif:         "",
 			BirthDate:   "2001-01-02",
-			Email:       "paulaoliveira.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
 		}
 
 		err := u.Edit(i)
@@ -318,7 +314,143 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if !errors.Is(err, crm.ErrCustomerNotFound) {
-			t.Errorf("The error mus be %v, got %v", crm.ErrCustomerNotFound, err)
+			t.Errorf("The error must be %v, got %v", crm.ErrCustomerNotFound, err)
+		}
+	})
+
+	t.Run("should_return_error_if_customer_email_is_already_used_by_other_customer", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:    "1",
+			Name:  "Paola Oliveira",
+			Nif:   "002223109LA033",
+			Email: "monica12@domain.com",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrEmailAlreadyUsed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrEmailAlreadyUsed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_customer_phone_number_is_used_by_other_customer", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Oliveira",
+			Nif:         "002223109LA033",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244921000022",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrPhoneNumberAlreadyUsed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrPhoneNumberAlreadyUsed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_birth_date_is_lower_than_minimum_allowed_age", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Miguel",
+			Nif:         "002223109LA031",
+			BirthDate:   "2015-01-02",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrAgeNotAllowed) {
+			t.Errorf("The error must be %v, got %v", crm.ErrAgeNotAllowed, err)
+		}
+	})
+
+	t.Run("should_update_with_email_empty", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Oliveira",
+			Nif:         "002223109LA033",
+			Email:       "",
+			PhoneNumber: "+244911000022",
+		}
+
+		err := u.Edit(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		c, err := repo.FindByID(nanoid.ID(i.ID))
+		if errors.Is(err, crm.ErrCustomerNotFound) {
+			t.Errorf("Should find a customer in repository, got %v", err)
+		}
+
+		if c.Email.String() != i.Email {
+			t.Errorf("The customer email should be empty, got %v", c.Email.String())
+		}
+	})
+
+	t.Run("should_update_with_empty_phone_number", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Oliveira",
+			Nif:         "002223109LA033",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "",
+		}
+
+		err := u.Edit(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		c, err := repo.FindByID(nanoid.ID(i.ID))
+		if errors.Is(err, crm.ErrCustomerNotFound) {
+			t.Errorf("Should find a customer in repository, got %v", err)
+		}
+
+		if c.PhoneNumber.String() != i.PhoneNumber {
+			t.Errorf("The customer phone number should be empty, got %v", c.PhoneNumber.String())
+		}
+	})
+
+	t.Run("should_update_with_empty_birth_date", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:          "1",
+			Name:        "Paola Oliveira",
+			BirthDate:   "",
+			Nif:         "002223109LA033",
+			Email:       "paola.oliveira@domain.com",
+			PhoneNumber: "+244911000022",
+		}
+
+		err := u.Edit(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		c, err := repo.FindByID(nanoid.ID(i.ID))
+		if errors.Is(err, crm.ErrCustomerNotFound) {
+			t.Errorf("Should find a customer in repository, got %v", err)
+		}
+
+		if c.BirthDate.String() != i.BirthDate {
+			t.Errorf("The customer birth date should be empty, got %v", c.BirthDate.String())
 		}
 	})
 }

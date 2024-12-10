@@ -37,10 +37,6 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	if u.isUsedNif(c, i) {
-		return ErrNifAlreadyUsed
-	}
-
 	name, err := name.New(i.Name)
 	if err != nil {
 		return err
@@ -59,6 +55,24 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 	p, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return err
+	}
+
+	if u.isUsedNif(c, i.Nif) {
+		return ErrNifAlreadyUsed
+	}
+
+	if u.isUsedEmail(c, i.Email) {
+		return ErrEmailAlreadyUsed
+	}
+
+	if u.isUsedPhoneNumber(c, i.PhoneNumber) {
+		return ErrPhoneNumberAlreadyUsed
+	}
+
+	b, _ := date.New(i.BirthDate)
+
+	if !isAllowedAge(b) {
+		return ErrAgeNotAllowed
 	}
 
 	c = NewCustomerBuilder().
@@ -86,11 +100,37 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 	return nil
 }
 
-func (u *customerEditorImpl) isUsedNif(c Customer, i CustomerEditorInput) bool {
-	if c.IsSameNif(Nif(i.Nif)) {
+func (u *customerEditorImpl) isUsedNif(c Customer, nif string) bool {
+	if c.IsSameNif(Nif(nif)) {
 		return false
 	}
 
-	_, err := u.repo.FindByNif(Nif(i.Nif))
+	_, err := u.repo.FindByNif(Nif(nif))
 	return err != nil
+}
+
+func (u *customerEditorImpl) isUsedEmail(c Customer, email string) bool {
+	if len(email) == 0 {
+		return false
+	}
+
+	if c.IsSameEmail(Email(email)) {
+		return false
+	}
+
+	_, err := u.repo.FindByEmail(Email(email))
+	return err == nil
+}
+
+func (u *customerEditorImpl) isUsedPhoneNumber(c Customer, phoneNumber string) bool {
+	if len(phoneNumber) == 0 {
+		return false
+	}
+
+	if c.IsSamePhoneNumber(PhoneNumber(phoneNumber)) {
+		return false
+	}
+
+	_, err := u.repo.FindByPhoneNumber(PhoneNumber(phoneNumber))
+	return err == nil
 }
