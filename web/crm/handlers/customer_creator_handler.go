@@ -37,13 +37,8 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
-		if errors.Is(err, crm.ErrInvalidFormat) {
+		if errors.Is(err, crm.ErrInvalidEmailFormat) {
 			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
-			return
-		}
-
-		if errors.Is(err, crm.ErrEmptyPhoneNumber) {
-			_http.SendBadRequest(w, "O telefone do cliente não pode estar vazio")
 			return
 		}
 

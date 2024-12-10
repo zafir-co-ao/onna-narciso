@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -13,10 +12,9 @@ import (
 
 func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")
 
 		i := crm.CustomerEditorInput{
-			ID:          nanoid.ID(id),
+			ID:          r.PathValue("id"),
 			Name:        r.FormValue("name"),
 			Nif:         r.FormValue("nif"),
 			BirthDate:   r.FormValue("birth-date"),
@@ -25,6 +23,11 @@ func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *htt
 		}
 
 		err := u.Edit(i)
+
+		if errors.Is(err, crm.ErrCustomerNotFound) {
+			_http.SendNotFound(w, "Cliente não encontrado")
+			return
+		}
 
 		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do cliente não pode estar vazio")
@@ -41,13 +44,8 @@ func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *htt
 			return
 		}
 
-		if errors.Is(err, crm.ErrInvalidFormat) {
+		if errors.Is(err, crm.ErrInvalidEmailFormat) {
 			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
-			return
-		}
-
-		if errors.Is(err, crm.ErrEmptyPhoneNumber) {
-			_http.SendBadRequest(w, "O telefone do cliente não pode estar vazio")
 			return
 		}
 
