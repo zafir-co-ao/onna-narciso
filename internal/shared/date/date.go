@@ -46,18 +46,6 @@ func (d Date) AddDate(years, months, days int) Date {
 	return Date(a.AddDate(years, months, days).Format("2006-01-02"))
 }
 
-func (d Date) IsOver12YearsOld() bool {
-	y, _ := time.Parse("2006-01-02", d.String())
-	n := time.Now().Year()
-	return n-y.Year() > 12
-}
-
-// func isOver12YearsOld(v string) bool {
-// 	d, _ := time.Parse("2006-01-02", v)
-// 	n := time.Now().Year()
-// 	return n-d.Year() > 12
-// }
-
 func IsValidFormat(v string) bool {
 	_, err := time.Parse("2006-01-02", v)
 	return err == nil

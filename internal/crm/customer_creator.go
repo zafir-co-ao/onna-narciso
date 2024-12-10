@@ -1,7 +1,7 @@
 package crm
 
 import (
-	"errors"
+	"time"
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
@@ -9,8 +9,6 @@ import (
 )
 
 const EventCustomerCreated = "EventCustomerCreated"
-
-var ErrAgeNotAllowed = errors.New("Age is less than 12 not allowed")
 
 type CustomerCreatorInput struct {
 	Name        string
@@ -49,12 +47,12 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
-	d, err := date.New(i.BirthDate)
+	b, err := date.New(i.BirthDate)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
-	if !d.IsOver12YearsOld() {
+	if !isAllowedAge(b) {
 		return CustomerOutput{}, ErrAgeNotAllowed
 	}
 
@@ -68,10 +66,14 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
+	if u.isUsedPhoneNumber(p) {
+		return CustomerOutput{}, ErrPhoneNumberAlreadyUsed
+	}
+
 	c := NewCustomerBuilder().
 		WithName(n).
 		WithNif(nif).
-		WithBirthDate(d).
+		WithBirthDate(b).
 		WithEmail(email).
 		WithPhoneNumber(p).
 		Build()
@@ -90,4 +92,22 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	u.bus.Publish(e)
 
 	return toCustomerOutput(c), nil
+}
+
+func isAllowedAge(b date.Date) bool {
+	d, _ := time.Parse("2006-01-02", b.String())
+	age := time.Now().Year() - d.Year()
+	return age >= MinimumAgeAllowed
+}
+
+func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
+	customers, _ := u.repo.FindAll()
+
+	for _, c := range customers {
+		if c.PhoneNumber.String() == number.String() {
+			return true
+		}
+	}
+
+	return false
 }
