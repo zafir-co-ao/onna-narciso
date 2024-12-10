@@ -2,6 +2,7 @@ package crm
 
 import (
 	"errors"
+	"time"
 
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
@@ -27,4 +28,10 @@ func (c *Customer) IsSameNif(n Nif) bool {
 
 func (c Customer) GetID() nanoid.ID {
 	return c.ID
+}
+
+func isAllowedAge(d date.Date) bool {
+	t, _ := time.Parse("2006-01-02", d.String())
+	age := time.Now().Year() - t.Year()
+	return age >= MinimumAgeAllowed
 }

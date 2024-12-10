@@ -1,8 +1,6 @@
 package crm
 
 import (
-	"time"
-
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
@@ -120,10 +118,4 @@ func (u *customerCreatorImpl) isUsedEmail(email Email) bool {
 	}
 
 	return false
-}
-
-func isAllowedAge(b date.Date) bool {
-	d, _ := time.Parse("2006-01-02", b.String())
-	age := time.Now().Year() - d.Year()
-	return age >= MinimumAgeAllowed
 }
