@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -58,7 +57,6 @@ func TestCustomerEdit(t *testing.T) {
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
-
 	})
 
 	t.Run("should_update_name_of_customer", func(t *testing.T) {
@@ -77,7 +75,7 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		c, err := repo.FindByID(i.ID)
+		c, err := repo.FindByID(nanoid.ID(i.ID))
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
@@ -85,7 +83,6 @@ func TestCustomerEdit(t *testing.T) {
 		if c.Name.String() != i.Name {
 			t.Errorf("The name of customer %s should equal to %s", c.Name.String(), i.Name)
 		}
-
 	})
 
 	t.Run("should_update_nif_of_customer", func(t *testing.T) {
@@ -104,7 +101,7 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		c, err := repo.FindByID(i.ID)
+		c, err := repo.FindByID(nanoid.ID(i.ID))
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
@@ -131,14 +128,13 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		c, err := repo.FindByID(i.ID)
+		c, err := repo.FindByID(nanoid.ID(i.ID))
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
 
 		if c.BirthDate.String() != i.BirthDate {
 			t.Errorf("The birthdateof customer %s should equal to %s", c.BirthDate.String(), i.BirthDate)
-
 		}
 	})
 
@@ -157,14 +153,13 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		c, err := repo.FindByID(i.ID)
+		c, err := repo.FindByID(nanoid.ID(i.ID))
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
 
 		if c.Email.String() != i.Email {
 			t.Errorf("The email of customer %s should equal to %s", c.Email.String(), i.Email)
-
 		}
 	})
 
@@ -184,14 +179,13 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		c, err := repo.FindByID(i.ID)
+		c, err := repo.FindByID(nanoid.ID(i.ID))
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
 		}
 
 		if c.PhoneNumber.String() != i.PhoneNumber {
 			t.Errorf("The phonenumber of customer %s should equal to %s", c.PhoneNumber.String(), i.PhoneNumber)
-
 		}
 	})
 
@@ -242,34 +236,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
-		_, err = repo.FindByID(i.ID)
-		if errors.Is(err, crm.ErrCustomerNotFound) {
-			t.Errorf("Should find a customer in repository, got %v", err)
-		}
-
 		if !isPublished {
 			t.Errorf("The %s must be published", crm.EventCustomerUpdated)
-		}
-	})
-
-	t.Run("should_return_error_if_birth_date_is_invalid", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:          "1",
-			Name:        "Paola Miguel",
-			Nif:         "002223109LA031",
-			BirthDate:   "2001/01/02",
-			Email:       "paola123.oliveira@domain.com",
-			PhoneNumber: "+244922000022",
-		}
-
-		err := u.Edit(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, date.ErrInvalidFormat) {
-			t.Errorf("The error must be %v, got %v", crm.ErrNifAlreadyUsed, err)
 		}
 	})
 
@@ -289,8 +257,8 @@ func TestCustomerEdit(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, crm.ErrInvalidFormat) {
-			t.Errorf("The error must be %V, got %V", crm.ErrInvalidFormat, err)
+		if !errors.Is(err, crm.ErrInvalidEmailFormat) {
+			t.Errorf("The error must be %v, got %v", crm.ErrInvalidEmailFormat, err)
 		}
 	})
 
@@ -311,28 +279,7 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if !errors.Is(err, name.ErrEmptyName) {
-			t.Errorf("The error must be %V, got %V", name.ErrEmptyName, err)
-		}
-	})
-
-	t.Run("should_return_error_if_phone_number_of_customer_is_empy", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
-			ID:          "1",
-			Name:        "Paola Miguel",
-			Nif:         "002223109LA031",
-			BirthDate:   "2001-01-02",
-			Email:       "paulaoliveira.oliveira@domain.com",
-			PhoneNumber: "",
-		}
-
-		err := u.Edit(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, crm.ErrEmptyPhoneNumber) {
-			t.Errorf("The error must be %V, got %V", crm.ErrEmptyPhoneNumber, err)
+			t.Errorf("The error must be %v, got %v", name.ErrEmptyName, err)
 		}
 	})
 
@@ -343,7 +290,7 @@ func TestCustomerEdit(t *testing.T) {
 			Nif:         "",
 			BirthDate:   "2001-01-02",
 			Email:       "paulaoliveira.oliveira@domain.com",
-			PhoneNumber: "244922000022",
+			PhoneNumber: "+244922000022",
 		}
 
 		err := u.Edit(i)
@@ -353,7 +300,25 @@ func TestCustomerEdit(t *testing.T) {
 		}
 
 		if !errors.Is(err, crm.ErrEmptyNif) {
-			t.Errorf("The error must be %V, got %V", crm.ErrEmptyNif, err)
+			t.Errorf("The error must be %v, got %v", crm.ErrEmptyNif, err)
+		}
+	})
+
+	t.Run("should_return_error_if_customer_not_exists_in_repository", func(t *testing.T) {
+		i := crm.CustomerEditorInput{
+			ID:   "100",
+			Name: "John Doe",
+			Nif:  "0023221ME048",
+		}
+
+		err := u.Edit(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, crm.ErrCustomerNotFound) {
+			t.Errorf("The error mus be %v, got %v", crm.ErrCustomerNotFound, err)
 		}
 	})
 }

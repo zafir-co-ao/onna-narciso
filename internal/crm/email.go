@@ -5,13 +5,17 @@ import (
 	"regexp"
 )
 
-var ErrInvalidFormat = errors.New("invalid email format")
+var ErrInvalidEmailFormat = errors.New("invalid email format")
 
 type Email string
 
 func NewEmail(v string) (Email, error) {
+	if len(v) == 0 {
+		return Email(""), nil
+	}
+
 	if !isValidFormat(v) {
-		return "", ErrInvalidFormat
+		return "", ErrInvalidEmailFormat
 	}
 	return Email(v), nil
 }

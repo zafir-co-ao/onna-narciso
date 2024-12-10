@@ -10,7 +10,7 @@ import (
 const EventCustomerUpdated = "EventCustomerUpdated"
 
 type CustomerEditorInput struct {
-	ID          nanoid.ID
+	ID          string
 	Name        string
 	Nif         string
 	BirthDate   string
@@ -32,7 +32,10 @@ func NewCustomerEditor(repo Repository, bus event.Bus) CustomerEditor {
 }
 
 func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
-	c, _ := u.repo.FindByID(i.ID)
+	c, err := u.repo.FindByID(nanoid.ID(i.ID))
+	if err != nil {
+		return err
+	}
 
 	if u.isUsedNif(c, i) {
 		return ErrNifAlreadyUsed
@@ -58,12 +61,8 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		return err
 	}
 
-	if !date.IsValidFormat(i.BirthDate) {
-		return date.ErrInvalidFormat
-	}
-
 	c = NewCustomerBuilder().
-		WithID(i.ID).
+		WithID(nanoid.ID(i.ID)).
 		WithName(name).
 		WithNif(nif).
 		WithBirthDate(date.Date(i.BirthDate)).
@@ -71,7 +70,10 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 		WithPhoneNumber(p).
 		Build()
 
-	u.repo.Save(c)
+	err = u.repo.Save(c)
+	if err != nil {
+		return err
+	}
 
 	e := event.New(
 		EventCustomerUpdated,

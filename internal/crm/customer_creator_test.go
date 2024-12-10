@@ -7,7 +7,6 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -207,26 +206,6 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_birth_date_is_invalid", func(t *testing.T) {
-		i := crm.CustomerCreatorInput{
-			Name:        "Juliana Paes",
-			Nif:         "002223109LA100",
-			BirthDate:   "10/10/2000",
-			Email:       "john.doe@domain.com",
-			PhoneNumber: "+244912000011",
-		}
-
-		_, err := u.Create(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, date.ErrInvalidFormat) {
-			t.Errorf("The error must be %v, got %v", date.ErrInvalidFormat, err)
-		}
-	})
-
 	t.Run("should_return_error_if_email_is_invalid", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Juliana Paes",
@@ -242,8 +221,8 @@ func TestCustomerCreator(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(err, crm.ErrInvalidFormat) {
-			t.Errorf("The error must be %v, got %v", crm.ErrInvalidFormat, err)
+		if !errors.Is(err, crm.ErrInvalidEmailFormat) {
+			t.Errorf("The error must be %v, got %v", crm.ErrInvalidEmailFormat, err)
 		}
 	})
 
@@ -263,25 +242,6 @@ func TestCustomerCreator(t *testing.T) {
 
 		if !errors.Is(err, name.ErrEmptyName) {
 			t.Errorf("The error must be %v, got %v", name.ErrEmptyName, err)
-		}
-	})
-
-	t.Run("should_return_error_if_phone_number_of_customer_is_empy", func(t *testing.T) {
-		i := crm.CustomerCreatorInput{
-			Name:      "Micheal Jordan",
-			Nif:       "002223109LA608",
-			BirthDate: "2001-10-15",
-			Email:     "michael.jordan@domain.com",
-		}
-
-		_, err := u.Create(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, crm.ErrEmptyPhoneNumber) {
-			t.Errorf("The error must be %v, got %v", crm.ErrEmptyPhoneNumber, err)
 		}
 	})
 

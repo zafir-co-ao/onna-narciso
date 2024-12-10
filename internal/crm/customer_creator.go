@@ -45,10 +45,6 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
-	if !date.IsValidFormat(i.BirthDate) {
-		return CustomerOutput{}, date.ErrInvalidFormat
-	}
-
 	email, err := NewEmail(i.Email)
 	if err != nil {
 		return CustomerOutput{}, err
