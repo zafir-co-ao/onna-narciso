@@ -284,7 +284,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_age_is_less_than_12", func(t *testing.T) {
+	t.Run("should_return_error_if_age_is_lower_than_minum_allowed_age", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA011",
@@ -304,7 +304,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_erro_if_phone_number_already_exists_in_repository", func(t *testing.T) {
+	t.Run("should_return_error_if_phone_number_already_exists_in_repository", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA011",
@@ -322,10 +322,9 @@ func TestCustomerCreator(t *testing.T) {
 		if !errors.Is(err, crm.ErrPhoneNumberAlreadyUsed) {
 			t.Errorf("The error must be %v, got %v", crm.ErrPhoneNumberAlreadyUsed, err)
 		}
-
 	})
 
-	t.Run("should_return_erro_if_email_already_exists_in_repository", func(t *testing.T) {
+	t.Run("should_return_error_if_email_already_exists_in_repository", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA011",

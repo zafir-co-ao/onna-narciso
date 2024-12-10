@@ -97,25 +97,19 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 }
 
 func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
-	customers, _ := u.repo.FindAll()
-
-	for _, c := range customers {
-		if c.PhoneNumber.String() == number.String() {
-			return true
-		}
+	if len(number) == 0 {
+		return false
 	}
 
-	return false
+	_, err := u.repo.FindByPhoneNumber(number)
+	return err == nil
 }
 
 func (u *customerCreatorImpl) isUsedEmail(email Email) bool {
-	customers, _ := u.repo.FindAll()
-
-	for _, c := range customers {
-		if c.Email.String() == email.String() {
-			return true
-		}
+	if len(email) == 0 {
+		return false
 	}
 
-	return false
+	_, err := u.repo.FindByEmail(email)
+	return err == nil
 }
