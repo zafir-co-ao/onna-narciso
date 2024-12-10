@@ -112,7 +112,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.BirthDate != i.BirthDate {
-			t.Errorf("The birth date of customer %s should equal to %s", i.BirthDate, o.BirthDate)
+			t.Error("The birth date of customer should be empty")
 		}
 	})
 
@@ -132,17 +132,17 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.Email != i.Email {
-			t.Errorf("The email of customer %s should equal to %s", i.Email, o.Email)
+			t.Error("The email of customer should be empty")
 		}
 	})
 
-	t.Run("must_register_the_phone_number_of_customer", func(t *testing.T) {
+	t.Run("must_register_customer_without_the_phone_number", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA031",
 			BirthDate:   "1990-01-01",
 			Email:       "joana.doe10@domain.com",
-			PhoneNumber: "+244912000011",
+			PhoneNumber: "",
 		}
 
 		o, err := u.Create(i)
@@ -152,7 +152,7 @@ func TestCustomerCreator(t *testing.T) {
 		}
 
 		if o.PhoneNumber != i.PhoneNumber {
-			t.Errorf("The phoneNumber of customer %s should equal to %s", i.PhoneNumber, o.PhoneNumber)
+			t.Error("The phoneNumber of customer should be empty")
 		}
 	})
 
