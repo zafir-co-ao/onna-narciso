@@ -88,31 +88,28 @@ func TestSessionStarter(t *testing.T) {
 		if evtAggID != id {
 			t.Errorf("Event header Aggregate ID should equal ID: %v, got: %v", id, evtAggID)
 		}
-
 	})
 
 	t.Run("should_return_error_if_session_not_found_in_repository", func(t *testing.T) {
-
 		err := u.Start("100")
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(sessions.ErrSessionNotFound, err) {
+		if !errors.Is(err, sessions.ErrSessionNotFound) {
 			t.Errorf("The error must be ErrSessionNotFound, got %v", err)
 		}
 	})
 
 	t.Run("should_return_error_if_the_session_is_already_started", func(t *testing.T) {
-
 		err := u.Start("2")
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(sessions.ErrSessionStarted, err) {
+		if !errors.Is(err, sessions.ErrSessionStarted) {
 			t.Errorf("The error must be ErrSessionStarted, got %v", err)
 		}
 	})

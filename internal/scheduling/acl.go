@@ -11,7 +11,7 @@ var (
 	ErrServiceNotFound      = errors.New("service not found")
 	ErrCustomerNotFound     = errors.New("customer not found")
 	ErrProfessionalNotFound = errors.New("professional not found")
-	ErrCustomerRegistration = errors.New("Error registering customer")
+	ErrCustomerRegistration = errors.New("customer registration error")
 )
 
 type ProfessionalsACL interface {

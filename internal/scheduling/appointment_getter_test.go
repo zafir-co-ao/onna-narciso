@@ -8,19 +8,19 @@ import (
 )
 
 func TestAppointmentGetter(t *testing.T) {
-	repo := scheduling.NewAppointmentRepository()
-	repo.Save(scheduling.Appointment{ID: "1"})
-
+	a := scheduling.Appointment{ID: "1"}
+	repo := scheduling.NewAppointmentRepository(a)
 	u := scheduling.NewAppointmentGetter(repo)
 
-	t.Run("should_find_appointment_in_repository", func(t *testing.T) {
+	t.Run("should_retrieve_appointment_from_repository", func(t *testing.T) {
 		a, err := u.Get("1")
-		if err != nil {
-			t.Errorf("Finder appointment should not return error: %v", err)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
 		}
 
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
-			t.Errorf("Should return appointment not an error, got %v", err)
+			t.Errorf("Should return the appointment, got %v", err)
 		}
 
 		if a.ID != "1" {
@@ -30,12 +30,13 @@ func TestAppointmentGetter(t *testing.T) {
 
 	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
 		_, err := u.Get("2")
-		if err == nil {
-			t.Errorf("Finder appointment should return error, got %v", err)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error, got %v", err)
 		}
 
 		if !errors.Is(err, scheduling.ErrAppointmentNotFound) {
-			t.Errorf("The error must be ErrAppointmentNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", scheduling.ErrAppointmentNotFound, err)
 		}
 	})
 }

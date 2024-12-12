@@ -14,23 +14,39 @@ import (
 )
 
 func TestAppointmentScheduler(t *testing.T) {
+	today := date.Today()
+	appointments := []scheduling.Appointment{
+		{
+			ID:             "1",
+			Date:           "2024-10-14",
+			Hour:           "8:00",
+			Duration:       90,
+			Status:         scheduling.StatusScheduled,
+			ProfessionalID: nanoid.ID("3"),
+		},
+		{
+			ID:             "2",
+			Date:           today.AddDate(0, 0, 2),
+			Hour:           "8:00",
+			Duration:       480,
+			Status:         scheduling.StatusScheduled,
+			ProfessionalID: nanoid.ID("2"),
+		},
+		{
+			ID:       "6",
+			Date:     "2020-04-01",
+			Hour:     "19:00",
+			Duration: 60,
+			Status:   scheduling.StatusCanceled,
+		},
+	}
+
 	bus := event.NewEventBus()
-	repo := scheduling.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository(appointments...)
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
 	sacl := stubs.NewServicesACL()
-
-	today := date.Today()
-
 	u := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
-
-	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Hour: "8:00", Duration: 90, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("3")}
-	a2 := scheduling.Appointment{ID: "2", Date: today.AddDate(0, 0, 2), Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("2")}
-	a3 := scheduling.Appointment{ID: "6", Date: "2020-04-01", Hour: "19:00", Duration: 60, Status: scheduling.StatusCanceled}
-
-	_ = repo.Save(a1)
-	_ = repo.Save(a2)
-	_ = repo.Save(a3)
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
@@ -43,7 +59,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
@@ -63,20 +79,20 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
+		a, err := repo.FindByID(nanoid.ID(o.ID))
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Error("Appointment should be stored in repository")
 		}
 
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ID.String() != o.ID {
+		if a.ID.String() != o.ID {
 			t.Errorf("Appointment ID should be %s", o.ID)
 		}
 	})
@@ -92,17 +108,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if !appointment.IsScheduled() {
-			t.Errorf("Appointment status should be %s, got %s", scheduling.StatusScheduled, appointment.Status)
+		if !a.IsScheduled() {
+			t.Errorf("Appointment status should be %s, got %s", scheduling.StatusScheduled, a.Status)
 		}
 	})
 
@@ -117,17 +133,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ProfessionalID.String() != i.ProfessionalID {
-			t.Errorf("The appointment professional must be  %s, got %s", i.ProfessionalID, appointment.ProfessionalID)
+		if a.ProfessionalID.String() != i.ProfessionalID {
+			t.Errorf("The appointment professional must be  %s, got %s", i.ProfessionalID, a.ProfessionalID)
 		}
 	})
 
@@ -142,17 +158,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.CustomerID.String() != i.CustomerID {
-			t.Errorf("The appointment customer must be  %s, got %s", i.CustomerID, appointment.CustomerID)
+		if a.CustomerID.String() != i.CustomerID {
+			t.Errorf("The appointment customer must be  %s, got %s", i.CustomerID, a.CustomerID)
 		}
 	})
 
@@ -167,17 +183,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.ServiceID.String() != i.ServiceID {
-			t.Errorf("The appointment service must be  %s, got %s", i.ServiceID, appointment.ServiceID)
+		if a.ServiceID.String() != i.ServiceID {
+			t.Errorf("The appointment service must be  %s, got %s", i.ServiceID, a.ServiceID)
 		}
 	})
 
@@ -192,17 +208,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Date.String() != i.Date {
-			t.Errorf("The appointment date must be %s, got %s", i.Date, appointment.Date)
+		if a.Date.String() != i.Date {
+			t.Errorf("The appointment date must be %s, got %s", i.Date, a.Date)
 		}
 	})
 
@@ -217,17 +233,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Hour.String() != i.Hour {
-			t.Errorf("The appointment start hour must be %s, got %s", i.Hour, appointment.Hour)
+		if a.Hour.String() != i.Hour {
+			t.Errorf("The appointment start hour must be %s, got %s", i.Hour, a.Hour)
 		}
 	})
 
@@ -242,17 +258,17 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		appointment, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		a, err := repo.FindByID(nanoid.ID(o.ID))
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
-		if appointment.Duration.Value() != i.Duration {
-			t.Errorf("The appointment duration must be %d, got %d", i.Duration, appointment.Duration)
+		if a.Duration.Value() != i.Duration {
+			t.Errorf("The appointment duration must be %d, got %d", i.Duration, a.Duration)
 		}
 	})
 
@@ -300,7 +316,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -320,7 +336,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -340,7 +356,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -361,14 +377,14 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, _ := repo.FindByID(nanoid.ID(o.ID))
 
 		customer, err := cacl.FindCustomerByID(a.CustomerID)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return customer: %v", err)
 		}
 
@@ -387,7 +403,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -407,7 +423,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -427,7 +443,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		_, err := u.Schedule(i)
-		if err == nil {
+		if errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
 
@@ -447,12 +463,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
@@ -472,12 +488,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
@@ -498,12 +514,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
@@ -524,12 +540,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
@@ -550,12 +566,12 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
 
 		a, err := repo.FindByID(nanoid.ID(o.ID))
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should return appointment: %v", err)
 		}
 
@@ -586,7 +602,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 
 		_, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
@@ -616,7 +632,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 
 		o, err := u.Schedule(i)
-		if err != nil {
+		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
@@ -662,7 +678,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(date.ErrDateInPast, err) {
+		if !errors.Is(err, date.ErrDateInPast) {
 			t.Errorf("Should return %v, got %v", date.ErrDateInPast, err)
 		}
 	})

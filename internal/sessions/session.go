@@ -9,17 +9,16 @@ import (
 )
 
 const (
-	StatusCheckedIn           Status = "CheckedIn"
-	StatusStarted             Status = "Started"
-	StatusClosed              Status = "Closed"
-	StatusAppointmentCanceled Status = "Cancelado"
+	StatusCheckedIn Status = "CheckedIn"
+	StatusStarted   Status = "Started"
+	StatusClosed    Status = "Closed"
 )
 
 var (
-	ErrSessionStarted     = errors.New("Session already started")
-	ErrSessionClosed      = errors.New("Session already closed")
-	ErrInvalidCheckinDate = errors.New("Invalid checkin date")
-	ErrInvoiceNotBeIssued = errors.New("Invoice not be issued")
+	ErrSessionStarted     = errors.New("session already started")
+	ErrSessionClosed      = errors.New("session already closed")
+	ErrInvalidCheckinDate = errors.New("invalid checkin date")
+	ErrInvoiceNotBeIssued = errors.New("invoice not be issued")
 )
 
 type Appointment struct {
@@ -30,12 +29,17 @@ type Appointment struct {
 	ProfessionalName string
 	ServiceID        nanoid.ID
 	ServiceName      string
-	Status           Status
 	Date             date.Date
+	Closed           bool
+	Canceled         bool
 }
 
 func (a *Appointment) IsCanceled() bool {
-	return a.Status == StatusAppointmentCanceled
+	return a.Canceled
+}
+
+func (a *Appointment) IsClosed() bool {
+	return a.Closed
 }
 
 func (a *Appointment) ValidCheckinDate() bool {
@@ -102,9 +106,7 @@ func (s *Session) addServices(services []SessionService) {
 		return
 	}
 
-	for _, svc := range services {
-		s.Services = append(s.Services, svc)
-	}
+	s.Services = append(s.Services, services...)
 }
 
 func (s Session) GetID() nanoid.ID {

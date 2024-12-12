@@ -14,32 +14,33 @@ import (
 )
 
 func TestAppointmentRescheduler(t *testing.T) {
+	today := date.Today()
+
+	appointments := []scheduling.Appointment{
+		{
+			ID:             nanoid.New(),
+			ProfessionalID: "1",
+			Status:         scheduling.StatusScheduled,
+			Date:           date.Date(today.AddDate(0, 1, 5).String()),
+			Hour:           "8:00",
+			Duration:       240,
+		},
+		{
+			ID:     "20",
+			Status: scheduling.StatusCanceled,
+		},
+	}
+
+	for i := range 15 {
+		a := scheduling.Appointment{ID: nanoid.ID(strconv.Itoa(i)), Status: scheduling.StatusScheduled}
+		appointments = append(appointments, a)
+	}
+
 	bus := event.NewEventBus()
 	sacl := stubs.NewServicesACL()
 	pacl := stubs.NewProfessionalsACL()
-	repo := scheduling.NewAppointmentRepository()
+	repo := scheduling.NewAppointmentRepository(appointments...)
 	u := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
-
-	today := date.Today()
-
-	for i := range 20 {
-		i += 1
-		a := scheduling.Appointment{ID: nanoid.ID(strconv.Itoa(i)), Status: scheduling.StatusScheduled}
-		repo.Save(a)
-	}
-
-	a2 := scheduling.Appointment{ID: "20", Status: scheduling.StatusCanceled}
-	a3 := scheduling.Appointment{
-		ID:             "12",
-		ProfessionalID: "1",
-		Status:         scheduling.StatusScheduled,
-		Date:           date.Date(today.AddDate(0, 1, 5).String()),
-		Hour:           "8:00",
-		Duration:       240,
-	}
-
-	_ = repo.Save(a2)
-	_ = repo.Save(a3)
 
 	t.Run("should_reschedule_appointment", func(t *testing.T) {
 		i := scheduling.AppointmentReschedulerInput{
@@ -409,7 +410,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrProfessionalNotFound, err) {
+		if !errors.Is(err, scheduling.ErrProfessionalNotFound) {
 			t.Errorf("The error must be %v, got %v", scheduling.ErrProfessionalNotFound, err)
 		}
 	})
@@ -429,7 +430,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrServiceNotFound, err) {
+		if !errors.Is(err, scheduling.ErrServiceNotFound) {
 			t.Errorf("The error must be %v, got %v", scheduling.ErrServiceNotFound, err)
 		}
 	})
@@ -449,7 +450,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(scheduling.ErrInvalidService, err) {
+		if !errors.Is(err, scheduling.ErrInvalidService) {
 			t.Errorf("The error must be %v, got %v", scheduling.ErrInvalidService, err)
 		}
 	})
@@ -469,7 +470,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return an error, got %v", err)
 		}
 
-		if !errors.Is(date.ErrDateInPast, err) {
+		if !errors.Is(err, date.ErrDateInPast) {
 			t.Errorf("The error must be %v, got %v", date.ErrDateInPast, err)
 		}
 	})

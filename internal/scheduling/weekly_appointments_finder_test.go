@@ -10,22 +10,22 @@ import (
 )
 
 func TestWeeklyAppointments(t *testing.T) {
-	repo := scheduling.NewAppointmentRepository(
-		scheduling.Appointment{ID: "1", Date: date.Date("2024-10-09"), Hour: hour.Hour("11:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
-		scheduling.Appointment{ID: "4", Date: date.Date("2024-10-25"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusRescheduled},
-		scheduling.Appointment{ID: "5", Date: date.Date("2024-10-11"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
-		scheduling.Appointment{ID: "6", Date: date.Date("2024-10-12"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusRescheduled},
-		scheduling.Appointment{ID: "7", Date: date.Date("2024-10-22"), Hour: hour.Hour("09:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
-		scheduling.Appointment{ID: "8", Date: date.Date("2024-10-01"), Hour: hour.Hour("09:00"), ServiceID: "5", Status: scheduling.StatusCanceled},
-		scheduling.Appointment{ID: "9", Date: date.Date("2024-11-05"), Hour: hour.Hour("12:00"), ServiceID: "1", Status: scheduling.StatusClosed},
-	)
+	appointments := []scheduling.Appointment{
+		{ID: "1", Date: date.Date("2024-10-09"), Hour: hour.Hour("11:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
+		{ID: "4", Date: date.Date("2024-10-25"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusRescheduled},
+		{ID: "5", Date: date.Date("2024-10-11"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
+		{ID: "6", Date: date.Date("2024-10-12"), Hour: hour.Hour("10:00"), ServiceID: "3", Status: scheduling.StatusRescheduled},
+		{ID: "7", Date: date.Date("2024-10-22"), Hour: hour.Hour("09:00"), ServiceID: "3", Status: scheduling.StatusScheduled},
+		{ID: "8", Date: date.Date("2024-10-01"), Hour: hour.Hour("09:00"), ServiceID: "5", Status: scheduling.StatusCanceled},
+		{ID: "9", Date: date.Date("2024-11-05"), Hour: hour.Hour("12:00"), ServiceID: "1", Status: scheduling.StatusClosed},
+	}
+	repo := scheduling.NewAppointmentRepository(appointments...)
 
 	type weeklyAppointmentsTestMatrix struct {
 		date          string
 		serviceID     string
 		professionals []string
-
-		expectedIDs []string
+		expectedIDs   []string
 	}
 
 	matrix := []weeklyAppointmentsTestMatrix{

@@ -5,13 +5,10 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 )
 
-type CreatorOutput struct {
-	ID            string
-	AppointmentID string
-}
+const EventSessionCheckedIn = "EventSessionCheckedIn"
 
 type Creator interface {
-	Create(appointmentID string) (CreatorOutput, error)
+	Create(appointmentID string) (SessionOutput, error)
 }
 
 type creatorImpl struct {
@@ -20,22 +17,26 @@ type creatorImpl struct {
 	aacl AppointmentsACL
 }
 
-func NewSessionCreator(r Repository, b event.Bus, aacl AppointmentsACL) Creator {
-	return &creatorImpl{repo: r, bus: b, aacl: aacl}
+func NewSessionCreator(repo Repository, bus event.Bus, aacl AppointmentsACL) Creator {
+	return &creatorImpl{repo, bus, aacl}
 }
 
-func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
-	a, err := c.aacl.FindByID(nanoid.ID(appointmentID))
+func (u *creatorImpl) Create(appointmentID string) (SessionOutput, error) {
+	a, err := u.aacl.FindByID(nanoid.ID(appointmentID))
 	if err != nil {
-		return CreatorOutput{}, err
-	}
-
-	if a.IsCanceled() {
-		return CreatorOutput{}, ErrAppointmentCanceled
+		return SessionOutput{}, err
 	}
 
 	if !a.ValidCheckinDate() {
-		return CreatorOutput{}, ErrInvalidCheckinDate
+		return SessionOutput{}, ErrInvalidCheckinDate
+	}
+
+	if a.IsCanceled() {
+		return SessionOutput{}, ErrAppointmentCanceled
+	}
+
+	if a.IsClosed() {
+		return SessionOutput{}, ErrAppointmentClosed
 	}
 
 	s := NewSessionBuilder().
@@ -44,20 +45,17 @@ func (c *creatorImpl) Create(appointmentID string) (CreatorOutput, error) {
 		WithService(a.ServiceID, a.ServiceName, a.ProfessionalID, a.ProfessionalName).
 		Build()
 
-	err = c.repo.Save(s)
+	err = u.repo.Save(s)
 	if err != nil {
-		return CreatorOutput{}, err
+		return SessionOutput{}, err
 	}
 
-	c.bus.Publish(event.New("SessionCheckedIn",
+	u.bus.Publish(event.New(EventSessionCheckedIn,
 		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
 		event.WithPayload(struct{ AppointmentID string }{
 			AppointmentID: s.AppointmentID.String(),
 		}),
 	))
 
-	return CreatorOutput{
-		ID:            s.ID.String(),
-		AppointmentID: s.AppointmentID.String(),
-	}, nil
+	return toSessionOutput(s), nil
 }

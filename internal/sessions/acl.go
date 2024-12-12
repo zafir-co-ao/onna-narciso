@@ -10,9 +10,10 @@ var (
 	ErrServiceNotFound     = errors.New("service not found")
 	ErrAppointmentNotFound = errors.New("appointment not found")
 	ErrAppointmentCanceled = errors.New("appointment canceled")
+	ErrAppointmentClosed   = errors.New("appointment closed")
 )
 
-var EmptyServices = make([]SessionService, 0, 0)
+var EmptyServices = make([]SessionService, 0)
 
 type ServicesACL interface {
 	FindByIDs(i []nanoid.ID) ([]SessionService, error)

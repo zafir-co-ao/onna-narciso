@@ -23,7 +23,7 @@ func NewSessionStarter(repo Repository, bus event.Bus) Starter {
 func (u *starterImpl) Start(id string) error {
 	s, err := u.repo.FindByID(nanoid.ID(id))
 	if err != nil {
-		return ErrSessionNotFound
+		return err
 	}
 
 	err = s.Start()

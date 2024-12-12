@@ -3,10 +3,10 @@ package scheduling
 import "errors"
 
 var (
-	ErrBusyTime                  = errors.New("Schedule time is busy")
-	ErrInvalidStatusToClose      = errors.New("Invalid status to close")
-	ErrInvalidStatusToCancel     = errors.New("Invalid status to cancel")
-	ErrInvalidStatusToReschedule = errors.New("Invalid status to reschedule")
+	ErrBusyTime                  = errors.New("schedule time is busy")
+	ErrInvalidStatusToClose      = errors.New("invalid status to close")
+	ErrInvalidStatusToCancel     = errors.New("invalid status to cancel")
+	ErrInvalidStatusToReschedule = errors.New("invalid status to reschedule")
 )
 
 var EmptyAppointmentOutput = AppointmentOutput{}
