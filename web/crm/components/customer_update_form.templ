@@ -5,7 +5,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ CustomerEditForm(url string, customer crm.CustomerOutput) {
+templ CustomerUpdateForm(url string, customer crm.CustomerOutput) {
 	<form hx-put={ url } hx-swap="none">
 		<div class="mt-4 space-y-4">
 			<div>

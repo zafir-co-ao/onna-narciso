@@ -10,7 +10,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
-func TestCustomerEdit(t *testing.T) {
+func TestCustomerUpdate(t *testing.T) {
 	customers := []crm.Customer{
 		{
 			ID:          nanoid.ID("1"),
@@ -32,10 +32,10 @@ func TestCustomerEdit(t *testing.T) {
 
 	bus := event.NewEventBus()
 	repo := crm.NewInmemRepository(customers...)
-	u := crm.NewCustomerEditor(repo, bus)
+	u := crm.NewCustomerUpdater(repo, bus)
 
-	t.Run("should_find_the_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+	t.Run("should_retrieve_the_customer", func(t *testing.T) {
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -44,7 +44,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -56,7 +56,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_name_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -65,7 +65,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -82,7 +82,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_nif_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -91,7 +91,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -109,7 +109,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_birth_date_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -118,7 +118,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -135,7 +135,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_email_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -144,7 +144,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
@@ -160,7 +160,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_phone_number_of_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -169,7 +169,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244922000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -186,7 +186,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_when_the_customer_nif_already_exists", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "001123109LA033",
@@ -195,7 +195,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -209,7 +209,7 @@ func TestCustomerEdit(t *testing.T) {
 	t.Run("should_publish_the_domain_event_when_customer_was_updated", func(t *testing.T) {
 		var isPublished bool = false
 
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -226,7 +226,7 @@ func TestCustomerEdit(t *testing.T) {
 
 		bus.Subscribe(crm.EventCustomerUpdated, h)
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no erro, got %v", err)
@@ -238,7 +238,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_email_is_invalid", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -247,7 +247,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -259,7 +259,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_name_is_empty", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "",
 			Nif:         "002223109LA031",
@@ -268,7 +268,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -280,7 +280,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_nif_of_customer_is_empty", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "",
@@ -289,7 +289,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -301,13 +301,13 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_customer_not_exists_in_repository", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:   "100",
 			Name: "John Doe",
 			Nif:  "0023221ME048",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -319,14 +319,14 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_customer_email_is_already_used_by_other_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:    "1",
 			Name:  "Paola Oliveira",
 			Nif:   "002223109LA033",
 			Email: "monica12@domain.com",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -338,7 +338,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_customer_phone_number_is_used_by_other_customer", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Oliveira",
 			Nif:         "002223109LA033",
@@ -346,7 +346,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244921000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -358,7 +358,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_birth_date_is_lower_than_minimum_allowed_age", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Miguel",
 			Nif:         "002223109LA031",
@@ -367,7 +367,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(nil, err) {
 			t.Errorf("Expected error, got %v", err)
@@ -379,7 +379,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_with_email_empty", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Oliveira",
 			Nif:         "002223109LA033",
@@ -387,7 +387,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
@@ -404,7 +404,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_with_empty_phone_number", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Oliveira",
 			Nif:         "002223109LA033",
@@ -412,7 +412,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)
@@ -429,7 +429,7 @@ func TestCustomerEdit(t *testing.T) {
 	})
 
 	t.Run("should_update_with_empty_birth_date", func(t *testing.T) {
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Oliveira",
 			BirthDate:   "",
@@ -438,7 +438,7 @@ func TestCustomerEdit(t *testing.T) {
 			PhoneNumber: "+244911000022",
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)

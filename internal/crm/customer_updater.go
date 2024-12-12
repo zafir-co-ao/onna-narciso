@@ -9,7 +9,7 @@ import (
 
 const EventCustomerUpdated = "EventCustomerUpdated"
 
-type CustomerEditorInput struct {
+type CustomerUpdaterInput struct {
 	ID          string
 	Name        string
 	Nif         string
@@ -18,20 +18,20 @@ type CustomerEditorInput struct {
 	PhoneNumber string
 }
 
-type CustomerEditor interface {
-	Edit(i CustomerEditorInput) error
+type CustomerUpdater interface {
+	Update(i CustomerUpdaterInput) error
 }
 
-type customerEditorImpl struct {
+type customerUpdaterImpl struct {
 	repo Repository
 	bus  event.Bus
 }
 
-func NewCustomerEditor(repo Repository, bus event.Bus) CustomerEditor {
-	return &customerEditorImpl{repo: repo, bus: bus}
+func NewCustomerUpdater(repo Repository, bus event.Bus) CustomerUpdater {
+	return &customerUpdaterImpl{repo, bus}
 }
 
-func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
+func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 	c, err := u.repo.FindByID(nanoid.ID(i.ID))
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 	return nil
 }
 
-func (u *customerEditorImpl) isUsedNif(c Customer, nif string) bool {
+func (u *customerUpdaterImpl) isUsedNif(c Customer, nif string) bool {
 	if c.IsSameNif(Nif(nif)) {
 		return false
 	}
@@ -109,7 +109,7 @@ func (u *customerEditorImpl) isUsedNif(c Customer, nif string) bool {
 	return err != nil
 }
 
-func (u *customerEditorImpl) isUsedEmail(c Customer, email string) bool {
+func (u *customerUpdaterImpl) isUsedEmail(c Customer, email string) bool {
 	if len(email) == 0 {
 		return false
 	}
@@ -122,7 +122,7 @@ func (u *customerEditorImpl) isUsedEmail(c Customer, email string) bool {
 	return err == nil
 }
 
-func (u *customerEditorImpl) isUsedPhoneNumber(c Customer, phoneNumber string) bool {
+func (u *customerUpdaterImpl) isUsedPhoneNumber(c Customer, phoneNumber string) bool {
 	if len(phoneNumber) == 0 {
 		return false
 	}

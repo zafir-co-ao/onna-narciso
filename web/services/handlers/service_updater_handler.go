@@ -11,7 +11,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditService(u services.ServiceUpdater) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 

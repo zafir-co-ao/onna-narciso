@@ -9,7 +9,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditCustomerDialog(u crm.CustomerGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateCustomerDialog(u crm.CustomerGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("id")
 		url := r.FormValue("hx-put")
@@ -27,6 +27,6 @@ func HandleEditCustomerDialog(u crm.CustomerGetter) func(w http.ResponseWriter, 
 		}
 
 		_http.SendOk(w)
-		components.HandleCustomerEditDialog(url, o).Render(r.Context(), w)
+		components.HandleCustomerUpdateDialog(url, o).Render(r.Context(), w)
 	}
 }
