@@ -155,7 +155,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(sessions.ErrServiceNotFound, err) {
+		if !errors.Is(err, sessions.ErrServiceNotFound) {
 			t.Errorf("The error must be %v, got %v", sessions.ErrServiceNotFound, err)
 		}
 	})
@@ -205,7 +205,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(sessions.ErrSessionNotFound, err) {
+		if !errors.Is(err, sessions.ErrSessionNotFound) {
 			t.Errorf("The error must be %v, got %v", sessions.ErrServiceNotFound, err)
 		}
 	})
@@ -224,7 +224,7 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Expected error, got %v", err)
 		}
 
-		if !errors.Is(sessions.ErrSessionClosed, err) {
+		if !errors.Is(err, sessions.ErrSessionClosed) {
 			t.Errorf("The error must be %v, got %v", sessions.ErrSessionClosed, err)
 		}
 	})

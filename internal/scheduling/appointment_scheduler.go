@@ -115,11 +115,13 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 }
 
 func (u *appointmentScedulerImpl) findOrRegistrationCustomer(i AppointmentSchedulerInput) (Customer, error) {
-	if len(i.CustomerID) == 0 && len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0 {
+	isEmptyCustomer := len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0
+
+	if len(i.CustomerID) == 0 && isEmptyCustomer {
 		return Customer{}, ErrCustomerNotFound
 	}
 
-	if len(i.CustomerID) > 0 && (len(i.CustomerName) == 0 && len(i.CustomerPhone) == 0) {
+	if len(i.CustomerID) > 0 && isEmptyCustomer {
 		return u.cacl.FindCustomerByID(nanoid.ID(i.CustomerID))
 	}
 

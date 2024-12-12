@@ -24,8 +24,8 @@ func NewAppointmentRepository(s ...Appointment) AppointmentRepository {
 
 func (r *inmemAppointmentRepositoryImpl) FindByID(id nanoid.ID) (Appointment, error) {
 
-	if val, ok := r.BaseRepository.Data[id]; ok {
-		return val, nil
+	if a, ok := r.BaseRepository.Data[id]; ok {
+		return a, nil
 	}
 
 	return EmptyAppointment, ErrAppointmentNotFound

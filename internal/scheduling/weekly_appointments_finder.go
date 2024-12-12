@@ -10,21 +10,21 @@ type WeeklyAppointmentsFinder interface {
 	Find(week string, serviceID string, professionalsIDs []string) ([]AppointmentOutput, error)
 }
 
-type weeklyAppointmentsGetterImpl struct {
+type weeklyAppointmentsFinderImpl struct {
 	repo AppointmentRepository
 }
 
 func NewWeeklyAppointmentsFinder(repo AppointmentRepository) WeeklyAppointmentsFinder {
-	return &weeklyAppointmentsGetterImpl{repo: repo}
+	return &weeklyAppointmentsFinderImpl{repo}
 }
 
-func (w *weeklyAppointmentsGetterImpl) Find(adate string, serviceID string, professionalsIDs []string) ([]AppointmentOutput, error) {
+func (w *weeklyAppointmentsFinderImpl) Find(adate string, serviceID string, professionalsIDs []string) ([]AppointmentOutput, error) {
 
-	pids := xslices.Map(professionalsIDs, func(x string) nanoid.ID { return nanoid.ID(x) })
+	pids := xslices.Map(professionalsIDs, func(id string) nanoid.ID { return nanoid.ID(id) })
 
-	a, e := w.repo.FindByWeekServiceAndProfessionals(date.Date(adate), nanoid.ID(serviceID), pids)
-	if e != nil {
-		return nil, e
+	a, err := w.repo.FindByWeekServiceAndProfessionals(date.Date(adate), nanoid.ID(serviceID), pids)
+	if err != nil {
+		return nil, err
 	}
 
 	return xslices.Map(a, toAppointmentOutput), nil

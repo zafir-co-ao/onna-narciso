@@ -10,38 +10,35 @@ import (
 )
 
 func TestDailyAppointments(t *testing.T) {
+	appointments := []scheduling.Appointment{
+		{
+			ID:   "1",
+			Date: date.Date("2024-10-10"),
+			Hour: hour.Hour("11:00"),
+		},
+		{
+			ID:   "4",
+			Date: date.Date("2024-10-10"),
+			Hour: hour.Hour("10:00"),
+		},
+		{
+			ID:   "5",
+			Date: date.Date("2024-10-11"),
+			Hour: hour.Hour("10:00"),
+		},
+		{
+			ID:   "6",
+			Date: date.Date("2024-10-12"),
+			Hour: hour.Hour("10:00"),
+		},
+		{
+			ID:   "7",
+			Date: date.Date("2024-10-12"),
+			Hour: hour.Hour("09:00"),
+		},
+	}
 
-	repo := scheduling.NewAppointmentRepository()
-
-	repo.Save(scheduling.Appointment{
-		ID:   "1",
-		Date: date.Date("2024-10-10"),
-		Hour: hour.Hour("11:00"),
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:   "4",
-		Date: date.Date("2024-10-10"),
-		Hour: hour.Hour("10:00"),
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:   "5",
-		Date: date.Date("2024-10-11"),
-		Hour: hour.Hour("10:00"),
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:   "6",
-		Date: date.Date("2024-10-12"),
-		Hour: hour.Hour("10:00"),
-	})
-
-	repo.Save(scheduling.Appointment{
-		ID:   "7",
-		Date: date.Date("2024-10-12"),
-		Hour: hour.Hour("09:00"),
-	})
+	repo := scheduling.NewAppointmentRepository(appointments...)
 
 	type dailyAppointmentsTestMatrix struct {
 		date        string
