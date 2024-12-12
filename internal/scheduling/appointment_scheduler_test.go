@@ -625,7 +625,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_when_customer_name_nor_customer_phone_provided", func(t *testing.T) {
+	t.Run("should_return_error_when_customer_name_or_customer_phone_not_provided", func(t *testing.T) {
 		i := scheduling.AppointmentSchedulerInput{
 			ProfessionalID: "1",
 			CustomerID:     "",
