@@ -22,7 +22,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 	today := date.Today()
 
-	usecase := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
+	u := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 	a1 := scheduling.Appointment{ID: "1", Date: "2024-10-14", Hour: "8:00", Duration: 90, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("3")}
 	a2 := scheduling.Appointment{ID: "2", Date: today.AddDate(0, 0, 2), Hour: "8:00", Duration: 480, Status: scheduling.StatusScheduled, ProfessionalID: nanoid.ID("2")}
@@ -42,7 +42,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -62,7 +62,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       180,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -91,7 +91,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -116,7 +116,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -141,7 +141,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -166,7 +166,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -191,7 +191,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -216,7 +216,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -241,7 +241,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -266,7 +266,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if !errors.Is(err, scheduling.ErrBusyTime) {
 			t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
 		}
@@ -281,7 +281,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		for _, i := range inputs {
-			_, err := usecase.Schedule(i)
+			_, err := u.Schedule(i)
 
 			if !errors.Is(err, scheduling.ErrBusyTime) {
 				t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
@@ -299,7 +299,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -319,7 +319,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -339,7 +339,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -360,7 +360,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -386,7 +386,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -406,7 +406,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -426,7 +426,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err == nil {
 			t.Errorf("Scheduling appointment should return error: %v", err)
 		}
@@ -446,7 +446,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -471,7 +471,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -497,7 +497,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -523,7 +523,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -549,7 +549,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Scheduling appointment should not return error: %v", err)
 		}
@@ -585,7 +585,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -615,7 +615,7 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentScheduled, h)
 
-		o, err := usecase.Schedule(i)
+		o, err := u.Schedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -637,7 +637,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -657,7 +657,7 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Schedule(i)
+		_, err := u.Schedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}

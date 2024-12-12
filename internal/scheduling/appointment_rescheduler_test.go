@@ -18,7 +18,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 	sacl := stubs.NewServicesACL()
 	pacl := stubs.NewProfessionalsACL()
 	repo := scheduling.NewAppointmentRepository()
-	usecase := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
+	u := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
 
 	today := date.Today()
 
@@ -51,7 +51,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -76,7 +76,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -96,7 +96,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -116,7 +116,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -141,7 +141,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return error, got %v", err)
 		}
@@ -188,7 +188,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		for _, i := range inputs {
-			_, err := usecase.Reschedule(i)
+			_, err := u.Reschedule(i)
 
 			if err == nil {
 				t.Errorf("Shoud return an error, got %v", err)
@@ -210,7 +210,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -230,7 +230,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -250,7 +250,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -269,7 +269,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			ServiceID:      "2",
 			Duration:       30,
 		}
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -296,7 +296,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -326,7 +326,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -346,7 +346,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -375,7 +375,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := usecase.Reschedule(i)
+		o, err := u.Reschedule(i)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -404,7 +404,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -424,7 +424,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -444,7 +444,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -464,7 +464,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := usecase.Reschedule(i)
+		_, err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
