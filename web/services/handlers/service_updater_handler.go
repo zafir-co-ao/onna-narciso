@@ -23,9 +23,9 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 
 		i := services.ServiceUpdaterInput{
 			ID:          id,
-			Name:        r.Form.Get("name"),
-			Price:       r.Form.Get("price"),
-			Description: r.Form.Get("description"),
+			Name:        r.FormValue("name"),
+			Price:       r.FormValue("price"),
+			Description: r.FormValue("description"),
 			Duration:    d,
 		}
 
