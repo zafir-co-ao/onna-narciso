@@ -11,6 +11,7 @@ import (
 func TestAppointmentCanceler(t *testing.T) {
 	repo := scheduling.NewAppointmentRepository()
 	bus := event.NewEventBus()
+	u := scheduling.NewAppointmentCanceler(repo, bus)
 
 	a1 := scheduling.Appointment{ID: "1"}
 	a2 := scheduling.Appointment{ID: "2", Status: scheduling.StatusCanceled}
@@ -23,27 +24,23 @@ func TestAppointmentCanceler(t *testing.T) {
 	_ = repo.Save(a4)
 
 	t.Run("should_cancel_an_appointment", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentCanceler(repo, bus)
-
-		err := usecase.Cancel("1")
+		err := u.Cancel("1")
 		if err != nil {
 			t.Errorf("Canceling appointment should not return error: %v", err)
 		}
 
-		app, err := repo.FindByID("1")
+		a, err := repo.FindByID("1")
 		if errors.Is(err, scheduling.ErrAppointmentNotFound) {
 			t.Errorf("Appointment should be stored in repository")
 		}
 
-		if !app.IsCancelled() {
-			t.Errorf("Appointment should be status cancelled, got: %v", app.Status)
+		if !a.IsCancelled() {
+			t.Errorf("Appointment should be status cancelled, got: %v", a.Status)
 		}
 	})
 
 	t.Run("should_return_error_if_appointment_status_is_canceled", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentCanceler(repo, bus)
-
-		err := usecase.Cancel("2")
+		err := u.Cancel("2")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
@@ -54,9 +51,7 @@ func TestAppointmentCanceler(t *testing.T) {
 	})
 
 	t.Run("should_return_error_appointment_not_found_when_appointment_not_exists_in_repository", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentCanceler(repo, bus)
-
-		err := usecase.Cancel("1000")
+		err := u.Cancel("1000")
 		if err == nil {
 			t.Errorf("Canceling appointment should return error: %v", err)
 		}
@@ -74,12 +69,9 @@ func TestAppointmentCanceler(t *testing.T) {
 			evtAppointmentID = e.Header(event.HeaderAggregateID)
 		}
 
-		bus := event.NewEventBus()
 		bus.Subscribe(scheduling.EventAppointmentCanceled, h)
 
-		usecase := scheduling.NewAppointmentCanceler(repo, bus)
-
-		err := usecase.Cancel(id)
+		err := u.Cancel(id)
 		if err != nil {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -91,7 +83,5 @@ func TestAppointmentCanceler(t *testing.T) {
 		if evtAppointmentID != id {
 			t.Errorf("The EventAppointmentCanceled must be published with the appointment id, got %v", evtAppointmentID)
 		}
-
 	})
-
 }
