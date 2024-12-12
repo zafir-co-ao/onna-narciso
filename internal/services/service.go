@@ -19,3 +19,7 @@ type Service struct {
 func (s Service) GetID() nanoid.ID {
 	return s.ID
 }
+
+func (s Service) IsSamePrice(p Price) bool {
+	return s.Price == p
+}

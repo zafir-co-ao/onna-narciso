@@ -26,7 +26,7 @@ type UsecasesParams struct {
 	SessionFinder            sessions.Finder
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
-	ServiceEditor            services.ServiceEditor
+	ServiceEditor            services.ServiceUpdater
 	ServiceGetter            services.ServiceGetter
 	CustomerCreator          crm.CustomerCreator
 	CustomerEditor           crm.CustomerEditor

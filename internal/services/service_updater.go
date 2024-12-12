@@ -7,9 +7,9 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
-const EventServiceEdited = "EventServiceEdited"
+var EventPriceUpdated = "EventPriceUpdated"
 
-type ServiceEditorInput struct {
+type ServiceUpdaterInput struct {
 	ID          string
 	Name        string
 	Description string
@@ -17,22 +17,21 @@ type ServiceEditorInput struct {
 	Duration    int
 }
 
-type ServiceEditor interface {
-	Edit(i ServiceEditorInput) error
+type ServiceUpdater interface {
+	Update(i ServiceUpdaterInput) error
 }
 
-type ServiceEditorImpl struct {
+type updaterImpl struct {
 	repo Repository
 	bus  event.Bus
 }
 
-func NewServiceEditor(repo Repository, bus event.Bus) ServiceEditor {
-	return &ServiceEditorImpl{repo: repo, bus: bus}
+func NewServiceUpdater(repo Repository, bus event.Bus) ServiceUpdater {
+	return &updaterImpl{repo, bus}
 }
 
-func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
-
-	_, err := u.repo.FindByID(nanoid.ID(i.ID))
+func (u *updaterImpl) Update(i ServiceUpdaterInput) error {
+	s, err := u.repo.FindByID(nanoid.ID(i.ID))
 	if err != nil {
 		return err
 	}
@@ -42,7 +41,7 @@ func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
 		return err
 	}
 
-	price, err := NewPrice(i.Price)
+	_price, err := NewPrice(i.Price)
 	if err != nil {
 		return err
 	}
@@ -52,10 +51,12 @@ func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
 		return err
 	}
 
-	s := NewServiceBuilder().
+	oldPrice := s.Price
+
+	s = NewServiceBuilder().
 		WithID(nanoid.ID(i.ID)).
 		WithName(_name).
-		WithPrice(price).
+		WithPrice(_price).
 		WithDuration(_duration).
 		WithDescription(Description(i.Description)).
 		Build()
@@ -65,8 +66,12 @@ func (u *ServiceEditorImpl) Edit(i ServiceEditorInput) error {
 		return err
 	}
 
+	if s.IsSamePrice(oldPrice) {
+		return nil
+	}
+
 	e := event.New(
-		EventServiceEdited,
+		EventPriceUpdated,
 		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
 		event.WithPayload(i),
 	)
