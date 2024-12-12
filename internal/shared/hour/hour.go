@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var ErrInvalidFormat = errors.New("Invalid hour")
+var ErrInvalidFormat = errors.New("invalid hour")
 
 type Hour string
 
