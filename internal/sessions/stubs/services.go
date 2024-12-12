@@ -6,9 +6,9 @@ import (
 )
 
 var services = map[string]sessions.SessionService{
-	"1": sessions.SessionService{ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
-	"2": sessions.SessionService{ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
-	"3": sessions.SessionService{ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
+	"1": {ServiceID: nanoid.ID("1"), ProfessionalID: nanoid.ID("1")},
+	"2": {ServiceID: nanoid.ID("2"), ProfessionalID: nanoid.ID("1")},
+	"3": {ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
 }
 
 func NewServicesACL() sessions.ServicesACL {
