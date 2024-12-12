@@ -28,7 +28,6 @@ func TestSessionCreator(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
-
 	})
 
 	t.Run("should_store_session_in_the_repository", func(t *testing.T) {
@@ -53,7 +52,6 @@ func TestSessionCreator(t *testing.T) {
 		if s.AppointmentID.String() != aid {
 			t.Errorf("Expected the session to have the appointment ID, got %v", s.AppointmentID)
 		}
-
 	})
 
 	t.Run("should_publish_SessionCheckedIn_event", func(t *testing.T) {

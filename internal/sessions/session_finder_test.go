@@ -38,7 +38,7 @@ func TestSessionFinder(t *testing.T) {
 	finder := sessions.NewSessionFinder(repo)
 
 	for _, test := range matrix {
-		t.Run("", func(t *testing.T) {
+		t.Run("should_find_sessions_with_appointments_ids", func(t *testing.T) {
 
 			results, _ := finder.Find(test.appointmentIDs)
 

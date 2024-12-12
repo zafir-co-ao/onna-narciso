@@ -92,7 +92,7 @@ func (u *customerEditorImpl) Edit(i CustomerEditorInput) error {
 	e := event.New(
 		EventCustomerUpdated,
 		event.WithHeader(event.HeaderAggregateID, c.ID.String()),
-		event.WithPayload(c),
+		event.WithPayload(i),
 	)
 
 	u.bus.Publish(e)

@@ -47,7 +47,7 @@ func TestSessionStarter(t *testing.T) {
 
 	t.Run("must_record_the_starting_time_of_the_session", func(t *testing.T) {
 		id := "3"
-		err := u.Start("3")
+		err := u.Start(id)
 
 		if !errors.Is(nil, err) {
 			t.Errorf("Expected no error, got %v", err)

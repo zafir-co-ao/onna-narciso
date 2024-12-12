@@ -9,13 +9,12 @@ import (
 
 func TestAppointmentGetter(t *testing.T) {
 	repo := scheduling.NewAppointmentRepository()
-
 	repo.Save(scheduling.Appointment{ID: "1"})
 
-	t.Run("should_find_appointment_in_repository", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentGetter(repo)
+	u := scheduling.NewAppointmentGetter(repo)
 
-		a, err := usecase.Get("1")
+	t.Run("should_find_appointment_in_repository", func(t *testing.T) {
+		a, err := u.Get("1")
 		if err != nil {
 			t.Errorf("Finder appointment should not return error: %v", err)
 		}
@@ -30,9 +29,7 @@ func TestAppointmentGetter(t *testing.T) {
 	})
 
 	t.Run("should_return_error_when_appointment_not_found_in_repository", func(t *testing.T) {
-		usecase := scheduling.NewAppointmentGetter(repo)
-
-		_, err := usecase.Get("2")
+		_, err := u.Get("2")
 		if err == nil {
 			t.Errorf("Finder appointment should return error, got %v", err)
 		}
