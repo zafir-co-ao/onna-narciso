@@ -1,16 +1,30 @@
 package auth
 
+import "github.com/kindalus/godx/pkg/nanoid"
+
+type UserOutput struct {
+	ID string
+}
 
 type UserCreator interface {
-	Create() error
+	Create() (UserOutput, error)
 }
 
-type creatorImpl struct {}
-
-func NewUserCreator() UserCreator {
-	return &creatorImpl{}
+type creatorImpl struct {
+	repo Repository
 }
 
-func (u *creatorImpl) Create() error {
-	return nil
+func NewUserCreator(repo Repository) UserCreator {
+	return &creatorImpl{repo}
+}
+
+func (u *creatorImpl) Create() (UserOutput, error) {
+	user := User{ID: nanoid.New()}
+
+	err := u.repo.Save(user)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	return UserOutput{ID: user.ID.String()}, nil
 }
