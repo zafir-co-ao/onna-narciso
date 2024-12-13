@@ -5,6 +5,6 @@ import (
     "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ HandleCustomerEditDialog(url string, c crm.CustomerOutput) {
-    @components.Dialog("Editar cliente", CustomerEditForm(url, c))
+templ HandleCustomerUpdateDialog(url string, c crm.CustomerOutput) {
+    @components.Dialog("Atualizar cliente", CustomerUpdateForm(url, c))
 }

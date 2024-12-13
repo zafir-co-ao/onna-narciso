@@ -11,7 +11,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 
@@ -21,15 +21,15 @@ func HandleEditService(u services.ServiceEditor) func(w http.ResponseWriter, r *
 			return
 		}
 
-		i := services.ServiceEditorInput{
+		i := services.ServiceUpdaterInput{
 			ID:          id,
-			Name:        r.Form.Get("name"),
-			Price:       r.Form.Get("price"),
-			Description: r.Form.Get("description"),
+			Name:        r.FormValue("name"),
+			Price:       r.FormValue("price"),
+			Description: r.FormValue("description"),
 			Duration:    d,
 		}
 
-		err = u.Edit(i)
+		err = u.Update(i)
 
 		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")

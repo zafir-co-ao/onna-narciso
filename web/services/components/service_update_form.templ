@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-templ ServiceEditForm(url string, s services.ServiceOutput) {
+templ ServiceUpdateForm(url string, s services.ServiceOutput) {
 	<form hx-put={ url } hx-swap="none">
 		<div class="space-y-4 mt-4">
 			<div>

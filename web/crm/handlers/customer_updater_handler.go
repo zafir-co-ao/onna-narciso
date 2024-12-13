@@ -11,10 +11,10 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateCustomer(u crm.CustomerUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		i := crm.CustomerEditorInput{
+		i := crm.CustomerUpdaterInput{
 			ID:          r.PathValue("id"),
 			Name:        r.FormValue("name"),
 			Nif:         r.FormValue("nif"),
@@ -23,7 +23,7 @@ func HandleEditCustomer(u crm.CustomerEditor) func(w http.ResponseWriter, r *htt
 			PhoneNumber: r.FormValue("phone-number"),
 		}
 
-		err := u.Edit(i)
+		err := u.Update(i)
 
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			_http.SendNotFound(w, "Cliente não encontrado")

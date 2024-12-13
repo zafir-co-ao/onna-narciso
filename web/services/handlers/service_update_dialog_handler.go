@@ -9,7 +9,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleEditServiceDialog(u services.ServiceGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateServiceDialog(u services.ServiceGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		url := r.FormValue("hx-put")
 
@@ -26,6 +26,6 @@ func HandleEditServiceDialog(u services.ServiceGetter) func(w http.ResponseWrite
 		}
 
 		_http.SendOk(w)
-		components.ServiceEditDialog(url, o).Render(r.Context(), w)
+		components.ServiceUpdateDialog(url, o).Render(r.Context(), w)
 	}
 }
