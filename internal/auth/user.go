@@ -9,6 +9,19 @@ type User struct {
 	Role     Role
 }
 
+func NewUser(u Username, p Password, r Role) User {
+	return User{
+		ID:       nanoid.New(),
+		Username: u,
+		Password: p,
+		Role:     r,
+	}
+}
+
+func (u *User) VerifyPassword(p string) bool {
+	return u.Password.IsValid(p)
+}
+
 func (u User) GetID() nanoid.ID {
 	return u.ID
 }
