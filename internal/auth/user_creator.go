@@ -1,6 +1,10 @@
 package auth
 
-import "github.com/kindalus/godx/pkg/nanoid"
+import (
+	"github.com/kindalus/godx/pkg/event"
+)
+
+const EventUserCreated = "EventUserCreated"
 
 type UserCreatorInput struct {
 	Username string
@@ -14,24 +18,43 @@ type UserCreator interface {
 
 type creatorImpl struct {
 	repo Repository
+	bus  event.Bus
 }
 
-func NewUserCreator(repo Repository) UserCreator {
-	return &creatorImpl{repo}
+func NewUserCreator(repo Repository, bus event.Bus) UserCreator {
+	return &creatorImpl{repo, bus}
 }
 
 func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
-	user := User{
-		ID:       nanoid.New(),
-		Username: Username(i.Username),
-		Password: Password(i.Password),
-		Role:     Role(i.Role),
-	}
-
-	err := u.repo.Save(user)
+	username, err := NewUsername(i.Username)
 	if err != nil {
 		return UserOutput{}, err
 	}
+
+	password, err := NewPassword(i.Password)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	role, err := NewRole(i.Role)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	user := NewUser(username, password, role)
+
+	err = u.repo.Save(user)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	e := event.New(
+		EventUserCreated,
+		event.WithHeader(event.HeaderAggregateID, user.ID.String()),
+		event.WithPayload(i),
+	)
+
+	u.bus.Publish(e)
 
 	return UserOutput{ID: user.ID.String()}, nil
 }
