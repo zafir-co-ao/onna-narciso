@@ -25,7 +25,3 @@ func (u *User) VerifyPassword(p string) bool {
 func (u User) GetID() nanoid.ID {
 	return u.ID
 }
-
-func (u User) IsSamePassword(p Password) bool {
-	return u.Password == p
-}

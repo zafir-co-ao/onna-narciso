@@ -7,12 +7,11 @@ import (
 )
 
 var (
-	ErrUserNotFound      = errors.New("user not found")
-	ErrAutenticateFailed = errors.New("credentials invalid")
+	ErrUserNotFound = errors.New("user not found")
 )
 
 type Repository interface {
 	FindByID(id nanoid.ID) (User, error)
-	FindByUserName(un Username) (User, error)
+	FindByUsername(u Username) (User, error)
 	Save(u User) error
 }
