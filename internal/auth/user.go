@@ -12,3 +12,7 @@ type User struct {
 func (u User) GetID() nanoid.ID {
 	return u.ID
 }
+
+func (u User) IsSamePassword(p Password) bool {
+	return u.Password == p
+}

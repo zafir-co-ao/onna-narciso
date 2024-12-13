@@ -8,10 +8,6 @@ type UserCreatorInput struct {
 	Role     string
 }
 
-type UserOutput struct {
-	ID string
-}
-
 type UserCreator interface {
 	Create(i UserCreatorInput) (UserOutput, error)
 }
