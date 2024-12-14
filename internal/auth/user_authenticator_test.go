@@ -67,7 +67,7 @@ func TestUserAuthenticator(t *testing.T) {
 		}
 
 		if !user.VerifyPassword(i.Password) {
-			t.Errorf("")
+			t.Error("The credentials of user is invalid")
 		}
 	})
 

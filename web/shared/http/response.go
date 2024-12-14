@@ -14,6 +14,10 @@ func SendBadRequest(w http.ResponseWriter, msg string) {
 	SendReponse(w, msg, http.StatusBadRequest)
 }
 
+func SendUnauthorized(w http.ResponseWriter) {
+	SendReponse(w, "Crêdencias inválidas", http.StatusUnauthorized)
+}
+
 func SendMethodNotAllowed(w http.ResponseWriter) {
 	SendReponse(w, "method not allowed", http.StatusMethodNotAllowed)
 }

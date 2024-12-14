@@ -18,7 +18,7 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 		_, err := u.Authenticate(i)
 
 		if errors.Is(err, auth.ErrAuthenticationFailed) {
-			_http.SendBadRequest(w, "Credênciais inválidas")
+			_http.SendUnauthorized(w)
 			return
 		}
 

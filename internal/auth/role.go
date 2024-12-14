@@ -24,7 +24,6 @@ func NewRole(v string) (Role, error) {
 	}
 
 	return Role(""), ErrRoleNotAllowed
-
 }
 
 func (r Role) String() string {
