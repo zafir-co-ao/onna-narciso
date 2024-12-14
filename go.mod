@@ -8,6 +8,7 @@ require github.com/kindalus/godx v0.1.0
 
 require (
 	github.com/twilio/twilio-go v1.23.6
+	golang.org/x/crypto v0.31.0
 // github.com/golang/mock v1.6.0 // indirect
 // github.com/pkg/errors v0.9.1 // indirect
 // github.com/twilio/twilio-go v1.23.5 // indirect
@@ -16,5 +17,4 @@ require (
 require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
 )
