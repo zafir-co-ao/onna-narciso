@@ -5,12 +5,12 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
-type inmemUserRepository struct{
+type inmemUserRepository struct {
 	shared.BaseRepository[User]
 }
 
-func NewInmemRepository() Repository {
-	return &inmemUserRepository{BaseRepository: shared.NewBaseRepository[User]()}
+func NewInmemRepository(u ...User) Repository {
+	return &inmemUserRepository{BaseRepository: shared.NewBaseRepository[User](u...)}
 }
 
 func (r *inmemUserRepository) FindByID(id nanoid.ID) (User, error) {

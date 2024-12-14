@@ -23,7 +23,7 @@ func NewRole(v string) (Role, error) {
 		return r, nil
 	}
 
-	return "", ErrRoleNotAllowed
+	return Role(""), ErrRoleNotAllowed
 
 }
 

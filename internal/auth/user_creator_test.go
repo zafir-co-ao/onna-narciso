@@ -10,12 +10,18 @@ import (
 )
 
 func TestUserCreator(t *testing.T) {
+	users := []auth.User{
+		{ID: "1", Role: auth.RoleManager},
+		{ID: "2", Role: auth.RoleReceptionist},
+	}
+
 	bus := event.NewEventBus()
-	repo := auth.NewInmemRepository()
+	repo := auth.NewInmemRepository(users...)
 	u := auth.NewUserCreator(repo, bus)
 
 	t.Run("should_create_a_user", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Mike Tyson",
 			Password: "somepassword",
 			Role:     auth.RoleCustomer.String(),
@@ -30,6 +36,7 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_save_user_in_repository", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Erling Haaland",
 			Password: "erlingpassword",
 			Role:     auth.RoleManager.String(),
@@ -53,9 +60,10 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("must_register_the_username_password_and_role_of_user", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "John Doe",
 			Password: "john.doe@123",
-			Role:     "Gestor",
+			Role:     auth.RoleManager.String(),
 		}
 
 		o, err := u.Create(i)
@@ -84,9 +92,10 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_protect_the_password_of_user", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Joana Doe",
 			Password: "joana.doe@123",
-			Role:     "Recepcionista",
+			Role:     auth.RoleReceptionist.String(),
 		}
 
 		o, err := u.Create(i)
@@ -111,9 +120,10 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_publish_event_when_user_is_created", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Martin Fowler",
 			Password: "martin.fowler@123",
-			Role:     "Cliente",
+			Role:     auth.RoleCustomer.String(),
 		}
 
 		isPublished := false
@@ -139,6 +149,7 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_return_error_if_role_of_user_is_not_allowed", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Robert C. Martin",
 			Password: "robert.martin@0000",
 			Role:     "Role",
@@ -157,9 +168,10 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_return_error_if_username_not_provided", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "",
 			Password: "cliente@9999",
-			Role:     "Cliente",
+			Role:     auth.RoleCustomer.String(),
 		}
 
 		_, err := u.Create(i)
@@ -175,9 +187,10 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_return_error_if_password_not_provided", func(t *testing.T) {
 		i := auth.UserCreatorInput{
+			UserID:   "1",
 			Username: "Gustavo Lima",
 			Password: "",
-			Role:     "Gestor",
+			Role:     auth.RoleManager.String(),
 		}
 
 		_, err := u.Create(i)
@@ -188,6 +201,44 @@ func TestUserCreator(t *testing.T) {
 
 		if !errors.Is(err, auth.ErrEmptyPassword) {
 			t.Errorf("The error must be %v, got %v", auth.ErrEmptyPassword, err)
+		}
+	})
+
+	t.Run("should_return_error_if_is_not_manager_to_create_a_new_user", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:   "2",
+			Username: "Rafa Nadal",
+			Password: "rafanadaltenis",
+			Role:     auth.RoleManager.String(),
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error got, %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrUserNotAllowed) {
+			t.Errorf("The error must be %v, got %v", auth.ErrUserNotAllowed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_user_not_found", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:   "3",
+			Username: "Paola Oliveira",
+			Password: "paolaoliveira",
+			Role:     auth.RoleManager.String(),
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error got, %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrUserNotFound) {
+			t.Errorf("The error must be %v, got %v", auth.ErrUserNotFound, err)
 		}
 	})
 }

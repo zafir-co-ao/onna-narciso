@@ -1,6 +1,12 @@
 package auth
 
-import "github.com/kindalus/godx/pkg/nanoid"
+import (
+	"errors"
+
+	"github.com/kindalus/godx/pkg/nanoid"
+)
+
+var ErrUserNotAllowed = errors.New("user not allowed")
 
 type User struct {
 	ID       nanoid.ID
@@ -16,6 +22,10 @@ func NewUser(u Username, p Password, r Role) User {
 		Password: p,
 		Role:     r,
 	}
+}
+
+func (u *User) IsManager() bool {
+	return u.Role == RoleManager
 }
 
 func (u *User) VerifyPassword(p string) bool {

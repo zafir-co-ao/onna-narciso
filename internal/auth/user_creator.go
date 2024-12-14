@@ -2,11 +2,13 @@ package auth
 
 import (
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 )
 
 const EventUserCreated = "EventUserCreated"
 
 type UserCreatorInput struct {
+	UserID   string
 	Username string
 	Password string
 	Role     string
@@ -30,6 +32,15 @@ func NewUserCreator(repo Repository, bus event.Bus) UserCreator {
 }
 
 func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
+	au, err := u.repo.FindByID(nanoid.ID(i.UserID))
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	if !au.IsManager() {
+		return UserOutput{}, ErrUserNotAllowed
+	}
+
 	username, err := NewUsername(i.Username)
 	if err != nil {
 		return UserOutput{}, err
