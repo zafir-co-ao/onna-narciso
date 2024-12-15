@@ -91,7 +91,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	appointments, err := u.repo.FindByDateStatusAndProfessional(date.Date(i.Date), StatusScheduled, a.ProfessionalID)
+	appointments, err := u.repo.FindActivesByDateAndProfessional(d, p.ID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

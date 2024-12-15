@@ -39,6 +39,14 @@ func TestAppointmentScheduler(t *testing.T) {
 			Duration: 60,
 			Status:   scheduling.StatusCanceled,
 		},
+		{
+			ID:             nanoid.New(),
+			Date:           today.AddDate(0, 2, 2),
+			Hour:           "14:30",
+			Duration:       90,
+			Status:         scheduling.StatusClosed,
+			ProfessionalID: nanoid.ID("1"),
+		},
 	}
 
 	bus := event.NewEventBus()
@@ -680,6 +688,26 @@ func TestAppointmentScheduler(t *testing.T) {
 
 		if !errors.Is(err, date.ErrDateInPast) {
 			t.Errorf("Should return %v, got %v", date.ErrDateInPast, err)
+		}
+	})
+
+	t.Run("should_return_error_if_scheduling_in_slot_of_appointment_closed", func(t *testing.T) {
+		i := scheduling.AppointmentSchedulerInput{
+			ProfessionalID: "1",
+			CustomerID:     "1",
+			ServiceID:      "1",
+			Date:           today.AddDate(0, 2, 2).String(),
+			Hour:           "15:00",
+			Duration:       60,
+		}
+
+		_, err := u.Schedule(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrBusyTime) {
+			t.Errorf("Should return %v, got %v", scheduling.ErrBusyTime, err)
 		}
 	})
 }

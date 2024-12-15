@@ -58,11 +58,11 @@ func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date 
 	return appointments, nil
 }
 
-func (r *inmemAppointmentRepositoryImpl) FindByDateStatusAndProfessional(date date.Date, status Status, id nanoid.ID) ([]Appointment, error) {
+func (r *inmemAppointmentRepositoryImpl) FindActivesByDateAndProfessional(date date.Date, professionalID nanoid.ID) ([]Appointment, error) {
 	spec := shared.And(
 		DateIsSpecification(date),
-		StatusIsSpecification(status),
-		ProfessionalIsSpecification(id),
+		ProfessionalIsSpecification(professionalID),
+		NotCanceledIsSpecification(),
 	)
 
 	var appointments []Appointment

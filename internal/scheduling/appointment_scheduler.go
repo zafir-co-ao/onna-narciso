@@ -89,7 +89,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		WithDuration(duration.Duration(i.Duration)).
 		Build()
 
-	appointments, err := u.repo.FindByDateStatusAndProfessional(d, StatusScheduled, p.ID)
+	appointments, err := u.repo.FindActivesByDateAndProfessional(d, p.ID)
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}

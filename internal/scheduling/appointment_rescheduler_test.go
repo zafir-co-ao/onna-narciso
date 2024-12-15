@@ -29,6 +29,22 @@ func TestAppointmentRescheduler(t *testing.T) {
 			ID:     "20",
 			Status: scheduling.StatusCanceled,
 		},
+		{
+			ID:             nanoid.ID("21"),
+			ProfessionalID: "2",
+			Status:         scheduling.StatusScheduled,
+			Date:           today.AddDate(1, 2, 2),
+			Hour:           "13:00",
+			Duration:       90,
+		},
+		{
+			ID:             nanoid.ID("22"),
+			ProfessionalID: "2",
+			Status:         scheduling.StatusClosed,
+			Date:           today.AddDate(1, 2, 2),
+			Hour:           "16:00",
+			Duration:       60,
+		},
 	}
 
 	for i := range 15 {
@@ -472,6 +488,26 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		if !errors.Is(err, date.ErrDateInPast) {
 			t.Errorf("The error must be %v, got %v", date.ErrDateInPast, err)
+		}
+	})
+
+	t.Run("should_return_error_if_rescheduling_in_slot_of_appointment_closed", func(t *testing.T) {
+		i := scheduling.AppointmentReschedulerInput{
+			ID:             "21",
+			Date:           today.AddDate(1, 2, 2).String(),
+			ProfessionalID: "2",
+			ServiceID:      "3",
+			Hour:           "15:00",
+			Duration:       120,
+		}
+
+		_, err := u.Reschedule(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Should return an error, got %v", err)
+		}
+
+		if !errors.Is(err, scheduling.ErrBusyTime) {
+			t.Errorf("The error must be %v, got %v", scheduling.ErrBusyTime, err)
 		}
 	})
 }
