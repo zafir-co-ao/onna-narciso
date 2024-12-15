@@ -54,7 +54,7 @@ func ServiceIsSpecification(sid nanoid.ID) shared.SpecificationFunc[Appointment]
 	}
 }
 
-func ProfessionalsInSpecification(p []nanoid.ID) shared.SpecificationFunc[Appointment] {
+func ProfessionalsIsSpecification(p []nanoid.ID) shared.SpecificationFunc[Appointment] {
 	return func(a Appointment) bool {
 		if len(p) == 0 {
 			return true

@@ -106,7 +106,7 @@ func (u *customerUpdaterImpl) isUsedNif(c Customer, nif string) bool {
 	}
 
 	_, err := u.repo.FindByNif(Nif(nif))
-	return err != nil
+	return err == nil
 }
 
 func (u *customerUpdaterImpl) isUsedEmail(c Customer, email string) bool {

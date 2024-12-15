@@ -5,65 +5,62 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
-type inmemCustomerRepository struct {
+type inmemCustomerRepositoryImpl struct {
 	shared.BaseRepository[Customer]
 }
 
 func NewInmemRepository(c ...Customer) Repository {
-	return &inmemCustomerRepository{
-		BaseRepository: shared.NewBaseRepository[Customer](c...),
-	}
+	return &inmemCustomerRepositoryImpl{BaseRepository: shared.NewBaseRepository[Customer](c...)}
 }
 
-func (c *inmemCustomerRepository) FindAll() ([]Customer, error) {
+func (r *inmemCustomerRepositoryImpl) FindAll() ([]Customer, error) {
 	var customers []Customer
-
-	for _, customer := range c.Data {
-		customers = append(customers, customer)
+	for _, c := range r.Data {
+		customers = append(customers, c)
 	}
 
 	return customers, nil
 }
 
-func (c *inmemCustomerRepository) FindByID(id nanoid.ID) (Customer, error) {
-	if _, ok := c.Data[id]; !ok {
+func (r *inmemCustomerRepositoryImpl) FindByID(id nanoid.ID) (Customer, error) {
+	if _, ok := r.Data[id]; !ok {
 		return Customer{}, ErrCustomerNotFound
 	}
 
-	return c.Data[id], nil
+	return r.Data[id], nil
 }
 
-func (c *inmemCustomerRepository) FindByNif(nif Nif) (Customer, error) {
-	for _, customer := range c.Data {
-		if customer.Nif == nif {
-			return customer, ErrNifAlreadyUsed
-		}
-	}
-
-	return Customer{}, nil
-}
-
-func (c *inmemCustomerRepository) FindByEmail(e Email) (Customer, error) {
-	for _, customer := range c.Data {
-		if customer.Email == e {
-			return customer, nil
+func (r *inmemCustomerRepositoryImpl) FindByNif(nif Nif) (Customer, error) {
+	for _, c := range r.Data {
+		if c.Nif == nif {
+			return c, nil
 		}
 	}
 
 	return Customer{}, ErrCustomerNotFound
 }
 
-func(c *inmemCustomerRepository) FindByPhoneNumber(p PhoneNumber) (Customer, error) {
-	for _, customer := range c.Data {
-		if customer.PhoneNumber == p {
-			return customer, nil
+func (r *inmemCustomerRepositoryImpl) FindByEmail(e Email) (Customer, error) {
+	for _, c := range r.Data {
+		if c.Email == e {
+			return c, nil
 		}
 	}
 
 	return Customer{}, ErrCustomerNotFound
 }
 
-func (c *inmemCustomerRepository) Save(customer Customer) error {
-	c.Data[customer.ID] = customer
+func (r *inmemCustomerRepositoryImpl) FindByPhoneNumber(p PhoneNumber) (Customer, error) {
+	for _, c := range r.Data {
+		if c.PhoneNumber == p {
+			return c, nil
+		}
+	}
+
+	return Customer{}, ErrCustomerNotFound
+}
+
+func (r *inmemCustomerRepositoryImpl) Save(c Customer) error {
+	r.Data[c.ID] = c
 	return nil
 }

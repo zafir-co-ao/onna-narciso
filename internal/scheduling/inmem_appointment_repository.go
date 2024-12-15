@@ -10,21 +10,12 @@ type inmemAppointmentRepositoryImpl struct {
 	shared.BaseRepository[Appointment]
 }
 
-func NewAppointmentRepository(s ...Appointment) AppointmentRepository {
-	r := &inmemAppointmentRepositoryImpl{
-		BaseRepository: shared.NewBaseRepository[Appointment](),
-	}
-
-	for _, a := range s {
-		r.Save(a)
-	}
-
-	return r
+func NewAppointmentRepository(a ...Appointment) AppointmentRepository {
+	return &inmemAppointmentRepositoryImpl{BaseRepository: shared.NewBaseRepository[Appointment](a...)}
 }
 
 func (r *inmemAppointmentRepositoryImpl) FindByID(id nanoid.ID) (Appointment, error) {
-
-	if a, ok := r.BaseRepository.Data[id]; ok {
+	if a, ok := r.Data[id]; ok {
 		return a, nil
 	}
 
@@ -32,7 +23,7 @@ func (r *inmemAppointmentRepositoryImpl) FindByID(id nanoid.ID) (Appointment, er
 }
 
 func (r *inmemAppointmentRepositoryImpl) Save(a Appointment) error {
-	r.BaseRepository.Data[a.ID] = a
+	r.Data[a.ID] = a
 	return nil
 }
 
@@ -40,7 +31,7 @@ func (r *inmemAppointmentRepositoryImpl) FindByDate(d date.Date) ([]Appointment,
 	spec := DateIsSpecification(d)
 
 	var appointments []Appointment
-	for _, appointment := range r.BaseRepository.Data {
+	for _, appointment := range r.Data {
 		if spec.IsSatisfiedBy(appointment) {
 			appointments = append(appointments, appointment)
 		}
@@ -53,14 +44,14 @@ func (r *inmemAppointmentRepositoryImpl) FindByWeekServiceAndProfessionals(date 
 	spec := shared.And(
 		WeekIsSpecification(date),
 		ServiceIsSpecification(serviceID),
-		ProfessionalsInSpecification(professionalsIDs),
+		ProfessionalsIsSpecification(professionalsIDs),
 		NotCanceledIsSpecification(),
 	)
 
 	var appointments []Appointment
-	for _, appointment := range r.BaseRepository.Data {
-		if spec.IsSatisfiedBy(appointment) {
-			appointments = append(appointments, appointment)
+	for _, a := range r.Data {
+		if spec.IsSatisfiedBy(a) {
+			appointments = append(appointments, a)
 		}
 	}
 
@@ -75,9 +66,9 @@ func (r *inmemAppointmentRepositoryImpl) FindByDateStatusAndProfessional(date da
 	)
 
 	var appointments []Appointment
-	for _, appointment := range r.BaseRepository.Data {
-		if spec.IsSatisfiedBy(appointment) {
-			appointments = append(appointments, appointment)
+	for _, a := range r.Data {
+		if spec.IsSatisfiedBy(a) {
+			appointments = append(appointments, a)
 		}
 	}
 

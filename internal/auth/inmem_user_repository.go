@@ -5,22 +5,22 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
-type inmemUserRepository struct {
+type inmemUserRepositoryImpl struct {
 	shared.BaseRepository[User]
 }
 
 func NewInmemRepository(u ...User) Repository {
-	return &inmemUserRepository{BaseRepository: shared.NewBaseRepository[User](u...)}
+	return &inmemUserRepositoryImpl{BaseRepository: shared.NewBaseRepository[User](u...)}
 }
 
-func (r *inmemUserRepository) FindByID(id nanoid.ID) (User, error) {
+func (r *inmemUserRepositoryImpl) FindByID(id nanoid.ID) (User, error) {
 	if u, ok := r.Data[id]; ok {
 		return u, nil
 	}
 	return User{}, ErrUserNotFound
 }
 
-func (r *inmemUserRepository) FindByUsername(u Username) (User, error) {
+func (r *inmemUserRepositoryImpl) FindByUsername(u Username) (User, error) {
 	for _, user := range r.Data {
 		if user.Username == u {
 			return user, nil
@@ -30,7 +30,7 @@ func (r *inmemUserRepository) FindByUsername(u Username) (User, error) {
 	return User{}, ErrUserNotFound
 }
 
-func (r *inmemUserRepository) Save(u User) error {
+func (r *inmemUserRepositoryImpl) Save(u User) error {
 	r.Data[u.ID] = u
 	return nil
 }

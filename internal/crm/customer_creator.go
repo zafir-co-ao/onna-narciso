@@ -36,8 +36,8 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	}
 
 	_, err = u.repo.FindByNif(nif)
-	if err != nil {
-		return CustomerOutput{}, err
+	if err == nil {
+		return CustomerOutput{}, ErrNifAlreadyUsed
 	}
 
 	n, err := name.New(i.Name)

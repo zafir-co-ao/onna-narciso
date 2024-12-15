@@ -10,30 +10,28 @@ type inmemServiceRepositoryImpl struct {
 }
 
 func NewInmemRepository(s ...Service) Repository {
-	return &inmemServiceRepositoryImpl{
-		BaseRepository: shared.NewBaseRepository[Service](s...),
-	}
+	return &inmemServiceRepositoryImpl{BaseRepository: shared.NewBaseRepository[Service](s...)}
 }
 
-func (s *inmemServiceRepositoryImpl) FindAll() ([]Service, error) {
+func (r *inmemServiceRepositoryImpl) FindAll() ([]Service, error) {
 	var services []Service
 
-	for _, s := range s.Data {
+	for _, s := range r.Data {
 		services = append(services, s)
 	}
 
 	return services, nil
 }
 
-func (s *inmemServiceRepositoryImpl) FindByID(id nanoid.ID) (Service, error) {
-	if _, ok := s.Data[id]; !ok {
+func (r *inmemServiceRepositoryImpl) FindByID(id nanoid.ID) (Service, error) {
+	if _, ok := r.Data[id]; !ok {
 		return Service{}, ErrServiceNotFound
 	}
-	
-	return s.Data[id], nil
+
+	return r.Data[id], nil
 }
 
-func (s *inmemServiceRepositoryImpl) Save(service Service) error {
-	s.Data[service.ID] = service
+func (r *inmemServiceRepositoryImpl) Save(service Service) error {
+	r.Data[service.ID] = service
 	return nil
 }

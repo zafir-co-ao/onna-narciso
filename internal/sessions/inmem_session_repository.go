@@ -10,27 +10,25 @@ type inmemSessionRepositoryImpl struct {
 }
 
 func NewInmemRepository(s ...Session) Repository {
-	return &inmemSessionRepositoryImpl{
-		BaseRepository: shared.NewBaseRepository[Session](s...),
-	}
+	return &inmemSessionRepositoryImpl{BaseRepository: shared.NewBaseRepository[Session](s...)}
 }
 
-func (s *inmemSessionRepositoryImpl) FindByID(id nanoid.ID) (Session, error) {
-	for _, session := range s.Data {
-		if session.ID.String() == id.String() {
-			return session, nil
+func (r *inmemSessionRepositoryImpl) FindByID(id nanoid.ID) (Session, error) {
+	for _, s := range r.Data {
+		if s.ID.String() == id.String() {
+			return s, nil
 		}
 	}
 	return Session{}, ErrSessionNotFound
 }
 
-func (s *inmemSessionRepositoryImpl) FindByAppointmentsIDs(ids []nanoid.ID) ([]Session, error) {
+func (r *inmemSessionRepositoryImpl) FindByAppointmentsIDs(ids []nanoid.ID) ([]Session, error) {
 	sessions := make([]Session, 0)
 
-	for _, session := range s.Data {
+	for _, s := range r.Data {
 		for _, id := range ids {
-			if session.AppointmentID.String() == id.String() {
-				sessions = append(sessions, session)
+			if s.AppointmentID.String() == id.String() {
+				sessions = append(sessions, s)
 			}
 		}
 	}
@@ -38,7 +36,7 @@ func (s *inmemSessionRepositoryImpl) FindByAppointmentsIDs(ids []nanoid.ID) ([]S
 	return sessions, nil
 }
 
-func (s *inmemSessionRepositoryImpl) Save(session Session) error {
-	s.Data[session.ID] = session
+func (r *inmemSessionRepositoryImpl) Save(session Session) error {
+	r.Data[session.ID] = session
 	return nil
 }
