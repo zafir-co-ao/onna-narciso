@@ -57,7 +57,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	if !slices.Contains(p.ServicesIDS, s.ID) {
+	if !p.ContainsService(s.ID) {
 		return EmptyAppointmentOutput, ErrInvalidService
 	}
 

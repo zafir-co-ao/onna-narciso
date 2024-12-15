@@ -38,6 +38,7 @@ func (u *appointmentCancelerImpl) Cancel(id string) error {
 
 	e := event.New(
 		EventAppointmentCanceled,
+		event.WithHeader(event.HeaderAggregateType, "scheduling.Appointment"),
 		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
 	)
 
