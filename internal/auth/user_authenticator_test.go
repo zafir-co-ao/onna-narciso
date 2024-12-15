@@ -40,11 +40,7 @@ func TestUserAuthenticator(t *testing.T) {
 		}
 
 		if o.Username == "" {
-			t.Errorf("Expected an user name, got %v", o.Username)
-		}
-
-		if o.Password == "" {
-			t.Errorf("Expected a password, got %v", o.Password)
+			t.Errorf("Expected an user name, got %v", i.Username)
 		}
 	})
 

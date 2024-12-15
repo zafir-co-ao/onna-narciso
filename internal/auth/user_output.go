@@ -3,12 +3,13 @@ package auth
 type UserOutput struct {
 	ID       string
 	Username string
-	Password string
+	Role     string
 }
 
 func toUserOutput(u User) UserOutput {
 	return UserOutput{
+		ID:       u.ID.String(),
 		Username: u.Username.String(),
-		Password: u.Password.String(),
+		Role:     u.Role.String(),
 	}
 }

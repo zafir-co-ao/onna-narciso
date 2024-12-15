@@ -77,7 +77,7 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 
 	u.bus.Publish(e)
 
-	return UserOutput{ID: user.ID.String()}, nil
+	return toUserOutput(user), nil
 }
 
 func (u *creatorImpl) isAvailableUsername(users []User, username Username) bool {
