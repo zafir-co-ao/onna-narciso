@@ -50,12 +50,17 @@ func (u *creatorImpl) Create(appointmentID string) (SessionOutput, error) {
 		return SessionOutput{}, err
 	}
 
-	u.bus.Publish(event.New(EventSessionCheckedIn,
+	p := struct{ AppointmentID string }{
+		AppointmentID: s.AppointmentID.String(),
+	}
+
+	evt := event.New(EventSessionCheckedIn,
+		event.WithHeader(event.HeaderAggregateType, "session.Session"),
 		event.WithHeader(event.HeaderAggregateID, s.ID.String()),
-		event.WithPayload(struct{ AppointmentID string }{
-			AppointmentID: s.AppointmentID.String(),
-		}),
-	))
+		event.WithPayload(p),
+	)
+
+	u.bus.Publish(evt)
 
 	return toSessionOutput(s), nil
 }
