@@ -1,6 +1,9 @@
 package auth
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Username string
 
@@ -11,7 +14,7 @@ func NewUsername(v string) (Username, error) {
 		return Username(""), ErrEmptyUsername
 	}
 
-	return Username(v), nil
+	return Username(strings.TrimSpace(v)), nil
 }
 
 func (u Username) String() string {

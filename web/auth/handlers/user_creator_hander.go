@@ -39,6 +39,11 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		if errors.Is(err, auth.ErrOnlyUniqueUsername) {
+			_http.SendBadRequest(w, "O nome do utilizador deve ser único")
+			return
+		}
+
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")
 			return

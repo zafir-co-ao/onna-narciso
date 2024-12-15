@@ -6,7 +6,10 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 )
 
-var ErrUserNotAllowed = errors.New("user not allowed")
+var (
+	ErrUserNotAllowed     = errors.New("user not allowed")
+	ErrOnlyUniqueUsername = errors.New("only unique username")
+)
 
 type User struct {
 	ID       nanoid.ID

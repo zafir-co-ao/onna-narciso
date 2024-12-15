@@ -11,8 +11,8 @@ import (
 
 func TestUserCreator(t *testing.T) {
 	users := []auth.User{
-		{ID: "1", Role: auth.RoleManager},
-		{ID: "2", Role: auth.RoleReceptionist},
+		{ID: "1", Username: "Paola Oliveira", Role: auth.RoleManager},
+		{ID: "2", Username: "Elon Musk", Role: auth.RoleReceptionist},
 	}
 
 	bus := event.NewEventBus()
@@ -239,6 +239,25 @@ func TestUserCreator(t *testing.T) {
 
 		if !errors.Is(err, auth.ErrUserNotFound) {
 			t.Errorf("The error must be %v, got %v", auth.ErrUserNotFound, err)
+		}
+	})
+
+	t.Run("should_return_error_if_username_not_is_unique", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:   "1",
+			Username: "Paola Oliveira",
+			Password: "paolaoliveira",
+			Role:     auth.RoleManager.String(),
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error got, %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrOnlyUniqueUsername) {
+			t.Errorf("The error must be %v, got %v", auth.ErrOnlyUniqueUsername, err)
 		}
 	})
 }

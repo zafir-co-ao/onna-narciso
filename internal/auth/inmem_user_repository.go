@@ -13,6 +13,16 @@ func NewInmemRepository(u ...User) Repository {
 	return &inmemUserRepositoryImpl{BaseRepository: shared.NewBaseRepository[User](u...)}
 }
 
+func (r *inmemUserRepositoryImpl) FindAll() ([]User, error) {
+	var users []User
+
+	for _, u := range r.Data {
+		users = append(users, u)
+	}
+
+	return users, nil
+}
+
 func (r *inmemUserRepositoryImpl) FindByID(id nanoid.ID) (User, error) {
 	if u, ok := r.Data[id]; ok {
 		return u, nil

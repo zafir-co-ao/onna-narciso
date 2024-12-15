@@ -11,6 +11,7 @@ var (
 )
 
 type Repository interface {
+	FindAll() ([]User, error)
 	FindByID(id nanoid.ID) (User, error)
 	FindByUsername(u Username) (User, error)
 	Save(u User) error

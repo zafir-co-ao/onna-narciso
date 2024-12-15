@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
 )
 
 const EventUserCreated = "EventUserCreated"
@@ -42,6 +43,15 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
+	users, _ := u.repo.FindAll()
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	if !u.isAvailableUsername(users, username) {
+		return UserOutput{}, ErrOnlyUniqueUsername
+	}
+
 	password, err := NewPassword(i.Password)
 	if err != nil {
 		return UserOutput{}, err
@@ -68,4 +78,10 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 	u.bus.Publish(e)
 
 	return UserOutput{ID: user.ID.String()}, nil
+}
+
+func (u *creatorImpl) isAvailableUsername(users []User, username Username) bool {
+	return xslices.All(users, func(u User) bool {
+		return u.Username != username
+	})
 }
