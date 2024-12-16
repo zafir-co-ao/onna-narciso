@@ -11,7 +11,7 @@ import (
 
 func HandleFindCustomer(u crm.CustomerFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		o, err := u.Find()
+		o, err := u.FindAll()
 
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)

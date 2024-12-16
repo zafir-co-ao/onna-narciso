@@ -68,12 +68,12 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		a, err := repo.FindByID(nanoid.ID(o.ID))
+		a, err := repo.FindByID(nanoid.ID(i.ID))
 		if !errors.Is(nil, err) {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
@@ -93,12 +93,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		if o.Date != i.Date {
+		o, err := repo.FindByID(nanoid.ID(i.ID))
+		if err != nil {
+			t.Errorf("Should return the appointment not an error, got %v", err)
+		}
+
+		if o.Date.String() != i.Date {
 			t.Errorf("The appointment date must be %v, got %v", i.Date, o.Date)
 		}
 	})
@@ -113,12 +118,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		if o.Hour != i.Hour {
+		o, err := repo.FindByID(nanoid.ID(i.ID))
+		if err != nil {
+			t.Errorf("Should return the appointment not an error, got %v", err)
+		}
+
+		if o.Hour.String() != i.Hour {
 			t.Errorf("The appointment hour must be 10:00, got %v", o.Hour)
 		}
 	})
@@ -133,17 +143,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		_, err = repo.FindByID(nanoid.ID(o.ID))
+		o, err := repo.FindByID(nanoid.ID(i.ID))
 		if err != nil {
 			t.Errorf("Should return the appointment not an error, got %v", err)
 		}
 
-		if o.Duration != i.Duration {
+		if o.Duration.Value() != i.Duration {
 			t.Errorf("The appointment duration must be 60 minutes, got %v", o.Duration)
 		}
 	})
@@ -158,12 +168,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return error, got %v", err)
 		}
 
-		if o.Status != string(scheduling.StatusRescheduled) {
+		o, err := repo.FindByID(nanoid.ID(i.ID))
+		if err != nil {
+			t.Errorf("Should return the appointment not an error, got %v", err)
+		}
+
+		if o.Status != scheduling.StatusRescheduled {
 			t.Errorf("The appointment status must be %v, got %v", scheduling.StatusRescheduled, o.Status)
 		}
 	})
@@ -205,7 +220,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 		}
 
 		for _, i := range inputs {
-			_, err := u.Reschedule(i)
+			err := u.Reschedule(i)
 
 			if errors.Is(nil, err) {
 				t.Errorf("Shoud return an error, got %v", err)
@@ -227,7 +242,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -247,7 +262,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -267,7 +282,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -286,7 +301,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			ServiceID:      "2",
 			Duration:       30,
 		}
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -313,7 +328,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -343,7 +358,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 
 		bus.Subscribe(scheduling.EventAppointmentRescheduled, h)
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
@@ -363,12 +378,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       60,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if o.ProfessionalID != i.ProfessionalID {
+		o, err := repo.FindByID(nanoid.ID(i.ID))
+		if !errors.Is(nil, err) {
+			t.Errorf("Should return the appointment not an error, got %v", err)
+		}
+
+		if o.ProfessionalID.String() != i.ProfessionalID {
 			t.Errorf("The Professional ID of appointment must be equal to %s, got %s", i.ProfessionalID, o.ProfessionalID)
 		}
 
@@ -377,7 +397,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return the professional, got %v", err)
 		}
 
-		if o.ProfessionalName != string(p.Name) {
+		if o.ProfessionalName != p.Name {
 			t.Errorf("The Professional Name of appointment must be equal to %s, got %s", p.Name, o.ServiceName)
 		}
 	})
@@ -392,12 +412,17 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		o, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if !errors.Is(nil, err) {
 			t.Errorf("Should not return an error, got %v", err)
 		}
 
-		if o.ServiceID != i.ServiceID {
+		o, err := repo.FindByID(nanoid.ID(i.ID))
+		if !errors.Is(nil, err) {
+			t.Errorf("Should return the appointment not an error, got %v", err)
+		}
+
+		if o.ServiceID.String() != i.ServiceID {
 			t.Errorf("The Service ID of appointment must be equal to %s, got %s", i.ServiceID, o.ServiceID)
 		}
 
@@ -406,7 +431,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			t.Errorf("Should return the service, got %v", err)
 		}
 
-		if o.ServiceName != string(s.Name) {
+		if o.ServiceName != s.Name {
 			t.Errorf("The Service Name of appointment must be equal to %s, got %s", s.Name, o.ServiceName)
 		}
 	})
@@ -421,7 +446,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       30,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Shoud return an error, got %v", err)
 		}
@@ -441,7 +466,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -461,7 +486,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if err == nil {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -481,7 +506,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       90,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}
@@ -501,7 +526,7 @@ func TestAppointmentRescheduler(t *testing.T) {
 			Duration:       120,
 		}
 
-		_, err := u.Reschedule(i)
+		err := u.Reschedule(i)
 		if errors.Is(nil, err) {
 			t.Errorf("Should return an error, got %v", err)
 		}

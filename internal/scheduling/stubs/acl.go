@@ -32,11 +32,11 @@ func (s *serviceImpl) FindServiceByID(id nanoid.ID) (scheduling.Service, error) 
 	return scheduling.Service{}, scheduling.ErrServiceNotFound
 }
 
-func NewServicesACL() scheduling.ServicesService {
+func NewServicesACL() scheduling.ServicesServiceACL {
 	return &serviceImpl{}
 }
 
-func NewCustomersACL() scheduling.CustomersACL {
+func NewCustomersACL() scheduling.CRMServiceACL {
 	return customerACLStub{}
 }
 

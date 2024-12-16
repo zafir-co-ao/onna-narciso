@@ -60,6 +60,15 @@ func (b *appointmentBuilder) WithDuration(duration duration.Duration) *appointme
 	return b
 }
 
-func (b appointmentBuilder) Build() Appointment {
-	return Appointment(b)
+func (b appointmentBuilder) Build() (Appointment, error) {
+	return Appointment(b), nil
+}
+
+func (b appointmentBuilder) MustBuild() Appointment {
+	a, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+
+	return a
 }

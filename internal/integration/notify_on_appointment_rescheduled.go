@@ -13,7 +13,7 @@ func NewNotifyOnAppointmentRescheduledListener(scheduling SchedulingServiceACL, 
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
-		a, err := scheduling.GetAppointment(id)
+		a, err := scheduling.FindAppointmentByID(id)
 		if err != nil {
 			slog.Error("Erro ao carregar agendamento %s: %v", id, err)
 			return

@@ -28,17 +28,17 @@ type AppointmentScheduler interface {
 
 type appointmentScedulerImpl struct {
 	repo AppointmentRepository
-	sacl ServicesService
-	cacl CustomersACL
+	sacl ServicesServiceACL
+	cacl CRMServiceACL
 	pacl ProfessionalsACL
 	bus  event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
-	cacl CustomersACL,
+	cacl CRMServiceACL,
 	pacl ProfessionalsACL,
-	sacl ServicesService,
+	sacl ServicesServiceACL,
 	bus event.Bus,
 ) AppointmentScheduler {
 	return &appointmentScedulerImpl{
@@ -87,7 +87,7 @@ func (u *appointmentScedulerImpl) Schedule(i AppointmentSchedulerInput) (Appoint
 		WithDate(d).
 		WithHour(h).
 		WithDuration(duration.Duration(i.Duration)).
-		Build()
+		MustBuild()
 
 	appointments, err := u.repo.FindActivesByDateAndProfessional(d, p.ID)
 	if err != nil {

@@ -1,9 +1,13 @@
 package crm
 
-import "github.com/kindalus/godx/pkg/xslices"
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
+)
 
 type CustomerFinder interface {
-	Find() ([]CustomerOutput, error)
+	FindAll() ([]CustomerOutput, error)
+	FindByID(id string) (CustomerOutput, error)
 }
 
 type customerFinderImpl struct {
@@ -14,7 +18,7 @@ func NewCustomerFinder(repo Repository) CustomerFinder {
 	return &customerFinderImpl{repo}
 }
 
-func (u *customerFinderImpl) Find() ([]CustomerOutput, error) {
+func (u *customerFinderImpl) FindAll() ([]CustomerOutput, error) {
 
 	c, err := u.repo.FindAll()
 	if err != nil {
@@ -22,4 +26,14 @@ func (u *customerFinderImpl) Find() ([]CustomerOutput, error) {
 	}
 
 	return xslices.Map(c, toCustomerOutput), nil
+}
+
+func (u *customerFinderImpl) FindByID(id string) (CustomerOutput, error) {
+	c, err := u.repo.FindByID(nanoid.ID(id))
+
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	return toCustomerOutput(c), nil
 }

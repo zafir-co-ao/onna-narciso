@@ -14,15 +14,15 @@ type Creator interface {
 type creatorImpl struct {
 	repo Repository
 	bus  event.Bus
-	aacl AppointmentsACL
+	aacl SchedulingServiceACL
 }
 
-func NewSessionCreator(repo Repository, bus event.Bus, aacl AppointmentsACL) Creator {
+func NewSessionCreator(repo Repository, bus event.Bus, aacl SchedulingServiceACL) Creator {
 	return &creatorImpl{repo, bus, aacl}
 }
 
 func (u *creatorImpl) Create(appointmentID string) (SessionOutput, error) {
-	a, err := u.aacl.FindByID(nanoid.ID(appointmentID))
+	a, err := u.aacl.FindAppointmentByID(nanoid.ID(appointmentID))
 	if err != nil {
 		return SessionOutput{}, err
 	}

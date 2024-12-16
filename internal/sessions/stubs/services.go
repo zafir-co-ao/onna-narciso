@@ -11,7 +11,7 @@ var services = map[string]sessions.SessionService{
 	"3": {ServiceID: nanoid.ID("3"), ProfessionalID: nanoid.ID("1")},
 }
 
-func NewServicesACL() sessions.ServicesACL {
+func NewServicesACL() sessions.ServicesServiceACL {
 	var f sessions.ServicesACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
 		selected := make([]sessions.SessionService, 0)
 		for _, id := range ids {
