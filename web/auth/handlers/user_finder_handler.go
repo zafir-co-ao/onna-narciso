@@ -5,15 +5,19 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/auth/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleFindUsers(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
+func HandleFindUsers(uf auth.UserFinder, ug auth.UserGetter) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := u.Find(r.FormValue("id"))
+		cookie, _ := r.Cookie("userID")
+
+		uid := cookie.Value
+		o, err := uf.Find(uid)
 
 		if errors.Is(err, auth.ErrUserNotAllowed) {
-			_http.SendUnauthorized(w)
+			_http.SendBadRequest(w, "Acesso negado")
 			return
 		}
 
@@ -27,6 +31,8 @@ func HandleFindUsers(u auth.UserFinder) func(w http.ResponseWriter, r *http.Requ
 			return
 		}
 
-		_http.SendOk(w)
+		au, _ := ug.Get(uid)
+
+		pages.ListUsers(o, au).Render(r.Context(), w)
 	}
 }

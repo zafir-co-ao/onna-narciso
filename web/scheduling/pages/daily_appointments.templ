@@ -32,7 +32,7 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 			})
     	</script>
 	}
-	@_components.PageTitle("Agendamentos")
+	@_components.Navbar("navbar", "Agenda", "#content")
 	<div id="daily-view">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
@@ -50,7 +50,7 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 					hx-target="#daily-view"
 					hx-trigger="click"
 					hx-swap="outerHTML"
-					class="mt-8 block cursor-pointer w-full rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+					class="btn-lg btn-primary mt-8"
 				>
 					Ver Semana
 				</a>

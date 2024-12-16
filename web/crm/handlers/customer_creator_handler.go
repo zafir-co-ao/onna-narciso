@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
@@ -44,6 +45,11 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 
 		if errors.Is(err, date.ErrInvalidFormat) {
 			_http.SendBadRequest(w, "A data de nascimento está no formato inválido")
+			return
+		}
+
+		if errors.Is(err, crm.ErrAgeNotAllowed) {
+			_http.SendBadRequest(w, fmt.Sprintf("A idade mínima permitida é de %v anos", crm.MinimumAgeAllowed))
 			return
 		}
 

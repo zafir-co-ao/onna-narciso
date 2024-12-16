@@ -40,7 +40,7 @@ templ CustomerUpdateForm(url string, customer crm.CustomerOutput) {
 					components.WithName("email"),
 					components.WithClass("form-control"),
 					components.WithValue(customer.Email),
-					components.WithPlaceholder("E-mail"),
+					components.WithPlaceholder("E-mail (Opcional)"),
 				)
 			</div>
 			<div>
@@ -49,7 +49,7 @@ templ CustomerUpdateForm(url string, customer crm.CustomerOutput) {
 					components.WithName("phone-number"),
 					components.WithClass("form-control"),
 					components.WithValue(customer.PhoneNumber),
-					components.WithPlaceholder("Telefone"),
+					components.WithPlaceholder("Telefone (Opcional)"),
 				)
 			</div>
 			<div class="form-actions">

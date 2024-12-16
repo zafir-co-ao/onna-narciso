@@ -1,10 +1,10 @@
 package components
 
 import (
-    "github.com/zafir-co-ao/onna-narciso/internal/crm"
-    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
 templ HandleCustomerUpdateDialog(url string, c crm.CustomerOutput) {
-    @components.Dialog("Atualizar cliente", CustomerUpdateForm(url, c))
+	@components.Dialog("Editar cliente", CustomerUpdateForm(url, c))
 }

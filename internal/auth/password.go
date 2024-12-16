@@ -23,6 +23,11 @@ func NewPassword(v string) (Password, error) {
 	return Password(string(b)), nil
 }
 
+func MustNewPassword(v string) Password {
+	p, _ := NewPassword(v)
+	return p
+}
+
 func (p Password) IsValid(v string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(p.String()), []byte(v))
 	return err == nil

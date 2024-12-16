@@ -8,5 +8,5 @@ import (
 
 func HandleCreateCustomerDialog(w http.ResponseWriter, r *http.Request) {
 	url := r.FormValue("hx-post")
-	components.CustomerCreteateDialog(url).Render(r.Context(), w)
+	components.CustomerCreateDialog(url).Render(r.Context(), w)
 }

@@ -1,41 +1,37 @@
 package components
 
-import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
 
-templ ServiceCreateForm(url string) {
+templ UserCreateForm(url string) {
 	<form hx-post={ url } hx-swap="none">
-		<div class="space-y-4 mt-4">
+		<div class="mt-4 space-y-4">
 			<div>
 				@components.InputField(
-					components.WithName("name"),
-					components.WithPlaceholder("Nome do serviço"),
+					components.WithName("username"),
+					components.WithPlaceholder("Nome de Utilizador"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
 				)
 			</div>
 			<div>
 				@components.InputField(
-					components.WithName("price"),
-					components.WithType("number"),
-					components.WithPlaceholder("Preço"),
+					components.WithName("password"),
+					components.WithType("password"),
+					components.WithPlaceholder("Palavra-passe"),
 					components.WithClass("form-control"),
-					components.WithStep("0.50"),
 					components.WithRequired("true"),
-				)
-			</div>
-			<div>
-				@components.InputField(
-					components.WithName("description"),
-					components.WithPlaceholder("Descrição (Opcional)"),
-					components.WithClass("form-control"),
 				)
 			</div>
 			<div>
 				@components.Dropdown(
-					"duration",
-					"90",
+					"role",
+					auth.RoleManager.String(),
 					components.WithOptions(
-						components.Durations...,
+						components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
+						components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
 					),
 				)
 			</div>

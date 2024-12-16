@@ -1,10 +1,10 @@
 package components
 
 import (
-    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
-    "github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ ServiceUpdateDialog(url string, s services.ServiceOutput){
-    @components.Dialog("Atualizar serviço", ServiceUpdateForm(url, s))
+templ ServiceUpdateDialog(url string, s services.ServiceOutput) {
+	@components.Dialog("Editar serviço", ServiceUpdateForm(url, s))
 }
