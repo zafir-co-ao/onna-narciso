@@ -1,9 +1,13 @@
 package services
 
-import "github.com/kindalus/godx/pkg/xslices"
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
+)
 
 type ServiceFinder interface {
-	Find() ([]ServiceOutput, error)
+	FindAll() ([]ServiceOutput, error)
+	FindByID(id string) (ServiceOutput, error)
 }
 
 type serviceFinderImpl struct {
@@ -14,7 +18,7 @@ func NewServiceFinder(repo Repository) ServiceFinder {
 	return &serviceFinderImpl{repo}
 }
 
-func (u *serviceFinderImpl) Find() ([]ServiceOutput, error) {
+func (u *serviceFinderImpl) FindAll() ([]ServiceOutput, error) {
 	s, err := u.repo.FindAll()
 
 	if err != nil {
@@ -22,4 +26,14 @@ func (u *serviceFinderImpl) Find() ([]ServiceOutput, error) {
 	}
 
 	return xslices.Map(s, toServiceOutput), nil
+}
+
+func (u *serviceFinderImpl) FindByID(id string) (ServiceOutput, error) {
+	s, err := u.repo.FindByID(nanoid.ID(id))
+
+	if err != nil {
+		return ServiceOutput{}, err
+	}
+
+	return toServiceOutput(s), err
 }

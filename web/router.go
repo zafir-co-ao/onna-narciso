@@ -29,14 +29,12 @@ type UsecasesParams struct {
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
 	ServiceUpdater           services.ServiceUpdater
-	ServiceGetter            services.ServiceGetter
 	CustomerCreator          crm.CustomerCreator
 	CustomerUpdater          crm.CustomerUpdater
 	CustomerFinder           crm.CustomerFinder
 	UserAutheticator         auth.UserAuthenticator
 	UserFinder               auth.UserFinder
 	UserCreator              auth.UserCreator
-	UserGetter               auth.UserGetter
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -63,7 +61,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("POST /services", _services.HandleCreateService(u.ServiceCreator))
 	mux.HandleFunc("PUT /services/{id}", _services.HandleUpdateService(u.ServiceUpdater))
 	mux.HandleFunc("GET /services/dialogs/create-service-dialog", _services.HandleCreateServiceDialog)
-	mux.HandleFunc("GET /services/dialogs/edit-service-dialog", _services.HandleUpdateServiceDialog(u.ServiceGetter))
+	mux.HandleFunc("GET /services/dialogs/edit-service-dialog", _services.HandleUpdateServiceDialog(u.ServiceFinder))
 
 	mux.HandleFunc("POST /customers", _crm.HandleCreateCustomer(u.CustomerCreator))
 	mux.HandleFunc("GET /customers", _crm.HandleFindCustomer(u.CustomerFinder))
@@ -74,7 +72,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
-	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder, u.UserGetter))
+	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
 

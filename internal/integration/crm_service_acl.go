@@ -13,18 +13,17 @@ type CRMServiceACL interface {
 
 type internalCRMServiceACL struct {
 	finder crm.CustomerFinder
-	getter crm.CustomerGetter
 }
 
-func NewInternalCRMServiceACL(getter crm.CustomerGetter, finder crm.CustomerFinder) CRMServiceACL {
-	return &internalCRMServiceACL{getter: getter, finder: finder}
+func NewInternalCRMServiceACL(finder crm.CustomerFinder) CRMServiceACL {
+	return &internalCRMServiceACL{finder: finder}
 }
 
 func (s *internalCRMServiceACL) GetBirthdayCustomers(d date.Date) ([]crm.CustomerOutput, error) {
 
 	day := d.String()[4:]
 
-	customers, err := s.finder.Find()
+	customers, err := s.finder.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -37,5 +36,5 @@ func (s *internalCRMServiceACL) GetBirthdayCustomers(d date.Date) ([]crm.Custome
 }
 
 func (s *internalCRMServiceACL) GetCustomer(id string) (crm.CustomerOutput, error) {
-	return s.getter.Get(id)
+	return s.finder.FindByID(id)
 }

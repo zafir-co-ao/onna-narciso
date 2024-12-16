@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
 )
 
 type UserFinder interface {
-	Find(id string) ([]UserOutput, error)
+	FindAll() ([]UserOutput, error)
+	FindByID(id string) (UserOutput, error)
 }
 
 type finderImpl struct {
@@ -16,16 +18,7 @@ func NewUserFinder(repo Repository) UserFinder {
 	return &finderImpl{repo}
 }
 
-func (u *finderImpl) Find(id string) ([]UserOutput, error) {
-	// _, err := u.repo.FindByID(nanoid.ID(id))
-	// if err != nil {
-	// 	return []UserOutput{}, err
-	// }
-
-	// if !au.IsManager() {
-	// 	return []UserOutput{}, ErrUserNotAllowed
-	// }
-
+func (u *finderImpl) FindAll() ([]UserOutput, error) {
 	users, err := u.repo.FindAll()
 
 	if err != nil {
@@ -33,4 +26,14 @@ func (u *finderImpl) Find(id string) ([]UserOutput, error) {
 	}
 
 	return xslices.Map(users, toUserOutput), nil
+}
+
+func (u *finderImpl) FindByID(id string) (UserOutput, error) {
+	user, err := u.repo.FindByID(nanoid.ID(id))
+
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	return toUserOutput(user), nil
 }

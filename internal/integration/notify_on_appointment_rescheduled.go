@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/kindalus/godx/pkg/event"
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
 )
 
@@ -13,7 +14,7 @@ func NewNotifyOnAppointmentRescheduledListener(scheduling SchedulingServiceACL, 
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
-		a, err := scheduling.FindAppointmentByID(id)
+		a, err := scheduling.FindAppointmentByID(nanoid.ID(id))
 		if err != nil {
 			slog.Error("Erro ao carregar agendamento %s: %v", id, err)
 			return

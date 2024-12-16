@@ -9,17 +9,9 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleFindUsers(uf auth.UserFinder, ug auth.UserGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleFindUsers(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, _ := r.Cookie("userID")
-
-		uid := cookie.Value
-		o, err := uf.Find(uid)
-
-		// if errors.Is(err, auth.ErrUserNotAllowed) {
-		// 	_http.SendBadRequest(w, "Acesso negado")
-		// 	return
-		// }
+		o, err := u.FindAll()
 
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")
@@ -31,8 +23,9 @@ func HandleFindUsers(uf auth.UserFinder, ug auth.UserGetter) func(w http.Respons
 			return
 		}
 
-		au, _ := ug.Get(uid)
-
+		cookie, _ := r.Cookie("userID")
+		uid := cookie.Value
+		au, _ := u.FindByID(uid)
 		pages.ListUsers(o, au).Render(r.Context(), w)
 	}
 }

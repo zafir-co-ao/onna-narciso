@@ -52,14 +52,12 @@ func main() {
 		ServiceCreator:           services.NewServiceCreator(serviceRepo, bus),
 		ServiceFinder:            services.NewServiceFinder(serviceRepo),
 		ServiceUpdater:           services.NewServiceUpdater(serviceRepo, bus),
-		ServiceGetter:            services.NewServiceGetter(serviceRepo),
 		CustomerCreator:          crm.NewCustomerCreator(customerRepo, bus),
 		CustomerUpdater:          crm.NewCustomerUpdater(customerRepo, bus),
 		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
 		UserAutheticator:         auth.NewUserAuthenticator(userRepo),
 		UserFinder:               auth.NewUserFinder(userRepo),
 		UserCreator:              auth.NewUserCreator(userRepo, bus),
-		UserGetter:               auth.NewUserGetter(userRepo),
 	}
 
 	r := web.NewRouter(u)

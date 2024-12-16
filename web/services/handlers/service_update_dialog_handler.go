@@ -9,11 +9,11 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleUpdateServiceDialog(u services.ServiceGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateServiceDialog(u services.ServiceFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		url := r.FormValue("hx-put")
 
-		o, err := u.Get(r.FormValue("id"))
+		o, err := u.FindByID(r.FormValue("id"))
 
 		if errors.Is(err, services.ErrServiceNotFound) {
 			_http.SendNotFound(w, "Serviço não encontrado")
