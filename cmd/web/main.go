@@ -24,7 +24,7 @@ import (
 func main() {
 	bus := event.NewEventBus()
 
-	// bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
+	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
 
 	cacl := stubs.NewCustomersACL()
 	pacl := stubs.NewProfessionalsACL()
