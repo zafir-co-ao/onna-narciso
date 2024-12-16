@@ -32,7 +32,7 @@ templ ServiceUpdateForm(url string, s services.ServiceOutput) {
 			<div>
 				@components.InputField(
 					components.WithName("description"),
-					components.WithPlaceholder("Descrição"),
+					components.WithPlaceholder("Descrição (Opcional)"),
 					components.WithClass("form-control"),
 					components.WithValue(s.Description),
 				)
