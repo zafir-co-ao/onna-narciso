@@ -1,8 +1,6 @@
 package scheduling
 
 import (
-	"slices"
-
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
