@@ -3,10 +3,12 @@ package web
 import (
 	"net/http"
 
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	_auth "github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	_crm "github.com/zafir-co-ao/onna-narciso/web/crm/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 	_services "github.com/zafir-co-ao/onna-narciso/web/services/handlers"
@@ -32,6 +34,9 @@ type UsecasesParams struct {
 	CustomerUpdater          crm.CustomerUpdater
 	CustomerFinder           crm.CustomerFinder
 	CustomerGetter           crm.CustomerGetter
+	UserAutheticator         auth.UserAuthenticator
+	UserFinder               auth.UserFinder
+	UserCreator              auth.UserCreator
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -66,7 +71,34 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerGetter))
 
+	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
+	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
+	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
+	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
+	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
+
 	mux.HandleFunc("/", NewStaticHandler())
 
 	return mux
+}
+
+func AuthenticationMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := r.Cookie("username")
+		path := r.URL.Path
+
+		if err != nil && path == "/auth/login" {
+			w.Header().Set("HX-Redirect", "/auth/login")
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if err != nil && path != "/auth/login" {
+			w.Header().Set("HX-Redirect", "/auth/login")
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

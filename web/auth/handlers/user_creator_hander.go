@@ -10,8 +10,11 @@ import (
 
 func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, _ := r.Cookie("username")
+		uid := cookie.Value
+
 		i := auth.UserCreatorInput{
-			UserID:   r.FormValue("user-id"),
+			UserID:   uid,
 			Username: r.FormValue("username"),
 			Password: r.FormValue("password"),
 			Role:     r.FormValue("role"),
@@ -54,6 +57,7 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

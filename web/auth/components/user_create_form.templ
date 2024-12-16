@@ -1,0 +1,48 @@
+package components
+
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+templ UserCreateForm(url string) {
+	<form hx-post={ url } hx-swap="none">
+		<div class="mt-4 space-y-4">
+			<div>
+				@components.InputField(
+					components.WithName("username"),
+					components.WithPlaceholder("Nome de Utilizador"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+			<div>
+				@components.InputField(
+					components.WithName("password"),
+					components.WithType("password"),
+					components.WithPlaceholder("Palavra-passe"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+			<div>
+				@components.Dropdown(
+					"role",
+					auth.RoleManager.String(),
+					components.WithOptions(
+						components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
+						components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
+					),
+				)
+			</div>
+			<div class="form-actions">
+				<button
+					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+					type="submit"
+				>
+					Salvar
+				</button>
+			</div>
+		</div>
+	</form>
+}

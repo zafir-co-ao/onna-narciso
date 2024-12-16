@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -15,7 +16,7 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 			Password: r.FormValue("password"),
 		}
 
-		_, err := u.Authenticate(i)
+		o, err := u.Authenticate(i)
 
 		if errors.Is(err, auth.ErrAuthenticationFailed) {
 			_http.SendUnauthorized(w)
@@ -27,6 +28,16 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 			return
 		}
 
+		cookie := &http.Cookie{
+			Name:     "username",
+			Value:    o.ID,
+			Expires:  time.Now().Add(2 * time.Minute),
+			HttpOnly: true,
+			Path:     "/",
+		}
+
+		http.SetCookie(w, cookie)
+		w.Header().Set("HX-Redirect", "/")
 		_http.SendOk(w)
 	}
 }

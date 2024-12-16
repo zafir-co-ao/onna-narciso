@@ -1,0 +1,7 @@
+package components
+
+import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+
+templ UserCreateDialog(url string) {
+	@components.Dialog("Adicionar utilizador", UserCreateForm(url))
+}

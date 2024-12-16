@@ -8,6 +8,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/twilio/twilio-go"
 	api "github.com/twilio/twilio-go/rest/api/v2010"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
@@ -35,6 +36,7 @@ func main() {
 	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
 	serviceRepo := services.NewInmemRepository()
 	customerRepo := crm.NewInmemRepository()
+	userRepo := auth.NewInmemRepository(testdata.Users...)
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
@@ -55,9 +57,13 @@ func main() {
 		CustomerUpdater:          crm.NewCustomerUpdater(customerRepo, bus),
 		CustomerFinder:           crm.NewCustomerFinder(customerRepo),
 		CustomerGetter:           crm.NewCustomerGetter(customerRepo),
+		UserAutheticator:         auth.NewUserAuthenticator(userRepo),
+		UserFinder:               auth.NewUserFinder(userRepo),
+		UserCreator:              auth.NewUserCreator(userRepo, bus),
 	}
 
-	http.Handle("/", web.NewRouter(u))
+	r := web.NewRouter(u)
+	http.Handle("/", web.AuthenticationMiddleware(r))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

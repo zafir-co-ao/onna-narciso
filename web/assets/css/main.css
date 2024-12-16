@@ -9,3 +9,15 @@
 .form-actions {
     @apply bg-gray-100 px-4 mt-8 -mx-8 py-3 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:px-10 sm:-mx-10;
 }
+
+.btn {
+    @apply px-3 py-2 text-sm font-semibold rounded-md cursor-pointer shadow;
+}
+
+.btn-primary {
+    @apply bg-gray-600 text-white hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600;
+}
+
+.btn-lg {
+    @apply btn w-full block;
+}

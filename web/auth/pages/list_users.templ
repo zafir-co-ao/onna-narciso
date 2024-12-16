@@ -1,0 +1,109 @@
+package pages
+
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+var listUsersHandle = templ.NewOnceHandle()
+
+templ ListUsers(users []auth.UserOutput) {
+	@listUsersHandle.Once() {
+		<script>
+               document.addEventListener("htmx:afterOnLoad", (evt) => {
+        			let xhr = evt.detail.xhr
+
+                   let header = xhr.getResponseHeader("X-Reload-Page");
+
+                   if (!header) return
+
+                   htmx.ajax("GET", "/auth/users", {
+                       target: "#users",
+                       swap: "outerHTML"
+                   })
+               })
+
+		</script>
+	}
+	@components.Navbar("navbar", "Utilizadores", "#content")
+	<div id="users">
+		<div class="px-4 sm:px-6 lg:px-8">
+			<div class="flex items-center justify-end">
+				<div class="mt-4 sm:mt-0 sm:flex-none">
+					<form
+						hx-get="/users/dialogs/create-user-dialog"
+						hx-trigger="click"
+						hx-target="#dialog"
+						hx-swap="outerHTML"
+					>
+						<input type="hidden" name="hx-post" value="/auth/users"/>
+						<button
+							type="button"
+							class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+						>
+							Novo utilizador
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="mt-8 flow-root">
+				<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+					<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+						<table class="min-w-full divide-y divide-gray-300">
+							<thead>
+								<tr>
+									<th
+										scope="col"
+										class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+									>
+										Nome
+									</th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									>
+										Perfil
+									</th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									></th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									></th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									></th>
+								</tr>
+							</thead>
+							<tbody class="bg-white">
+								if len(users) > 0 {
+									for _, u := range users {
+										<tr class="even:bg-gray-50">
+											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+												{ u.Username }
+											</td>
+											<td colspan="3" class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+												{ u.Role }
+											</td>
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"></td>
+										</tr>
+									}
+								} else {
+									<tr class="even:bg-gray-50 text-center">
+										<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-3" colspan="5">
+											Nenhum utilizador de momento. Prima em criar para adicionar um novo utilizador.
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<dialog id="dialog" hx-swap-oob="true"></dialog>
+	</div>
+}
