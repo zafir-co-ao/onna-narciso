@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
@@ -12,7 +13,7 @@ import (
 func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		i := auth.UserAuthenticatorInput{
-			Username: r.FormValue("username"),
+			Username: strings.TrimSpace(r.FormValue("username")),
 			Password: r.FormValue("password"),
 		}
 

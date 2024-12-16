@@ -16,10 +16,10 @@ func HandleFindUsers(uf auth.UserFinder, ug auth.UserGetter) func(w http.Respons
 		uid := cookie.Value
 		o, err := uf.Find(uid)
 
-		if errors.Is(err, auth.ErrUserNotAllowed) {
-			_http.SendBadRequest(w, "Acesso negado")
-			return
-		}
+		// if errors.Is(err, auth.ErrUserNotAllowed) {
+		// 	_http.SendBadRequest(w, "Acesso negado")
+		// 	return
+		// }
 
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")

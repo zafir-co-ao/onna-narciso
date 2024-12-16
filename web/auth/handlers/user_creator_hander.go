@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -15,7 +16,7 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 
 		i := auth.UserCreatorInput{
 			UserID:   uid,
-			Username: r.FormValue("username"),
+			Username: strings.TrimSpace(r.FormValue("username")),
 			Password: r.FormValue("password"),
 			Role:     r.FormValue("role"),
 		}
