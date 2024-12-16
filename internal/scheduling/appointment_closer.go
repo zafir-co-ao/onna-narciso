@@ -38,8 +38,8 @@ func (u *appointmentCloserImpl) Close(id string) error {
 
 	e := event.New(
 		EventAppointmentClosed,
+		event.WithHeader(event.HeaderAggregateType, "scheduling.Appointment"),
 		event.WithHeader(event.HeaderAggregateID, a.ID.String()),
-		event.WithPayload(a),
 	)
 
 	u.bus.Publish(e)

@@ -1,8 +1,6 @@
 package scheduling
 
 import (
-	"slices"
-
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
@@ -57,7 +55,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		return EmptyAppointmentOutput, err
 	}
 
-	if !slices.Contains(p.ServicesIDS, s.ID) {
+	if !p.ContainsService(s.ID) {
 		return EmptyAppointmentOutput, ErrInvalidService
 	}
 

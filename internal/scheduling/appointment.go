@@ -1,6 +1,8 @@
 package scheduling
 
 import (
+	"slices"
+
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
@@ -27,6 +29,10 @@ type Professional struct {
 	ID          nanoid.ID
 	Name        name.Name
 	ServicesIDS []nanoid.ID
+}
+
+func (p Professional) ContainsService(sid nanoid.ID) bool {
+	return slices.Contains(p.ServicesIDS, sid)
 }
 
 type Customer struct {
