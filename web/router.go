@@ -72,6 +72,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerGetter))
 
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
+	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
 	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
