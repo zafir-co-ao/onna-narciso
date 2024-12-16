@@ -31,7 +31,7 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 		cookie := &http.Cookie{
 			Name:     "userID",
 			Value:    o.ID,
-			Expires:  time.Now().Add(2 * time.Minute),
+			Expires:  time.Now().Add(30 * time.Minute),
 			HttpOnly: true,
 			Path:     "/",
 		}
