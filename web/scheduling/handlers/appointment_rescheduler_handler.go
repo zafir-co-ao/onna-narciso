@@ -29,7 +29,7 @@ func HandleRescheduleAppointment(re scheduling.AppointmentRescheduler) func(w ht
 			Duration:       duration,
 		}
 
-		_, err = re.Reschedule(i)
+		err = re.Reschedule(i)
 		if errors.Is(err, scheduling.ErrInvalidStatusToReschedule) {
 			_http.SendBadRequest(w, "Estado inválido para reagendar")
 			return

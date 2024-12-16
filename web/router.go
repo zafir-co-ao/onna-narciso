@@ -19,7 +19,7 @@ type UsecasesParams struct {
 	AppointmentScheduler     scheduling.AppointmentScheduler
 	AppointmentRescheduler   scheduling.AppointmentRescheduler
 	AppointmentCanceler      scheduling.AppointmentCanceler
-	AppointmentGetter        scheduling.AppointmentGetter
+	AppointmentGetter        scheduling.AppointmentFinder
 	WeeklyAppointmentsFinder scheduling.WeeklyAppointmentsFinder
 	DailyAppointmentsFinder  scheduling.DailyAppointmentsFinder
 	SessionCreator           sessions.Creator
@@ -33,7 +33,6 @@ type UsecasesParams struct {
 	CustomerCreator          crm.CustomerCreator
 	CustomerUpdater          crm.CustomerUpdater
 	CustomerFinder           crm.CustomerFinder
-	CustomerGetter           crm.CustomerGetter
 	UserAutheticator         auth.UserAuthenticator
 	UserFinder               auth.UserFinder
 	UserCreator              auth.UserCreator
@@ -70,7 +69,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers", _crm.HandleFindCustomer(u.CustomerFinder))
 	mux.HandleFunc("PUT /customers/{id}", _crm.HandleUpdateCustomer(u.CustomerUpdater))
 	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
-	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerGetter))
+	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerFinder))
 
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)

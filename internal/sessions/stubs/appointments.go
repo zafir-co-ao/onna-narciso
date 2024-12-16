@@ -6,8 +6,8 @@ import (
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 )
 
-func NewAppointmentsACL() sessions.AppointmentsACLFunc {
-	var aacl sessions.AppointmentsACLFunc = func(id nanoid.ID) (sessions.Appointment, error) {
+func NewAppointmentsACL() sessions.SchedulingServiceACLFunc {
+	var aacl sessions.SchedulingServiceACLFunc = func(id nanoid.ID) (sessions.Appointment, error) {
 		for _, a := range testdata.Appointments {
 			if a.ID == id {
 				return sessions.Appointment{

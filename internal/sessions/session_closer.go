@@ -19,11 +19,11 @@ type Closer interface {
 
 type closerImpl struct {
 	repo Repository
-	sacl ServicesACL
+	sacl ServicesServiceACL
 	bus  event.Bus
 }
 
-func NewSessionCloser(repo Repository, sacl ServicesACL, bus event.Bus) Closer {
+func NewSessionCloser(repo Repository, sacl ServicesServiceACL, bus event.Bus) Closer {
 	return &closerImpl{repo, sacl, bus}
 }
 

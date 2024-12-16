@@ -20,57 +20,57 @@ type AppointmentReschedulerInput struct {
 }
 
 type AppointmentRescheduler interface {
-	Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error)
+	Reschedule(i AppointmentReschedulerInput) error
 }
 
 type appointmentRescheduler struct {
 	repo AppointmentRepository
 	pacl ProfessionalsACL
-	sacl ServicesService
+	sacl ServicesServiceACL
 	bus  event.Bus
 }
 
 func NewAppointmentRescheduler(
 	repo AppointmentRepository,
 	pacl ProfessionalsACL,
-	sacl ServicesService,
+	sacl ServicesServiceACL,
 	bus event.Bus,
 ) AppointmentRescheduler {
 	return &appointmentRescheduler{repo, pacl, sacl, bus}
 }
 
-func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (AppointmentOutput, error) {
+func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) error {
 	a, err := u.repo.FindByID(nanoid.ID(i.ID))
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	p, err := u.pacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	s, err := u.sacl.FindServiceByID(nanoid.ID(i.ServiceID))
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	if !p.ContainsService(s.ID) {
-		return EmptyAppointmentOutput, ErrInvalidService
+		return ErrInvalidService
 	}
 
 	d, err := date.New(i.Date)
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	if d.Before() {
-		return EmptyAppointmentOutput, date.ErrDateInPast
+		return date.ErrDateInPast
 	}
 
 	h, err := hour.New(i.Hour)
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	a = NewAppointmentBuilder().
@@ -82,25 +82,25 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 		WithStatus(a.Status).
 		WithDate(d).
 		WithHour(h).
-		Build()
+		MustBuild()
 
 	err = a.Reschedule()
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	appointments, err := u.repo.FindActivesByDateAndProfessional(d, p.ID)
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	if AppointmentsInterceptAny(a, appointments) {
-		return EmptyAppointmentOutput, ErrBusyTime
+		return ErrBusyTime
 	}
 
 	err = u.repo.Save(a)
 	if err != nil {
-		return EmptyAppointmentOutput, err
+		return err
 	}
 
 	e := event.New(
@@ -111,5 +111,5 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) (Appo
 
 	u.bus.Publish(e)
 
-	return toAppointmentOutput(a), nil
+	return nil
 }

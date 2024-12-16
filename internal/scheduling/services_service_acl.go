@@ -1,6 +1,7 @@
 package scheduling
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/kindalus/godx/pkg/nanoid"
@@ -9,15 +10,24 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
-func NewMonoServicesService(r services.Repository) ServicesService {
-	return &servicesServiceImpl{r}
+var (
+	ErrInvalidService  = errors.New("invalid service")
+	ErrServiceNotFound = errors.New("service not found")
+)
+
+type ServicesServiceACL interface {
+	FindServiceByID(id nanoid.ID) (Service, error)
 }
 
-type servicesServiceImpl struct {
+func NewInternalServicesACL(r services.Repository) ServicesServiceACL {
+	return &internalservicesServiceACL{r}
+}
+
+type internalservicesServiceACL struct {
 	repository services.Repository
 }
 
-func (i *servicesServiceImpl) FindServiceByID(id nanoid.ID) (Service, error) {
+func (i *internalservicesServiceACL) FindServiceByID(id nanoid.ID) (Service, error) {
 
 	s, err := i.repository.FindByID(id)
 

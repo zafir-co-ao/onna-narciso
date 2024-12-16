@@ -1,27 +1,33 @@
 package integration
 
 import (
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 )
 
 type SchedulingServiceACL interface {
-	CloseAppointment(id string) error
-	GetAppointment(id string) (scheduling.AppointmentOutput, error)
+	CloseAppointment(id nanoid.ID) error
+	FindAppointmentByID(id nanoid.ID) (scheduling.AppointmentOutput, error)
 }
 
 type internalSchedulingServiceACL struct {
 	closer scheduling.AppointmentCloser
-	getter scheduling.AppointmentGetter
+	finder scheduling.AppointmentFinder
 }
 
-func NewInternalSchedulingServiceACL(getter scheduling.AppointmentGetter, closer scheduling.AppointmentCloser) SchedulingServiceACL {
-	return &internalSchedulingServiceACL{closer: closer}
+func NewInternalSchedulingServiceACL(finder scheduling.AppointmentFinder,
+	closer scheduling.AppointmentCloser) SchedulingServiceACL {
+
+	return &internalSchedulingServiceACL{
+		closer: closer,
+		finder: finder,
+	}
 }
 
-func (s *internalSchedulingServiceACL) CloseAppointment(id string) error {
-	return s.closer.Close(id)
+func (s *internalSchedulingServiceACL) CloseAppointment(id nanoid.ID) error {
+	return s.closer.Close(id.String())
 }
 
-func (s *internalSchedulingServiceACL) GetAppointment(id string) (scheduling.AppointmentOutput, error) {
-	return s.getter.Get(id)
+func (s *internalSchedulingServiceACL) FindAppointmentByID(id nanoid.ID) (scheduling.AppointmentOutput, error) {
+	return s.finder.FindByID(id.String())
 }

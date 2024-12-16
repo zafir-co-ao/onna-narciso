@@ -9,12 +9,12 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleUpdateCustomerDialog(u crm.CustomerGetter) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateCustomerDialog(f crm.CustomerFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("id")
 		url := r.FormValue("hx-put")
 
-		o, err := u.Get(id)
+		o, err := f.FindByID(id)
 
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			_http.SendNotFound(w, "Cliente não encontrado")
