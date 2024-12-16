@@ -12,7 +12,7 @@ import (
 func NewTwillioSMSNotifier() Notifier {
 	return NotifierFunc(
 
-		func(n, msg string) error {
+		func(c Contact, msg Message) error {
 
 			// Find your Account SID and Auth Token at twilio.com/console
 			// and set the environment variables. See http://twil.io/secure
@@ -23,13 +23,13 @@ func NewTwillioSMSNotifier() Notifier {
 			assert.NotNil(os.Getenv("TWILIO_AUTH_TOKEN"), "TWILIO_AUTH_TOKEN env not found")
 			assert.NotNil(os.Getenv("TWILIO_NUMBER"), "TWILIO_NUMBER env not found")
 
-			from := os.Getenv("TWILIO_NUMBER")
+			//from := os.Getenv("TWILIO_NUMBER")
 
 			params := &api.CreateMessageParams{}
-			params.SetBody(msg)
-			params.SetFrom(from)
-			//params.SetFrom("+15017122661")
-			params.SetTo(n)
+			params.SetBody(msg.Body)
+			//params.SetFrom(from)
+			params.SetFrom("+15017122661")
+			params.SetTo(c.Mobile)
 
 			resp, err := client.Api.CreateMessage(params)
 			if err != nil {

@@ -9,12 +9,12 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
 )
 
-func NewNotifyOnAppointmentRescheduledListener(scheduling SchedulingServiceACL, crm CRMServiceACL, notifications notifications.Notifier) event.Handler {
+func NewNotifyOnAppointmentRescheduledListener(s SchedulingServiceACL, crm CRMServiceACL, n notifications.Notifier) event.Handler {
 
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
-		a, err := scheduling.FindAppointmentByID(nanoid.ID(id))
+		a, err := s.FindAppointmentByID(nanoid.ID(id))
 		if err != nil {
 			slog.Error("Erro ao carregar agendamento %s: %v", id, err)
 			return
@@ -26,7 +26,13 @@ func NewNotifyOnAppointmentRescheduledListener(scheduling SchedulingServiceACL, 
 			return
 		}
 
-		err = notifications.Notify(c.PhoneNumber, fmt.Sprintf("Olá %s, seu agendamento foi reagendado com sucesso! Obrigado pela preferência", c.Name))
+		err = n.Notify(
+			notifications.Contact{Mobile: c.PhoneNumber},
+			notifications.Message{
+				Subject: "Agendamento Reagendado",
+				Body:    fmt.Sprintf("Olá %s, seu agendamento foi reagendado com sucesso! Obrigado pela preferência", c.Name),
+			})
+
 		if err != nil {
 			slog.Error("Erro ao notificar cliente %s: %v", a.CustomerID, err)
 		}

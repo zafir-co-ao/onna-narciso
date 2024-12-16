@@ -9,12 +9,12 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
 )
 
-func NewNotifyOnAppointmentScheduledListener(scheduling SchedulingServiceACL, crm CRMServiceACL, notifications notifications.Notifier) event.Handler {
+func NewNotifyOnAppointmentScheduledListener(s SchedulingServiceACL, crm CRMServiceACL, n notifications.Notifier) event.Handler {
 
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
-		a, err := scheduling.FindAppointmentByID(nanoid.ID(id))
+		a, err := s.FindAppointmentByID(nanoid.ID(id))
 		if err != nil {
 			slog.Error("Erro ao carregar agendamento %s: %v", id, err)
 			return
@@ -26,7 +26,12 @@ func NewNotifyOnAppointmentScheduledListener(scheduling SchedulingServiceACL, cr
 			return
 		}
 
-		err = notifications.Notify(c.PhoneNumber, fmt.Sprintf("Olá %s, seu agendamento foi realizado com sucesso! Obrigado pela preferência", c.Name))
+		err = n.Notify(notifications.Contact{Mobile: c.PhoneNumber},
+			notifications.Message{
+				Subject: "Agendamento Realizado",
+				Body:    fmt.Sprintf("Olá %s, seu agendamento foi realizado com sucesso! Obrigado pela preferência", c.Name),
+			})
+
 		if err != nil {
 			slog.Error("Erro ao notificar cliente %s: %v", c.ID, err)
 		}

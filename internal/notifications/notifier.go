@@ -1,11 +1,22 @@
 package notifications
 
-type Notifier interface {
-	Notify(n, msg string) error
+type Contact struct {
+	Name   string
+	Email  string
+	Mobile string
 }
 
-type NotifierFunc func(n, msg string) error
+type Message struct {
+	Subject string
+	Body    string
+}
 
-func (f NotifierFunc) Notify(n, msg string) error {
-	return f(n, msg)
+type Notifier interface {
+	Notify(c Contact, msg Message) error
+}
+
+type NotifierFunc func(c Contact, msg Message) error
+
+func (f NotifierFunc) Notify(c Contact, msg Message) error {
+	return f(c, msg)
 }
