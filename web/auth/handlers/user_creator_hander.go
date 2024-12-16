@@ -10,7 +10,7 @@ import (
 
 func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, _ := r.Cookie("username")
+		cookie, _ := r.Cookie("userID")
 		uid := cookie.Value
 
 		i := auth.UserCreatorInput{

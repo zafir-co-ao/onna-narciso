@@ -8,7 +8,7 @@ import (
 
 func HandleLogoutUser(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
-		Name:   "username",
+		Name:   "userID",
 		Value:  "",
 		MaxAge: -1,
 	}

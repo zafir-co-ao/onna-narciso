@@ -37,6 +37,7 @@ type UsecasesParams struct {
 	UserAutheticator         auth.UserAuthenticator
 	UserFinder               auth.UserFinder
 	UserCreator              auth.UserCreator
+	UserGetter               auth.UserGetter
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -74,7 +75,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
-	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
+	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder, u.UserGetter))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
 
@@ -85,7 +86,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 
 func AuthenticationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := r.Cookie("username")
+		_, err := r.Cookie("userID")
 		path := r.URL.Path
 
 		if err != nil && path == "/auth/login" {

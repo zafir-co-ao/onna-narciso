@@ -60,6 +60,7 @@ func main() {
 		UserAutheticator:         auth.NewUserAuthenticator(userRepo),
 		UserFinder:               auth.NewUserFinder(userRepo),
 		UserCreator:              auth.NewUserCreator(userRepo, bus),
+		UserGetter:               auth.NewUserGetter(userRepo),
 	}
 
 	r := web.NewRouter(u)

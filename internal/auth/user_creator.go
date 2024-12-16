@@ -43,7 +43,7 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
-	users, _ := u.repo.FindAll()
+	users, err := u.repo.FindAll()
 	if err != nil {
 		return UserOutput{}, err
 	}
