@@ -378,7 +378,7 @@ func TestCustomerUpdate(t *testing.T) {
 		}
 	})
 
-	t.Run("should_update_with_email_empty", func(t *testing.T) {
+	t.Run("should_update_with_empty_email", func(t *testing.T) {
 		i := crm.CustomerUpdaterInput{
 			ID:          "1",
 			Name:        "Paola Oliveira",
