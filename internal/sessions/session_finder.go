@@ -18,7 +18,7 @@ func NewSessionFinder(repo Repository) Finder {
 }
 
 func (u *finderImpl) Find(appointmentIDs []string) ([]SessionOutput, error) {
-	ids := xslices.Map(appointmentIDs, func(i string) nanoid.ID { return nanoid.ID(i) })
+	ids := xslices.Map(appointmentIDs, func(id string) nanoid.ID { return nanoid.ID(id) })
 
 	s, err := u.repo.FindByAppointmentsIDs(ids)
 

@@ -31,9 +31,9 @@ func NewServicesServiceACL(finder services.ServiceFinder) ServicesServiceACL {
 }
 
 func (i *internalServicesServiceACL) FindByIDs(ids []nanoid.ID) ([]SessionService, error) {
-	sids := xslices.Map(ids, func(id nanoid.ID) string { return id.String() })
+	_ids := xslices.Map(ids, func(id nanoid.ID) string { return id.String() })
 
-	s, err := i.finder.FindByIDs(sids)
+	s, err := i.finder.FindByIDs(_ids)
 	if err != nil {
 		return EmptyServices, ErrServiceNotFound
 	}
