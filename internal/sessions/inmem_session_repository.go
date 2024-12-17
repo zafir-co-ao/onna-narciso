@@ -15,7 +15,7 @@ func NewInmemRepository(s ...Session) Repository {
 
 func (r *inmemSessionRepositoryImpl) FindByID(id nanoid.ID) (Session, error) {
 	for _, s := range r.Data {
-		if s.ID.String() == id.String() {
+		if s.ID == id {
 			return s, nil
 		}
 	}
@@ -27,7 +27,7 @@ func (r *inmemSessionRepositoryImpl) FindByAppointmentsIDs(ids []nanoid.ID) ([]S
 
 	for _, s := range r.Data {
 		for _, id := range ids {
-			if s.AppointmentID.String() == id.String() {
+			if s.AppointmentID == id {
 				sessions = append(sessions, s)
 			}
 		}
@@ -36,7 +36,7 @@ func (r *inmemSessionRepositoryImpl) FindByAppointmentsIDs(ids []nanoid.ID) ([]S
 	return sessions, nil
 }
 
-func (r *inmemSessionRepositoryImpl) Save(session Session) error {
-	r.Data[session.ID] = session
+func (r *inmemSessionRepositoryImpl) Save(s Session) error {
+	r.Data[s.ID] = s
 	return nil
 }
