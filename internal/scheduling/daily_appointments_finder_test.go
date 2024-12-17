@@ -51,13 +51,13 @@ func TestDailyAppointments(t *testing.T) {
 		{date: "2024-10-12", expectedIDs: []string{"6", "7"}},
 	}
 
-	appointmentsGetter := scheduling.NewDailyAppointmentsFinder(repo)
+	finder := scheduling.NewDailyAppointmentsFinder(repo)
 
 	for _, test := range matrix {
 
 		t.Run(test.date, func(t *testing.T) {
 
-			results, _ := appointmentsGetter.Find(test.date)
+			results, _ := finder.Find(test.date)
 
 			if len(results) != len(test.expectedIDs) {
 				t.Errorf("Expected %d appointments, got %d", len(test.expectedIDs), len(results))

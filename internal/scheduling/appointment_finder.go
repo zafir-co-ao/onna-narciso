@@ -10,12 +10,12 @@ type appointmentFinderImpl struct {
 	repo AppointmentRepository
 }
 
-func NewAppointmentFinder(r AppointmentRepository) AppointmentFinder {
-	return &appointmentFinderImpl{repo: r}
+func NewAppointmentFinder(repo AppointmentRepository) AppointmentFinder {
+	return &appointmentFinderImpl{repo}
 }
 
-func (f *appointmentFinderImpl) FindByID(appointmentId string) (AppointmentOutput, error) {
-	a, err := f.repo.FindByID(nanoid.ID(appointmentId))
+func (f *appointmentFinderImpl) FindByID(id string) (AppointmentOutput, error) {
+	a, err := f.repo.FindByID(nanoid.ID(id))
 	if err != nil {
 		return EmptyAppointmentOutput, err
 	}
