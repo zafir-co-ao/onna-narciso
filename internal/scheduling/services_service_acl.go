@@ -19,27 +19,30 @@ type ServicesServiceACL interface {
 	FindServiceByID(id nanoid.ID) (Service, error)
 }
 
-func NewInternalServicesACL(r services.Repository) ServicesServiceACL {
-	return &internalservicesServiceACL{r}
+type ServicesServiceACLFunc func(id nanoid.ID) (Service, error)
+
+func (f ServicesServiceACLFunc) FindServiceByID(id nanoid.ID) (Service, error) {
+	return f(id)
+}
+
+func NewInternalServicesACL(finder services.ServiceFinder) ServicesServiceACL {
+	return &internalservicesServiceACL{finder}
 }
 
 type internalservicesServiceACL struct {
-	repository services.Repository
+	finder services.ServiceFinder
 }
 
 func (i *internalservicesServiceACL) FindServiceByID(id nanoid.ID) (Service, error) {
-
-	s, err := i.repository.FindByID(id)
+	s, err := i.finder.FindByID(id.String())
 
 	if err != nil {
 		return Service{}, fmt.Errorf("%w: %w", ErrServiceNotFound, err)
 	}
 
-	o := Service{
-		ID:       s.ID,
+	return Service{
+		ID:       nanoid.ID(s.ID),
 		Name:     name.Name(s.Name),
-		Duration: duration.Duration(s.Duration.Value()),
-	}
-
-	return o, nil
+		Duration: duration.Duration(s.Duration),
+	}, nil
 }
