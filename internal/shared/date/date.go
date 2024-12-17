@@ -13,18 +13,11 @@ var (
 type Date string
 
 func New(v string) (Date, error) {
-
-	if len(v) == 0 {
-		return Date(""), nil
-	}
-
 	if !IsValidFormat(v) {
 		return Date(""), ErrInvalidFormat
 	}
 
-	d := Date(v)
-
-	return d, nil
+	return Date(v), nil
 }
 
 func Today() Date {
