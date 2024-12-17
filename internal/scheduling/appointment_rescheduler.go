@@ -25,18 +25,18 @@ type AppointmentRescheduler interface {
 
 type appointmentRescheduler struct {
 	repo AppointmentRepository
-	pacl ProfessionalsACL
+	hacl HRServiceACL
 	sacl ServicesServiceACL
 	bus  event.Bus
 }
 
 func NewAppointmentRescheduler(
 	repo AppointmentRepository,
-	pacl ProfessionalsACL,
+	hacl HRServiceACL,
 	sacl ServicesServiceACL,
 	bus event.Bus,
 ) AppointmentRescheduler {
-	return &appointmentRescheduler{repo, pacl, sacl, bus}
+	return &appointmentRescheduler{repo, hacl, sacl, bus}
 }
 
 func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) error {
@@ -45,7 +45,7 @@ func (u *appointmentRescheduler) Reschedule(i AppointmentReschedulerInput) error
 		return err
 	}
 
-	p, err := u.pacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
+	p, err := u.hacl.FindProfessionalByID(nanoid.ID(i.ProfessionalID))
 	if err != nil {
 		return err
 	}

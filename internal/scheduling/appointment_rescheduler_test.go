@@ -53,8 +53,8 @@ func TestAppointmentRescheduler(t *testing.T) {
 	}
 
 	bus := event.NewEventBus()
-	sacl := stubs.NewServicesACL()
-	pacl := stubs.NewProfessionalsACL()
+	sacl := stubs.NewServicesServiceACL()
+	pacl := stubs.NewHRServiceACL()
 	repo := scheduling.NewAppointmentRepository(appointments...)
 	u := scheduling.NewAppointmentRescheduler(repo, pacl, sacl, bus)
 

@@ -30,14 +30,14 @@ type appointmentScedulerImpl struct {
 	repo AppointmentRepository
 	sacl ServicesServiceACL
 	cacl CRMServiceACL
-	pacl ProfessionalsACL
+	pacl HRServiceACL
 	bus  event.Bus
 }
 
 func NewAppointmentScheduler(
 	repo AppointmentRepository,
 	cacl CRMServiceACL,
-	pacl ProfessionalsACL,
+	pacl HRServiceACL,
 	sacl ServicesServiceACL,
 	bus event.Bus,
 ) AppointmentScheduler {

@@ -51,9 +51,9 @@ func TestAppointmentScheduler(t *testing.T) {
 
 	bus := event.NewEventBus()
 	repo := scheduling.NewAppointmentRepository(appointments...)
-	cacl := stubs.NewCustomersACL()
-	pacl := stubs.NewProfessionalsACL()
-	sacl := stubs.NewServicesACL()
+	cacl := stubs.NewCRMServiceACL()
+	pacl := stubs.NewHRServiceACL()
+	sacl := stubs.NewServicesServiceACL()
 	u := scheduling.NewAppointmentScheduler(repo, cacl, pacl, sacl, bus)
 
 	t.Run("should_schedule_appointment", func(t *testing.T) {
