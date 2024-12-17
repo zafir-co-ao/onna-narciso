@@ -27,15 +27,15 @@ func main() {
 	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
 
 	cacl := stubs.NewCRMServiceACL()
-	pacl := stubs.NewProfessionalsServiceACL()
+	pacl := stubs.NewHRServiceACL()
 	sacl := stubs.NewServicesServiceACL()
 	aacl := _stubs.NewSchedulingServiceACL()
 	ssacl := _stubs.NewServicesServiceACL()
 
 	appointmentRepo := scheduling.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
-	serviceRepo := services.NewInmemRepository(testdata.Services1...)
-	customerRepo := crm.NewInmemRepository(testdata.Customers1...)
+	serviceRepo := services.NewInmemRepository(testdata.ServicesDummies...)
+	customerRepo := crm.NewInmemRepository(testdata.CustomersDummies...)
 	userRepo := auth.NewInmemRepository(testdata.Users...)
 
 	u := web.UsecasesParams{

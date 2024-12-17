@@ -7,7 +7,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
 
-var Customers1 = []crm.Customer{
+var CustomersDummies = []crm.Customer{
 	{
 		ID:        nanoid.ID("1"),
 		Name:      "Paola Oliveira",
@@ -36,7 +36,7 @@ var Customers1 = []crm.Customer{
 	},
 }
 
-var Services1 = []services.Service{
+var ServicesDummies = []services.Service{
 	{
 		ID:       nanoid.New(),
 		Name:     "Manicure",
