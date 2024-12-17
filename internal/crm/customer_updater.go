@@ -3,7 +3,7 @@ package crm
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
+	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -52,36 +52,48 @@ func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 		return err
 	}
 
-	p, err := NewPhoneNumber(i.PhoneNumber)
+	phone, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return err
 	}
 
-	if u.isUsedNif(c, i.Nif) {
-		return ErrNifAlreadyUsed
+	bdate, err := getBirthDate(i.BirthDate)
+	if err != nil {
+		return ErrAgeNotAllowed
 	}
 
-	if u.isUsedEmail(c, i.Email) {
-		return ErrEmailAlreadyUsed
+	if !isAllowedAge(bdate) {
+		return ErrAgeNotAllowed
 	}
 
-	if u.isUsedPhoneNumber(c, i.PhoneNumber) {
+	customers, err := u.repo.FindAll()
+	if err != nil {
+		return err
+	}
+
+	customers = xslices.Filter(customers, func(customer Customer) bool {
+		return customer.ID != c.ID
+	})
+
+	if checkUsedPhoneNumber(customers, phone) {
 		return ErrPhoneNumberAlreadyUsed
 	}
 
-	b, _ := date.New(i.BirthDate)
+	if checkUsedEmail(customers, email) {
+		return ErrEmailAlreadyUsed
+	}
 
-	if !isAllowedAge(b) {
-		return ErrAgeNotAllowed
+	if checkUsedNif(customers, nif) {
+		return ErrNifAlreadyUsed
 	}
 
 	c = NewCustomerBuilder().
 		WithID(nanoid.ID(i.ID)).
 		WithName(name).
 		WithNif(nif).
-		WithBirthDate(date.Date(i.BirthDate)).
+		WithBirthDate(bdate).
 		WithEmail(email).
-		WithPhoneNumber(p).
+		WithPhoneNumber(phone).
 		Build()
 
 	err = u.repo.Save(c)
@@ -98,39 +110,4 @@ func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 	u.bus.Publish(e)
 
 	return nil
-}
-
-func (u *customerUpdaterImpl) isUsedNif(c Customer, nif string) bool {
-	if c.IsSameNif(Nif(nif)) {
-		return false
-	}
-
-	_, err := u.repo.FindByNif(Nif(nif))
-	return err == nil
-}
-
-func (u *customerUpdaterImpl) isUsedEmail(c Customer, email string) bool {
-	if len(email) == 0 {
-		return false
-	}
-
-	if c.IsSameEmail(Email(email)) {
-		return false
-	}
-
-	_, err := u.repo.FindByEmail(Email(email))
-	return err == nil
-}
-
-func (u *customerUpdaterImpl) isUsedPhoneNumber(c Customer, phoneNumber string) bool {
-	if len(phoneNumber) == 0 {
-		return false
-	}
-
-	if c.IsSamePhoneNumber(PhoneNumber(phoneNumber)) {
-		return false
-	}
-
-	_, err := u.repo.FindByPhoneNumber(PhoneNumber(phoneNumber))
-	return err == nil
 }

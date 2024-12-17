@@ -2,7 +2,6 @@ package crm
 
 import (
 	"github.com/kindalus/godx/pkg/event"
-	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -30,27 +29,22 @@ func NewCustomerCreator(repo Repository, bus event.Bus) CustomerCreator {
 }
 
 func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, error) {
+	name, err := name.New(i.Name)
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
 	nif, err := NewNif(i.Nif)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
-	_, err = u.repo.FindByNif(nif)
-	if err == nil {
-		return CustomerOutput{}, ErrNifAlreadyUsed
-	}
-
-	n, err := name.New(i.Name)
+	bdate, err := getBirthDate(i.BirthDate)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
-	b, err := date.New(i.BirthDate)
-	if err != nil {
-		return CustomerOutput{}, err
-	}
-
-	if !isAllowedAge(b) {
+	if !isAllowedAge(bdate) {
 		return CustomerOutput{}, ErrAgeNotAllowed
 	}
 
@@ -59,25 +53,35 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
-	if u.isUsedEmail(email) {
-		return CustomerOutput{}, ErrEmailAlreadyUsed
-	}
-
-	p, err := NewPhoneNumber(i.PhoneNumber)
+	phone, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
-	if u.isUsedPhoneNumber(p) {
+	customers, err := u.repo.FindAll()
+
+	if err != nil {
+		return CustomerOutput{}, err
+	}
+
+	if checkUsedNif(customers, nif) {
+		return CustomerOutput{}, ErrNifAlreadyUsed
+	}
+
+	if checkUsedEmail(customers, email) {
+		return CustomerOutput{}, ErrEmailAlreadyUsed
+	}
+
+	if checkUsedPhoneNumber(customers, phone) {
 		return CustomerOutput{}, ErrPhoneNumberAlreadyUsed
 	}
 
 	c := NewCustomerBuilder().
-		WithName(n).
+		WithName(name).
 		WithNif(nif).
-		WithBirthDate(b).
+		WithBirthDate(bdate).
 		WithEmail(email).
-		WithPhoneNumber(p).
+		WithPhoneNumber(phone).
 		Build()
 
 	err = u.repo.Save(c)
@@ -94,22 +98,4 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 	u.bus.Publish(e)
 
 	return toCustomerOutput(c), nil
-}
-
-func (u *customerCreatorImpl) isUsedPhoneNumber(number PhoneNumber) bool {
-	if len(number) == 0 {
-		return false
-	}
-
-	_, err := u.repo.FindByPhoneNumber(number)
-	return err == nil
-}
-
-func (u *customerCreatorImpl) isUsedEmail(email Email) bool {
-	if len(email) == 0 {
-		return false
-	}
-
-	_, err := u.repo.FindByEmail(email)
-	return err == nil
 }

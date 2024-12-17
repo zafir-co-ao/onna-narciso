@@ -10,7 +10,12 @@ import (
 
 const MinimumAgeAllowed = 12
 
-var ErrAgeNotAllowed = errors.New("age not allowed")
+var (
+	ErrAgeNotAllowed          = errors.New("age not allowed")
+	ErrNifAlreadyUsed         = errors.New("nif already used")
+	ErrEmailAlreadyUsed       = errors.New("email already used")
+	ErrPhoneNumberAlreadyUsed = errors.New("phone number already used")
+)
 
 type Customer struct {
 	ID          nanoid.ID
@@ -21,22 +26,18 @@ type Customer struct {
 	PhoneNumber PhoneNumber
 }
 
-func (c *Customer) IsSameNif(n Nif) bool {
-	return c.Nif == n
-}
-
-func (c *Customer) IsSameEmail(e Email) bool {
-	return c.Email == e
-}
-
-func (c *Customer) IsSamePhoneNumber(p PhoneNumber) bool {
-	return c.PhoneNumber == p
-}
-
 func (c Customer) GetID() nanoid.ID {
 	return c.ID
 }
 
 func isAllowedAge(d date.Date) bool {
 	return date.Today().Year()-d.Year() >= MinimumAgeAllowed
+}
+
+func getBirthDate(v string) (date.Date, error) {
+	if len(v) == 0 {
+		return date.Date(""), nil
+	}
+
+	return date.New(v)
 }

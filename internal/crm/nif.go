@@ -7,7 +7,7 @@ var ErrEmptyNif = errors.New("nif is empty")
 type Nif string
 
 func NewNif(v string) (Nif, error) {
-	if isEmpty(v) {
+	if len(v) == 0 {
 		return "", ErrEmptyNif
 	}
 
@@ -16,8 +16,4 @@ func NewNif(v string) (Nif, error) {
 
 func (n Nif) String() string {
 	return string(n)
-}
-
-func isEmpty(v string) bool {
-	return len(v) == 0
 }

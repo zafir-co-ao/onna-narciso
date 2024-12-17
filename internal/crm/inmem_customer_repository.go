@@ -30,36 +30,6 @@ func (r *inmemCustomerRepositoryImpl) FindByID(id nanoid.ID) (Customer, error) {
 	return r.Data[id], nil
 }
 
-func (r *inmemCustomerRepositoryImpl) FindByNif(nif Nif) (Customer, error) {
-	for _, c := range r.Data {
-		if c.Nif == nif {
-			return c, nil
-		}
-	}
-
-	return Customer{}, ErrCustomerNotFound
-}
-
-func (r *inmemCustomerRepositoryImpl) FindByEmail(e Email) (Customer, error) {
-	for _, c := range r.Data {
-		if c.Email == e {
-			return c, nil
-		}
-	}
-
-	return Customer{}, ErrCustomerNotFound
-}
-
-func (r *inmemCustomerRepositoryImpl) FindByPhoneNumber(p PhoneNumber) (Customer, error) {
-	for _, c := range r.Data {
-		if c.PhoneNumber == p {
-			return c, nil
-		}
-	}
-
-	return Customer{}, ErrCustomerNotFound
-}
-
 func (r *inmemCustomerRepositoryImpl) Save(c Customer) error {
 	r.Data[c.ID] = c
 	return nil
