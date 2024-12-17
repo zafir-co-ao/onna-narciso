@@ -11,19 +11,16 @@ import (
 )
 
 func TestSessionStarter(t *testing.T) {
-	repo := sessions.NewInmemRepository()
+	s := []sessions.Session{
+		{ID: "1", Status: sessions.StatusCheckedIn},
+		{ID: "2", Status: sessions.StatusStarted},
+		{ID: "3", Status: sessions.StatusCheckedIn},
+		{ID: "4", Status: sessions.StatusCheckedIn},
+		{ID: "5", Status: sessions.StatusClosed},
+	}
+
 	bus := event.NewEventBus()
-
-	s1 := sessions.Session{ID: "1"}
-	s2 := sessions.Session{ID: "2", Status: sessions.StatusStarted}
-	s3 := sessions.Session{ID: "3"}
-	s4 := sessions.Session{ID: "4"}
-
-	_ = repo.Save(s1)
-	_ = repo.Save(s2)
-	_ = repo.Save(s3)
-	_ = repo.Save(s4)
-
+	repo := sessions.NewInmemRepository(s...)
 	u := sessions.NewSessionStarter(repo, bus)
 
 	t.Run("should_start_session", func(t *testing.T) {
@@ -82,7 +79,7 @@ func TestSessionStarter(t *testing.T) {
 		}
 
 		if !isPublished {
-			t.Errorf("The EventSessionStarted must be publised, got %v", isPublished)
+			t.Errorf("The %s must be publised, got %v", sessions.EventSessionStarted, isPublished)
 		}
 
 		if evtAggID != id {
@@ -98,7 +95,7 @@ func TestSessionStarter(t *testing.T) {
 		}
 
 		if !errors.Is(err, sessions.ErrSessionNotFound) {
-			t.Errorf("The error must be ErrSessionNotFound, got %v", err)
+			t.Errorf("The error must be %v, got %v", sessions.ErrSessionNotFound, err)
 		}
 	})
 
@@ -110,7 +107,20 @@ func TestSessionStarter(t *testing.T) {
 		}
 
 		if !errors.Is(err, sessions.ErrSessionStarted) {
-			t.Errorf("The error must be ErrSessionStarted, got %v", err)
+			t.Errorf("The error must be %v, got %v", sessions.ErrSessionStarted, err)
 		}
+	})
+
+	t.Run("should_return_error_if_session_status_not_is_checkedin", func(t *testing.T) {
+		err := u.Start("5")
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, sessions.ErrInvalidStatusToStart) {
+			t.Errorf("The error must be %v, got %v", sessions.ErrInvalidStatusToStart, err)
+		}
+
 	})
 }

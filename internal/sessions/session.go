@@ -15,10 +15,11 @@ const (
 )
 
 var (
-	ErrSessionStarted     = errors.New("session already started")
-	ErrSessionClosed      = errors.New("session already closed")
-	ErrInvalidCheckinDate = errors.New("invalid checkin date")
-	ErrInvoiceNotBeIssued = errors.New("invoice not be issued")
+	ErrSessionStarted       = errors.New("session already started")
+	ErrSessionClosed        = errors.New("session already closed")
+	ErrInvalidCheckinDate   = errors.New("invalid checkin date")
+	ErrInvoiceNotBeIssued   = errors.New("invoice not be issued")
+	ErrInvalidStatusToStart = errors.New("invalid status to start session")
 )
 
 type Appointment struct {
@@ -69,9 +70,12 @@ type Session struct {
 }
 
 func (s *Session) Start() error {
-
 	if s.IsStarted() {
 		return ErrSessionStarted
+	}
+
+	if !s.IsCheckedIn() {
+		return ErrInvalidStatusToStart
 	}
 
 	s.StartTime = hour.Now()
@@ -90,6 +94,10 @@ func (s *Session) Close(services []SessionService) error {
 	s.addServices(services)
 
 	return nil
+}
+
+func (s *Session) IsCheckedIn() bool {
+	return s.Status == StatusCheckedIn
 }
 
 func (s *Session) IsStarted() bool {

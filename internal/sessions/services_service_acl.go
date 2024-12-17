@@ -13,13 +13,13 @@ var ErrServiceNotFound = errors.New("service not found")
 var EmptyServices = make([]SessionService, 0)
 
 type ServicesServiceACL interface {
-	FindByIDs(i []nanoid.ID) ([]SessionService, error)
+	FindByIDs(id []nanoid.ID) ([]SessionService, error)
 }
 
-type ServicesACLFunc func(i []nanoid.ID) ([]SessionService, error)
+type ServicesACLFunc func(id []nanoid.ID) ([]SessionService, error)
 
-func (f ServicesACLFunc) FindByIDs(i []nanoid.ID) ([]SessionService, error) {
-	return f(i)
+func (f ServicesACLFunc) FindByIDs(id []nanoid.ID) ([]SessionService, error) {
+	return f(id)
 }
 
 type internalServicesServiceACL struct {

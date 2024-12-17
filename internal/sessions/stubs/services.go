@@ -15,7 +15,7 @@ func NewServicesACL() sessions.ServicesServiceACL {
 	var f sessions.ServicesACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
 		selected := make([]sessions.SessionService, 0)
 		for _, id := range ids {
-			if services[id.String()].ServiceID.String() != id.String() {
+			if services[id.String()].ServiceID != id {
 				return sessions.EmptyServices, sessions.ErrServiceNotFound
 			}
 			selected = append(selected, services[id.String()])

@@ -15,10 +15,10 @@ var (
 )
 
 type SchedulingServiceACL interface {
-	FindAppointmentByID(i nanoid.ID) (Appointment, error)
+	FindAppointmentByID(id nanoid.ID) (Appointment, error)
 }
 
-type SchedulingServiceACLFunc func(i nanoid.ID) (Appointment, error)
+type SchedulingServiceACLFunc func(id nanoid.ID) (Appointment, error)
 
 func (f SchedulingServiceACLFunc) FindAppointmentByID(id nanoid.ID) (Appointment, error) {
 	return f(id)
