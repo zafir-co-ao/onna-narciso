@@ -10,15 +10,15 @@ type CustomerFinder interface {
 	FindByID(id string) (CustomerOutput, error)
 }
 
-type customerFinderImpl struct {
+type finderImpl struct {
 	repo Repository
 }
 
 func NewCustomerFinder(repo Repository) CustomerFinder {
-	return &customerFinderImpl{repo}
+	return &finderImpl{repo}
 }
 
-func (u *customerFinderImpl) FindAll() ([]CustomerOutput, error) {
+func (u *finderImpl) FindAll() ([]CustomerOutput, error) {
 
 	c, err := u.repo.FindAll()
 	if err != nil {
@@ -28,7 +28,7 @@ func (u *customerFinderImpl) FindAll() ([]CustomerOutput, error) {
 	return xslices.Map(c, toCustomerOutput), nil
 }
 
-func (u *customerFinderImpl) FindByID(id string) (CustomerOutput, error) {
+func (u *finderImpl) FindByID(id string) (CustomerOutput, error) {
 	c, err := u.repo.FindByID(nanoid.ID(id))
 
 	if err != nil {

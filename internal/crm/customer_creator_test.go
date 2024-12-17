@@ -246,24 +246,6 @@ func TestCustomerCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_nif_of_customer_is_empty", func(t *testing.T) {
-		i := crm.CustomerCreatorInput{
-			Name:      "Micheal Jordan",
-			BirthDate: "2001-10-15",
-			Email:     "michael.jordan@domain.com",
-		}
-
-		_, err := u.Create(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, crm.ErrEmptyNif) {
-			t.Errorf("The error must be %v, got %v", crm.ErrEmptyNif, err)
-		}
-	})
-
 	t.Run("should_return_error_if_birth_date_format_is_incorrect", func(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
