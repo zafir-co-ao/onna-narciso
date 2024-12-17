@@ -24,7 +24,7 @@ func TestSessionCloser(t *testing.T) {
 
 	bus := event.NewEventBus()
 	repo := sessions.NewInmemRepository(_sessions...)
-	sacl := stubs.NewServicesACL()
+	sacl := stubs.NewServicesServiceACL()
 
 	u := sessions.NewSessionCloser(repo, sacl, bus)
 

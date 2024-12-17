@@ -13,7 +13,7 @@ import (
 
 func TestSessionCreator(t *testing.T) {
 	bus := event.NewEventBus()
-	aacl := stubs.NewAppointmentsACL()
+	aacl := stubs.NewSchedulingServiceACL()
 	repo := sessions.NewInmemRepository()
 	u := sessions.NewSessionCreator(repo, bus, aacl)
 
