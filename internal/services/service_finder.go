@@ -40,9 +40,9 @@ func (u *serviceFinderImpl) FindByID(id string) (ServiceOutput, error) {
 }
 
 func (u *serviceFinderImpl) FindByIDs(ids []string) ([]ServiceOutput, error) {
-	nids := xslices.Map(ids, func(id string) nanoid.ID { return nanoid.ID(id) })
+	_ids := xslices.Map(ids, func(id string) nanoid.ID { return nanoid.ID(id) })
 
-	s, err := u.repo.FindByIDs(nids)
+	s, err := u.repo.FindByIDs(_ids)
 
 	if err != nil {
 		return []ServiceOutput{}, err
