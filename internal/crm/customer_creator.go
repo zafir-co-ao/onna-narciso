@@ -19,22 +19,17 @@ type CustomerCreator interface {
 	Create(i CustomerCreatorInput) (CustomerOutput, error)
 }
 
-type customerCreatorImpl struct {
+type creatorImpl struct {
 	repo Repository
 	bus  event.Bus
 }
 
 func NewCustomerCreator(repo Repository, bus event.Bus) CustomerCreator {
-	return &customerCreatorImpl{repo, bus}
+	return &creatorImpl{repo, bus}
 }
 
-func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, error) {
+func (u *creatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, error) {
 	name, err := name.New(i.Name)
-	if err != nil {
-		return CustomerOutput{}, err
-	}
-
-	nif, err := NewNif(i.Nif)
 	if err != nil {
 		return CustomerOutput{}, err
 	}
@@ -53,18 +48,13 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, err
 	}
 
-	phone, err := NewPhoneNumber(i.PhoneNumber)
-	if err != nil {
-		return CustomerOutput{}, err
-	}
-
 	customers, err := u.repo.FindAll()
 
 	if err != nil {
 		return CustomerOutput{}, err
 	}
 
-	if checkUsedNif(customers, nif) {
+	if checkUsedNif(customers, Nif(i.Nif)) {
 		return CustomerOutput{}, ErrNifAlreadyUsed
 	}
 
@@ -72,16 +62,16 @@ func (u *customerCreatorImpl) Create(i CustomerCreatorInput) (CustomerOutput, er
 		return CustomerOutput{}, ErrEmailAlreadyUsed
 	}
 
-	if checkUsedPhoneNumber(customers, phone) {
+	if checkUsedPhoneNumber(customers, PhoneNumber(i.PhoneNumber)) {
 		return CustomerOutput{}, ErrPhoneNumberAlreadyUsed
 	}
 
 	c := NewCustomerBuilder().
 		WithName(name).
-		WithNif(nif).
+		WithNif(Nif(i.Nif)).
 		WithBirthDate(bdate).
 		WithEmail(email).
-		WithPhoneNumber(phone).
+		WithPhoneNumber(PhoneNumber(i.PhoneNumber)).
 		Build()
 
 	err = u.repo.Save(c)

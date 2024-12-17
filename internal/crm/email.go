@@ -11,11 +11,11 @@ type Email string
 
 func NewEmail(v string) (Email, error) {
 	if len(v) == 0 {
-		return Email(""), nil
+		return Email(v), nil
 	}
 
 	if !isValidFormat(v) {
-		return "", ErrInvalidEmailFormat
+		return Email(""), ErrInvalidEmailFormat
 	}
 	return Email(v), nil
 }

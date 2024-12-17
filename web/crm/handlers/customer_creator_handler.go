@@ -28,11 +28,6 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
-		if errors.Is(err, crm.ErrEmptyNif) {
-			_http.SendBadRequest(w, "O NIF do cliente não pode estar vazio")
-			return
-		}
-
 		if errors.Is(err, crm.ErrNifAlreadyUsed) {
 			_http.SendBadRequest(w, "O NIF fornecido já está sendo usado por um cliente diferente")
 			return

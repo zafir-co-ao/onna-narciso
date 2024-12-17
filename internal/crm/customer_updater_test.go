@@ -279,27 +279,6 @@ func TestCustomerUpdate(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_nif_of_customer_is_empty", func(t *testing.T) {
-		i := crm.CustomerUpdaterInput{
-			ID:          "1",
-			Name:        "Paola Miguel",
-			Nif:         "",
-			BirthDate:   "2001-01-02",
-			Email:       "paola.oliveira@domain.com",
-			PhoneNumber: "+244911000022",
-		}
-
-		err := u.Update(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("Expected error, got %v", err)
-		}
-
-		if !errors.Is(err, crm.ErrEmptyNif) {
-			t.Errorf("The error must be %v, got %v", crm.ErrEmptyNif, err)
-		}
-	})
-
 	t.Run("should_return_error_if_customer_not_exists_in_repository", func(t *testing.T) {
 		i := crm.CustomerUpdaterInput{
 			ID:   "100",

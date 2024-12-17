@@ -22,16 +22,16 @@ type CustomerUpdater interface {
 	Update(i CustomerUpdaterInput) error
 }
 
-type customerUpdaterImpl struct {
+type updaterImpl struct {
 	repo Repository
 	bus  event.Bus
 }
 
 func NewCustomerUpdater(repo Repository, bus event.Bus) CustomerUpdater {
-	return &customerUpdaterImpl{repo, bus}
+	return &updaterImpl{repo, bus}
 }
 
-func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
+func (u *updaterImpl) Update(i CustomerUpdaterInput) error {
 	c, err := u.repo.FindByID(nanoid.ID(i.ID))
 	if err != nil {
 		return err
@@ -42,17 +42,7 @@ func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 		return err
 	}
 
-	nif, err := NewNif(i.Nif)
-	if err != nil {
-		return err
-	}
-
 	email, err := NewEmail(i.Email)
-	if err != nil {
-		return err
-	}
-
-	phone, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return err
 	}
@@ -75,7 +65,7 @@ func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 		return customer.ID != c.ID
 	})
 
-	if checkUsedPhoneNumber(customers, phone) {
+	if checkUsedPhoneNumber(customers, PhoneNumber(i.PhoneNumber)) {
 		return ErrPhoneNumberAlreadyUsed
 	}
 
@@ -83,17 +73,17 @@ func (u *customerUpdaterImpl) Update(i CustomerUpdaterInput) error {
 		return ErrEmailAlreadyUsed
 	}
 
-	if checkUsedNif(customers, nif) {
+	if checkUsedNif(customers, Nif(i.Nif)) {
 		return ErrNifAlreadyUsed
 	}
 
 	c = NewCustomerBuilder().
 		WithID(nanoid.ID(i.ID)).
 		WithName(name).
-		WithNif(nif).
+		WithNif(Nif(i.Nif)).
 		WithBirthDate(bdate).
 		WithEmail(email).
-		WithPhoneNumber(phone).
+		WithPhoneNumber(PhoneNumber(i.PhoneNumber)).
 		Build()
 
 	err = u.repo.Save(c)
