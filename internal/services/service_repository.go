@@ -11,5 +11,6 @@ var ErrServiceNotFound = errors.New("service not found")
 type Repository interface {
 	FindAll() ([]Service, error)
 	FindByID(id nanoid.ID) (Service, error)
+	FindByIDs(ids []nanoid.ID) ([]Service, error)
 	Save(s Service) error
 }

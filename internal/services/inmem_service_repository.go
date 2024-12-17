@@ -31,6 +31,21 @@ func (r *inmemServiceRepositoryImpl) FindByID(id nanoid.ID) (Service, error) {
 	return r.Data[id], nil
 }
 
+func (r *inmemServiceRepositoryImpl) FindByIDs(ids []nanoid.ID) ([]Service, error) {
+	var services []Service
+
+	for _, id := range ids {
+		s, err := r.FindByID(id)
+		if err != nil {
+			return []Service{}, err
+		}
+
+		services = append(services, s)
+	}
+
+	return services, nil
+}
+
 func (r *inmemServiceRepositoryImpl) Save(service Service) error {
 	r.Data[service.ID] = service
 	return nil
