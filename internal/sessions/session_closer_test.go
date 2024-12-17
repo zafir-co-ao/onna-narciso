@@ -13,16 +13,20 @@ import (
 )
 
 func TestSessionCloser(t *testing.T) {
+	_sessions := []sessions.Session{
+		{ID: "20", Status: sessions.StatusCheckedIn},
+	}
+
+	for i := range 10 {
+		s := sessions.Session{ID: nanoid.ID(strconv.Itoa(i)), Status: sessions.StatusStarted}
+		_sessions = append(_sessions, s)
+	}
+
 	bus := event.NewEventBus()
-	repo := sessions.NewInmemRepository()
+	repo := sessions.NewInmemRepository(_sessions...)
 	sacl := stubs.NewServicesACL()
 
 	u := sessions.NewSessionCloser(repo, sacl, bus)
-
-	for i := range 10 {
-		s := sessions.Session{ID: nanoid.ID(strconv.Itoa(i + 1))}
-		repo.Save(s)
-	}
 
 	t.Run("should_close_the_session", func(t *testing.T) {
 		i := sessions.CloserInput{
@@ -226,6 +230,23 @@ func TestSessionCloser(t *testing.T) {
 
 		if !errors.Is(err, sessions.ErrSessionClosed) {
 			t.Errorf("The error must be %v, got %v", sessions.ErrSessionClosed, err)
+		}
+	})
+
+	t.Run("should_return_error_if_session_status_not_is_started", func(t *testing.T) {
+		i := sessions.CloserInput{
+			SessionID:   "20",
+			ServicesIDs: make([]string, 0),
+		}
+
+		err := u.Close(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, sessions.ErrInvalidStatusToClose) {
+			t.Errorf("The error must be %v, got %v", sessions.ErrInvalidStatusToClose, err)
 		}
 	})
 }

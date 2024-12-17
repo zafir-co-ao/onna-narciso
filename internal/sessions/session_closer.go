@@ -64,7 +64,7 @@ func (u *closerImpl) findServices(ids []string) ([]SessionService, error) {
 		return EmptyServices, nil
 	}
 
-	_ids := xslices.Map(ids, func(x string) nanoid.ID { return nanoid.ID(x) })
+	_ids := xslices.Map(ids, func(id string) nanoid.ID { return nanoid.ID(id) })
 
 	return u.sacl.FindByIDs(_ids)
 }

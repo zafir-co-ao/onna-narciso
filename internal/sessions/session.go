@@ -19,7 +19,8 @@ var (
 	ErrSessionClosed        = errors.New("session already closed")
 	ErrInvalidCheckinDate   = errors.New("invalid checkin date")
 	ErrInvoiceNotBeIssued   = errors.New("invoice not be issued")
-	ErrInvalidStatusToStart = errors.New("invalid status to start session")
+	ErrInvalidStatusToStart = errors.New("invalid status to start")
+	ErrInvalidStatusToClose = errors.New("invalid status to close")
 )
 
 type Appointment struct {
@@ -87,6 +88,10 @@ func (s *Session) Close(services []SessionService) error {
 
 	if s.IsClosed() {
 		return ErrSessionClosed
+	}
+
+	if !s.IsStarted() {
+		return ErrInvalidStatusToClose
 	}
 
 	s.CloseTime = hour.Now()
