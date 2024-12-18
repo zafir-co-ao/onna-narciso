@@ -7,10 +7,9 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 )
 
-func ListenAndNotifyOnAppointmentCanceled(bus event.Bus, n notifications.Notifier, finder crm.CustomerFinder) {
+func ListAndSendWelcomeToOnna(bus event.Bus, n notifications.Notifier, finder crm.CustomerFinder) {
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
@@ -22,8 +21,8 @@ func ListenAndNotifyOnAppointmentCanceled(bus event.Bus, n notifications.Notifie
 
 		err = n.Notify(notifications.Contact{Mobile: c.PhoneNumber},
 			notifications.Message{
-				Subject: "Agendamento cancelado",
-				Body:    fmt.Sprintf("Olá %s, seu agendamento foi cancelado.", c.Name),
+				Subject: "Bem-vindo à Onna",
+				Body:    fmt.Sprintf("Olá %s, seja bem-vindo à Onna!", c.Name),
 			})
 
 		if err != nil {
@@ -31,5 +30,5 @@ func ListenAndNotifyOnAppointmentCanceled(bus event.Bus, n notifications.Notifie
 		}
 	}
 
-	bus.Subscribe(scheduling.EventAppointmentCanceled, event.HandlerFunc(h))
+	bus.Subscribe(crm.EventCustomerCreated, event.HandlerFunc(h))
 }

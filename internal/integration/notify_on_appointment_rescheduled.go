@@ -5,22 +5,23 @@ import (
 	"log/slog"
 
 	"github.com/kindalus/godx/pkg/event"
-	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
+	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 )
 
-func NewNotifyOnAppointmentRescheduledListener(s SchedulingServiceACL, crm CRMServiceACL, n notifications.Notifier) event.Handler {
+func ListenAndNotifyOnAppointmentRescheduled(bus event.Bus, n notifications.Notifier, afinder scheduling.AppointmentFinder, cfinder crm.CustomerFinder) {
 
 	h := func(e event.Event) {
 		id := e.Header(event.HeaderAggregateID)
 
-		a, err := s.FindAppointmentByID(nanoid.ID(id))
+		a, err := afinder.FindByID(id)
 		if err != nil {
 			slog.Error("Erro ao carregar agendamento %s: %v", id, err)
 			return
 		}
 
-		c, err := crm.GetCustomer(a.CustomerID)
+		c, err := cfinder.FindByID(a.CustomerID)
 		if err != nil {
 			slog.Error("Erro ao carregar cliente %s: %v", a.CustomerID, err)
 			return
@@ -39,5 +40,5 @@ func NewNotifyOnAppointmentRescheduledListener(s SchedulingServiceACL, crm CRMSe
 
 	}
 
-	return event.HandlerFunc(h)
+	bus.Subscribe(scheduling.EventAppointmentScheduled, event.HandlerFunc(h))
 }
