@@ -6,9 +6,7 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 )
 
-var (
-	ErrUserNotFound = errors.New("user not found")
-)
+var ErrUserNotFound = errors.New("user not found")
 
 type Repository interface {
 	FindAll() ([]User, error)

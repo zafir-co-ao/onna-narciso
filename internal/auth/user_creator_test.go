@@ -19,7 +19,7 @@ func TestUserCreator(t *testing.T) {
 	repo := auth.NewInmemRepository(users...)
 	u := auth.NewUserCreator(repo, bus)
 
-	t.Run("should_create_a_user", func(t *testing.T) {
+	t.Run("should_create_an_user", func(t *testing.T) {
 		i := auth.UserCreatorInput{
 			UserID:   "1",
 			Username: "Mike Tyson",
@@ -48,13 +48,13 @@ func TestUserCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		u, err := repo.FindByID(nanoid.ID(o.ID))
+		user, err := repo.FindByID(nanoid.ID(o.ID))
 		if errors.Is(err, auth.ErrUserNotFound) {
 			t.Errorf("Should return a user from repository got %v", err)
 		}
 
-		if u.ID.String() != o.ID {
-			t.Errorf("The user id must be equal to %v, got %v", o.ID, u.ID.String())
+		if user.ID.String() != o.ID {
+			t.Errorf("The user id must be equal to %v, got %v", o.ID, user.ID.String())
 		}
 	})
 
@@ -72,21 +72,21 @@ func TestUserCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		u, err := repo.FindByID(nanoid.ID(o.ID))
+		user, err := repo.FindByID(nanoid.ID(o.ID))
 		if errors.Is(err, auth.ErrUserNotFound) {
 			t.Errorf("Should return a user from repository got %v", err)
 		}
 
-		if u.Username.String() != i.Username {
-			t.Errorf("The username must be equal to %v, got %v", i.Username, u.Username.String())
+		if user.Username.String() != i.Username {
+			t.Errorf("The username must be equal to %v, got %v", i.Username, user.Username.String())
 		}
 
-		if u.Password.String() == "" {
+		if user.Password.String() == "" {
 			t.Error("The password of user must be defined")
 		}
 
-		if u.Role.String() != i.Role {
-			t.Errorf("The role of user must be %v, got %v", i.Role, u.Role)
+		if user.Role.String() != i.Role {
+			t.Errorf("The role of user must be %v, got %v", i.Role, user.Role)
 		}
 	})
 
@@ -104,16 +104,16 @@ func TestUserCreator(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		u, err := repo.FindByID(nanoid.ID(o.ID))
+		user, err := repo.FindByID(nanoid.ID(o.ID))
 		if errors.Is(err, auth.ErrUserNotFound) {
 			t.Errorf("Should return a user from repository got %v", err)
 		}
 
-		if u.Password.String() == i.Password {
-			t.Errorf("Should register the hash of password, got %v", u.Password.String())
+		if user.Password.String() == i.Password {
+			t.Errorf("Should register the hash of password, got %v", user.Password.String())
 		}
 
-		if !u.VerifyPassword(i.Password) {
+		if !user.VerifyPassword(i.Password) {
 			t.Error("Should verify the password of user")
 		}
 	})
