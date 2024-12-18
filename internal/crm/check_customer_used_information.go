@@ -1,6 +1,10 @@
 package crm
 
 func checkUsedEmail(customers []Customer, v Email) bool {
+	if isEmptyValue(v.String()) {
+		return false
+	}
+
 	for _, c := range customers {
 		if c.Email == v {
 			return true
@@ -10,6 +14,10 @@ func checkUsedEmail(customers []Customer, v Email) bool {
 }
 
 func checkUsedNif(customers []Customer, v Nif) bool {
+	if isEmptyValue(v.String()) {
+		return false
+	}
+
 	for _, c := range customers {
 		if c.Nif == v {
 			return true
@@ -18,11 +26,19 @@ func checkUsedNif(customers []Customer, v Nif) bool {
 	return false
 }
 
-func checkUsedPhoneNumber(customers []Customer, p PhoneNumber) bool {
+func checkUsedPhoneNumber(customers []Customer, v PhoneNumber) bool {
+	if isEmptyValue(v.String()) {
+		return false
+	}
+
 	for _, c := range customers {
-		if c.PhoneNumber == p {
+		if c.PhoneNumber == v {
 			return true
 		}
 	}
 	return false
+}
+
+func isEmptyValue(v string) bool {
+	return len(v) == 0
 }
