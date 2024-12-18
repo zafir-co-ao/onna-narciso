@@ -38,13 +38,13 @@ var CustomersDummies = []crm.Customer{
 
 var ServicesDummies = []services.Service{
 	{
-		ID:       nanoid.New(),
+		ID:       nanoid.ID("1"),
 		Name:     "Manicure",
 		Price:    "1000",
 		Duration: 45,
 	},
 	{
-		ID:       nanoid.New(),
+		ID:       nanoid.ID("2"),
 		Name:     "Pedicure",
 		Price:    "4000",
 		Duration: 60,
