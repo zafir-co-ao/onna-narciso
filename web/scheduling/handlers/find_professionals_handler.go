@@ -17,7 +17,7 @@ func HandleFindProfessionals() func(w http.ResponseWriter, r *http.Request) {
 		professionals := make([]scheduling.Professional, 0, 0)
 		// TODO - Utilizar o repositório de profissionais para encontrar os serviços com base no profissional
 		for _, p := range testdata.Professionals {
-			if slices.Contains(p.ServicesIDS, nanoid.ID(serviceID)) {
+			if slices.Contains(p.ServicesIDs, nanoid.ID(serviceID)) {
 				professionals = append(professionals, p)
 			}
 		}

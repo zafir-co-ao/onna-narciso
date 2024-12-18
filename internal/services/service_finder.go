@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
 type ServiceFinder interface {
@@ -40,7 +41,7 @@ func (u *serviceFinderImpl) FindByID(id string) (ServiceOutput, error) {
 }
 
 func (u *serviceFinderImpl) FindByIDs(ids []string) ([]ServiceOutput, error) {
-	_ids := xslices.Map(ids, func(id string) nanoid.ID { return nanoid.ID(id) })
+	_ids := xslices.Map(ids, shared.StringToNanoid)
 
 	s, err := u.repo.FindByIDs(_ids)
 

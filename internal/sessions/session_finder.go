@@ -1,8 +1,8 @@
 package sessions
 
 import (
-	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
 type Finder interface {
@@ -18,7 +18,7 @@ func NewSessionFinder(repo Repository) Finder {
 }
 
 func (u *finderImpl) Find(appointmentIDs []string) ([]SessionOutput, error) {
-	ids := xslices.Map(appointmentIDs, func(id string) nanoid.ID { return nanoid.ID(id) })
+	ids := xslices.Map(appointmentIDs, shared.StringToNanoid)
 
 	s, err := u.repo.FindByAppointmentsIDs(ids)
 

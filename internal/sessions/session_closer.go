@@ -4,6 +4,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
 const EventSessionClosed = "EventSessionClosed"
@@ -64,7 +65,7 @@ func (u *closerImpl) findServices(ids []string) ([]SessionService, error) {
 		return EmptyServices, nil
 	}
 
-	_ids := xslices.Map(ids, func(id string) nanoid.ID { return nanoid.ID(id) })
+	_ids := xslices.Map(ids, shared.StringToNanoid)
 
 	return u.sacl.FindByIDs(_ids)
 }

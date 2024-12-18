@@ -99,7 +99,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
 			tmp := make([]scheduling.Professional, 0)
 			for _, professional := range professionals {
-				if slices.Contains(professional.ServicesIDS, nanoid.ID(serviceID)) {
+				if slices.Contains(professional.ServicesIDs, nanoid.ID(serviceID)) {
 					tmp = append(tmp, professional)
 				}
 			}

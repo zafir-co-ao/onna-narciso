@@ -6,6 +6,7 @@ import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 )
 
 var ErrServiceNotFound = errors.New("service not found")
@@ -31,7 +32,7 @@ func NewServicesServiceACL(finder services.ServiceFinder) ServicesServiceACL {
 }
 
 func (i *internalServicesServiceACL) FindByIDs(ids []nanoid.ID) ([]SessionService, error) {
-	_ids := xslices.Map(ids, func(id nanoid.ID) string { return id.String() })
+	_ids := xslices.Map(ids, shared.NanoidToString)
 
 	s, err := i.finder.FindByIDs(_ids)
 	if err != nil {

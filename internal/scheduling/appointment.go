@@ -28,11 +28,11 @@ type Service struct {
 type Professional struct {
 	ID          nanoid.ID
 	Name        name.Name
-	ServicesIDS []nanoid.ID
+	ServicesIDs []nanoid.ID
 }
 
 func (p Professional) ContainsService(sid nanoid.ID) bool {
-	return slices.Contains(p.ServicesIDS, sid)
+	return slices.Contains(p.ServicesIDs, sid)
 }
 
 type Customer struct {
@@ -53,8 +53,8 @@ type Appointment struct {
 	ServiceID        nanoid.ID
 	ServiceName      name.Name
 	Status           Status
-	Date             date.Date // Formato: 2024-10-01
-	Hour             hour.Hour // Formato 9:00
+	Date             date.Date
+	Hour             hour.Hour
 	Duration         duration.Duration
 }
 
