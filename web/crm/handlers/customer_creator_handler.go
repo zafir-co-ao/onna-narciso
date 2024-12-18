@@ -48,6 +48,11 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
+		if errors.Is(err, crm.ErrPhoneNumberAlreadyUsed) {
+			_http.SendBadRequest(w, "O telefone fornecido já está sendo usado por um cliente diferente")
+			return
+		}
+
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return

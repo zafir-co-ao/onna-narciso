@@ -20,9 +20,8 @@ templ CustomerUpdateForm(url string, customer crm.CustomerOutput) {
 			<div>
 				@components.InputField(
 					components.WithName("nif"),
-					components.WithPlaceholder("NIF"),
+					components.WithPlaceholder("NIF (Opcional)"),
 					components.WithClass("form-control"),
-					components.WithRequired("true"),
 					components.WithValue(customer.Nif),
 				)
 			</div>
