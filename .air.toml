@@ -6,7 +6,8 @@ args_bin = []
 bin = "bin/narciso"
 cmd = """rm -fr bin/static && \
     templ generate && \
-    go test ./... > /dev/null && \
+    echo "Testing..." && \
+    make tests > /dev/null && \
 	cp -fr web/static bin/static && \
  	bunx tailwindcss -i web/assets/css/main.css -o bin/static/css/styles.css && \
 	go build -o bin/narciso cmd/web/main.go && \
