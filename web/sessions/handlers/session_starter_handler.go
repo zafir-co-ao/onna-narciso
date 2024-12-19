@@ -14,19 +14,19 @@ import (
 )
 
 func HandleStartSession(
-	ss sessions.Starter,
-	sf sessions.Finder,
+	ss sessions.SessionStarter,
+	sf sessions.SessionFinder,
 	dg scheduling.DailyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := ss.Start(r.FormValue("session-id"))
 
-		if errors.Is(sessions.ErrSessionStarted, err) {
+		if errors.Is(err, sessions.ErrSessionStarted) {
 			_http.SendBadRequest(w, "A sessão já foi iniciada")
 			return
 		}
 
-		if errors.Is(sessions.ErrSessionNotFound, err) {
+		if errors.Is(err, sessions.ErrSessionNotFound) {
 			_http.SendNotFound(w, "Sessão não encontrada")
 			return
 		}
