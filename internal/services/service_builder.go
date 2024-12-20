@@ -32,6 +32,11 @@ func (s *serviceBuilder) WithPrice(p Price) *serviceBuilder {
 	return s
 }
 
+func (s *serviceBuilder) WithDiscount(d Discount) *serviceBuilder {
+	s.Discount = d
+	return s
+}
+
 func (s *serviceBuilder) WithDuration(d duration.Duration) *serviceBuilder {
 	s.Duration = d
 	return s

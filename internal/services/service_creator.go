@@ -13,6 +13,7 @@ type ServiceCreatorInput struct {
 	Name        string
 	Description string
 	Price       string
+	Discount    string
 	Duration    int
 }
 
@@ -30,12 +31,12 @@ func NewServiceCreator(repo Repository, bus event.Bus) ServiceCreator {
 }
 
 func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error) {
-	_name, err := name.New(i.Name)
+	name, err := name.New(i.Name)
 	if err != nil {
 		return ServiceOutput{}, err
 	}
 
-	_duration, err := duration.New(i.Duration)
+	duration, err := duration.New(i.Duration)
 	if err != nil {
 		return ServiceOutput{}, err
 	}
@@ -45,11 +46,17 @@ func (u *serviceCreatorImpl) Create(i ServiceCreatorInput) (ServiceOutput, error
 		return ServiceOutput{}, err
 	}
 
+	discount, err := NewDiscount(i.Discount)
+	if err != nil {
+		return ServiceOutput{}, err
+	}
+
 	s := NewServiceBuilder().
 		WithID(nanoid.New()).
-		WithName(_name).
+		WithName(name).
 		WithPrice(price).
-		WithDuration(_duration).
+		WithDuration(duration).
+		WithDiscount(discount).
 		WithDescription(Description(i.Description)).
 		Build()
 

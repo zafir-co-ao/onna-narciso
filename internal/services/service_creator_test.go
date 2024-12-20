@@ -120,6 +120,25 @@ func TestServiceCreator(t *testing.T) {
 		}
 	})
 
+	t.Run("must_register_the_discount_of_service", func(t *testing.T) {
+		i := services.ServiceCreatorInput{
+			Name:        "Massagem",
+			Description: "",
+			Price:       "2500",
+			Discount:    "10",
+			Duration:    60,
+		}
+
+		o, err := u.Create(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if o.Discount != i.Discount {
+			t.Errorf("The discount of service must be equal to %v, got %v", i.Discount, o.Discount)
+		}
+	})
+
 	t.Run("the_duration_of_service_must_be_90_minutes_when_duration_not_provided", func(t *testing.T) {
 		i := services.ServiceCreatorInput{
 			Name:  "Manicure",
@@ -211,6 +230,23 @@ func TestServiceCreator(t *testing.T) {
 
 		if !errors.Is(err, services.ErrInvalidPrice) {
 			t.Errorf("The error must be %v, got %v", services.ErrInvalidPrice, err)
+		}
+	})
+
+	t.Run("should_return_error_if_discount_is_invalid", func(t *testing.T) {
+		i := services.ServiceCreatorInput{
+			Name:     "Manicure",
+			Price:    "1000",
+			Discount: "1000",
+		}
+
+		_, err := u.Create(i)
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, services.ErrDiscountNotAllowed) {
+			t.Errorf("The error must be %v, got %v", services.ErrDiscountNotAllowed, err)
 		}
 	})
 }

@@ -69,7 +69,13 @@ templ ListServices(services []services.ServiceOutput) {
 										scope="col"
 										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 									>
-										Preço
+										Preço (Kz)
+									</th>
+									<th
+										scope="col"
+										class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									>
+										Desconto (%)
 									</th>
 									<th
 										scope="col"
@@ -89,6 +95,9 @@ templ ListServices(services []services.ServiceOutput) {
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ s.Description }</td>
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 												{ s.Price }
+											</td>
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+												{ s.Discount }
 											</td>
 											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 												{ components.FindDuration(strconv.Itoa(s.Duration))[0] }
