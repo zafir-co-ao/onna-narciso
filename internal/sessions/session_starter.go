@@ -7,7 +7,7 @@ import (
 
 const EventSessionStarted = "EventSessionStarted"
 
-type Starter interface {
+type SessionStarter interface {
 	Start(id string) error
 }
 
@@ -16,7 +16,7 @@ type starterImpl struct {
 	bus  event.Bus
 }
 
-func NewSessionStarter(repo Repository, bus event.Bus) Starter {
+func NewSessionStarter(repo Repository, bus event.Bus) SessionStarter {
 	return &starterImpl{repo, bus}
 }
 

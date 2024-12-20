@@ -3,22 +3,33 @@ package sessions_test
 import (
 	"testing"
 
+	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 )
 
 func TestSessionFinder(t *testing.T) {
+	ss := []sessions.SessionService{
+		{
+			ID:   nanoid.ID("1"),
+			Name: "Manicure",
+		},
+	}
+
 	s := []sessions.Session{
 		{
 			ID:            "1",
 			AppointmentID: "1",
+			Services:      ss,
 		},
 		{
 			ID:            "2",
 			AppointmentID: "2",
+			Services:      ss,
 		},
 		{
 			ID:            "3",
 			AppointmentID: "3",
+			Services:      ss,
 		},
 	}
 

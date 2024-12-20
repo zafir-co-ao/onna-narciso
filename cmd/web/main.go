@@ -1,13 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/kindalus/godx/pkg/event"
-	"github.com/twilio/twilio-go"
-	api "github.com/twilio/twilio-go/rest/api/v2010"
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
@@ -23,9 +19,6 @@ import (
 
 func main() {
 	bus := event.NewEventBus()
-
-	bus.SubscribeFunc(scheduling.EventAppointmentScheduled, sendNotification)
-
 	cacl := stubs.NewCRMServiceACL()
 	pacl := stubs.NewHRServiceACL()
 	sacl := stubs.NewServicesServiceACL()
@@ -42,10 +35,10 @@ func main() {
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
 		AppointmentRescheduler:   scheduling.NewAppointmentRescheduler(appointmentRepo, pacl, sacl, bus),
 		AppointmentCanceler:      scheduling.NewAppointmentCanceler(appointmentRepo, bus),
-		AppointmentGetter:        scheduling.NewAppointmentFinder(appointmentRepo),
+		AppointmentFinder:        scheduling.NewAppointmentFinder(appointmentRepo),
 		WeeklyAppointmentsFinder: scheduling.NewWeeklyAppointmentsFinder(appointmentRepo),
 		DailyAppointmentsFinder:  scheduling.NewDailyAppointmentsFinder(appointmentRepo),
-		SessionCreator:           sessions.NewSessionCreator(sessionRepo, bus, aacl),
+		SessionCreator:           sessions.NewSessionCreator(sessionRepo, aacl, bus),
 		SessionStarter:           sessions.NewSessionStarter(sessionRepo, bus),
 		SessionCloser:            sessions.NewSessionCloser(sessionRepo, ssacl, bus),
 		SessionFinder:            sessions.NewSessionFinder(sessionRepo),
@@ -66,29 +59,5 @@ func main() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		panic(err)
-	}
-}
-
-func sendNotification(event.Event) {
-	// Find your Account SID and Auth Token at twilio.com/console
-	// and set the environment variables. See http://twil.io/secure
-	// Make sure TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN exists in your environment
-	client := twilio.NewRestClient()
-
-	params := &api.CreateMessageParams{}
-	params.SetBody("This is the ship that made the Kessel Run in fourteen parsecs?")
-	params.SetFrom("+15017122661")
-	params.SetTo("+244923641819")
-
-	resp, err := client.Api.CreateMessage(params)
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	} else {
-		if resp.Body != nil {
-			fmt.Println(*resp.Body)
-		} else {
-			fmt.Println(resp.Body)
-		}
 	}
 }
