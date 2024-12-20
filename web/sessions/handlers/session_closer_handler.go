@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,26 +15,37 @@ import (
 )
 
 func HandleCloseSession(
-	sc sessions.Closer,
-	sf sessions.Finder,
+	sc sessions.SessionCloser,
+	sf sessions.SessionFinder,
 	df scheduling.DailyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		input := sessions.CloserInput{SessionID: r.PathValue("id")}
+		err := r.ParseForm()
 
-		err := sc.Close(input)
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
 
-		if errors.Is(sessions.ErrSessionClosed, err) {
+		i := sessions.SessionCloserInput{
+			SessionID: r.PathValue("id"),
+			Services:  toSessionCloserServicesInput(r),
+			Gift:      r.FormValue("gift"),
+		}
+
+		err = sc.Close(i)
+
+		if errors.Is(err, sessions.ErrSessionClosed) {
 			_http.SendBadRequest(w, "A sessão já foi finalizada")
 			return
 		}
 
-		if errors.Is(sessions.ErrSessionNotFound, err) {
+		if errors.Is(err, sessions.ErrSessionNotFound) {
 			_http.SendNotFound(w, "A sessão não foi encontrada")
 			return
 		}
 
-		if errors.Is(sessions.ErrServiceNotFound, err) {
+		if errors.Is(err, sessions.ErrServiceNotFound) {
 			_http.SendNotFound(w, "Serviço não encontrado")
 			return
 		}
@@ -68,4 +80,18 @@ func HandleCloseSession(
 		opts := components.CombineAppointmentsWithSessions(appointments, sessions)
 		pages.DailyAppointments(date, opts).Render(r.Context(), w)
 	}
+}
+
+func toSessionCloserServicesInput(r *http.Request) []sessions.SessionCloserServiceInput {
+	var services []sessions.SessionCloserServiceInput
+
+	for _, s := range r.Form["service-id"] {
+		s := sessions.SessionCloserServiceInput{
+			ServiceID: s,
+			Discount:  r.FormValue(fmt.Sprintf("service-discount-%v", s)),
+		}
+
+		services = append(services, s)
+	}
+	return services
 }
