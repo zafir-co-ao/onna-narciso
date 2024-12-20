@@ -14,6 +14,11 @@ const (
 	StatusClosed    Status = "Closed"
 )
 
+const (
+	MaxOfDiscount = "100"
+	GiftCode      = "Gift"
+)
+
 var (
 	ErrSessionStarted       = errors.New("session already started")
 	ErrSessionClosed        = errors.New("session already closed")
@@ -51,8 +56,10 @@ func (a *Appointment) ValidCheckinDate() bool {
 type Status string
 
 type SessionService struct {
-	ServiceID        nanoid.ID
-	ServiceName      string
+	ID               nanoid.ID
+	Name             string
+	Price            string
+	Discount         string
 	ProfessionalID   nanoid.ID
 	ProfessionalName string
 }
@@ -66,6 +73,7 @@ type Session struct {
 	StartTime     hour.Hour
 	CloseTime     hour.Hour
 	Services      []SessionService
+	Gift          string
 	CustomerID    nanoid.ID
 	CustomerName  string
 }
@@ -84,7 +92,7 @@ func (s *Session) Start() error {
 	return nil
 }
 
-func (s *Session) Close(services []SessionService) error {
+func (s *Session) Close(services []SessionService, gift string) error {
 
 	if s.IsClosed() {
 		return ErrSessionClosed
@@ -96,6 +104,7 @@ func (s *Session) Close(services []SessionService) error {
 
 	s.CloseTime = hour.Now()
 	s.Status = StatusClosed
+	s.Gift = gift
 	s.addServices(services)
 
 	return nil
@@ -119,7 +128,19 @@ func (s *Session) addServices(services []SessionService) {
 		return
 	}
 
-	s.Services = append(s.Services, services...)
+	s.Services = services
+
+	if !s.isGift() {
+		return
+	}
+
+	for i, _ := range s.Services {
+		s.Services[i].Discount = MaxOfDiscount
+	}
+}
+
+func (s *Session) isGift() bool {
+	return s.Gift == GiftCode
 }
 
 func (s Session) GetID() nanoid.ID {

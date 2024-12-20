@@ -5,6 +5,7 @@ type ServiceOutput struct {
 	Name        string
 	Description string
 	Price       string
+	Discount    string
 	Duration    int
 }
 

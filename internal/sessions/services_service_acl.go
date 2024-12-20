@@ -41,8 +41,10 @@ func (i *internalServicesServiceACL) FindByIDs(ids []nanoid.ID) ([]SessionServic
 
 	return xslices.Map(s, func(s services.ServiceOutput) SessionService {
 		return SessionService{
-			ServiceID:   nanoid.ID(s.ID),
-			ServiceName: s.Name,
+			ID:       nanoid.ID(s.ID),
+			Name:     s.Name,
+			Price:    s.Price,
+			Discount: s.Discount,
 		}
 	}), nil
 }
