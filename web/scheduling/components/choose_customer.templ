@@ -3,10 +3,10 @@ package components
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 )
 
-func _getCustomerData(customers []scheduling.Customer) string {
+func _getCustomerData(customers []crm.CustomerOutput) string {
 	c, _ := json.Marshal(customers)
 	return fmt.Sprintf(`{
 	    openCustomerDropdown: false,
@@ -28,7 +28,7 @@ func _getCustomerData(customers []scheduling.Customer) string {
 	}`, c)
 }
 
-templ ChooseCustomer(customers []scheduling.Customer) {
+templ ChooseCustomer(customers []crm.CustomerOutput) {
 	<div x-data={ _getCustomerData(customers) }>
 		<div class="relative mt-4">
 			<input type="hidden" name="customer-id" id="customer-id" x-model="selectedCustomer.id"/>
