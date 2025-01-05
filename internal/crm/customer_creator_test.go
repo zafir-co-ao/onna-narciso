@@ -270,7 +270,7 @@ func TestCustomerCreator(t *testing.T) {
 		i := crm.CustomerCreatorInput{
 			Name:        "Joana Doe",
 			Nif:         "002223109LA011",
-			BirthDate:   "2013-01-01",
+			BirthDate:   date.Today().AddDate(-11, 0, 0).String(),
 			Email:       "joana.doe10@domain.com",
 			PhoneNumber: "244912000011",
 		}
