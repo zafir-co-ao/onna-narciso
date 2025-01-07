@@ -9,14 +9,20 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleCreateProfessional(u hr.ProfessionalCreator) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateProfessional(u hr.ProfessionalUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		i := hr.ProfessionalCreatorInput{
+		i := hr.ProfessionalUpdaterInput{
+			ID:          r.PathValue("id"),
 			Name:        r.FormValue("name"),
 			ServicesIDs: r.Form["serviceID"],
 		}
 
-		_, err := u.Create(i)
+		err := u.Update(i)
+
+		if errors.Is(err, hr.ErrProfessionalNotFound) {
+			_http.SendBadRequest(w, "Profissional não encontrado")
+			return
+		}
 
 		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do professional não pode ser vázio")
@@ -34,6 +40,6 @@ func HandleCreateProfessional(u hr.ProfessionalCreator) func(w http.ResponseWrit
 		}
 
 		w.Header().Set("X-Reload-Page", "ReloadPage")
-		_http.SendCreated(w)
+		_http.SendOk(w)
 	}
 }

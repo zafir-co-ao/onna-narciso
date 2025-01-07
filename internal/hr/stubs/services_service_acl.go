@@ -8,6 +8,7 @@ import (
 var Services = map[string]hr.Service{
 	"1": {ID: nanoid.ID("1")},
 	"2": {ID: nanoid.ID("2")},
+	"3": {ID: nanoid.ID("3")},
 }
 
 func NewServicesServiceACL() hr.ServicesServiceACL {

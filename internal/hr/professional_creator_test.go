@@ -14,7 +14,7 @@ import (
 func TestProfessionalCreator(t *testing.T) {
 	bus := event.NewEventBus()
 	sacl := stubs.NewServicesServiceACL()
-	repo := hr.NewProfessionalRepository()
+	repo := hr.NewInmemProfessionalRepository()
 	u := hr.NewProfessionalCreator(repo, sacl, bus)
 
 	t.Run("should_create_a_professional", func(t *testing.T) {
@@ -43,7 +43,7 @@ func TestProfessionalCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_create_professional_with_the_name", func(t *testing.T) {
+	t.Run("should_create_professional_with_name", func(t *testing.T) {
 		i := hr.ProfessionalCreatorInput{Name: "Jonathan"}
 
 		o, err := u.Create(i)
@@ -141,10 +141,10 @@ func TestProfessionalCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_when_not_service", func(t *testing.T) {
+	t.Run("should_return_error_when_service_not_exists", func(t *testing.T) {
 		i := hr.ProfessionalCreatorInput{
 			Name:        "Victor Kickoff",
-			ServicesIDs: []string{"1", "2", "3"},
+			ServicesIDs: []string{"1", "2", "3D"},
 		}
 
 		_, err := u.Create(i)

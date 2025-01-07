@@ -3,6 +3,7 @@ package testdata
 import (
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/hr"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
 )
@@ -60,5 +61,28 @@ var ServicesDummies = []services.Service{
 		Name:     "Massagem",
 		Price:    "11000",
 		Duration: 90,
+	},
+}
+
+var ProfessionalsDummies = []hr.Professional{
+	{
+		ID:   nanoid.ID("1"),
+		Name: "Jonathan Paulino",
+		Services: []hr.Service{
+			{ID: "1", Name: "Manicure"},
+			{ID: "2", Name: "Pedicure"},
+		},
+	},
+	{
+		ID:   nanoid.ID("2"),
+		Name: "Kevin de Bruine",
+	},
+	{
+		ID:   nanoid.ID("3"),
+		Name: "Luana Targinho",
+	},
+	{
+		ID:   nanoid.ID("4"),
+		Name: "Junior Kline",
 	},
 }

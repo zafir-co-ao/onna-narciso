@@ -70,7 +70,7 @@ func HandleUpdateCustomer(u crm.CustomerUpdater) func(w http.ResponseWriter, r *
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
+		w.Header().Set("X-Reload-Page", "ReloadPage")
 	}
 }

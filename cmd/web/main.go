@@ -40,7 +40,7 @@ func main() {
 	serviceRepo := services.NewInmemRepository(testdata.ServicesDummies...)
 	customerRepo := crm.NewInmemRepository(testdata.CustomersDummies...)
 	userRepo := auth.NewInmemRepository(testdata.Users...)
-	professionalRepo := hr.NewProfessionalRepository()
+	professionalRepo := hr.NewInmemProfessionalRepository(testdata.ProfessionalsDummies...)
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
@@ -64,6 +64,7 @@ func main() {
 		UserCreator:              auth.NewUserCreator(userRepo, bus),
 		ProfessionalCreator:      hr.NewProfessionalCreator(professionalRepo, hrsacl, bus),
 		ProfessionalFinder:       hr.NewProfessionalFinder(professionalRepo),
+		ProfessionalUpdater:      hr.NewProfessionalUpdater(professionalRepo, hrsacl, bus),
 	}
 
 	r := web.NewRouter(u)

@@ -9,8 +9,8 @@ type inmemProfessionalRepositoryImpl struct {
 	shared.BaseRepository[Professional]
 }
 
-func NewProfessionalRepository() Repository {
-	return &inmemProfessionalRepositoryImpl{BaseRepository: shared.NewBaseRepository[Professional]()}
+func NewInmemProfessionalRepository(p ...Professional) Repository {
+	return &inmemProfessionalRepositoryImpl{BaseRepository: shared.NewBaseRepository[Professional](p...)}
 }
 
 func (r *inmemProfessionalRepositoryImpl) FindByID(id nanoid.ID) (Professional, error) {

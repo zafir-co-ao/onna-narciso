@@ -24,10 +24,7 @@ func (u *finderImpl) FindByID(id string) (ProfessionalOutput, error) {
 		return ProfessionalOutput{}, err
 	}
 
-	return ProfessionalOutput{
-		ID:   p.ID.String(),
-		Name: p.Name.String(),
-	}, nil
+	return toProfessionalOutput(p), nil
 }
 
 func (u *finderImpl) FindAll() ([]ProfessionalOutput, error) {

@@ -1,6 +1,8 @@
 package pages
 
 import (  
+	"fmt"
+	
     "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"github.com/zafir-co-ao/onna-narciso/internal/hr"
     )
@@ -9,7 +11,7 @@ var listProfessionalHandle = templ.NewOnceHandle()
 
 templ ListProfessionals(professionals []hr.ProfessionalOutput) {
     @listProfessionalHandle.Once() {
-        <script type="text/script" >
+        <script type="text/javascript" >
             document.addEventListener("htmx:afterOnLoad", (evt) => {
                 let xhr = evt.detail.xhr
 
@@ -17,30 +19,30 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput) {
 
                 if (!header) return
 
-                htmx.ajax("GET", 
+				htmx.ajax("GET", "/professionals", {
                     target: "#professionals",
-                    swap: "outerSwap"
-                )
+                    swap: "outerHTML"
+                })
             })
         </script>
     }
-	@components.Navbar("navbar", "Profissional", "#content")
+	@components.Navbar("navbar", "Profissionais", "#content")
     <div id="professionals">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
 				<div class="mt-4 sm:mt-0 sm:flex-none">
 					<form
-						hx-get=""
+						hx-get="/professionals/dialogs/create-professional-dialog"
 						hx-trigger="click"
 						hx-target="#dialog"
 						hx-swap="outerHTML"
 					>
-						<input type="hidden" name="hx-post" value=""/>
+						<input type="hidden" name="hx-post" value="/professionals"/>
 						<button
 							type="button"
 							class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 						>
-							Novo prosissional
+							Novo profissional
 						</button>
 					</form>
 				</div>
@@ -67,7 +69,37 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput) {
 							</thead>
 							<tbody class="bg-white">
                             if len(professionals) > 0{
-
+								for _, p := range professionals {
+									<tr class="even:bg-gray-50">
+											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+												{ p.Name }
+											</td>
+											<td class="px-3 py-4 text-sm text-gray-500">
+												<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2" >
+													for _, s := range p.Services {
+														<div class="px-3 py-1 text-center border border-gray-300 rounded-lg hover:bg-gray-100/75" >
+															{ s.Name }	
+														</div>
+													}
+												</div>
+											</td>
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+												<form
+													hx-get="/professionals/dialogs/update-professional-dialog"
+													hx-target="#dialog"
+													hx-swap="outerHTML"
+												>
+													<input type="hidden" name="id" value={ p.ID }/>
+													<input type="hidden" name="hx-put" value={ fmt.Sprintf("/professionals/%s", p.ID) }/>
+													<button type="submit">
+														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+															<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path>
+														</svg>
+													</button>
+												</form>
+											</td>
+										</tr>
+								}
                             } else {
                                 <tr class="even:bg-gray-50 text-center">
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-3" colspan="4">
