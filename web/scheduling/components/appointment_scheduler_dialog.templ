@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
@@ -16,7 +16,7 @@ type AppointmentSchedulerState struct {
 	Hour             string
 	Date             string
 	HxPost           string
-	Customers        []scheduling.Customer
+	Customers        []crm.CustomerOutput
 }
 
 templ AppointmentSchedulerDialog(s AppointmentSchedulerState) {

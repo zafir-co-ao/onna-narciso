@@ -26,6 +26,7 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 			Name:        r.FormValue("name"),
 			Price:       r.FormValue("price"),
 			Description: r.FormValue("description"),
+			Discount:    r.FormValue("discount"),
 			Duration:    d,
 		}
 
@@ -48,6 +49,11 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 
 		if errors.Is(err, services.ErrServiceNotFound) {
 			_http.SendBadRequest(w, "Serviço não encontrado")
+			return
+		}
+
+		if errors.Is(err, services.ErrDiscountNotAllowed) {
+			_http.SendBadRequest(w, "O valor de desconto não é válido")
 			return
 		}
 

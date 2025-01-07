@@ -21,13 +21,13 @@ type UsecasesParams struct {
 	AppointmentScheduler     scheduling.AppointmentScheduler
 	AppointmentRescheduler   scheduling.AppointmentRescheduler
 	AppointmentCanceler      scheduling.AppointmentCanceler
-	AppointmentGetter        scheduling.AppointmentFinder
+	AppointmentFinder        scheduling.AppointmentFinder
 	WeeklyAppointmentsFinder scheduling.WeeklyAppointmentsFinder
 	DailyAppointmentsFinder  scheduling.DailyAppointmentsFinder
-	SessionCreator           sessions.Creator
-	SessionStarter           sessions.Starter
-	SessionCloser            sessions.Closer
-	SessionFinder            sessions.Finder
+	SessionCreator           sessions.SessionCreator
+	SessionStarter           sessions.SessionStarter
+	SessionCloser            sessions.SessionCloser
+	SessionFinder            sessions.SessionFinder
 	ServiceFinder            services.ServiceFinder
 	ServiceCreator           services.ServiceCreator
 	ServiceUpdater           services.ServiceUpdater
@@ -53,13 +53,14 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments(u.DailyAppointmentsFinder, u.SessionFinder))
 	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(u.WeeklyAppointmentsFinder))
 
-	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog())
-	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(u.AppointmentGetter))
+	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog(u.CustomerFinder))
+	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(u.AppointmentFinder))
 	mux.HandleFunc("GET /scheduling/daily-appointments-calendar", handlers.HandleDailyAppointmentsCalendar())
 	mux.HandleFunc("GET /scheduling/find-professionals/", handlers.HandleFindProfessionals())
 
 	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(u.SessionCreator, u.SessionFinder, u.DailyAppointmentsFinder))
 	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(u.SessionStarter, u.SessionFinder, u.DailyAppointmentsFinder))
+	mux.HandleFunc("GET /sessions/dialogs/close-session-dialog/{id}", _sessions.HandleCloseSessionDialog(u.SessionFinder, u.ServiceFinder))
 	mux.HandleFunc("DELETE /sessions/{id}", _sessions.HandleCloseSession(u.SessionCloser, u.SessionFinder, u.DailyAppointmentsFinder))
 
 	mux.HandleFunc("GET /services", _services.HandleFindServices(u.ServiceFinder))

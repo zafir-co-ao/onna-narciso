@@ -14,6 +14,20 @@ import (
 
 func TestSessionCloser(t *testing.T) {
 	_sessions := []sessions.Session{
+		{
+			ID:     "10",
+			Status: sessions.StatusStarted,
+			Services: []sessions.SessionService{
+				{ID: "1"},
+			},
+		},
+		{
+			ID:     "11",
+			Status: sessions.StatusStarted,
+			Services: []sessions.SessionService{
+				{ID: "1", Discount: "15"},
+			},
+		},
 		{ID: "20", Status: sessions.StatusCheckedIn},
 	}
 
@@ -29,9 +43,12 @@ func TestSessionCloser(t *testing.T) {
 	u := sessions.NewSessionCloser(repo, sacl, bus)
 
 	t.Run("should_close_the_session", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "1",
-			ServicesIDs: []string{"1", "2"},
+		i := sessions.SessionCloserInput{
+			SessionID: "1",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "1"},
+				{ServiceID: "2"},
+			},
 		}
 
 		err := u.Close(i)
@@ -51,9 +68,12 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_record_the_closing_time_of_the_session", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "2",
-			ServicesIDs: []string{"2", "3"},
+		i := sessions.SessionCloserInput{
+			SessionID: "2",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "2"},
+				{ServiceID: "3"},
+			},
 		}
 
 		err := u.Close(i)
@@ -73,9 +93,12 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_entry_the_additional_services_in_session", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "5",
-			ServicesIDs: []string{"1", "2"},
+		i := sessions.SessionCloserInput{
+			SessionID: "5",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "1"},
+				{ServiceID: "2"},
+			},
 		}
 
 		err := u.Close(i)
@@ -90,19 +113,22 @@ func TestSessionCloser(t *testing.T) {
 			t.Errorf("Should return the session in repository, got %v", err)
 		}
 
-		if s.Services[0].ServiceID.String() != "1" {
-			t.Errorf("The Service ID must be 1, got %s", s.Services[0].ServiceID.String())
+		if s.Services[0].ID.String() != "1" {
+			t.Errorf("The Service ID must be 1, got %s", s.Services[0].ID.String())
 		}
 
-		if s.Services[1].ServiceID.String() != "2" {
-			t.Errorf("The Service ID must be 2, got %s", s.Services[1].ServiceID.String())
+		if s.Services[1].ID.String() != "2" {
+			t.Errorf("The Service ID must be 2, got %s", s.Services[1].ID.String())
 		}
 	})
 
 	t.Run("must_entry_the_professional_in_session", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "6",
-			ServicesIDs: []string{"2", "3"},
+		i := sessions.SessionCloserInput{
+			SessionID: "6",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "2"},
+				{ServiceID: "3"},
+			},
 		}
 
 		err := u.Close(i)
@@ -126,9 +152,8 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_close_the_session_without_additional_services", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "8",
-			ServicesIDs: []string{},
+		i := sessions.SessionCloserInput{
+			SessionID: "8",
 		}
 
 		err := u.Close(i)
@@ -148,9 +173,13 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_not_found_service_acl", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "7",
-			ServicesIDs: []string{"1", "2", "10"},
+		i := sessions.SessionCloserInput{
+			SessionID: "7",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "1"},
+				{ServiceID: "2"},
+				{ServiceID: "10"},
+			},
 		}
 
 		err := u.Close(i)
@@ -165,16 +194,15 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("must_publish_the_session_closed_event", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "4",
-			ServicesIDs: make([]string, 0),
+		i := sessions.SessionCloserInput{
+			SessionID: "4",
 		}
 
 		evtAggID := ""
 		var isPublished bool = false
 		var h event.HandlerFunc = func(e event.Event) {
 			switch e.Payload().(type) {
-			case sessions.CloserInput:
+			case sessions.SessionCloserInput:
 				evtAggID = e.Header(event.HeaderAggregateID)
 				isPublished = true
 			}
@@ -197,10 +225,73 @@ func TestSessionCloser(t *testing.T) {
 		}
 	})
 
+	t.Run("must_register_the_service_discount_in_session", func(t *testing.T) {
+		i := sessions.SessionCloserInput{
+			SessionID: "10",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "1", Discount: "10"},
+				{ServiceID: "2", Discount: "20"},
+				{ServiceID: "3", Discount: "20"},
+			},
+		}
+
+		err := u.Close(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(nanoid.ID(i.SessionID))
+		if errors.Is(err, sessions.ErrSessionNotFound) {
+			t.Errorf("Should return the session in repository, got %v", err)
+		}
+
+		if len(s.Services) < 3 {
+			t.Errorf("The number services in session must be %d, got %v", len(i.Services)+1, len(s.Services))
+		}
+
+		if s.Services[0].Discount != i.Services[0].Discount {
+			t.Errorf("The discount of service must be %v, got %v", i.Services[0].Discount, s.Services[0].Discount)
+		}
+
+		if s.Services[1].Discount != i.Services[1].Discount {
+			t.Errorf("The discount of service must be %v, got %v", i.Services[1].Discount, s.Services[1].Discount)
+		}
+	})
+
+	t.Run("must_register_the_services_in_session_with_gift", func(t *testing.T) {
+		i := sessions.SessionCloserInput{
+			SessionID: "11",
+			Services: []sessions.SessionCloserServiceInput{
+				{ServiceID: "1", Discount: "10"},
+				{ServiceID: "2", Discount: "10"},
+			},
+			Gift: "Gift",
+		}
+
+		err := u.Close(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(nanoid.ID(i.SessionID))
+		if errors.Is(err, sessions.ErrSessionNotFound) {
+			t.Errorf("Should return the session in repository, got %v", err)
+		}
+
+		if s.Services[0].Discount != "100" {
+			t.Errorf("The service must be discount of 100, got %v ", s.Services[0].Discount)
+		}
+
+		if s.Services[1].Discount != "100" {
+			t.Errorf("The service must be discount of 100, got %v ", s.Services[1].Discount)
+		}
+	})
+
 	t.Run("should_return_error_if_session_not_exists_in_repository", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "200",
-			ServicesIDs: make([]string, 0),
+		i := sessions.SessionCloserInput{
+			SessionID: "200",
 		}
 
 		err := u.Close(i)
@@ -215,9 +306,8 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_the_session_is_already_closed", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "3",
-			ServicesIDs: make([]string, 0),
+		i := sessions.SessionCloserInput{
+			SessionID: "3",
 		}
 
 		u.Close(i)
@@ -234,9 +324,8 @@ func TestSessionCloser(t *testing.T) {
 	})
 
 	t.Run("should_return_error_if_session_status_not_is_started", func(t *testing.T) {
-		i := sessions.CloserInput{
-			SessionID:   "20",
-			ServicesIDs: make([]string, 0),
+		i := sessions.SessionCloserInput{
+			SessionID: "20",
 		}
 
 		err := u.Close(i)

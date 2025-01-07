@@ -23,6 +23,7 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 			Name:        r.FormValue("name"),
 			Price:       r.FormValue("price"),
 			Description: r.FormValue("description"),
+			Discount:    r.FormValue("discount"),
 			Duration:    d,
 		}
 
@@ -35,6 +36,11 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 
 		if errors.Is(err, services.ErrInvalidPrice) {
 			_http.SendBadRequest(w, "O preço do serviço está no formato inválido")
+			return
+		}
+
+		if errors.Is(err, services.ErrDiscountNotAllowed) {
+			_http.SendBadRequest(w, "O valor de desconto não é válido")
 			return
 		}
 

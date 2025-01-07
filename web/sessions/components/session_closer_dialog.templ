@@ -1,0 +1,145 @@
+package components
+
+import (
+	"fmt"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+type SessionCloseOptions struct {
+	Session  sessions.SessionOutput
+	Services []services.ServiceOutput
+	HxDelete string
+	HxTarget string
+	HxSwap   string
+}
+
+templ SessionCloserDialog(opts SessionCloseOptions) {
+	@components.Dialog("Check Out", SessionCloserForm(opts))
+}
+
+templ SessionCloserForm(opts SessionCloseOptions) {
+	<form
+		hx-delete={ opts.HxDelete }
+		hx-target={ opts.HxTarget }
+		hx-swap={ opts.HxSwap }
+		class="space-y-6"
+	>
+		<p class="mt-4 text-gray-500 text-sm">Selecione os serviços adicionais feitos na sessão.</p>
+		<div class="flow-root">
+			<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+				<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+					<table class="min-w-full divide-y divide-gray-300">
+						<thead>
+							<tr>
+								<th
+									scope="col"
+									class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+								></th>
+								<th
+									scope="col"
+									class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+								>
+									Nome
+								</th>
+								<th
+									scope="col"
+									class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+								>
+									Preço (Kz)
+								</th>
+								<th
+									scope="col"
+									class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+								>
+									Desconto (%)
+								</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white">
+							for _, svc := range opts.Session.Services {
+								<tr class="even:bg-gray-50">
+									<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+										<input type="checkbox" checked disabled/>
+										<input type="hidden" name="service-id" value={ svc.ID }/>
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ svc.Name }</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+										{ svc.Price }
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 w-1/4">
+										if svc.Discount == "" {
+											<input
+												type="number"
+												name={ fmt.Sprintf("service-discount-%v", svc.ID) }
+												placeholder="0"
+												class="form-control text-center"
+												max="100"
+												min="0"
+												maxlength="3"
+											/>
+										} else {
+											<input
+												type="number"
+												name={ fmt.Sprintf("service-discount-%v", svc.ID) }
+												placeholder="0"
+												class="form-control text-center"
+												value={ svc.Discount }
+												max="100"
+												min="0"
+												maxlength="3"
+											/>
+										}
+									</td>
+								</tr>
+							}
+							for _, svc := range opts.Services {
+								<tr class="even:bg-gray-50">
+									<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+										<input type="checkbox" name="service-id" value={ svc.ID }/>
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ svc.Name }</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+										{ svc.Price }
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 w-1/4">
+										if svc.Discount == "" {
+											<input
+												type="number"
+												name={ fmt.Sprintf("service-discount-%v", svc.ID) }
+												placeholder="0"
+												class="form-control text-center"
+												max="100"
+												min="0"
+												maxlength="3"
+											/>
+										} else {
+											<input
+												type="number"
+												name={ fmt.Sprintf("service-discount-%v", svc.ID) }
+												placeholder="0"
+												class="form-control text-center"
+												value={ svc.Discount }
+												max="100"
+												min="0"
+												maxlength="3"
+											/>
+										}
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="flex gap-2">
+			<input type="checkbox" name="gift" value={ sessions.GiftCode }/>
+			<p class="text-gray-500 text-sm">Marcar os serviços como oferta.</p>
+		</div>
+		<button type="submit" class="btn-lg btn-primary">
+			Finalizar
+		</button>
+	</form>
+}

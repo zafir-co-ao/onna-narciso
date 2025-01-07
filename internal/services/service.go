@@ -13,6 +13,7 @@ type Service struct {
 	Name        name.Name
 	Duration    duration.Duration
 	Price       Price
+	Discount    Discount
 	Description Description
 }
 

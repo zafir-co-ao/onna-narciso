@@ -147,6 +147,9 @@ templ DailyAppointment(o _components.DailyAppointmentOptions) {
 			components.WithHxPost("/sessions"),
 			components.WithHxPut(fmt.Sprintf("/sessions/%v", o.SessionID)),
 			components.WithHxDelete(fmt.Sprintf("/sessions/%v", o.SessionID)),
+			components.WithHxGet(fmt.Sprintf("/sessions/dialogs/close-session-dialog/%v", o.SessionID)),
+			components.WithSessionCloseHxTarget("#dialog"),
+			components.WithSessionCloseHxSwap("outerHTML"),
 			components.WithHxTarget("#content"),
 			components.WithHxSwap("innerHTML"),
 		)

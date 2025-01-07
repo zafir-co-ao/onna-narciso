@@ -7,18 +7,18 @@ import (
 
 const EventSessionCheckedIn = "EventSessionCheckedIn"
 
-type Creator interface {
+type SessionCreator interface {
 	Create(appointmentID string) (SessionOutput, error)
 }
 
 type creatorImpl struct {
 	repo Repository
-	bus  event.Bus
 	aacl SchedulingServiceACL
+	bus  event.Bus
 }
 
-func NewSessionCreator(repo Repository, bus event.Bus, aacl SchedulingServiceACL) Creator {
-	return &creatorImpl{repo, bus, aacl}
+func NewSessionCreator(repo Repository, aacl SchedulingServiceACL, bus event.Bus) SessionCreator {
+	return &creatorImpl{repo, aacl, bus}
 }
 
 func (u *creatorImpl) Create(appointmentID string) (SessionOutput, error) {

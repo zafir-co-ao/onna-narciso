@@ -14,8 +14,8 @@ import (
 )
 
 func HandleDailyAppointments(
-	dg scheduling.DailyAppointmentsFinder,
-	sf sessions.Finder,
+	df scheduling.DailyAppointmentsFinder,
+	sf sessions.SessionFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		date := r.FormValue("date")
@@ -24,7 +24,7 @@ func HandleDailyAppointments(
 			date = time.Now().Format("2006-01-02")
 		}
 
-		a, err := dg.Find(date)
+		a, err := df.Find(date)
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return

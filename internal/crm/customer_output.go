@@ -1,12 +1,12 @@
 package crm
 
 type CustomerOutput struct {
-	ID          string
-	Name        string
-	Nif         string
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Nif         string `json:"nif"`
 	BirthDate   string
 	Email       string
-	PhoneNumber string
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 func toCustomerOutput(c Customer) CustomerOutput {

@@ -10,6 +10,10 @@
     @apply bg-gray-100 px-4 mt-8 -mx-8 py-3 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:px-10 sm:-mx-10;
 }
 
+.form-control::-webkit-inner-spin-button {
+    display: none;
+}
+
 .btn {
     @apply px-3 py-2 text-sm font-semibold rounded-md cursor-pointer shadow;
 }
