@@ -47,8 +47,8 @@ func (s *sessionBuilder) WithCustomer(id nanoid.ID, name string) *sessionBuilder
 func (s *sessionBuilder) WithService(sid nanoid.ID, sname string, pid nanoid.ID, pname string) *sessionBuilder {
 
 	ss := SessionService{
-		ServiceID:        sid,
-		ServiceName:      sname,
+		ID:               sid,
+		Name:             sname,
 		ProfessionalID:   pid,
 		ProfessionalName: pname,
 	}

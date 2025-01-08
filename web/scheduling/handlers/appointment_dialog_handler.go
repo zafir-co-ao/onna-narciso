@@ -1,18 +1,24 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
-	"slices"
+
+	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 
 	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 )
 
-func HandleScheduleAppointmentDialog() func(w http.ResponseWriter, r *http.Request) {
+func HandleScheduleAppointmentDialog(cf crm.CustomerFinder) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Recuperar os clientes no repositório
-		customers := slices.Clone(testdata.Customers)
+		customers, err := cf.FindAll()
+		if !errors.Is(err, nil) {
+			_http.SendServerError(w)
+			return
+		}
 
 		var s = components.AppointmentSchedulerState{
 			ProfessionalID: r.FormValue("professional-id"),

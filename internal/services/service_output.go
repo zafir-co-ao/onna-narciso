@@ -5,6 +5,7 @@ type ServiceOutput struct {
 	Name        string
 	Description string
 	Price       string
+	Discount    string
 	Duration    int
 }
 
@@ -15,5 +16,6 @@ func toServiceOutput(s Service) ServiceOutput {
 		Duration:    s.Duration.Value(),
 		Description: string(s.Description),
 		Price:       string(s.Price),
+		Discount:    s.Discount.String(),
 	}
 }

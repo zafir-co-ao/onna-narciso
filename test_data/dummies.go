@@ -51,13 +51,13 @@ var ServicesDummies = []services.Service{
 		Duration: 60,
 	},
 	{
-		ID:       nanoid.New(),
+		ID:       nanoid.ID("3"),
 		Name:     "Depilação",
 		Price:    "8000",
 		Duration: 45,
 	},
 	{
-		ID:       nanoid.New(),
+		ID:       nanoid.ID("4"),
 		Name:     "Massagem",
 		Price:    "11000",
 		Duration: 90,

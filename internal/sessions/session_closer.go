@@ -9,13 +9,19 @@ import (
 
 const EventSessionClosed = "EventSessionClosed"
 
-type CloserInput struct {
-	SessionID   string
-	ServicesIDs []string
+type SessionCloserServiceInput struct {
+	ServiceID string
+	Discount  string
 }
 
-type Closer interface {
-	Close(i CloserInput) error
+type SessionCloserInput struct {
+	SessionID string
+	Gift      string
+	Services  []SessionCloserServiceInput
+}
+
+type SessionCloser interface {
+	Close(i SessionCloserInput) error
 }
 
 type closerImpl struct {
@@ -24,22 +30,22 @@ type closerImpl struct {
 	bus  event.Bus
 }
 
-func NewSessionCloser(repo Repository, sacl ServicesServiceACL, bus event.Bus) Closer {
+func NewSessionCloser(repo Repository, sacl ServicesServiceACL, bus event.Bus) SessionCloser {
 	return &closerImpl{repo, sacl, bus}
 }
 
-func (u *closerImpl) Close(i CloserInput) error {
+func (u *closerImpl) Close(i SessionCloserInput) error {
 	s, err := u.repo.FindByID(nanoid.ID(i.SessionID))
 	if err != nil {
 		return ErrSessionNotFound
 	}
 
-	svc, err := u.findServices(i.ServicesIDs)
+	svc, err := u.findServices(i.Services)
 	if err != nil {
 		return err
 	}
 
-	err = s.Close(svc)
+	err = s.Close(svc, i.Gift)
 	if err != nil {
 		return err
 	}
@@ -60,12 +66,25 @@ func (u *closerImpl) Close(i CloserInput) error {
 	return nil
 }
 
-func (u *closerImpl) findServices(ids []string) ([]SessionService, error) {
-	if len(ids) == 0 {
+func (u *closerImpl) findServices(selectedServices []SessionCloserServiceInput) ([]SessionService, error) {
+	if len(selectedServices) == 0 {
 		return EmptyServices, nil
 	}
 
-	_ids := xslices.Map(ids, shared.StringToNanoid)
+	ids := xslices.Map(selectedServices, func(s SessionCloserServiceInput) nanoid.ID {
+		return shared.StringToNanoid(s.ServiceID)
+	})
 
-	return u.sacl.FindByIDs(_ids)
+	services, err := u.sacl.FindByIDs(ids)
+	if err != nil {
+		return []SessionService{}, err
+	}
+
+	for i, s := range selectedServices {
+		if s.ServiceID == services[i].ID.String() {
+			services[i].Discount = s.Discount
+		}
+	}
+
+	return services, nil
 }

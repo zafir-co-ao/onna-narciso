@@ -36,10 +36,10 @@ func (p Professional) ContainsService(sid nanoid.ID) bool {
 }
 
 type Customer struct {
-	ID          nanoid.ID `json:"id"`
-	Name        name.Name `json:"name"`
-	PhoneNumber string    `json:"phoneNumber"`
-	Nif         string    `json:"nif"`
+	ID          nanoid.ID
+	Name        name.Name
+	PhoneNumber string
+	Nif         string
 }
 
 type Status string

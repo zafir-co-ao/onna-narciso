@@ -16,14 +16,14 @@ import (
 )
 
 func HandleCreateSession(
-	sc sessions.Creator,
-	sf sessions.Finder,
+	sc sessions.SessionCreator,
+	sf sessions.SessionFinder,
 	dg scheduling.DailyAppointmentsFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, err := sc.Create(r.FormValue("appointment-id"))
 
-		if errors.Is(sessions.ErrInvalidCheckinDate, err) {
+		if errors.Is(err, sessions.ErrInvalidCheckinDate) {
 			_http.SendBadRequest(w, fmt.Sprintf("Não é possível fazer o CheckIn nesta data: %s", date.Today().String()))
 			return
 		}
@@ -33,7 +33,7 @@ func HandleCreateSession(
 			return
 		}
 
-		if errors.Is(sessions.ErrAppointmentNotFound, err) {
+		if errors.Is(err, sessions.ErrAppointmentNotFound) {
 			_http.SendNotFound(w, "Marcação não encontrada")
 			return
 		}

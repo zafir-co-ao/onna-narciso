@@ -30,7 +30,6 @@ func TestServiceUpdate(t *testing.T) {
 
 	bus := event.NewEventBus()
 	repo := services.NewInmemRepository(s...)
-
 	u := services.NewServiceUpdater(repo, bus)
 
 	t.Run("should_retrieve_service_with_id", func(t *testing.T) {
@@ -146,11 +145,36 @@ func TestServiceUpdate(t *testing.T) {
 
 		s, err := repo.FindByID(s[0].ID)
 		if errors.Is(err, services.ErrServiceNotFound) {
-			t.Errorf("should find service in repository")
+			t.Errorf("should find service in repository, got %v", services.ErrServiceNotFound)
 		}
 
 		if s.Duration.Value() != i.Duration {
 			t.Errorf("expected %v, got %v", i.Duration, s.Duration.Value())
+		}
+	})
+
+	t.Run("should_update_discount_of_service", func(t *testing.T) {
+		i := services.ServiceUpdaterInput{
+			ID:       s[0].ID.String(),
+			Name:     "Massagem",
+			Price:    "16000",
+			Duration: 120,
+			Discount: "50",
+		}
+
+		err := u.Update(i)
+
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		s, err := repo.FindByID(s[0].ID)
+		if errors.Is(err, services.ErrServiceNotFound) {
+			t.Errorf("should find service in repository, got %v", services.ErrServiceNotFound)
+		}
+
+		if string(s.Discount) != i.Discount {
+			t.Errorf("The discount of service must be equal to %v, got %v", i.Discount, string(s.Discount))
 		}
 	})
 
@@ -253,6 +277,26 @@ func TestServiceUpdate(t *testing.T) {
 
 		if !errors.Is(err, services.ErrServiceNotFound) {
 			t.Errorf("The error must be %v, got %v", services.ErrServiceNotFound, err)
+		}
+	})
+
+	t.Run("should_return_error_if_discount_is_invalid", func(t *testing.T) {
+		i := services.ServiceUpdaterInput{
+			ID:       s[0].ID.String(),
+			Name:     "Manicure e Pedicure",
+			Price:    "1500",
+			Duration: 60,
+			Discount: "10000",
+		}
+
+		err := u.Update(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected error, got %v", err)
+		}
+
+		if !errors.Is(err, services.ErrDiscountNotAllowed) {
+			t.Errorf("The error must be %v, got %v", services.ErrDiscountNotAllowed, err)
 		}
 	})
 }

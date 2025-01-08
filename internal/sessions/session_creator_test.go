@@ -15,7 +15,7 @@ func TestSessionCreator(t *testing.T) {
 	bus := event.NewEventBus()
 	aacl := stubs.NewSchedulingServiceACL()
 	repo := sessions.NewInmemRepository()
-	u := sessions.NewSessionCreator(repo, bus, aacl)
+	u := sessions.NewSessionCreator(repo, aacl, bus)
 
 	t.Run("should_create_session", func(t *testing.T) {
 		a := testdata.Appointments[0]
@@ -94,8 +94,8 @@ func TestSessionCreator(t *testing.T) {
 			t.Errorf("Expected the session to have the professional ID, got %v", s.Services[0].ProfessionalID.String())
 		}
 
-		if s.Services[0].ServiceID != a.ServiceID {
-			t.Errorf("Expected the session to have the service ID, got %v", s.Services[0].ServiceID.String())
+		if s.Services[0].ID != a.ServiceID {
+			t.Errorf("Expected the session to have the service ID, got %v", s.Services[0].ID.String())
 		}
 	})
 

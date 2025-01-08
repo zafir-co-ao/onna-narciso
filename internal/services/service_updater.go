@@ -14,6 +14,7 @@ type ServiceUpdaterInput struct {
 	Name        string
 	Description string
 	Price       string
+	Discount    string
 	Duration    int
 }
 
@@ -36,17 +37,22 @@ func (u *updaterImpl) Update(i ServiceUpdaterInput) error {
 		return err
 	}
 
-	_name, err := name.New(i.Name)
+	name, err := name.New(i.Name)
 	if err != nil {
 		return err
 	}
 
-	_price, err := NewPrice(i.Price)
+	price, err := NewPrice(i.Price)
 	if err != nil {
 		return err
 	}
 
-	_duration, err := duration.New(i.Duration)
+	duration, err := duration.New(i.Duration)
+	if err != nil {
+		return err
+	}
+
+	discount, err := NewDiscount(i.Discount)
 	if err != nil {
 		return err
 	}
@@ -55,9 +61,10 @@ func (u *updaterImpl) Update(i ServiceUpdaterInput) error {
 
 	s = NewServiceBuilder().
 		WithID(nanoid.ID(i.ID)).
-		WithName(_name).
-		WithPrice(_price).
-		WithDuration(_duration).
+		WithName(name).
+		WithPrice(price).
+		WithDuration(duration).
+		WithDiscount(discount).
 		WithDescription(Description(i.Description)).
 		Build()
 
