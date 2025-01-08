@@ -19,7 +19,7 @@ func HandleCreateProfessional(u hr.ProfessionalCreator) func(w http.ResponseWrit
 		_, err := u.Create(i)
 
 		if errors.Is(err, name.ErrEmptyName) {
-			_http.SendBadRequest(w, "O nome do professional não pode ser vázio")
+			_http.SendBadRequest(w, "O nome do profissional não pode ser vázio")
 			return
 		}
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/hr"
@@ -10,39 +11,11 @@ import (
 
 func HandleFindProfessionals(u hr.ProfessionalFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// o, err := u.FindAll()
+		o, err := u.FindAll()
 
-		// if !errors.Is(nil, err) {
-		// 	_http.SendServerError(w)
-		// 	return
-		// }
-
-		o := []hr.ProfessionalOutput{
-			{
-				ID:   "1",
-				Name: "Jonathan Paulino",
-				Services: []hr.ServiceOutput{
-					{ID: "1", Name: "Manicure"},
-					{ID: "2", Name: "Pedicure"},
-					{ID: "3", Name: "Massagem"},
-				},
-			},
-			{
-				ID:   "2",
-				Name: "Kevin de Bruine",
-				Services: []hr.ServiceOutput{
-					{ID: "1", Name: "Manicure"},
-					{ID: "2", Name: "Massagem"},
-				},
-			},
-			{
-				ID:   "3",
-				Name: "Luana Targinho",
-				Services: []hr.ServiceOutput{
-					{ID: "1", Name: "Pedicure"},
-					{ID: "2", Name: "Manicure"},
-				},
-			},
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
 		}
 
 		_http.SendOk(w)

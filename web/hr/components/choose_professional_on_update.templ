@@ -7,7 +7,7 @@ import (
     "github.com/zafir-co-ao/onna-narciso/internal/hr"
 )
 
-func getServiceDataOnUpdate(ss []services.ServiceOutput, sp []hr.ServiceOutput) string {
+func _getServiceData(ss []services.ServiceOutput, sp []hr.ServiceOutput) string {
 	_ss, _ := json.Marshal(ss)
 
     selectedIDs := make([]string, len(sp))
@@ -15,7 +15,7 @@ func getServiceDataOnUpdate(ss []services.ServiceOutput, sp []hr.ServiceOutput) 
 		selectedIDs[i] = service.ID
 	}
 
-	selected, _ := json.Marshal(selectedIDs)
+	ids, _ := json.Marshal(selectedIDs)
 
 	return fmt.Sprintf(`{
                 search: '',
@@ -27,11 +27,11 @@ func getServiceDataOnUpdate(ss []services.ServiceOutput, sp []hr.ServiceOutput) 
                     service.Name.toLowerCase().includes(this.search.toLowerCase())
                 );
             }
-        }`, selected, _ss)
+        }`, ids, _ss)
 }
 
 templ ChooseServiceOnUpdate(ss []services.ServiceOutput, sp []hr.ServiceOutput) {
-	<div x-data={ getServiceDataOnUpdate(ss, sp) }>
+	<div x-data={ _getServiceData(ss, sp) }>
 		<template x-if="selected.length > 0">
 			<div class="py-3">		
 				<ul>

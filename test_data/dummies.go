@@ -76,10 +76,22 @@ var ProfessionalsDummies = []hr.Professional{
 	{
 		ID:   nanoid.ID("2"),
 		Name: "Kevin de Bruine",
+		Services: []hr.Service{
+			{ID: "1", Name: "Manicure"},
+			{ID: "2", Name: "Pedicure"},
+			{ID: "3", Name: "Depilação"},
+		},
 	},
 	{
 		ID:   nanoid.ID("3"),
 		Name: "Luana Targinho",
+		Services: []hr.Service{
+			{ID: "1", Name: "Massagem"},
+			{ID: "2", Name: "Pedicure"},
+			{ID: "3", Name: "Depilação"},
+			{ID: "32", Name: "Pedicure"},
+			{ID: "43", Name: "Depilação"},
+		},
 	},
 	{
 		ID:   nanoid.ID("4"),

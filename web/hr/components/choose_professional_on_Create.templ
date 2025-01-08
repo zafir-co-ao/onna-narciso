@@ -6,7 +6,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 )
 
-func getServiceDataOnCreate(services []services.ServiceOutput) string {
+func getServiceData(services []services.ServiceOutput) string {
 	s, _ := json.Marshal(services)
 	return fmt.Sprintf(`{
                 search: '',
@@ -22,7 +22,7 @@ func getServiceDataOnCreate(services []services.ServiceOutput) string {
 }
 
 templ ChooseServiceOnCreate(s []services.ServiceOutput) {
-	<div x-data={ getServiceDataOnCreate(s) }>
+	<div x-data={ getServiceData(s) }>
 		<template x-if="selected.length > 0">
 			<div class="py-3">		
 				<ul>

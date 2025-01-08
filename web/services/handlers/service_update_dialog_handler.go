@@ -25,7 +25,7 @@ func HandleUpdateServiceDialog(u services.ServiceFinder) func(w http.ResponseWri
 			return
 		}
 
-		_http.SendOk(w)
 		components.ServiceUpdateDialog(url, o).Render(r.Context(), w)
+		_http.SendOk(w)
 	}
 }
