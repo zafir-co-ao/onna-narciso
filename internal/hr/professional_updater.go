@@ -4,6 +4,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -36,7 +37,7 @@ func (u *updaterImpl) Update(i ProfessionalUpdaterInput) error {
 	}
 
 	ids := xslices.Map(i.ServicesIDs, func(id string) nanoid.ID {
-		return nanoid.ID(id)
+		return shared.StringToNanoid(id)
 	})
 
 	s, err := u.sacl.FindServicesByIDs(ids)

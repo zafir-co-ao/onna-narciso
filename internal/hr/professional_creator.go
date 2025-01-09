@@ -4,6 +4,7 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 )
 
@@ -28,7 +29,7 @@ type creatorImpl struct {
 
 func (u *creatorImpl) Create(i ProfessionalCreatorInput) (ProfessionalOutput, error) {
 	ids := xslices.Map(i.ServicesIDs, func(id string) nanoid.ID {
-		return nanoid.ID(id)
+		return shared.StringToNanoid(id)
 	})
 
 	services, err := u.sacl.FindServicesByIDs(ids)
