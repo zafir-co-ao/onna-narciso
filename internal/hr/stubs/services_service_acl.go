@@ -6,9 +6,10 @@ import (
 )
 
 var Services = map[string]hr.Service{
-	"1": {ID: nanoid.ID("1")},
-	"2": {ID: nanoid.ID("2")},
-	"3": {ID: nanoid.ID("3")},
+	"1": {ID: nanoid.ID("1"), Name: "Manicure"},
+	"2": {ID: nanoid.ID("2"), Name: "Pedicure"},
+	"3": {ID: nanoid.ID("3"), Name: "Depilação"},
+	"4": {ID: nanoid.ID("4"), Name: "Massagem"},
 }
 
 func NewServicesServiceACL() hr.ServicesServiceACL {
@@ -19,10 +20,9 @@ func NewServicesServiceACL() hr.ServicesServiceACL {
 			if Services[id.String()].ID != id {
 				return []hr.Service{}, hr.ErrServiceNotFound
 			}
-
 			services = append(services, Services[id.String()])
 		}
-
+			
 		return services, nil
 	}
 	return f
