@@ -20,6 +20,7 @@ func HandleCreateProfessionalDialog(u services.ServiceFinder) func(w http.Respon
 			return
 		}
 
+		_http.SendOk(w)
 		components.ProfessionalCreateDialog(url, o).Render(r.Context(), w)
 	}
 }

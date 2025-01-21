@@ -18,7 +18,7 @@ func HandleFindServices(u services.ServiceFinder) func(w http.ResponseWriter, r 
 			return
 		}
 
-		pages.ListServices(o).Render(r.Context(), w)
 		_http.SendOk(w)
+		pages.ListServices(o).Render(r.Context(), w)
 	}
 }
