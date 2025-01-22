@@ -26,6 +26,8 @@ func HandleFindUsers(u auth.UserFinder) func(w http.ResponseWriter, r *http.Requ
 		cookie, _ := r.Cookie("userID")
 		uid := cookie.Value
 		au, _ := u.FindByID(uid)
+
+		_http.SendOk(w)
 		pages.ListUsers(o, au).Render(r.Context(), w)
 	}
 }

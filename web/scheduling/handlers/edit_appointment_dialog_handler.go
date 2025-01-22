@@ -28,7 +28,7 @@ func HandleEditAppointmentDialog(f scheduling.AppointmentFinder) func(w http.Res
 
 		services := slices.Clone(testdata.Services)
 
-		professionals := make([]scheduling.Professional, 0, 0)
+		professionals := make([]scheduling.Professional, 0)
 		// TODO - Utilizar o repositório de profissionais para encontrar os serviços com base no profissional
 		for _, p := range testdata.Professionals {
 			if slices.Contains(p.ServicesIDs, nanoid.ID(o.ServiceID)) {

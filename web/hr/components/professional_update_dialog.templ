@@ -1,0 +1,11 @@
+package components
+
+import  (
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+    "github.com/zafir-co-ao/onna-narciso/internal/services"
+    "github.com/zafir-co-ao/onna-narciso/internal/hr"
+)
+
+templ HandleUpdateProfessionalDialog(url string,p hr.ProfessionalOutput, s []services.ServiceOutput) {
+    @components.Dialog("Atualizar profissional", ProfessionalUpdateForm(url, p, s))
+}

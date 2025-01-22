@@ -44,6 +44,7 @@ func HandleScheduleAppointmentDialog(cf crm.CustomerFinder) func(w http.Response
 			}
 		}
 
+		_http.SendOk(w)
 		components.AppointmentSchedulerDialog(s).Render(r.Context(), w)
 	}
 }

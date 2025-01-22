@@ -46,6 +46,7 @@ func HandleCloseSessionDialog(
 			HxSwap:   r.FormValue("hx-swap"),
 		}
 
+		_http.SendOk(w)
 		components.SessionCloserDialog(opts).Render(r.Context(), w)
 	}
 }
