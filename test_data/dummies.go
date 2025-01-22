@@ -89,8 +89,6 @@ var ProfessionalsDummies = []hr.Professional{
 			{ID: "1", Name: "Massagem"},
 			{ID: "2", Name: "Pedicure"},
 			{ID: "3", Name: "Depilação"},
-			{ID: "32", Name: "Pedicure"},
-			{ID: "43", Name: "Depilação"},
 		},
 	},
 	{
