@@ -75,11 +75,9 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput) {
 											{ p.Name }
 										</td>
 										<td class="px-3 py-4 text-sm text-gray-500">
-											<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2" >
+											<div class="flex gap-2">
 												for _, s := range p.Services {
-													<div class="py-1 text-center border border-gray-300 rounded-md hover:bg-gray-100/75" >
-														{ s.Name }	
-													</div>
+													<div>{ s.Name },</div>
 												}
 											</div>
 										</td>
