@@ -54,6 +54,16 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, ErrOnlyUniqueUsername
 	}
 
+	email, err := NewEmail(i.Email)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	phoneNumber, err := NewPhoneNumber(i.PhoneNumber)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
 	password, err := NewPassword(i.Password)
 	if err != nil {
 		return UserOutput{}, err
@@ -66,8 +76,8 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 
 	user := NewUserBuilder().
 		WithUserName(username).
-		WithEmail(Email(i.Email)).
-		WithPhoneNumber(PhoneNumber(i.PhoneNumber)).
+		WithEmail(email).
+		WithPhoneNumber(phoneNumber).
 		WithPassWord(password).
 		WithRole(role).
 		Build()
