@@ -18,6 +18,24 @@ templ UserCreateForm(url string) {
 			</div>
 			<div>
 				@components.InputField(
+					components.WithType("email"),
+					components.WithName("email"),
+					components.WithPlaceholder("E-mail"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+				<div>
+				@components.InputField(
+					components.WithType("number"),
+					components.WithName("phonenumber"),
+					components.WithPlaceholder("Telefone"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+			<div>
+				@components.InputField(
 					components.WithName("password"),
 					components.WithType("password"),
 					components.WithPlaceholder("Palavra-passe"),
@@ -25,7 +43,7 @@ templ UserCreateForm(url string) {
 					components.WithRequired("true"),
 				)
 			</div>
-			<div>
+			<div>	
 				@components.Dropdown(
 					"role",
 					auth.RoleManager.String(),

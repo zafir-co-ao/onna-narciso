@@ -15,16 +15,33 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 		uid := cookie.Value
 
 		i := auth.UserCreatorInput{
-			UserID:   uid,
-			Username: strings.TrimSpace(r.FormValue("username")),
-			Password: r.FormValue("password"),
-			Role:     r.FormValue("role"),
+			UserID:      uid,
+			Username:    strings.TrimSpace(r.FormValue("username")),
+			Email:       r.FormValue("email"),
+			PhoneNumber: r.FormValue("phonenumber"),
+			Password:    r.FormValue("password"),
+			Role:        r.FormValue("role"),
 		}
 
 		_, err := u.Create(i)
 
 		if errors.Is(err, auth.ErrEmptyUsername) {
 			_http.SendBadRequest(w, "Nome do utilizador vazio")
+			return
+		}
+
+		if errors.Is(err, auth.ErrEmptyEmail) {
+			_http.SendBadRequest(w, "E-mail do utilizador vazio")
+			return
+		}
+
+		if errors.Is(err, auth.ErrInvalidEmailFormat) {
+			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
+			return
+		}
+
+		if errors.Is(err, auth.ErrEmptyPhoneNumber) {
+			_http.SendBadRequest(w, "Telefone do utilizador vazio")
 			return
 		}
 
