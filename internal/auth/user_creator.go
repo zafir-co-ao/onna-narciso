@@ -9,10 +9,12 @@ import (
 const EventUserCreated = "EventUserCreated"
 
 type UserCreatorInput struct {
-	UserID   string
-	Username string
-	Password string
-	Role     string
+	UserID      string
+	Username    string
+	Email       string
+	PhoneNumber string
+	Password    string
+	Role        string
 }
 
 type UserCreator interface {
@@ -62,7 +64,13 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
-	user := NewUser(username, password, role)
+	user := NewUserBuilder().
+		WithUserName(username).
+		WithEmail(Email(i.Email)).
+		WithPhoneNumber(PhoneNumber(i.PhoneNumber)).
+		WithPassWord(password).
+		WithRole(role).
+		Build()
 
 	err = u.repo.Save(user)
 	if err != nil {

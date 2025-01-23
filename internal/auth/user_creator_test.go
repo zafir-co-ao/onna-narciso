@@ -90,6 +90,36 @@ func TestUserCreator(t *testing.T) {
 		}
 	})
 
+	t.Run("must_register_email_and_phonenumber", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:      "1",
+			Username:    "Joana Becket",
+			Password:    "john.doe@123",
+			Email:       "joana@gmail.com",
+			PhoneNumber: "932345412",
+			Role:        auth.RoleManager.String(),
+		}
+
+		o, err := u.Create(i)
+		if !errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		user, err := repo.FindByID(nanoid.ID(o.ID))
+
+		if errors.Is(err, auth.ErrUserNotFound) {
+			t.Errorf("Should return a user from repository got %v", err)
+		}
+
+		if user.Email.String() != i.Email {
+			t.Errorf("Email must be equal to %v, got %v", i.Email, user.Email)
+		}
+
+		if user.PhoneNumber.String() != i.PhoneNumber {
+			t.Errorf("Email must be equal to %v, got %v", i.PhoneNumber, user.PhoneNumber)
+		}
+	})
+
 	t.Run("should_protect_the_password_of_user", func(t *testing.T) {
 		i := auth.UserCreatorInput{
 			UserID:   "1",

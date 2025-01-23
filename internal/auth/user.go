@@ -12,19 +12,12 @@ var (
 )
 
 type User struct {
-	ID       nanoid.ID
-	Username Username
-	Password Password
-	Role     Role
-}
-
-func NewUser(u Username, p Password, r Role) User {
-	return User{
-		ID:       nanoid.New(),
-		Username: u,
-		Password: p,
-		Role:     r,
-	}
+	ID          nanoid.ID
+	Username    Username
+	Email       Email
+	PhoneNumber PhoneNumber
+	Password    Password
+	Role        Role
 }
 
 func (u *User) IsManager() bool {
