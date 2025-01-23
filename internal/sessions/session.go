@@ -134,7 +134,7 @@ func (s *Session) addServices(services []SessionService) {
 		return
 	}
 
-	for i, _ := range s.Services {
+	for i := range s.Services {
 		s.Services[i].Discount = MaxOfDiscount
 	}
 }
