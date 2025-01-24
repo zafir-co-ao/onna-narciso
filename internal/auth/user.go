@@ -30,6 +30,10 @@ func (u *User) VerifyPassword(p string) bool {
 	return u.Password.IsValid(p)
 }
 
+func (u *User) SetPassword(p Password) {
+	u.Password = p
+}
+
 func (u User) GetID() nanoid.ID {
 	return u.ID
 }

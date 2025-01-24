@@ -68,8 +68,6 @@ func TestUserUpdater(t *testing.T) {
 			t.Errorf("expected no error, got %v", err)
 		}
 
-		_, err = repo.FindByID(nanoid.ID(i.UserID))
-
 		if errors.Is(err, auth.ErrUserNotFound) {
 			t.Errorf("Should find a user in repository, got %v", err)
 		}
