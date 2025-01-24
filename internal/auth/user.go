@@ -7,8 +7,10 @@ import (
 )
 
 var (
-	ErrUserNotAllowed     = errors.New("user not allowed")
-	ErrOnlyUniqueUsername = errors.New("only unique username")
+	ErrUserNotAllowed        = errors.New("user not allowed")
+	ErrOnlyUniqueUsername    = errors.New("only unique username")
+	ErrOnlyUniqueEmail       = errors.New("only unique email")
+	ErrOnlyUniquePhoneNumber = errors.New("only unique phone number")
 )
 
 type User struct {

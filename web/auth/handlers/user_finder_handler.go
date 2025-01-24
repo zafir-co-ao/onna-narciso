@@ -23,9 +23,22 @@ func HandleFindUsers(u auth.UserFinder) func(w http.ResponseWriter, r *http.Requ
 			return
 		}
 
-		cookie, _ := r.Cookie("userID")
+		cookie, err := r.Cookie("userID")
+
+		if errors.Is(err, auth.ErrUserNotFound) {
+			_http.SendServerError(w)
+			return
+		}
+
 		uid := cookie.Value
-		au, _ := u.FindByID(uid)
+		au, err := u.FindByID(uid)
+
+		if errors.Is(err, auth.ErrUserNotFound) {
+			_http.SendNotFound(w, "Utilizador não encontrado")
+			return
+		}
+
+		_http.SendOk(w)
 		pages.ListUsers(o, au).Render(r.Context(), w)
 	}
 }

@@ -35,6 +35,7 @@ type UsecasesParams struct {
 	UserAutheticator         auth.UserAuthenticator
 	UserFinder               auth.UserFinder
 	UserCreator              auth.UserCreator
+	UserUpdater              auth.UserUpdater
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -75,7 +76,9 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
 	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
+	mux.HandleFunc("PUT /auth/users/{id}", _auth.HandleUpdateUser(u.UserUpdater))
 	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
+	mux.HandleFunc("GET /users/dialogs/update-user-dialog", _auth.HandleUpdateUserDialog(u.UserFinder))
 
 	mux.HandleFunc("/", NewStaticHandler())
 

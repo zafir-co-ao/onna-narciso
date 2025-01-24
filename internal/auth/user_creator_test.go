@@ -13,6 +13,13 @@ func TestUserCreator(t *testing.T) {
 	users := []auth.User{
 		{ID: "1", Username: "Paola Oliveira", Role: auth.RoleManager},
 		{ID: "2", Username: "Elon Musk", Role: auth.RoleReceptionist},
+		{
+			ID:          "3",
+			Username:    "Robertson Konnely",
+			Email:       "bod@gmail.com",
+			PhoneNumber: "923459876",
+			Role:        auth.RoleReceptionist,
+		},
 	}
 
 	bus := event.NewEventBus()
@@ -130,7 +137,7 @@ func TestUserCreator(t *testing.T) {
 		i := auth.UserCreatorInput{
 			UserID:      "1",
 			Username:    "Joana Doe",
-			Email:       "joana@gmail.com",
+			Email:       "joana2@gmail.com",
 			PhoneNumber: "98765423",
 			Password:    "joana.doe@123",
 			Role:        auth.RoleReceptionist.String(),
@@ -191,8 +198,8 @@ func TestUserCreator(t *testing.T) {
 		i := auth.UserCreatorInput{
 			UserID:      "1",
 			Username:    "Robert C. Martin",
-			Email:       "bod@gmail.com",
-			PhoneNumber: "923459876",
+			Email:       "bod3@gmail.com",
+			PhoneNumber: "923459877",
 			Password:    "robert.martin@0000",
 			Role:        "Role",
 		}
@@ -332,7 +339,7 @@ func TestUserCreator(t *testing.T) {
 
 	t.Run("should_return_error_if_user_not_found", func(t *testing.T) {
 		i := auth.UserCreatorInput{
-			UserID:   "3",
+			UserID:   "3U",
 			Username: "Paola Oliveira",
 			Password: "paolaoliveira",
 			Role:     auth.RoleManager.String(),
@@ -365,6 +372,48 @@ func TestUserCreator(t *testing.T) {
 
 		if !errors.Is(err, auth.ErrOnlyUniqueUsername) {
 			t.Errorf("The error must be %v, got %v", auth.ErrOnlyUniqueUsername, err)
+		}
+	})
+
+	t.Run("should_return_error_if_user_email_is_not_unique", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:      "1",
+			Username:    "Robert C. Martin",
+			Email:       "bod@gmail.com",
+			PhoneNumber: "923459876",
+			Password:    "robert.martin@0000",
+			Role:        auth.RoleManager.String(),
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error got, %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrOnlyUniqueEmail) {
+			t.Errorf("The error must be %v, got %v", auth.ErrOnlyUniqueEmail, err)
+		}
+	})
+
+	t.Run("should_return_error_if_phonenumber_is_not_unique", func(t *testing.T) {
+		i := auth.UserCreatorInput{
+			UserID:      "1",
+			Username:    "Yolanda Simões",
+			Email:       "yola@gmail.com",
+			PhoneNumber: "923459876",
+			Password:    "yola@0000",
+			Role:        auth.RoleManager.String(),
+		}
+
+		_, err := u.Create(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected an error got, %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrOnlyUniquePhoneNumber) {
+			t.Errorf("The error must be %v, got %v", auth.ErrOnlyUniquePhoneNumber, err)
 		}
 	})
 }

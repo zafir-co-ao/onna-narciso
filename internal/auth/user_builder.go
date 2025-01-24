@@ -30,7 +30,7 @@ func (u *userBuilder) WithPhoneNumber(p PhoneNumber) *userBuilder {
 	return u
 }
 
-func (u *userBuilder) WithPassWord(p Password) *userBuilder {
+func (u *userBuilder) WithPassword(p Password) *userBuilder {
 	u.Password = p
 	return u
 }

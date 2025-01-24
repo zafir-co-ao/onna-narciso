@@ -1,0 +1,10 @@
+package components
+
+import (
+     "github.com/zafir-co-ao/onna-narciso/internal/auth"
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+templ HandleUpdateUserDialog(url string, user auth.UserOutput)  {
+    @components.Dialog("Atualizar utilizador", UserUpdateForm(url, user))
+}

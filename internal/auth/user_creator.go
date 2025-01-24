@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/kindalus/godx/pkg/xslices"
 )
 
 const EventUserCreated = "EventUserCreated"
@@ -50,7 +49,7 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
-	if !u.isAvailableUsername(users, username) {
+	if !IsAvailableUsername(users, username) {
 		return UserOutput{}, ErrOnlyUniqueUsername
 	}
 
@@ -59,9 +58,17 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
+	if !IsAvailableEmail(users, email) {
+		return UserOutput{}, ErrOnlyUniqueEmail
+	}
+
 	phoneNumber, err := NewPhoneNumber(i.PhoneNumber)
 	if err != nil {
 		return UserOutput{}, err
+	}
+
+	if !IsAvailablePhoneNumber(users, phoneNumber) {
+		return UserOutput{}, ErrOnlyUniquePhoneNumber
 	}
 
 	password, err := NewPassword(i.Password)
@@ -78,7 +85,7 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		WithUserName(username).
 		WithEmail(email).
 		WithPhoneNumber(phoneNumber).
-		WithPassWord(password).
+		WithPassword(password).
 		WithRole(role).
 		Build()
 
@@ -96,10 +103,4 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 	u.bus.Publish(e)
 
 	return toUserOutput(user), nil
-}
-
-func (u *creatorImpl) isAvailableUsername(users []User, username Username) bool {
-	return xslices.All(users, func(u User) bool {
-		return u.Username != username
-	})
 }

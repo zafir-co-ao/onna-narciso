@@ -9,21 +9,27 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, _ := r.Cookie("userID")
-		uid := cookie.Value
+		cookie, err := r.Cookie("userID")
 
-		i := auth.UserCreatorInput{
-			UserID:      uid,
+		if errors.Is(err, auth.ErrUserNotFound) {
+			_http.SendServerError(w)
+			return
+		}
+
+		managerID := cookie.Value
+
+		i := auth.UserUpdaterInput{
+			ManagerID:   managerID,
+			UserID:      r.PathValue("id"),
 			Username:    strings.TrimSpace(r.FormValue("username")),
 			Email:       r.FormValue("email"),
 			PhoneNumber: r.FormValue("phone-number"),
-			Password:    r.FormValue("password"),
 			Role:        r.FormValue("role"),
 		}
 
-		_, err := u.Create(i)
+		err = u.Update(i)
 
 		if errors.Is(err, auth.ErrEmptyUsername) {
 			_http.SendBadRequest(w, "Nome do utilizador vazio")
@@ -42,11 +48,6 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 
 		if errors.Is(err, auth.ErrEmptyPhoneNumber) {
 			_http.SendBadRequest(w, "Telefone do utilizador vazio")
-			return
-		}
-
-		if errors.Is(err, auth.ErrEmptyPassword) {
-			_http.SendBadRequest(w, "Palavra-passe do utilizador vazia")
 			return
 		}
 
@@ -86,6 +87,6 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 		}
 
 		w.Header().Set("X-Reload-Page", "ReloadPage")
-		_http.SendCreated(w)
+		_http.SendOk(w)
 	}
 }

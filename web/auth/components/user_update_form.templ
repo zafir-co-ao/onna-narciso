@@ -5,12 +5,13 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ UserCreateForm(url string) {
-	<form hx-post={ url } hx-swap="none">
+templ UserUpdateForm(url string, user auth.UserOutput) {
+    <form hx-put={ url } hx-swap="none">
 		<div class="mt-4 space-y-4">
 			<div>
 				@components.InputField(
 					components.WithName("username"),
+                    components.WithValue(user.Username),
 					components.WithPlaceholder("Nome de Utilizador"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
@@ -20,6 +21,7 @@ templ UserCreateForm(url string) {
 				@components.InputField(
 					components.WithType("email"),
 					components.WithName("email"),
+                    components.WithValue(user.Email),
 					components.WithPlaceholder("E-mail"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
@@ -29,6 +31,7 @@ templ UserCreateForm(url string) {
 				@components.InputField(
 					components.WithType("number"),
 					components.WithName("phone-number"),
+                    components.WithValue(user.PhoneNumber),
 					components.WithPlaceholder("Telefone"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
@@ -38,6 +41,7 @@ templ UserCreateForm(url string) {
 				@components.Dropdown(
 					"role",
 					auth.RoleManager.String(),
+                    components.WithValue(user.Role),
 					components.WithOptions(
 						components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
 						components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
