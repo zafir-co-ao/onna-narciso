@@ -34,6 +34,7 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 			Value:    o.ID,
 			Expires:  time.Now().Add(30 * time.Minute),
 			HttpOnly: true,
+			Secure:   true,
 			Path:     "/",
 		}
 

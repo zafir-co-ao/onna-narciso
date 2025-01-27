@@ -11,14 +11,26 @@ import (
 func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		i := auth.UserPasswordUpdaterInput{
-			UserID:   r.PathValue("id"),
-			Password: r.FormValue("password"),
+			UserID:               r.PathValue("id"),
+			OldPassword:          r.FormValue("old-password"),
+			NewPassword:          r.FormValue("new-password"),
+			ConfirmationPassword: r.FormValue("confirmation-password"),
 		}
 
 		err := u.Update(i)
 
+		if errors.Is(err, auth.ErrInvalidOldPassword) {
+			_http.SendBadRequest(w, "Palavra-passe antiga inválida")
+			return
+		}
+
 		if errors.Is(err, auth.ErrEmptyPassword) {
 			_http.SendBadRequest(w, "Palavra-passe do utilizador vazia")
+			return
+		}
+
+		if errors.Is(err, auth.ErrInvalidConfirmationPassword) {
+			_http.SendBadRequest(w, "A palavra-passe de confirmação deve ser a mesma que a nova palavra-passe")
 			return
 		}
 
@@ -32,6 +44,15 @@ func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWr
 			return
 		}
 
+		cookie := &http.Cookie{
+			Name:     "profileID",
+			Value:    r.PathValue("id"),
+			HttpOnly: true,
+			Secure:   true,
+			Path:     "/",
+		}
+
+		http.SetCookie(w, cookie)
 		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}

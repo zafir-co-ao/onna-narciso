@@ -11,19 +11,18 @@ var listUsersHandle = templ.NewOnceHandle()
 templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 	@listUsersHandle.Once() {
 		<script>
-               document.addEventListener("htmx:afterOnLoad", (evt) => {
-        			let xhr = evt.detail.xhr
+			document.addEventListener("htmx:afterOnLoad", (evt) => {
+				let xhr = evt.detail.xhr
 
-                   let header = xhr.getResponseHeader("X-Reload-Page");
+				let header = xhr.getResponseHeader("X-Reload-Page");
 
-                   if (!header) return
+				if (!header) return
 
-                   htmx.ajax("GET", "/auth/users", {
-                       target: "#users",
-                       swap: "outerHTML"
-                   })
-               })
-
+				htmx.ajax("GET", "/auth/users", {
+					target: "#users",
+					swap: "outerHTML"
+				})
+			})
 		</script>
 	}
 	@components.Navbar("navbar", "Utilizadores", "#content")
@@ -85,9 +84,20 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 								if len(users) > 0 {
 									for _, u := range users {
 										<tr class="even:bg-gray-50">
-											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-												{ u.Username }
-											</td>
+											if au.Role == auth.RoleManager.String() { 
+												<td 
+													hx-get={ fmt.Sprintf("/auth/profile/%s", u.ID) }
+													hx-trigger="click"
+													hx-target="#users"
+													hx-swap="outerHTML"
+													class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3 hover:underline cursor-pointer">
+													{ u.Username }
+												</td>
+											} else {
+												<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+													{ u.Username }
+												</td>
+											}
 											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-3">
 												{ u.Email }
 											</td>
@@ -97,7 +107,7 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 											<td colspan="3" class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 												{ u.Role }
 											</td>
-											if u.Role == auth.RoleManager.String() { 
+											if au.Role == auth.RoleManager.String() { 
 												<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 													<form
 														hx-get="/users/dialogs/update-user-dialog"

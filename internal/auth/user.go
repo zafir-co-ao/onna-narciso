@@ -30,7 +30,11 @@ func (u *User) VerifyPassword(p string) bool {
 	return u.Password.IsValid(p)
 }
 
-func (u *User) SetPassword(p Password) {
+func (u *User) IsSamePassword(newPwd, confirmPwd string) bool {
+	return newPwd == confirmPwd
+}
+
+func (u *User) UpdatePassword(p Password) {
 	u.Password = p
 }
 

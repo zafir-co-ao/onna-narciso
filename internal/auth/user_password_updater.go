@@ -1,19 +1,28 @@
 package auth
 
 import (
+	"errors"
+
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
 )
 
 const EventUserPasswordUpdated = "EventUserPasswordUpdated"
 
+var (
+	ErrInvalidOldPassword          = errors.New("invalid old password")
+	ErrInvalidConfirmationPassword = errors.New("invalid confirmation password")
+)
+
 type UserPasswordUpdater interface {
 	Update(i UserPasswordUpdaterInput) error
 }
 
 type UserPasswordUpdaterInput struct {
-	UserID   string
-	Password string
+	UserID               string
+	OldPassword          string
+	NewPassword          string
+	ConfirmationPassword string
 }
 
 func NewUserPasswordUpdater(r Repository, bus event.Bus) UserPasswordUpdater {
@@ -31,12 +40,20 @@ func (u *userPasswordUpdaterImpl) Update(i UserPasswordUpdaterInput) error {
 		return err
 	}
 
-	password, err := NewPassword(i.Password)
+	if !user.VerifyPassword(i.OldPassword) {
+		return ErrInvalidOldPassword
+	}
+
+	if !user.IsSamePassword(i.NewPassword, i.ConfirmationPassword) {
+		return ErrInvalidConfirmationPassword
+	}
+
+	password, err := NewPassword(i.NewPassword)
 	if err != nil {
 		return err
 	}
 
-	user.SetPassword(password)
+	user.UpdatePassword(password)
 
 	err = u.repo.Save(user)
 	if err != nil {

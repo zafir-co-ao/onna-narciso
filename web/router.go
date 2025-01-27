@@ -72,6 +72,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerFinder))
 
+	mux.HandleFunc("GET /auth/profile/{id}", _auth.HandleProfilePage(u.UserFinder))
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
@@ -79,6 +80,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("PUT /auth/users/{id}", _auth.HandleUpdateUser(u.UserUpdater))
 	mux.HandleFunc("PUT /auth/users/update-user-password/{id}", _auth.HandleUpdateUserPassword(u.UserPasswordUpdater))
+	mux.HandleFunc("GET /auth/dialogs/update-user-password-dialog", _auth.HandleUserPasswordUpdateDialog(u.UserFinder))
 	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
 	mux.HandleFunc("GET /users/dialogs/update-user-dialog", _auth.HandleUpdateUserDialog(u.UserFinder))
 
