@@ -38,6 +38,10 @@ func (u *User) UpdatePassword(p Password) {
 	u.Password = p
 }
 
+func (u *User) ResetPassword(p string) {
+	u.Password = MustNewPassword(p)
+}
+
 func (u User) GetID() nanoid.ID {
 	return u.ID
 }
