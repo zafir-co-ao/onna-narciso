@@ -19,7 +19,7 @@ var Users = []auth.User{
 		Username:    "john.doe",
 		Email:       "john234@outlook.com",
 		PhoneNumber: "934123456",
-		Password:    auth.MustNewPassword("john.doe123"),
+		Password:    auth.MustNewPassword("1234"),
 		Role:        auth.RoleReceptionist,
 	},
 }

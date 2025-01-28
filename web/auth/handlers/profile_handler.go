@@ -12,6 +12,15 @@ import (
 func HandleProfilePage(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
+		undefinedID := "${id}"
+
+		cookie, _ := r.Cookie("profileID")
+		pid := cookie.Value
+
+		if id == undefinedID {
+			id = pid
+		}
+
 		o, err := u.FindByID(id)
 
 		if errors.Is(err, auth.ErrUserNotFound) {
@@ -25,6 +34,6 @@ func HandleProfilePage(u auth.UserFinder) func(w http.ResponseWriter, r *http.Re
 		}
 
 		_http.SendOk(w)
-		pages.Profile(o).Render(r.Context(), w)
+		pages.Profile(o, pid).Render(r.Context(), w)
 	}
 }

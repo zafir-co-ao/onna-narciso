@@ -8,26 +8,32 @@ import (
 
 var profileHandle = templ.NewOnceHandle()
 
-templ Profile(u auth.UserOutput) {
+templ Profile(u auth.UserOutput, pid string) {
     @profileHandle.Once() {
         <script>
 			document.addEventListener("htmx:afterOnLoad", (evt) => {
 				let xhr = evt.detail.xhr
-
 				let header = xhr.getResponseHeader("X-Reload-Page");
 
 				if (!header) return
 
-                htmx.ajax("GET", "/auth/users", {
+                let id = document.getElementById("profileID").value;
+                getUser(id)
+			})
+
+            function getUser(id) {
+                htmx.ajax("GET", '/auth/profile/${id}', {
 					target: "#profile",
 					swap: "outerHTML"
 				})
-			})
+            }
         </script>
     }
     @components.Navbar("navbar", "Perfil", "#content")
     
     <div id="profile">
+        <input type="hidden" id="profileID" name="id" value={ pid }/>
+        
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-end">
 			    <div class="mt-4 sm:mt-0 sm:flex-none">
