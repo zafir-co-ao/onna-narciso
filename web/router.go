@@ -37,6 +37,7 @@ type UsecasesParams struct {
 	UserCreator              auth.UserCreator
 	UserUpdater              auth.UserUpdater
 	UserPasswordUpdater      auth.UserPasswordUpdater
+	UserPasswordResetter     auth.UserPasswordResetter
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -79,10 +80,12 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("PUT /auth/users/{id}", _auth.HandleUpdateUser(u.UserUpdater))
-	mux.HandleFunc("PUT /auth/users/update-user-password/{id}", _auth.HandleUpdateUserPassword(u.UserPasswordUpdater))
+	mux.HandleFunc("PUT /auth/update-user-password/{id}", _auth.HandleUpdateUserPassword(u.UserPasswordUpdater))
 	mux.HandleFunc("GET /auth/dialogs/update-user-password-dialog", _auth.HandleUserPasswordUpdateDialog(u.UserFinder))
-	mux.HandleFunc("GET /users/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
-	mux.HandleFunc("GET /users/dialogs/update-user-dialog", _auth.HandleUpdateUserDialog(u.UserFinder))
+	mux.HandleFunc("GET /auth/dialogs/create-user-dialog", _auth.HandleUserCreateDialog)
+	mux.HandleFunc("GET /auth/dialogs/update-user-dialog", _auth.HandleUpdateUserDialog(u.UserFinder))
+	mux.HandleFunc("PUT /auth/reset-user-password", _auth.HandleResetUserPassword(u.UserPasswordResetter))
+	mux.HandleFunc("GET /auth/reset-user-password", _auth.HandleUserPasswordReset)
 
 	mux.HandleFunc("/", NewStaticHandler())
 
@@ -95,7 +98,6 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 		path := r.URL.Path
 
 		if err != nil && path == "/auth/login" {
-			w.Header().Set("HX-Redirect", "/auth/login")
 			next.ServeHTTP(w, r)
 			return
 		}

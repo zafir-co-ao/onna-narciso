@@ -32,7 +32,7 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 				<div class="mt-4 sm:mt-0 sm:flex-none">
 					if au.Role == auth.RoleManager.String() {
 						<form
-							hx-get="/users/dialogs/create-user-dialog"
+							hx-get="/auth/dialogs/create-user-dialog"
 							hx-trigger="click"
 							hx-target="#dialog"
 							hx-swap="outerHTML"
@@ -110,7 +110,7 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 											if au.Role == auth.RoleManager.String() { 
 												<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 													<form
-														hx-get="/users/dialogs/update-user-dialog"
+														hx-get="/auth/dialogs/update-user-dialog"
 														hx-trigger="click"
 														hx-target="#dialog"
 														hx-swap="outerHTML"

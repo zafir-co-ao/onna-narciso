@@ -45,7 +45,7 @@ templ Profile(u auth.UserOutput, pid string) {
                             hx-swap="outerHTML"
                         >
                             <input type="hidden" name="id" value={ u.ID }/>
-                            <input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/users/update-user-password/%s", u.ID) }/>
+                            <input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/update-user-password/%s", u.ID) }/>
                             <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Atualizar Credenciais</button>
                         </form>
                         <form

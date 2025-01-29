@@ -10,6 +10,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
+	nStubs "github.com/zafir-co-ao/onna-narciso/internal/auth/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
@@ -24,6 +25,7 @@ func main() {
 	sacl := stubs.NewServicesServiceACL()
 	aacl := _stubs.NewSchedulingServiceACL()
 	ssacl := _stubs.NewServicesServiceACL()
+	nStub := nStubs.NewNoticationsStub()
 
 	appointmentRepo := scheduling.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
@@ -53,6 +55,7 @@ func main() {
 		UserCreator:              auth.NewUserCreator(userRepo, bus),
 		UserUpdater:              auth.NewUserUpdater(userRepo, bus),
 		UserPasswordUpdater:      auth.NewUserPasswordUpdater(userRepo, bus),
+		UserPasswordResetter:     auth.NewUserPasswordResetter(userRepo, bus, nStub),
 	}
 
 	r := web.NewRouter(u)
