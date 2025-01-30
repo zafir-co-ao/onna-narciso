@@ -114,4 +114,18 @@ func TestUserPasswordResetter(t *testing.T) {
 			t.Errorf("The error must be %v, got %v", auth.ErrInvalidEmailFormat, err)
 		}
 	})
+
+	t.Run("should_return_error_when_user_not_exists_in_repository", func(t *testing.T) {
+		i := auth.UserPasswordResetterInput{Email: "kate1234@gmail.com"}
+
+		err := u.Reset(i)
+
+		if errors.Is(nil, err) {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if !errors.Is(err, auth.ErrUserNotFound) {
+			t.Error("should find user in repository")
+		}
+	})
 }

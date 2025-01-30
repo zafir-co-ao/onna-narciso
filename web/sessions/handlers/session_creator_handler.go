@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	"github.com/zafir-co-ao/onna-narciso/internal/shared/date"
@@ -19,6 +20,7 @@ func HandleCreateSession(
 	sc sessions.SessionCreator,
 	sf sessions.SessionFinder,
 	dg scheduling.DailyAppointmentsFinder,
+	uf auth.UserFinder,
 ) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, err := sc.Create(r.FormValue("appointment-id"))
@@ -28,7 +30,7 @@ func HandleCreateSession(
 			return
 		}
 
-		if errors.Is(sessions.ErrAppointmentCanceled, err) {
+		if errors.Is(err, sessions.ErrAppointmentCanceled) {
 			_http.SendBadRequest(w, "A marcação foi cancelada. Não é possível fazer o Check In")
 			return
 		}
@@ -64,8 +66,23 @@ func HandleCreateSession(
 			return
 		}
 
+		cookie, _ := r.Cookie("userID")
+		uid := cookie.Value
+
+		au, err := uf.FindByID(uid)
+
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
+		if errors.Is(err, auth.ErrUserNotFound) {
+			_http.SendNotFound(w, "Utilizador não encontrado")
+			return
+		}
+
 		_http.SendOk(w)
 		opts := components.CombineAppointmentsWithSessions(appointments, sessions)
-		pages.DailyAppointments(date, opts).Render(r.Context(), w)
+		pages.DailyAppointments(date, opts, au).Render(r.Context(), w)
 	}
 }

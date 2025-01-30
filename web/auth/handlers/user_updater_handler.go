@@ -11,17 +11,7 @@ import (
 
 func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("userID")
-
-		if errors.Is(err, auth.ErrUserNotFound) {
-			_http.SendServerError(w)
-			return
-		}
-
-		managerID := cookie.Value
-
 		i := auth.UserUpdaterInput{
-			ManagerID:   managerID,
 			UserID:      r.PathValue("id"),
 			Username:    strings.TrimSpace(r.FormValue("username")),
 			Email:       r.FormValue("email"),
@@ -29,7 +19,7 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 			Role:        r.FormValue("role"),
 		}
 
-		err = u.Update(i)
+		err := u.Update(i)
 
 		if errors.Is(err, auth.ErrEmptyUsername) {
 			_http.SendBadRequest(w, "Nome do utilizador vazio")

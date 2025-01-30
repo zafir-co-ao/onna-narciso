@@ -37,7 +37,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_update_user", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "ana@gmail.com",
@@ -54,7 +53,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_retrieve_user_in_repository", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Arthur",
 			Email:       "arthur@gmail.com",
@@ -75,7 +73,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_update_username", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "GomesDoyle",
 			Email:       "gomes@gmail.com",
@@ -101,7 +98,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_update_email", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "doyleDan",
 			Email:       "gomes3@gmail.com",
@@ -127,7 +123,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_update_phone_number", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "sandra",
 			Email:       "234s@gmail.com",
@@ -153,7 +148,6 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_update_role", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Darling",
 			Email:       "darling@gmail.com",
@@ -189,7 +183,6 @@ func TestUserUpdater(t *testing.T) {
 		bus.Subscribe(auth.EventUserUpdated, h)
 
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Darling Parker",
 			Email:       "parker@gmail.com",
@@ -210,12 +203,10 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_user_exists_in_repsository", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "1D",
 			Username:    "António",
 			Email:       "gomes@gmail.com",
 			PhoneNumber: "934123456",
-			
 			Role:        auth.RoleReceptionist.String(),
 		}
 
@@ -232,12 +223,10 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_username_not_provided", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "",
 			Email:       "gomes@gmail.com",
 			PhoneNumber: "934123456",
-			
 			Role:        auth.RoleReceptionist.String(),
 		}
 
@@ -254,12 +243,10 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_email_not_provided", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "",
 			PhoneNumber: "934123456",
-			
 			Role:        auth.RoleReceptionist.String(),
 		}
 
@@ -276,12 +263,10 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_phonenumber_not_provided", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "ana@gmail.com",
 			PhoneNumber: "",
-			
 			Role:        auth.RoleReceptionist.String(),
 		}
 
@@ -298,12 +283,10 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_role_of_user_is_not_allowed", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "ana@gmail.com",
 			PhoneNumber: "9431234547",
-			
 			Role:        "Some",
 		}
 
@@ -318,59 +301,14 @@ func TestUserUpdater(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_is_not_role_manager_to_update_user", func(t *testing.T) {
-		i := auth.UserUpdaterInput{
-			ManagerID:   "3",
-			UserID:      "2",
-			Username:    "Ana",
-			Email:       "ana@gmail.com",
-			PhoneNumber: "9431234567",
-			
-			Role:        auth.RoleReceptionist.String(),
-		}
-
-		err := u.Update(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("expected error, got %v", err)
-		}
-
-		if !errors.Is(err, auth.ErrUserNotAllowed) {
-			t.Errorf("The error must be %v, got %v", auth.ErrUserNotAllowed, err)
-		}
-	})
-
-	t.Run("should_return_error_if_manager_not_exists_in_repository", func(t *testing.T) {
-		i := auth.UserUpdaterInput{
-			ManagerID:   "3D",
-			UserID:      "2",
-			Username:    "Ana",
-			Email:       "ana@gmail.com",
-			PhoneNumber: "9431234567",
-			
-			Role:        auth.RoleReceptionist.String(),
-		}
-
-		err := u.Update(i)
-
-		if errors.Is(nil, err) {
-			t.Errorf("expected error, got %v", err)
-		}
-
-		if !errors.Is(err, auth.ErrUserNotFound) {
-			t.Errorf("The error must be %v, got %v", auth.ErrUserNotFound, err)
-		}
-	})
-
 	t.Run("should_return_error_if_username_is_not_unique", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "james",
 			Email:       "james234@gmail.com",
 			PhoneNumber: "9431234567",
-			
-			Role:        auth.RoleReceptionist.String(),
+
+			Role: auth.RoleReceptionist.String(),
 		}
 
 		err := u.Update(i)
@@ -386,13 +324,12 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_email_is_not_unique", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "james@gmail.com",
 			PhoneNumber: "9431234567",
-			
-			Role:        auth.RoleReceptionist.String(),
+
+			Role: auth.RoleReceptionist.String(),
 		}
 
 		err := u.Update(i)
@@ -408,13 +345,12 @@ func TestUserUpdater(t *testing.T) {
 
 	t.Run("should_return_error_if_phonenumber_is_not_unique", func(t *testing.T) {
 		i := auth.UserUpdaterInput{
-			ManagerID:   "1",
 			UserID:      "2",
 			Username:    "Ana",
 			Email:       "james2@gmail.com",
 			PhoneNumber: "9431234567",
-			
-			Role:        auth.RoleReceptionist.String(),
+
+			Role: auth.RoleReceptionist.String(),
 		}
 
 		err := u.Update(i)

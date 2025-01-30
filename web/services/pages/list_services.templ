@@ -3,13 +3,14 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"strconv"
 )
 
 var listServicesHandle = templ.NewOnceHandle()
 
-templ ListServices(services []services.ServiceOutput) {
+templ ListServices(services []services.ServiceOutput, au auth.UserOutput) {
 	@listServicesHandle.Once() {
 		<script type="text/javascript">
        	    document.addEventListener("htmx:afterOnLoad", (evt) => {
@@ -26,7 +27,15 @@ templ ListServices(services []services.ServiceOutput) {
             })
         </script>
 	}
-	@components.Navbar("navbar", "Serviços", "#content")
+
+	@components.NewNavbarBuilder().
+		WithID("navbar").
+		WithTitle("Serviços").
+		WithHxTarget("#content").
+		WithUserID(au.ID).
+		WithPageTarget("#services").
+		Build()
+		
 	<div id="services">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">

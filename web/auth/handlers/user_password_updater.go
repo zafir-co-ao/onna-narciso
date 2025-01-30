@@ -53,14 +53,6 @@ func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWr
 			return
 		}
 
-		cookie = &http.Cookie{
-			Name:     "profileID",
-			Value:    id,
-			HttpOnly: true,
-			Secure:   true,
-			Path:     "/",
-		}
-
 		http.SetCookie(w, cookie)
 		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)

@@ -7,6 +7,7 @@ import (
 )
 
 var listUsersHandle = templ.NewOnceHandle()
+var route string
 
 templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 	@listUsersHandle.Once() {
@@ -25,7 +26,15 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 			})
 		</script>
 	}
-	@components.Navbar("navbar", "Utilizadores", "#content")
+
+	@components.NewNavbarBuilder().
+		WithID("navbar").
+		WithTitle("Utilizadores").
+		WithHxTarget("#content").
+		WithUserID(au.ID).
+		WithPageTarget("#users").
+		Build()	
+
 	<div id="users">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
@@ -86,7 +95,14 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 										<tr class="even:bg-gray-50">
 											if au.Role == auth.RoleManager.String() { 
 												<td 
-													hx-get={ fmt.Sprintf("/auth/profile/%s", u.ID) }
+													if au.ID == u.ID {
+														hx-get={ fmt.Sprintf("/auth/authenticated-user-profile/%s", u.ID) }
+													}
+
+													if au.ID != u.ID {
+														hx-get={ fmt.Sprintf("/auth/listed-user-profile/%s", u.ID) }
+													}
+
 													hx-trigger="click"
 													hx-target="#users"
 													hx-swap="outerHTML"

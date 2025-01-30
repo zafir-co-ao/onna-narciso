@@ -7,7 +7,6 @@ import (
 )
 
 type UserUpdaterInput struct {
-	ManagerID   string
 	UserID      string
 	Username    string
 	Email       string
@@ -31,16 +30,7 @@ type userUpdaterImpl struct {
 }
 
 func (u *userUpdaterImpl) Update(i UserUpdaterInput) error {
-	manager, err := u.repo.FindByID(nanoid.ID(i.ManagerID))
-	if err != nil {
-		return err
-	}
-
-	if !manager.IsManager() {
-		return ErrUserNotAllowed
-	}
-
-	_, err = u.repo.FindByID(nanoid.ID(i.UserID))
+	_, err := u.repo.FindByID(nanoid.ID(i.UserID))
 	if err != nil {
 		return err
 	}

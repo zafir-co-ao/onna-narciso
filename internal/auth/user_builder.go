@@ -40,13 +40,6 @@ func (u *userBuilder) WithRole(r Role) *userBuilder {
 	return u
 }
 
-func (u *userBuilder) Build() User {
-	return User{
-		ID:          u.ID,
-		Username:    u.Username,
-		Email:       u.Email,
-		PhoneNumber: u.PhoneNumber,
-		Password:    u.Password,
-		Role:        u.Role,
-	}
+func (u userBuilder) Build() User {
+	return User(u)
 }

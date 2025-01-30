@@ -39,7 +39,7 @@ func (u *User) UpdatePassword(p Password) {
 }
 
 func (u *User) ResetPassword(p string) {
-	u.Password = MustNewPassword(p)
+	u.UpdatePassword(MustNewPassword(p))
 }
 
 func (u User) GetID() nanoid.ID {

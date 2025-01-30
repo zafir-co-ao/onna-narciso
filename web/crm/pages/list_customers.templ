@@ -3,12 +3,13 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
 var listCustomersHandle = templ.NewOnceHandle()
 
-templ ListCustomers(customers []crm.CustomerOutput) {
+templ ListCustomers(customers []crm.CustomerOutput, au auth.UserOutput) {
 	@listCustomersHandle.Once() {
 		<script>
             document.addEventListener("htmx:afterOnLoad", (evt) => {
@@ -26,7 +27,15 @@ templ ListCustomers(customers []crm.CustomerOutput) {
 
 		</script>
 	}
-	@components.Navbar("navbar", "Clientes", "#content")
+	
+    @components.NewNavbarBuilder().
+        WithID("navbar").
+        WithTitle("Clientes").
+        WithHxTarget("#content").
+        WithUserID(au.ID).
+        WithPageTarget("#customers").
+        Build()
+
 	<div id="customers">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">

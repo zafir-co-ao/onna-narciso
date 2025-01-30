@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	_scheduling "github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
 	"github.com/zafir-co-ao/onna-narciso/web/sessions/components"
 	_components "github.com/zafir-co-ao/onna-narciso/web/shared/components"
@@ -10,7 +11,7 @@ import (
 
 var getDailyAppointmentsHandle = templ.NewOnceHandle()
 
-templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions) {
+templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions, au auth.UserOutput) {
 	@getDailyAppointmentsHandle.Once() {
 		<script type="text/javascript">
 		    document.addEventListener("htmx:afterOnLoad", (evt) => {
@@ -32,7 +33,15 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions)
 			})
     	</script>
 	}
-	@_components.Navbar("navbar", "Agenda", "#content")
+
+	@_components.NewNavbarBuilder().
+		WithID("navbar").
+		WithTitle("Agenda").
+		WithHxTarget("#content").
+		WithUserID(au.ID).
+		WithPageTarget("#daily-view").
+		Build()
+
 	<div id="daily-view">
 		<h2 class="text-base font-semibold leading-6 text-gray-900">Agendamentos do dia</h2>
 		<div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
