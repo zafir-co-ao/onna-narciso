@@ -1,14 +1,13 @@
 package hr
 
-import "github.com/kindalus/godx/pkg/nanoid"
-
-type ProfessionalOutput struct {
-	ID   string
-	Name string
-}
+import (
+	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
+)
 
 type ProfessionalFinder interface {
 	FindByID(id string) (ProfessionalOutput, error)
+	FindAll() ([]ProfessionalOutput, error)
 }
 
 type finderImpl struct {
@@ -25,8 +24,15 @@ func (u *finderImpl) FindByID(id string) (ProfessionalOutput, error) {
 		return ProfessionalOutput{}, err
 	}
 
-	return ProfessionalOutput{
-		ID:   p.ID.String(),
-		Name: p.Name.String(),
-	}, nil
+	return toProfessionalOutput(p), nil
+}
+
+func (u *finderImpl) FindAll() ([]ProfessionalOutput, error) {
+	professionals, err := u.repo.FindAll()
+
+	if err != nil {
+		return []ProfessionalOutput{}, err
+	}
+
+	return xslices.Map(professionals, toProfessionalOutput), nil
 }

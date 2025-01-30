@@ -1,0 +1,81 @@
+package components
+
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
+    "github.com/zafir-co-ao/onna-narciso/internal/hr"
+)
+
+func _getServiceData(ss []services.ServiceOutput, sp []hr.ServiceOutput) string {
+	_ss, _ := json.Marshal(ss)
+
+    selectedIDs := make([]string, len(sp))
+	for i, service := range sp {
+		selectedIDs[i] = service.ID
+	}
+
+	ids, _ := json.Marshal(selectedIDs)
+
+	return fmt.Sprintf(`{
+                search: '',
+                selected: %s,
+                open: false,
+                services: %s,
+                get filteredServices() {
+                return this.services.filter(service =>
+                    service.Name.toLowerCase().includes(this.search.toLowerCase())
+                );
+            }
+        }`, ids, _ss)
+}
+
+templ ChooseServiceOnUpdate(ss []services.ServiceOutput, sp []hr.ServiceOutput) {
+	<div x-data={ _getServiceData(ss, sp) }>
+		<template x-if="selected.length > 0">
+			<div class="py-3">		
+				<ul>
+					<li class="flex flex-wrap gap-2">
+						<template x-for="service_id in selected" :key="service_id">
+							<div class="flex justify-center items-center text-sm px-3 py-2 text-gray-700 border rounded-full">
+								<div x-text="services.find(service => service.ID === service_id).Name"></div>
+								<svg @click="selected = selected.filter(id => id !== service_id)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="cursor-pointer ml-1 size-4 hover:text-red-700">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+								</svg>
+							</div>
+						</template>
+					</li>
+				</ul>
+			</div>
+		</template>
+		<div class="relative">
+			<div @click="open = !open" class="form-control cursor-pointer flex justify-between items-center">	
+				<p class="text-gray-500">Escolher serviços</p>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+				</svg>
+			</div>
+			<div class="grid gap-4 border border-gray-300 rounded-md shadow-sm bg-white px-2 py-3 absolute top-14 w-full overflow-y-auto max-h-80" x-show="open">
+				<input type="text" placeholder="Pesquisar serviço pelo nome..." x-model="search" class="form-control"/>	
+				<div class="w-full space-y-1.5 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+					<template x-for="service in filteredServices" :key="service.ID">
+						<div class="flex items-center" x-id="['serviceID']">
+							<input
+								type="checkbox"
+								:value="service.ID"
+								x-model="selected"
+								name="serviceID"
+								:id="$id('serviceID')"
+								class="form-checkbox cursor-pointer h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+							/>
+							<label :for="$id('serviceID')" class="cursor-pointer ml-2 text-sm text-gray-700" x-text="service.Name"></label>
+						</div>
+					</template>
+					<template x-if="filteredServices.length === 0">
+						<p class="py-3 text-sm text-gray-400 text-center">Nenhum serviço encontrado.</p>
+					</template>
+				</div>
+			</div>
+		</div>
+	</div>
+}

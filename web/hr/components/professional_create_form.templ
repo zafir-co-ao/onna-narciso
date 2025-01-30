@@ -1,0 +1,30 @@
+package components
+
+import (
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+    "github.com/zafir-co-ao/onna-narciso/internal/services"
+    )
+
+templ ProfessionalCreateForm(url string, s []services.ServiceOutput) {
+	<form hx-post={ url } hx-swap="none">
+		<div class="space-y-4 mt-4">
+			<div>
+				@components.InputField(
+					components.WithName("name"),
+					components.WithPlaceholder("Nome do profissional"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+            </div>   
+            @ChooseServiceOnCreate(s) 
+			<div class="form-actions">
+				<button
+					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+					type="submit"
+				>
+					Salvar
+				</button>
+			</div>
+		</div>
+	</form>
+}

@@ -19,6 +19,10 @@ var menu = []link{
 		url:   "/customers",
 	},
 	{
+		title: "Profissionais",
+		url:   "/professionals",
+	},
+	{
 		title: "Utilizadores",
 		url:   "/auth/users",
 	},

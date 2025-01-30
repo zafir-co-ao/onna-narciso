@@ -12,15 +12,15 @@ type ServiceFinder interface {
 	FindByIDs(ids []string) ([]ServiceOutput, error)
 }
 
-type serviceFinderImpl struct {
+type finderImpl struct {
 	repo Repository
 }
 
 func NewServiceFinder(repo Repository) ServiceFinder {
-	return &serviceFinderImpl{repo}
+	return &finderImpl{repo}
 }
 
-func (u *serviceFinderImpl) FindAll() ([]ServiceOutput, error) {
+func (u *finderImpl) FindAll() ([]ServiceOutput, error) {
 	s, err := u.repo.FindAll()
 
 	if err != nil {
@@ -30,7 +30,7 @@ func (u *serviceFinderImpl) FindAll() ([]ServiceOutput, error) {
 	return xslices.Map(s, toServiceOutput), nil
 }
 
-func (u *serviceFinderImpl) FindByID(id string) (ServiceOutput, error) {
+func (u *finderImpl) FindByID(id string) (ServiceOutput, error) {
 	s, err := u.repo.FindByID(nanoid.ID(id))
 
 	if err != nil {
@@ -40,7 +40,7 @@ func (u *serviceFinderImpl) FindByID(id string) (ServiceOutput, error) {
 	return toServiceOutput(s), err
 }
 
-func (u *serviceFinderImpl) FindByIDs(ids []string) ([]ServiceOutput, error) {
+func (u *finderImpl) FindByIDs(ids []string) ([]ServiceOutput, error) {
 	_ids := xslices.Map(ids, shared.StringToNanoid)
 
 	s, err := u.repo.FindByIDs(_ids)

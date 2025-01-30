@@ -28,7 +28,7 @@ func HandleCreateSession(
 			return
 		}
 
-		if errors.Is(sessions.ErrAppointmentCanceled, err) {
+		if errors.Is(err, sessions.ErrAppointmentCanceled) {
 			_http.SendBadRequest(w, "A marcação foi cancelada. Não é possível fazer o Check In")
 			return
 		}
