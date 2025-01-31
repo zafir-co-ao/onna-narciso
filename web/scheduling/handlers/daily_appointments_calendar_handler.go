@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/components"
+	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
 func HandleDailyAppointmentsCalendar() func(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +36,7 @@ func HandleDailyAppointmentsCalendar() func(w http.ResponseWriter, r *http.Reque
 			state.Date = date.Format("2006-01-02")
 		}
 
+		_http.SendOk(w)
 		components.Calendar(state).Render(r.Context(), w)
 	}
 }

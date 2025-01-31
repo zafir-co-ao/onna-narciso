@@ -5,11 +5,13 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/hr"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 	_auth "github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	_crm "github.com/zafir-co-ao/onna-narciso/web/crm/handlers"
+	_hr "github.com/zafir-co-ao/onna-narciso/web/hr/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/handlers"
 	_services "github.com/zafir-co-ao/onna-narciso/web/services/handlers"
 	_sessions "github.com/zafir-co-ao/onna-narciso/web/sessions/handlers"
@@ -38,6 +40,9 @@ type UsecasesParams struct {
 	UserUpdater              auth.UserUpdater
 	UserPasswordUpdater      auth.UserPasswordUpdater
 	UserPasswordResetter     auth.UserPasswordResetter
+	ProfessionalCreator      hr.ProfessionalCreator
+	ProfessionalFinder       hr.ProfessionalFinder
+	ProfessionalUpdater      hr.ProfessionalUpdater
 }
 
 func NewRouter(u UsecasesParams) *http.ServeMux {
@@ -73,11 +78,17 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/create-customer-dialog", _crm.HandleCreateCustomerDialog)
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerFinder))
 
-	mux.HandleFunc("GET /auth/authenticated-user-profile/{id}", _auth.HandleAuthenticatedUserProfilePage(u.UserFinder))
-	mux.HandleFunc("GET /auth/listed-user-profile/{id}", _auth.HandleListedUserProfilePage(u.UserFinder))
+	mux.HandleFunc("POST /professionals", _hr.HandleCreateProfessional(u.ProfessionalCreator))
+	mux.HandleFunc("GET /professionals", _hr.HandleFindProfessionals(u.ProfessionalFinder))
+	mux.HandleFunc("GET /professionals/dialogs/create-professional-dialog", _hr.HandleCreateProfessionalDialog(u.ServiceFinder))
+	mux.HandleFunc("PUT /professionals/{id}", _hr.HandleUpdateProfessional(u.ProfessionalUpdater))
+	mux.HandleFunc("GET /professionals/dialogs/update-professional-dialog", _hr.HandleUpdateProfessionalDialog(u.ProfessionalFinder, u.ServiceFinder))
+
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
+	mux.HandleFunc("GET /auth/authenticated-user-profile/{id}", _auth.HandleAuthenticatedUserProfilePage(u.UserFinder))
+	mux.HandleFunc("GET /auth/listed-user-profile/{id}", _auth.HandleListedUserProfilePage(u.UserFinder))
 	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("PUT /auth/users/{id}", _auth.HandleUpdateUser(u.UserUpdater))

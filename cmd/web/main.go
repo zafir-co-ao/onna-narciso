@@ -6,11 +6,13 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
+	"github.com/zafir-co-ao/onna-narciso/internal/hr"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
 	nStubs "github.com/zafir-co-ao/onna-narciso/internal/auth/stubs"
+	_hr_stubs "github.com/zafir-co-ao/onna-narciso/internal/hr/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
 
@@ -26,12 +28,14 @@ func main() {
 	aacl := _stubs.NewSchedulingServiceACL()
 	ssacl := _stubs.NewServicesServiceACL()
 	nStub := nStubs.NewNoticationsStub()
+	hrsacl := _hr_stubs.NewServicesServiceACL()
 
 	appointmentRepo := scheduling.NewAppointmentRepository(testdata.Appointments...)
 	sessionRepo := sessions.NewInmemRepository(testdata.Sessions...)
 	serviceRepo := services.NewInmemRepository(testdata.ServicesDummies...)
 	customerRepo := crm.NewInmemRepository(testdata.CustomersDummies...)
 	userRepo := auth.NewInmemRepository(testdata.Users...)
+	professionalRepo := hr.NewInmemProfessionalRepository(testdata.ProfessionalsDummies...)
 
 	u := web.UsecasesParams{
 		AppointmentScheduler:     scheduling.NewAppointmentScheduler(appointmentRepo, cacl, pacl, sacl, bus),
@@ -56,6 +60,9 @@ func main() {
 		UserUpdater:              auth.NewUserUpdater(userRepo, bus),
 		UserPasswordUpdater:      auth.NewUserPasswordUpdater(userRepo, bus),
 		UserPasswordResetter:     auth.NewUserPasswordResetter(userRepo, bus, nStub),
+		ProfessionalCreator:      hr.NewProfessionalCreator(professionalRepo, hrsacl, bus),
+		ProfessionalFinder:       hr.NewProfessionalFinder(professionalRepo),
+		ProfessionalUpdater:      hr.NewProfessionalUpdater(professionalRepo, hrsacl, bus),
 	}
 
 	r := web.NewRouter(u)

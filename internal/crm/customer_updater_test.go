@@ -50,8 +50,13 @@ func TestCustomerUpdate(t *testing.T) {
 			t.Errorf("Expected no erro, got %v", err)
 		}
 
+		o, err := repo.FindByID(customers[0].ID)
 		if errors.Is(err, crm.ErrCustomerNotFound) {
 			t.Errorf("Should find a customer in repository, got %v", err)
+		}
+
+		if o.ID.String() != i.ID {
+			t.Errorf("expected %v, got %v", i.ID, o.ID.String())
 		}
 	})
 
