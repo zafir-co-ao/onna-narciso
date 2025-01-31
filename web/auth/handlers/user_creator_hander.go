@@ -16,7 +16,7 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 
 		i := auth.UserCreatorInput{
 			UserID:      uid,
-			Username:    strings.TrimSpace(r.FormValue("username")),
+			Username:    strings.ReplaceAll(r.FormValue("username"), " ", ""),
 			Email:       r.FormValue("email"),
 			PhoneNumber: r.FormValue("phone-number"),
 			Password:    r.FormValue("password"),

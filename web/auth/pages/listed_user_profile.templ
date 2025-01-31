@@ -8,7 +8,7 @@ import (
 
 var listedUserProfileHandle = templ.NewOnceHandle()
 
-templ ListedUserProfile(u auth.UserOutput) {
+templ ListedUserProfile(u , au auth.UserOutput) {
     @listedUserProfileHandle.Once() {
         <script>
 			document.addEventListener("htmx:afterOnLoad", (evt) => {
@@ -34,7 +34,7 @@ templ ListedUserProfile(u auth.UserOutput) {
 		WithID("navbar").
 		WithTitle("Perfil").
 		WithHxTarget("#content").
-		WithUserID(u.ID).
+		WithUser(au).
 		WithPageTarget("#listed-user-profile").
 		Build()
     

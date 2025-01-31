@@ -79,7 +79,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /customers/dialogs/edit-customer-dialog", _crm.HandleUpdateCustomerDialog(u.CustomerFinder))
 
 	mux.HandleFunc("POST /professionals", _hr.HandleCreateProfessional(u.ProfessionalCreator))
-	mux.HandleFunc("GET /professionals", _hr.HandleFindProfessionals(u.ProfessionalFinder))
+	mux.HandleFunc("GET /professionals", _hr.HandleFindProfessionals(u.ProfessionalFinder, u.UserFinder))
 	mux.HandleFunc("GET /professionals/dialogs/create-professional-dialog", _hr.HandleCreateProfessionalDialog(u.ServiceFinder))
 	mux.HandleFunc("PUT /professionals/{id}", _hr.HandleUpdateProfessional(u.ProfessionalUpdater))
 	mux.HandleFunc("GET /professionals/dialogs/update-professional-dialog", _hr.HandleUpdateProfessionalDialog(u.ProfessionalFinder, u.ServiceFinder))
@@ -110,6 +110,7 @@ func AuthenticationMiddleware(next http.Handler) http.Handler {
 		path := r.URL.Path
 
 		if err != nil && path == "/auth/login" {
+			w.Header().Set("HX-Redirect", "/auth/login")
 			next.ServeHTTP(w, r)
 			return
 		}

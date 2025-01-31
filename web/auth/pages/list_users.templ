@@ -31,7 +31,7 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 		WithID("navbar").
 		WithTitle("Utilizadores").
 		WithHxTarget("#content").
-		WithUserID(au.ID).
+		WithUser(au).
 		WithPageTarget("#users").
 		Build()	
 
@@ -39,22 +39,20 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
 				<div class="mt-4 sm:mt-0 sm:flex-none">
-					if au.Role == auth.RoleManager.String() {
-						<form
-							hx-get="/auth/dialogs/create-user-dialog"
-							hx-trigger="click"
-							hx-target="#dialog"
-							hx-swap="outerHTML"
+					<form
+						hx-get="/auth/dialogs/create-user-dialog"
+						hx-trigger="click"
+						hx-target="#dialog"
+						hx-swap="outerHTML"
+					>
+						<input type="hidden" name="hx-post" value="/auth/users"/>
+						<button
+							type="button"
+							class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 						>
-							<input type="hidden" name="hx-post" value="/auth/users"/>
-							<button
-								type="button"
-								class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-							>
-								Novo utilizador
-							</button>
-						</form>
-					}
+							Novo utilizador
+						</button>
+					</form>
 				</div>
 			</div>
 			<div class="mt-8 flow-root">
@@ -92,28 +90,22 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 							<tbody class="bg-white">
 								if len(users) > 0 {
 									for _, u := range users {
-										<tr class="even:bg-gray-50">
-											if au.Role == auth.RoleManager.String() { 
-												<td 
-													if au.ID == u.ID {
-														hx-get={ fmt.Sprintf("/auth/authenticated-user-profile/%s", u.ID) }
-													}
+										<tr class="even:bg-gray-50">	
+											<td 
+												if au.ID == u.ID {
+													hx-get={ fmt.Sprintf("/auth/authenticated-user-profile/%s", u.ID) }
+												}
 
-													if au.ID != u.ID {
-														hx-get={ fmt.Sprintf("/auth/listed-user-profile/%s", u.ID) }
-													}
+												if au.ID != u.ID {
+													hx-get={ fmt.Sprintf("/auth/listed-user-profile/%s", u.ID) }
+												}
 
-													hx-trigger="click"
-													hx-target="#users"
-													hx-swap="outerHTML"
-													class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3 hover:underline cursor-pointer">
-													{ u.Username }
-												</td>
-											} else {
-												<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-													{ u.Username }
-												</td>
-											}
+												hx-trigger="click"
+												hx-target="#users"
+												hx-swap="outerHTML"
+												class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3 hover:underline cursor-pointer">
+												{ u.Username }
+											</td>
 											<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-3">
 												{ u.Email }
 											</td>
@@ -123,24 +115,22 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 											<td colspan="3" class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 												{ u.Role }
 											</td>
-											if au.Role == auth.RoleManager.String() { 
-												<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-													<form
-														hx-get="/auth/dialogs/update-user-dialog"
-														hx-trigger="click"
-														hx-target="#dialog"
-														hx-swap="outerHTML"
-													>
-														<input type="hidden" name="id" value={ u.ID }/>
-														<input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/users/%s", u.ID) }/>
-														<button type="button">
-															<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-																<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path>
-															</svg>
-														</button>
-													</form>
-												</td>
-											}
+											<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+												<form
+													hx-get="/auth/dialogs/update-user-dialog"
+													hx-trigger="click"
+													hx-target="#dialog"
+													hx-swap="outerHTML"
+												>
+													<input type="hidden" name="id" value={ u.ID }/>
+													<input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/users/%s", u.ID) }/>
+													<button type="button">
+														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+															<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path>
+														</svg>
+													</button>
+												</form>
+											</td>
 										</tr>
 									}
 								} else {

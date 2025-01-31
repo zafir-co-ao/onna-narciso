@@ -34,7 +34,7 @@ templ AuthenticatedUserProfile(u auth.UserOutput) {
         WithID("navbar").
         WithTitle("Perfil").
         WithHxTarget("#content").
-        WithUserID(u.ID).
+        WithUser(u).
         WithPageTarget("#auth-user-profile").
         Build()
     

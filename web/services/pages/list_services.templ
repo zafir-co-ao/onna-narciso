@@ -32,7 +32,7 @@ templ ListServices(services []services.ServiceOutput, au auth.UserOutput) {
 		WithID("navbar").
 		WithTitle("Serviços").
 		WithHxTarget("#content").
-		WithUserID(au.ID).
+		WithUser(au).
 		WithPageTarget("#services").
 		Build()
 		

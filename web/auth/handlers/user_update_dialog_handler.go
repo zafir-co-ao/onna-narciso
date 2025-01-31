@@ -9,12 +9,12 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleUpdateUserDialog(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateUserDialog(uf auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		url := r.FormValue("hx-put")
 		id := r.FormValue("id")
 
-		o, err := u.FindByID(id)
+		u, err := uf.FindByID(id)
 
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")
@@ -26,7 +26,12 @@ func HandleUpdateUserDialog(u auth.UserFinder) func(w http.ResponseWriter, r *ht
 			return
 		}
 
+		au, ok := GetAuthenticatedUser(w, r, uf)
+		if !ok {
+			return
+		}
+
 		_http.SendOk(w)
-		components.HandleUpdateUserDialog(url, o).Render(r.Context(), w)
+		components.HandleUpdateUserDialog(url, u, au).Render(r.Context(), w)
 	}
 }

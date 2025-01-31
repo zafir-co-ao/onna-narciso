@@ -5,11 +5,12 @@ import (
 	
     "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	"github.com/zafir-co-ao/onna-narciso/internal/hr"
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
     )
 
 var listProfessionalHandle = templ.NewOnceHandle()
 
-templ ListProfessionals(professionals []hr.ProfessionalOutput) {
+templ ListProfessionals(professionals []hr.ProfessionalOutput, au auth.UserOutput) {
     @listProfessionalHandle.Once() {
         <script type="text/javascript" >
             document.addEventListener("htmx:afterOnLoad", (evt) => {
@@ -26,7 +27,15 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput) {
             })
         </script>
     }
-	@components.Navbar("navbar", "Profissionais", "#content")
+	
+	@components.NewNavbarBuilder().
+		WithID("navbar").
+		WithTitle("Profissionais").
+		WithHxTarget("#content").
+		WithUser(au).
+		WithPageTarget("#professionals").
+		Build()
+
     <div id="professionals">
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">

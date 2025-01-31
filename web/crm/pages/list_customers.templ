@@ -3,7 +3,7 @@ package pages
 import (
 	"fmt"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+		"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
@@ -32,7 +32,7 @@ templ ListCustomers(customers []crm.CustomerOutput, au auth.UserOutput) {
         WithID("navbar").
         WithTitle("Clientes").
         WithHxTarget("#content").
-        WithUserID(au.ID).
+        WithUser(au).
         WithPageTarget("#customers").
         Build()
 

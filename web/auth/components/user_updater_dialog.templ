@@ -5,6 +5,6 @@ import (
     "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ HandleUpdateUserDialog(url string, user auth.UserOutput)  {
-    @components.Dialog("Atualizar utilizador", UserUpdateForm(url, user))
+templ HandleUpdateUserDialog(url string, user, authUser auth.UserOutput)  {
+    @components.Dialog("Atualizar utilizador", UserUpdateForm(url, user, authUser))
 }

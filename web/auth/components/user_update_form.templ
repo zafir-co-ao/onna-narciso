@@ -5,23 +5,26 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-templ UserUpdateForm(url string, user auth.UserOutput) {
+templ UserUpdateForm(url string, u, au auth.UserOutput) {
     <form hx-put={ url } hx-swap="none">
 		<div class="mt-4 space-y-4">
 			<div>
-				@components.InputField(
-					components.WithName("username"),
-                    components.WithValue(user.Username),
-					components.WithPlaceholder("Nome de Utilizador"),
-					components.WithClass("form-control"),
-					components.WithRequired("true"),
-				)
+				<input
+					type="text"
+					name="username"
+					value={ u.Username }
+					placeholder="Nome de Utilizador"
+					class="form-control"
+					oninput="this.value = this.value.replace(/\s/g, '')"
+					pattern="^\S+$"
+					required
+				/>
 			</div>
 			<div>
 				@components.InputField(
 					components.WithType("email"),
 					components.WithName("email"),
-                    components.WithValue(user.Email),
+                    components.WithValue(u.Email),
 					components.WithPlaceholder("E-mail"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
@@ -31,23 +34,40 @@ templ UserUpdateForm(url string, user auth.UserOutput) {
 				@components.InputField(
 					components.WithType("number"),
 					components.WithName("phone-number"),
-                    components.WithValue(user.PhoneNumber),
+                    components.WithValue(u.PhoneNumber),
 					components.WithPlaceholder("Telefone"),
 					components.WithClass("form-control"),
 					components.WithRequired("true"),
 				)
 			</div>
-			<div>	
-				@components.Dropdown(
-					"role",
-					auth.RoleManager.String(),
-                    components.WithValue(user.Role),
-					components.WithOptions(
-						components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
-						components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
-					),
-				)
-			</div>
+			
+			if au.Role == auth.RoleManager.String() {
+				<div>	
+					@components.Dropdown(
+						"role",
+						auth.RoleManager.String(),
+						components.WithValue(u.Role),
+						components.WithOptions(
+							components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
+							components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
+						),
+					)
+				</div>
+			}
+
+			if au.Role != auth.RoleManager.String() {
+				<div>
+					<input
+						type="text"
+						name="role"
+						value={ u.Role }
+						class="form-control"
+						readonly
+						required
+					/>
+				</div>
+			}
+			
 			<div class="form-actions">
 				<button
 					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"

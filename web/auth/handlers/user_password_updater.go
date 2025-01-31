@@ -10,9 +10,10 @@ import (
 
 func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")
+		userID := r.PathValue("id")
+
 		i := auth.UserPasswordUpdaterInput{
-			UserID:               id,
+			UserID:               userID,
 			OldPassword:          r.FormValue("old-password"),
 			NewPassword:          r.FormValue("new-password"),
 			ConfirmationPassword: r.FormValue("confirmation-password"),
@@ -48,12 +49,23 @@ func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWr
 		cookie, _ := r.Cookie("userID")
 		uid := cookie.Value
 
-		if id == uid {
+		if userID == uid {
 			UpdateUserPasswordMiddleware(w, r)
 			return
 		}
 
+		if uid != userID {
+			cookie = &http.Cookie{
+				Name:     "profileID",
+				Value:    userID,
+				HttpOnly: true,
+				Secure:   true,
+				Path:     "/",
+			}
+		}
+
 		http.SetCookie(w, cookie)
+		
 		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}

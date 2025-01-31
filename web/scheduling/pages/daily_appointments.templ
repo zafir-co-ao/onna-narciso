@@ -38,7 +38,7 @@ templ DailyAppointments(date string, opts []_components.DailyAppointmentOptions,
 		WithID("navbar").
 		WithTitle("Agenda").
 		WithHxTarget("#content").
-		WithUserID(au.ID).
+		WithUser(au).
 		WithPageTarget("#daily-view").
 		Build()
 

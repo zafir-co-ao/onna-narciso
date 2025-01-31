@@ -11,9 +11,11 @@ import (
 
 func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userID := r.PathValue("id")
+
 		i := auth.UserUpdaterInput{
-			UserID:      r.PathValue("id"),
-			Username:    strings.TrimSpace(r.FormValue("username")),
+			UserID:      userID,
+			Username:    strings.ReplaceAll(r.FormValue("username"), " ", ""),
 			Email:       r.FormValue("email"),
 			PhoneNumber: r.FormValue("phone-number"),
 			Role:        r.FormValue("role"),
@@ -76,6 +78,21 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		cookie, _ := r.Cookie("userID")
+		uid := cookie.Value
+
+		if uid != userID {
+			cookie = &http.Cookie{
+				Name:     "profileID",
+				Value:    userID,
+				HttpOnly: true,
+				Secure:   true,
+				Path:     "/",
+			}
+		}
+
+		http.SetCookie(w, cookie)
+		
 		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}

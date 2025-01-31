@@ -39,6 +39,7 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 		}
 
 		http.SetCookie(w, cookie)
+
 		w.Header().Set("HX-Redirect", "/")
 		_http.SendOk(w)
 	}

@@ -1,29 +1,26 @@
 package components
 
+import "github.com/zafir-co-ao/onna-narciso/internal/auth"
+
 type link struct {
 	title string
 	url   string
 }
 
-var menu = []link{
-	{
-		title: "Agenda",
-		url:   "/daily-appointments",
+var menus = map[string][]link{
+	auth.RoleManager.String(): {
+		{"Agenda", "/daily-appointments"},
+		{"Serviços", "/services"},
+		{"Clientes", "/customers"},
+		{"Profissionais", "/professionals"},
+		{"Utilizadores", "/auth/users"},
 	},
-	{
-		title: "Serviços",
-		url:   "/services",
+	auth.RoleReceptionist.String(): {
+		{"Agenda", "/daily-appointments"},
+		{"Clientes", "/customers"},
 	},
-	{
-		title: "Clientes",
-		url:   "/customers",
-	},
-	{
-		title: "Profissionais",
-		url:   "/professionals",
-	},
-	{
-		title: "Utilizadores",
-		url:   "/auth/users",
-	},
+}
+
+func GetMenu(role string) []link {
+	return menus[role]
 }

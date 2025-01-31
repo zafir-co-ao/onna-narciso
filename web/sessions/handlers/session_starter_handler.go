@@ -9,6 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
+	"github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -57,18 +58,8 @@ func HandleStartSession(
 			return
 		}
 
-		cookie, _ := r.Cookie("userID")
-		uid := cookie.Value
-
-		au, err := uf.FindByID(uid)
-
-		if !errors.Is(nil, err) {
-			_http.SendServerError(w)
-			return
-		}
-
-		if errors.Is(err, auth.ErrUserNotFound) {
-			_http.SendNotFound(w, "Utilizador não encontrado")
+		au, ok := handlers.GetAuthenticatedUser(w, r, uf)
+		if !ok {
 			return
 		}
 
