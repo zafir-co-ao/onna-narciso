@@ -45,8 +45,7 @@ templ UserUpdateForm(url string, u, au auth.UserOutput) {
 				<div>	
 					@components.Dropdown(
 						"role",
-						auth.RoleManager.String(),
-						components.WithValue(u.Role),
+						u.Role,
 						components.WithOptions(
 							components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
 							components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},

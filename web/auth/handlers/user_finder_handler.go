@@ -18,8 +18,9 @@ func HandleFindUsers(uf auth.UserFinder) func(w http.ResponseWriter, r *http.Req
 			return
 		}
 
-		au, ok := GetAuthenticatedUser(w, r, uf)
+		au, ok := HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 

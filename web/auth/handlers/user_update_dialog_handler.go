@@ -26,8 +26,9 @@ func HandleUpdateUserDialog(uf auth.UserFinder) func(w http.ResponseWriter, r *h
 			return
 		}
 
-		au, ok := GetAuthenticatedUser(w, r, uf)
+		au, ok := HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 

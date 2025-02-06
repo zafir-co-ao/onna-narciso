@@ -32,8 +32,9 @@ func HandleListedUserProfilePage(uf auth.UserFinder) func(w http.ResponseWriter,
 			return
 		}
 
-		au, ok := GetAuthenticatedUser(w, r, uf)
+		au, ok := HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 
@@ -42,22 +43,3 @@ func HandleListedUserProfilePage(uf auth.UserFinder) func(w http.ResponseWriter,
 	}
 }
 
-func GetAuthenticatedUser(w http.ResponseWriter, r *http.Request, uf auth.UserFinder) (auth.UserOutput, bool) {
-	cookie, _ := r.Cookie("userID")
-
-	uid := cookie.Value
-
-	au, err := uf.FindByID(uid)
-
-	if errors.Is(err, auth.ErrUserNotFound) {
-		_http.SendNotFound(w, "Utilizador não encontrado")
-		return auth.UserOutput{}, false
-	}
-
-	if !errors.Is(nil, err) {
-		_http.SendServerError(w)
-		return auth.UserOutput{}, false
-	}
-
-	return au, true
-}

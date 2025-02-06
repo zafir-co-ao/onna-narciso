@@ -6,7 +6,7 @@ import (
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/crm"
-	"github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
+	_auth"github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/crm/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
@@ -20,8 +20,9 @@ func HandleFindCustomer(cf crm.CustomerFinder, uf auth.UserFinder) func(w http.R
 			return
 		}
 
-		au, ok := handlers.GetAuthenticatedUser(w, r, uf)
+		au, ok := _auth.HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
-	"github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
+	_auth "github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	"github.com/zafir-co-ao/onna-narciso/internal/hr"
 	"github.com/zafir-co-ao/onna-narciso/web/hr/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -20,8 +20,9 @@ func HandleFindProfessionals(pf hr.ProfessionalFinder, uf auth.UserFinder) func(
 			return
 		}
 
-		au, ok := handlers.GetAuthenticatedUser(w, r, uf)
+		au, ok := _auth.HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 

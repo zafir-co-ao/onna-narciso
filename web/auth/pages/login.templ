@@ -1,7 +1,5 @@
 package pages
 
-import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
-
 templ Login() {
 	<html lang="pt">
 		<head>
@@ -33,12 +31,17 @@ templ Login() {
 							hx-swap="outerHTML"
 							class="space-y-6"
 						>
-							@components.InputField(
-								components.WithPlaceholder("Utilizador"),
-								components.WithName("username"),
-								components.WithRequired("true"),
-								components.WithClass("form-control"),
-							)
+							<div>
+								<input
+									type="text"
+									name="username"
+									placeholder="Utilizador"
+									class="form-control"
+									oninput="this.value = this.value.replace(/\s/g, '')"
+									pattern="^\S+$"
+									required
+								/>
+							</div>
 							<div class="form-control flex gap-2" x-data="{showPassword: false}">
 								<input
 									name="password"

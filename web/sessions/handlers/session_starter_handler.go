@@ -9,7 +9,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
-	"github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
+	_auth "github.com/zafir-co-ao/onna-narciso/web/auth/handlers"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -58,8 +58,9 @@ func HandleStartSession(
 			return
 		}
 
-		au, ok := handlers.GetAuthenticatedUser(w, r, uf)
+		au, ok := _auth.HandleGetAuthenticatedUser(w, r, uf)
 		if !ok {
+			_http.SendUnauthorized(w)
 			return
 		}
 
