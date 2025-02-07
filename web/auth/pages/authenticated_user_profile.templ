@@ -14,11 +14,11 @@ templ AuthenticatedUserProfile(u auth.UserOutput) {
         <script>
 			document.addEventListener("htmx:afterOnLoad", (evt) => {
 				let xhr = evt.detail.xhr
-				let header = xhr.getResponseHeader("X-Reload-Page");
+				let header = xhr.getResponseHeader("X-Reload-Page-Users");
 
 				if (!header) return
 
-                let id = document.getElementById("id").value;
+                let id = document.getElementById("profile_id").value;
                 getUser(id)
 			})
 

@@ -8,31 +8,13 @@ import  (
 
 templ UserProfile(id string, u auth.UserOutput) {
 <div id={ id } >
-        <input type="hidden" id="id" name="id" value={ u.ID }/>     
+        <input type="hidden" id="profile_id" value={ u.ID }/>     
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-end">
 			    <div class="mt-4 sm:mt-0 sm:flex-none">
                     <div class="flex gap-4">
-                        <form
-                            hx-get="/auth/dialogs/update-user-password-dialog"
-                            hx-trigger="click"
-                            hx-target="#dialog"
-                            hx-swap="outerHTML"
-                        >
-                            <input type="hidden" name="id" value={ u.ID }/>
-                            <input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/update-user-password/%s", u.ID) }/>
-                            <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Atualizar Credenciais</button>
-                        </form>
-                        <form
-                            hx-get="/auth/dialogs/update-user-dialog"
-                            hx-trigger="click"
-                            hx-target="#dialog"
-                            hx-swap="outerHTML"
-                        >
-                            <input type="hidden" name="id" value={ u.ID }/>
-                            <input type="hidden" name="hx-put" value={ fmt.Sprintf("/auth/users/%s", u.ID) }/>
-                            <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Atualizar Perfil</button>
-                        </form>
+                        @openUserDialog("Atualizar Credenciais","/auth/dialogs/update-user-password-dialog", "/auth/update-user-password/%s", u.ID)
+                        @openUserDialog("Atualizar Perfil","/auth/dialogs/update-user-dialog", "/auth/users/%s", u.ID)
                     </div>
 				</div>
 			</div>
@@ -53,4 +35,17 @@ templ UserProfile(id string, u auth.UserOutput) {
         </div>
 		<dialog id="dialog" hx-swap-oob="true"></dialog>
     </div>
+}
+
+templ openUserDialog(buttonTitle, hxGet, dialogPath, userID string) {
+    <form
+        hx-get={ hxGet }
+        hx-trigger="click"
+        hx-target="#dialog"
+        hx-swap="outerHTML"
+    >
+        <input type="hidden" name="id" value={ userID }/>
+        <input type="hidden" name="hx-put" value={ fmt.Sprintf(dialogPath, userID) }/>
+        <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">{ buttonTitle }</button>
+    </form>
 }

@@ -15,7 +15,7 @@ templ ListCustomers(customers []crm.CustomerOutput, au auth.UserOutput) {
             document.addEventListener("htmx:afterOnLoad", (evt) => {
      			let xhr = evt.detail.xhr
 
-                let header = xhr.getResponseHeader("X-Reload-Page");
+                let header = xhr.getResponseHeader("X-Reload-Page-Customers");
 
                 if (!header) return
 

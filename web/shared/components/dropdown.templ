@@ -31,8 +31,6 @@ func _dropdownGetData(s *_dropdownState) string {
 		}
 	}
 
-	fmt.Println("Opt: ", label)
-
 	return fmt.Sprintf("{open: false, value: '%s', label: '%s', placeholder: '%s'}",
 		s.value,
 		label,

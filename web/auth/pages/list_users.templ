@@ -15,7 +15,7 @@ templ ListUsers(users []auth.UserOutput, au auth.UserOutput) {
 			document.addEventListener("htmx:afterOnLoad", (evt) => {
 				let xhr = evt.detail.xhr
 
-				let header = xhr.getResponseHeader("X-Reload-Page");
+				let header = xhr.getResponseHeader("X-Reload-Page-Users");
 
 				if (!header) return
 

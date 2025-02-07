@@ -62,7 +62,7 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
+		w.Header().Set("X-Reload-Page-Services", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

@@ -85,7 +85,7 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
+		w.Header().Set("X-Reload-Page-Users", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

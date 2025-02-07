@@ -36,7 +36,7 @@ func HandleResetUserPassword(u auth.UserPasswordResetter) func(w http.ResponseWr
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
+		w.Header().Set("X-Reload-Page-Users", "ReloadPage")
 		_http.SendReponse(w, fmt.Sprint(components.UserPasswordResponse().Render(r.Context(), w)), http.StatusOK)
 	}
 }

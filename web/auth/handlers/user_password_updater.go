@@ -66,7 +66,7 @@ func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWr
 
 		http.SetCookie(w, cookie)
 		
-		w.Header().Set("X-Reload-Page", "ReloadPage")
+		w.Header().Set("X-Reload-Page-Users", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

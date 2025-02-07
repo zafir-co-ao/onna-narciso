@@ -16,7 +16,7 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput, au auth.UserOutpu
             document.addEventListener("htmx:afterOnLoad", (evt) => {
                 let xhr = evt.detail.xhr
 
-                let header = xhr.getResponseHeader("X-Reload-Page")
+                let header = xhr.getResponseHeader("X-Reload-Page-Professionals")
 
                 if (!header) return
 

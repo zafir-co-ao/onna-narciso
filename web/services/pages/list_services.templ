@@ -16,7 +16,7 @@ templ ListServices(services []services.ServiceOutput, au auth.UserOutput) {
        	    document.addEventListener("htmx:afterOnLoad", (evt) => {
      			let xhr = evt.detail.xhr
 
-                let header = xhr.getResponseHeader("X-Reload-Page");
+                let header = xhr.getResponseHeader("X-Reload-Page-Services");
 
                 if (!header) return
 
