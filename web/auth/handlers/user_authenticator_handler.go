@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
@@ -32,7 +31,6 @@ func HandleAuthenticateUser(u auth.UserAuthenticator) func(w http.ResponseWriter
 		cookie := &http.Cookie{
 			Name:     "userID",
 			Value:    o.ID,
-			Expires:  time.Now().Add(30 * time.Minute),
 			HttpOnly: true,
 			Secure:   true,
 			Path:     "/",

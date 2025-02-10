@@ -12,7 +12,7 @@ func HandleGetAuthenticatedUser(w http.ResponseWriter, r *http.Request, uf auth.
 	cookie, err := r.Cookie("userID")
 
 	if !errors.Is(nil, err) {
-		_http.SendUnauthorized(w)
+		_http.SendServerError(w)
 		return auth.UserOutput{}, false
 	}
 
