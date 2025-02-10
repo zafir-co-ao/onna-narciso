@@ -13,31 +13,22 @@ templ UserProfile(id string, u auth.UserOutput) {
             <div class="flex items-center justify-end">
 			    <div class="mt-4 sm:mt-0 sm:flex-none">
                     <div class="flex gap-4">
-                        @openUserDialog("Atualizar Credenciais","/auth/dialogs/update-user-password-dialog", "/auth/update-user-password/%s", u.ID)
-                        @openUserDialog("Atualizar Perfil","/auth/dialogs/update-user-dialog", "/auth/users/%s", u.ID)
+                        @renderUserDialogForm("Atualizar Credenciais","/auth/dialogs/update-user-password-dialog", "/auth/update-user-password/%s", u.ID)
+                        @renderUserDialogForm("Atualizar Perfil","/auth/dialogs/update-user-dialog", "/auth/users/%s", u.ID)
                     </div>
 				</div>
 			</div>
             <div class="mt-8 space-y-4">
-               <div class="space-y-1"> 
-                    <h2 class="text-base font-medium text-gray-900">Nome</h2>
-                    <p class="text-sm text-gray-500">{ u.Username }</p>
-               </div>
-                 <div class="space-y-1">
-                    <h2 class="text-base font-medium text-gray-900">E-mail</h2>
-                    <p class="text-sm text-gray-500">{ u.Email }</p>
-               </div>
-                <div class="space-y-1">
-                    <h2 class="text-base font-medium text-gray-900">Telefone</h2>
-                    <p class="text-sm text-gray-500">+244 { u.PhoneNumber }</p>
-               </div>
+                @userInfoField("Nome", u.Username)
+                @userInfoField("E-mail", u.Email)
+                @userInfoField("Telefone", fmt.Sprintf("+244 %s", u.PhoneNumber))
             </div>
         </div>
 		<dialog id="dialog" hx-swap-oob="true"></dialog>
     </div>
 }
 
-templ openUserDialog(buttonTitle, hxGet, dialogPath, userID string) {
+templ renderUserDialogForm(buttonTitle, hxGet, dialogPath, userID string) {
     <form
         hx-get={ hxGet }
         hx-trigger="click"
@@ -48,4 +39,11 @@ templ openUserDialog(buttonTitle, hxGet, dialogPath, userID string) {
         <input type="hidden" name="hx-put" value={ fmt.Sprintf(dialogPath, userID) }/>
         <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">{ buttonTitle }</button>
     </form>
+}
+
+templ userInfoField(title, value string) {
+    <div class="space-y-1"> 
+        <h2 class="text-base font-medium text-gray-900">{ title }</h2>
+        <p class="text-sm text-gray-500">{ value }</p>
+    </div>
 }
