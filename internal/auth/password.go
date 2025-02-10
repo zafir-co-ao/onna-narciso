@@ -1,12 +1,16 @@
 package auth
 
 import (
+	"crypto/rand"
 	"errors"
+	"math/big"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 var ErrEmptyPassword = errors.New("password is empty")
+
+const PasswordLength = 12
 
 type Password string
 
@@ -26,6 +30,22 @@ func NewPassword(v string) (Password, error) {
 func MustNewPassword(v string) Password {
 	p, _ := NewPassword(v)
 	return p
+}
+
+func GeneratePassword(length int) (string, error) {
+	characters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+"
+	var password []byte
+
+	for range length {
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(characters))))
+		if err != nil {
+			return "", err
+		}
+
+		password = append(password, characters[n.Int64()])
+	}
+
+	return string(password), nil
 }
 
 func (p Password) IsValid(v string) bool {

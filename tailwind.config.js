@@ -6,7 +6,7 @@ module.exports = {
     "./**/*.tpl",
     "./web/**/*.html",
     "./web/*.html",
-    "./web/**/*.csss",
+    "./web/**/*.css",
   ],
   safelist: [
     "sm:col-start-1",

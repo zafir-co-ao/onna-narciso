@@ -12,5 +12,6 @@ type Repository interface {
 	FindAll() ([]User, error)
 	FindByID(id nanoid.ID) (User, error)
 	FindByUsername(u Username) (User, error)
+	FindByEmail(e Email) (User, error)
 	Save(u User) error
 }

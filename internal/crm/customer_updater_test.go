@@ -211,7 +211,7 @@ func TestCustomerUpdate(t *testing.T) {
 		}
 	})
 
-	t.Run("should_publish_the_domain_event_when_customer_was_updated", func(t *testing.T) {
+	t.Run("should_publish_the_domain_event_when_customer_updated", func(t *testing.T) {
 		var isPublished bool = false
 
 		i := crm.CustomerUpdaterInput{

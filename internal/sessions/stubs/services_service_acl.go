@@ -12,7 +12,7 @@ var services = map[string]sessions.SessionService{
 }
 
 func NewServicesServiceACL() sessions.ServicesServiceACL {
-	var f sessions.ServicesACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
+	var sacl sessions.ServicesACLFunc = func(ids []nanoid.ID) ([]sessions.SessionService, error) {
 		selected := make([]sessions.SessionService, 0)
 		for _, id := range ids {
 			if services[id.String()].ID != id {
@@ -24,5 +24,5 @@ func NewServicesServiceACL() sessions.ServicesServiceACL {
 		return selected, nil
 	}
 
-	return sessions.ServicesACLFunc(f)
+	return sacl
 }
