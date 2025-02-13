@@ -10,8 +10,6 @@ import (
 
 var ErrEmptyPassword = errors.New("password is empty")
 
-const PasswordLength = 12
-
 type Password string
 
 func NewPassword(v string) (Password, error) {

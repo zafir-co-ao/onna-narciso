@@ -26,8 +26,8 @@ func (u *User) IsManager() bool {
 	return u.Role == RoleManager
 }
 
-func (u *User) VerifyPassword(p string) bool {
-	return u.Password.IsValid(p)
+func (u *User) VerifyPassword(v string) bool {
+	return u.Password.IsValid(v)
 }
 
 func (u *User) IsPasswordConfirmed(newPwd, confirmPwd string) bool {
@@ -38,8 +38,9 @@ func (u *User) UpdatePassword(p Password) {
 	u.Password = p
 }
 
-func (u *User) ResetPassword(p string) {
-	u.UpdatePassword(MustNewPassword(p))
+func (u *User) ResetPassword(v string) {
+	p := MustNewPassword(v)
+	u.UpdatePassword(p)
 }
 
 func (u User) GetID() nanoid.ID {

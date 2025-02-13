@@ -15,6 +15,7 @@ type UserPasswordResetterInput struct {
 	Email string
 }
 
+const PasswordLength = 12
 const EventUserPasswordReset = "EventUserPasswordReset"
 
 func NewUserPasswordResetter(r Repository, bus event.Bus, n notifications.Notifier) UserPasswordResetter {
