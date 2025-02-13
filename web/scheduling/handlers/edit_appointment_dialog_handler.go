@@ -63,8 +63,7 @@ func HandleEditAppointmentDialog(af scheduling.AppointmentFinder, sf services.Se
 			}
 		}
 
-		ids := getIDs(professionalsOptions)
-
+		ids := getServicesIDs(professionalsOptions)
 		servicesOutput, err := sf.FindByIDs(ids)
 
 		if !errors.Is(nil, err) {
@@ -91,7 +90,7 @@ func HandleEditAppointmentDialog(af scheduling.AppointmentFinder, sf services.Se
 	}
 }
 
-func getIDs(p []scheduling.Professional) []string {
+func getServicesIDs(p []scheduling.Professional) []string {
 	sid := make(map[string]struct{})
 	var uniqueIDs []string
 
