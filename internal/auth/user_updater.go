@@ -8,6 +8,7 @@ import (
 
 type UserUpdaterInput struct {
 	UserID      string
+	ManagerID   string
 	Username    string
 	Email       string
 	PhoneNumber string
@@ -30,9 +31,13 @@ type userUpdaterImpl struct {
 }
 
 func (u *userUpdaterImpl) Update(i UserUpdaterInput) error {
-	_, err := u.repo.FindByID(nanoid.ID(i.UserID))
+	au, err := u.repo.FindByID(nanoid.ID(i.ManagerID))
 	if err != nil {
 		return err
+	}
+
+	if !au.IsManager() {
+		return ErrRoleNotAllowed
 	}
 
 	users, err := u.repo.FindAll()

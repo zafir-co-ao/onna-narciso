@@ -44,7 +44,7 @@ func (u *userPasswordUpdaterImpl) Update(i UserPasswordUpdaterInput) error {
 		return ErrInvalidOldPassword
 	}
 
-	if !user.IsSamePassword(i.NewPassword, i.ConfirmationPassword) {
+	if !user.IsPasswordConfirmed(i.NewPassword, i.ConfirmationPassword) {
 		return ErrInvalidConfirmationPassword
 	}
 

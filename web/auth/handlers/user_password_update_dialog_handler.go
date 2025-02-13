@@ -11,12 +11,11 @@ import (
 
 func HandleUserPasswordUpdateDialog(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.FormValue("id")
 		url := r.FormValue("hx-put")
 		hxTarget := r.FormValue("hx-target")
 		hxTriggerEvent := r.FormValue("hx-trigger-event")
 
-		o, err := u.FindByID(id)
+		o, err := u.FindByID(r.FormValue("id"))
 
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")

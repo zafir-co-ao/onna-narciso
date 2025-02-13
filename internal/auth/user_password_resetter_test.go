@@ -45,7 +45,7 @@ func TestUserPasswordResetter(t *testing.T) {
 		}
 
 		if _user.Password == user.Password {
-			t.Error("should update password")
+			t.Errorf("should update password, got %v", _user.Password.String())
 		}
 	})
 

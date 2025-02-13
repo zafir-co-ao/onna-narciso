@@ -30,7 +30,7 @@ func (u *User) VerifyPassword(p string) bool {
 	return u.Password.IsValid(p)
 }
 
-func (u *User) IsSamePassword(newPwd, confirmPwd string) bool {
+func (u *User) IsPasswordConfirmed(newPwd, confirmPwd string) bool {
 	return newPwd == confirmPwd
 }
 

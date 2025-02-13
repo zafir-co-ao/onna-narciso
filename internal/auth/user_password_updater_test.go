@@ -16,6 +16,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+
 		i := auth.UserPasswordUpdaterInput{
 			UserID:               "1",
 			NewPassword:          "gustin",
@@ -38,6 +39,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+
 		i := auth.UserPasswordUpdaterInput{
 			UserID:               "1",
 			NewPassword:          "123456",
@@ -66,6 +68,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+
 		isPublished := false
 
 		var h event.HandlerFunc = func(e event.Event) {
@@ -98,6 +101,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+
 		i := auth.UserPasswordUpdaterInput{
 			UserID:               "1",
 			NewPassword:          "",
@@ -120,6 +124,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+
 		i := auth.UserPasswordUpdaterInput{
 			UserID:               "1",
 			NewPassword:          "mypass",
@@ -142,6 +147,7 @@ func TestTestUserPasswordUpdater(t *testing.T) {
 		repo := auth.NewInmemRepository(user)
 		bus := event.NewEventBus()
 		u := auth.NewUserPasswordUpdater(repo, bus)
+		
 		i := auth.UserPasswordUpdaterInput{
 			UserID:               "1",
 			OldPassword:          "Konnely",

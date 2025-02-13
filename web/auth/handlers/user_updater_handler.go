@@ -13,8 +13,12 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := r.PathValue("id")
 
+		cookie, _ := r.Cookie("userID")
+		uid := cookie.Value
+
 		i := auth.UserUpdaterInput{
 			UserID:      userID,
+			ManagerID:   uid,
 			Username:    strings.ReplaceAll(r.FormValue("username"), " ", ""),
 			Email:       r.FormValue("email"),
 			PhoneNumber: r.FormValue("phone-number"),
@@ -68,6 +72,11 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		if errors.Is(err, auth.ErrRoleNotAllowed) {
+			_http.SendBadRequest(w, "Perfil de utilizador não permitido")
+			return
+		}
+
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")
 			return
@@ -76,19 +85,6 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
-		}
-
-		cookie, _ := r.Cookie("userID")
-		uid := cookie.Value
-
-		if uid != userID {
-			cookie = &http.Cookie{
-				Name:     "profileID",
-				Value:    userID,
-				HttpOnly: true,
-				Secure:   true,
-				Path:     "/",
-			}
 		}
 
 		http.SetCookie(w, cookie)

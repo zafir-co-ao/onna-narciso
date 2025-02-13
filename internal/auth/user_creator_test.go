@@ -356,7 +356,7 @@ func TestUserCreator(t *testing.T) {
 		}
 	})
 
-	t.Run("should_return_error_if_username_not_is_unique", func(t *testing.T) {
+	t.Run("should_return_error_if_username_is_not_unique", func(t *testing.T) {
 		i := auth.UserCreatorInput{
 			UserID:   "1",
 			Username: "Paola Oliveira",

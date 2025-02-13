@@ -54,16 +54,6 @@ func HandleUpdateUserPassword(u auth.UserPasswordUpdater) func(w http.ResponseWr
 			return
 		}
 
-		if uid != userID {
-			cookie = &http.Cookie{
-				Name:     "profileID",
-				Value:    userID,
-				HttpOnly: true,
-				Secure:   true,
-				Path:     "/",
-			}
-		}
-
 		http.SetCookie(w, cookie)
 		_http.SendOk(w)
 	}
