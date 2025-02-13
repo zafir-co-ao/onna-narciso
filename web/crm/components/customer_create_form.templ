@@ -3,7 +3,11 @@ package components
 import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 
 templ CustomerCreateForm(url string) {
-	<form hx-post={ url } hx-swap="none">
+	<form 
+		hx-post={ url } 
+		hx-swap="none"
+		hx-on::after-request="htmx.trigger('#customers', 'refreshCustomers')"
+	>
 		<div class="mt-4 space-y-4">
 			<div>
 				@components.InputField(

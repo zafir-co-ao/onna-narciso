@@ -33,7 +33,6 @@ func HandleCreateProfessional(u hr.ProfessionalCreator) func(w http.ResponseWrit
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

@@ -7,8 +7,12 @@ import (
 	"time"
 
 	"github.com/kindalus/godx/pkg/nanoid"
+	"github.com/kindalus/godx/pkg/xslices"
+	"github.com/zafir-co-ao/onna-narciso/internal/hr"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling"
-	testdata "github.com/zafir-co-ao/onna-narciso/test_data"
+	"github.com/zafir-co-ao/onna-narciso/internal/services"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/duration"
+	"github.com/zafir-co-ao/onna-narciso/internal/shared/name"
 	"github.com/zafir-co-ao/onna-narciso/web/scheduling/pages"
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
@@ -31,7 +35,6 @@ func weeklyAppointmentsProfessionalChanged(date, serviceID, professionalID strin
 		return date, serviceID, "all"
 	}
 
-	//TODO - Quando tiver o repositório de profissionais, permitir apenas serviços que o profissional atende
 	return date, serviceID, professionalID
 }
 
@@ -47,7 +50,7 @@ func previousWeek(date string) string {
 	return d.Format("2006-01-02")
 }
 
-func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http.ResponseWriter, r *http.Request) {
+func HandleWeeklyAppointments(af scheduling.WeeklyAppointmentsFinder, pf hr.ProfessionalFinder, sf services.ServiceFinder) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -93,24 +96,60 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			date = nextWeek(date)
 		}
 
-		professionals := make([]scheduling.Professional, 0)
+		professionalOutput, err := pf.FindAll()
+
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
+		serviceIDs := make([]nanoid.ID, 0)
+		for _, p := range professionalOutput {
+			for _, s := range p.Services {
+				serviceIDs = append(serviceIDs, nanoid.ID(s.ID))
+			}
+		}
+
+		professionals := xslices.Map(professionalOutput, func(p hr.ProfessionalOutput) scheduling.Professional {
+			return scheduling.Professional{
+				ID:          nanoid.ID(p.ID),
+				Name:        name.Name(p.Name),
+				ServicesIDs: serviceIDs,
+			}
+		})
+
+		servicesOutput, err := sf.FindAll()
+
+		if !errors.Is(nil, err) {
+			_http.SendServerError(w)
+			return
+		}
+
+		services := xslices.Map(servicesOutput, func(s services.ServiceOutput) scheduling.Service {
+			return scheduling.Service{
+				ID:       nanoid.ID(s.ID),
+				Name:     name.Name(s.Name),
+				Duration: duration.Duration(s.Duration),
+			}
+		})
+
+
 		if serviceID != "all" {
-			professionals = testdata.Professionals
-			//TODO - Utilizar o repositório de profissionais para filtrar os profissionais que atendem o serviço
 			tmp := make([]scheduling.Professional, 0)
-			for _, professional := range professionals {
-				if slices.Contains(professional.ServicesIDs, nanoid.ID(serviceID)) {
-					tmp = append(tmp, professional)
+			for _, p := range professionals {
+				if slices.Contains(p.ServicesIDs, nanoid.ID(serviceID)) {
+					tmp = append(tmp, p)
 				}
 			}
 			professionals = tmp
 		}
 
-		appointments, err := findApppointments(g, date, serviceID, professionalID)
+		appointments, err := findApppointments(af, date, serviceID, professionalID)
 		if !errors.Is(nil, err) {
 			_http.SendServerError(w)
 			return
 		}
+
 		opts := pages.WeeklyAppointmentsOptions{
 			Date:           date,
 			ServiceID:      serviceID,
@@ -118,7 +157,7 @@ func HandleWeeklyAppointments(g scheduling.WeeklyAppointmentsFinder) func(w http
 			StartHour:      6,
 			EndHour:        20,
 			Days:           5,
-			Services:       testdata.Services,
+			Services:       services,
 			Professionals:  professionals,
 			Appointments:   appointments,
 		}

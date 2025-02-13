@@ -11,8 +11,10 @@ import (
 
 func HandleUpdateUserDialog(uf auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		url := r.FormValue("hx-put")
 		id := r.FormValue("id")
+		url := r.FormValue("hx-put")
+		hxTarget := r.FormValue("hx-target")
+		hxTriggerEvent := r.FormValue("hx-trigger-event")
 
 		u, err := uf.FindByID(id)
 
@@ -32,7 +34,15 @@ func HandleUpdateUserDialog(uf auth.UserFinder) func(w http.ResponseWriter, r *h
 			return
 		}
 
+		p := components.UserUpdateParams{
+			Url:            url,
+			User:           u,
+			AuthUser:       au,
+			HxTarget:       hxTarget,
+			HxTriggerEvent: hxTriggerEvent,
+		}
+
 		_http.SendOk(w)
-		components.HandleUpdateUserDialog(url, u, au).Render(r.Context(), w)
+		components.HandleUpdateUserDialog(p).Render(r.Context(), w)
 	}
 }

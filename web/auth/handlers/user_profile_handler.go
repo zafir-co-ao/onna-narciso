@@ -9,17 +9,9 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleAuthenticatedUserProfilePage(uf auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
+func HandleUserProfilePage(uf auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
-		undefinedID := "${id}"
-
-		cookie, _ := r.Cookie("userID")
-		uid := cookie.Value
-
-		if id == undefinedID {
-			id = uid
-		}
 
 		u, err := uf.FindByID(id)
 
@@ -33,7 +25,13 @@ func HandleAuthenticatedUserProfilePage(uf auth.UserFinder) func(w http.Response
 			return
 		}
 
+		au, ok := HandleGetAuthenticatedUser(w, r, uf)
+		if !ok {
+			_http.SendUnauthorized(w)
+			return
+		}
+
 		_http.SendOk(w)
-		pages.AuthenticatedUserProfile(u).Render(r.Context(), w)
+		pages.UserProfile(u, au).Render(r.Context(), w)
 	}
 }

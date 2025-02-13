@@ -39,7 +39,6 @@ func HandleUpdateProfessional(u hr.ProfessionalUpdater) func(w http.ResponseWrit
 			return
 		}
 
-		w.Header().Set("X-Reload-Page-Professionals", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

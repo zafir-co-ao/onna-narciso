@@ -8,26 +8,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/auth"
     )
 
-var listProfessionalHandle = templ.NewOnceHandle()
-
 templ ListProfessionals(professionals []hr.ProfessionalOutput, au auth.UserOutput) {
-    @listProfessionalHandle.Once() {
-        <script type="text/javascript" >
-            document.addEventListener("htmx:afterOnLoad", (evt) => {
-                let xhr = evt.detail.xhr
-
-                let header = xhr.getResponseHeader("X-Reload-Page-Professionals")
-
-                if (!header) return
-
-				htmx.ajax("GET", "/professionals", {
-                    target: "#professionals",
-                    swap: "outerHTML"
-                })
-            })
-        </script>
-    }
-	
 	@components.NewNavbarBuilder().
 		WithID("navbar").
 		WithTitle("Profissionais").
@@ -36,7 +17,13 @@ templ ListProfessionals(professionals []hr.ProfessionalOutput, au auth.UserOutpu
 		WithPageTarget("#professionals").
 		Build()
 
-    <div id="professionals">
+    <div 
+		id="professionals"
+		hx-get="/professionals" 
+		hx-trigger="refreshProfessionals from:body"
+		hx-swap="outerHTML" 
+		hx-target="#professionals"
+	>
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
 				<div class="mt-4 sm:mt-0 sm:flex-none">

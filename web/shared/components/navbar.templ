@@ -28,7 +28,7 @@ templ Navbar(p NavbarParams) {
 					<div class="w-full md:w-auto md:block">
 						<div class="flex items-center gap-2 md:ml-6">
 							<button
-								hx-get={ fmt.Sprintf("/auth/authenticated-user-profile/%s", p.User.ID) }
+								hx-get={ fmt.Sprintf("/auth/user-profile/%s", p.User.ID) }
 								hx-swap="outerHTML"
 								hx-target={ p.PageTarget }
 								type="button"

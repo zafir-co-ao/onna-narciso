@@ -9,7 +9,9 @@ import (
 
 func HandleUserCreateDialog(w http.ResponseWriter, r *http.Request) {
 	url := r.FormValue("hx-post")
-	
+	hxTarget := r.FormValue("hx-target")
+	hxTriggerEvent := r.FormValue("hx-trigger-event")
+
 	_http.SendOk(w)
-	components.UserCreateDialog(url).Render(r.Context(), w)
+	components.UserCreateDialog(url, hxTarget, hxTriggerEvent).Render(r.Context(), w)
 }

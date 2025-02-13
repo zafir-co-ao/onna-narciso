@@ -49,7 +49,7 @@ func (u *userPasswordResetterImpl) Reset(i UserPasswordResetterInput) error {
 		return err
 	}
 
-	if err = u.SentPasswordToEmail(user, p); err != nil {
+	if err = u.SendPasswordToEmail(user, p); err != nil {
 		return err
 	}
 
@@ -63,7 +63,7 @@ func (u *userPasswordResetterImpl) Reset(i UserPasswordResetterInput) error {
 	return nil
 }
 
-func (u *userPasswordResetterImpl) SentPasswordToEmail(user User, p string) error {
+func (u *userPasswordResetterImpl) SendPasswordToEmail(user User, p string) error {
 	c := notifications.Contact{
 		Name:  user.Username.String(),
 		Email: user.Email.String(),

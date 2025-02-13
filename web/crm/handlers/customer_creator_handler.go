@@ -58,7 +58,6 @@ func HandleCreateCustomer(u crm.CustomerCreator) func(w http.ResponseWriter, r *
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

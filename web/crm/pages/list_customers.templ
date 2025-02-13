@@ -7,27 +7,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
 )
 
-var listCustomersHandle = templ.NewOnceHandle()
-
 templ ListCustomers(customers []crm.CustomerOutput, au auth.UserOutput) {
-	@listCustomersHandle.Once() {
-		<script>
-            document.addEventListener("htmx:afterOnLoad", (evt) => {
-     			let xhr = evt.detail.xhr
-
-                let header = xhr.getResponseHeader("X-Reload-Page-Customers");
-
-                if (!header) return
-
-                htmx.ajax("GET", "/customers", {
-                    target: "#customers",
-                    swap: "outerHTML"
-                })
-            })
-
-		</script>
-	}
-	
     @components.NewNavbarBuilder().
         WithID("navbar").
         WithTitle("Clientes").
@@ -36,7 +16,13 @@ templ ListCustomers(customers []crm.CustomerOutput, au auth.UserOutput) {
         WithPageTarget("#customers").
         Build()
 
-	<div id="customers">
+	<div 
+		id="customers"
+		hx-get="/customers"
+		hx-swap="outerHTML"
+		hx-target="#customers"
+		hx-trigger="refreshCustomers from:body"
+	>
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
 				<div class="mt-4 sm:mt-0 sm:flex-none">

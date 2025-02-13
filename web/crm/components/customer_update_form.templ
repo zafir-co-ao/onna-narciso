@@ -6,7 +6,11 @@ import (
 )
 
 templ CustomerUpdateForm(url string, customer crm.CustomerOutput) {
-	<form hx-put={ url } hx-swap="none">
+	<form 
+		hx-put={ url } 
+		hx-swap="none"
+		hx-on::after-request="htmx.trigger('#customers', 'refreshCustomers')"
+	>
 		<div class="mt-4 space-y-4">
 			<div>
 				@components.InputField(

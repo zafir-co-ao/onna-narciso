@@ -17,7 +17,6 @@ func HandleGetAuthenticatedUser(w http.ResponseWriter, r *http.Request, uf auth.
 	}
 
 	uid := cookie.Value
-
 	au, err := uf.FindByID(uid)
 
 	if errors.Is(err, auth.ErrUserNotFound) {

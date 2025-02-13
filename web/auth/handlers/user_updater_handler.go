@@ -92,8 +92,6 @@ func HandleUpdateUser(u auth.UserUpdater) func(w http.ResponseWriter, r *http.Re
 		}
 
 		http.SetCookie(w, cookie)
-		
-		w.Header().Set("X-Reload-Page-Users", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

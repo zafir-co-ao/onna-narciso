@@ -7,7 +7,11 @@ import (
 )
 
 templ ServiceUpdateForm(url string, s services.ServiceOutput) {
-	<form hx-put={ url } hx-swap="none">
+	<form 
+		hx-put={ url } 
+		hx-swap="none"
+		hx-on::after-request="htmx.trigger('#services', 'refreshServices')"
+	>
 		<div class="space-y-4 mt-4">
 			<div>
 				@components.InputField(

@@ -11,8 +11,10 @@ import (
 
 func HandleUserPasswordUpdateDialog(u auth.UserFinder) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		url := r.FormValue("hx-put")
 		id := r.FormValue("id")
+		url := r.FormValue("hx-put")
+		hxTarget := r.FormValue("hx-target")
+		hxTriggerEvent := r.FormValue("hx-trigger-event")
 
 		o, err := u.FindByID(id)
 
@@ -26,7 +28,14 @@ func HandleUserPasswordUpdateDialog(u auth.UserFinder) func(w http.ResponseWrite
 			return
 		}
 
+		p := components.UserPasswordUpdateParams{
+			Url:            url,
+			User:           o,
+			HxTarget:       hxTarget,
+			HxTriggerEvent: hxTriggerEvent,
+		}
+
 		_http.SendOk(w)
-		components.HandleUpdateUserPasswordDialog(url, o).Render(r.Context(), w)
+		components.HandleUpdateUserPasswordDialog(p).Render(r.Context(), w)
 	}
 }

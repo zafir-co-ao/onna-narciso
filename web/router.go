@@ -54,12 +54,12 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("DELETE /appointments/{id}", handlers.HandleCancelAppointment(u.AppointmentCanceler))
 
 	mux.HandleFunc("GET /daily-appointments", handlers.HandleDailyAppointments(u.DailyAppointmentsFinder, u.SessionFinder, u.UserFinder))
-	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(u.WeeklyAppointmentsFinder))
+	mux.HandleFunc("GET /weekly-appointments", handlers.HandleWeeklyAppointments(u.WeeklyAppointmentsFinder, u.ProfessionalFinder, u.ServiceFinder))
 
-	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog(u.CustomerFinder))
-	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(u.AppointmentFinder))
+	mux.HandleFunc("GET /scheduling/dialogs/schedule-appointment-dialog", handlers.HandleScheduleAppointmentDialog(u.CustomerFinder, u.ProfessionalFinder, u.ServiceFinder))
+	mux.HandleFunc("GET /scheduling/dialogs/edit-appointment-dialog/{id}", handlers.HandleEditAppointmentDialog(u.AppointmentFinder, u.ServiceFinder, u.ProfessionalFinder))
 	mux.HandleFunc("GET /scheduling/daily-appointments-calendar", handlers.HandleDailyAppointmentsCalendar())
-	mux.HandleFunc("GET /scheduling/find-professionals/", handlers.HandleFindProfessionals())
+	mux.HandleFunc("GET /scheduling/find-professionals/", handlers.HandleFindProfessionals(u.ProfessionalFinder))
 
 	mux.HandleFunc("POST /sessions", _sessions.HandleCreateSession(u.SessionCreator, u.SessionFinder, u.DailyAppointmentsFinder, u.UserFinder))
 	mux.HandleFunc("PUT /sessions/{id}", _sessions.HandleStartSession(u.SessionStarter, u.SessionFinder, u.DailyAppointmentsFinder, u.UserFinder))
@@ -87,8 +87,7 @@ func NewRouter(u UsecasesParams) *http.ServeMux {
 	mux.HandleFunc("GET /auth/login", _auth.HandleLoginPage)
 	mux.HandleFunc("GET /auth/logout", _auth.HandleLogoutUser)
 	mux.HandleFunc("POST /auth/login", _auth.HandleAuthenticateUser(u.UserAutheticator))
-	mux.HandleFunc("GET /auth/authenticated-user-profile/{id}", _auth.HandleAuthenticatedUserProfilePage(u.UserFinder))
-	mux.HandleFunc("GET /auth/listed-user-profile/{id}", _auth.HandleListedUserProfilePage(u.UserFinder))
+	mux.HandleFunc("GET /auth/user-profile/{id}", _auth.HandleUserProfilePage(u.UserFinder))
 	mux.HandleFunc("GET /auth/users", _auth.HandleFindUsers(u.UserFinder))
 	mux.HandleFunc("POST /auth/users", _auth.HandleCreateUser(u.UserCreator))
 	mux.HandleFunc("PUT /auth/users/{id}", _auth.HandleUpdateUser(u.UserUpdater))

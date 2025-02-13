@@ -8,26 +8,7 @@ import (
 	"strconv"
 )
 
-var listServicesHandle = templ.NewOnceHandle()
-
 templ ListServices(services []services.ServiceOutput, au auth.UserOutput) {
-	@listServicesHandle.Once() {
-		<script type="text/javascript">
-       	    document.addEventListener("htmx:afterOnLoad", (evt) => {
-     			let xhr = evt.detail.xhr
-
-                let header = xhr.getResponseHeader("X-Reload-Page-Services");
-
-                if (!header) return
-
-                htmx.ajax("GET", "/services", {
-                    target: "#services",
-                    swap: "outerHTML"
-                })
-            })
-        </script>
-	}
-
 	@components.NewNavbarBuilder().
 		WithID("navbar").
 		WithTitle("Serviços").
@@ -36,7 +17,13 @@ templ ListServices(services []services.ServiceOutput, au auth.UserOutput) {
 		WithPageTarget("#services").
 		Build()
 		
-	<div id="services">
+	<div 
+		id="services" 
+		hx-get="/services" 
+		hx-trigger="refreshServices from:body"
+		hx-swap="outerHTML" 
+		hx-target="#services"
+	>
 		<div class="px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-end">
 				<div class="mt-4 sm:mt-0 sm:flex-none">
