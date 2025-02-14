@@ -15,16 +15,33 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 		uid := cookie.Value
 
 		i := auth.UserCreatorInput{
-			UserID:   uid,
-			Username: strings.TrimSpace(r.FormValue("username")),
-			Password: r.FormValue("password"),
-			Role:     r.FormValue("role"),
+			UserID:      uid,
+			Username:    strings.ReplaceAll(r.FormValue("username"), " ", ""),
+			Email:       r.FormValue("email"),
+			PhoneNumber: r.FormValue("phone-number"),
+			Password:    r.FormValue("password"),
+			Role:        r.FormValue("role"),
 		}
 
 		_, err := u.Create(i)
 
 		if errors.Is(err, auth.ErrEmptyUsername) {
 			_http.SendBadRequest(w, "Nome do utilizador vazio")
+			return
+		}
+
+		if errors.Is(err, auth.ErrEmptyEmail) {
+			_http.SendBadRequest(w, "E-mail do utilizador vazio")
+			return
+		}
+
+		if errors.Is(err, auth.ErrInvalidEmailFormat) {
+			_http.SendBadRequest(w, "O e-mail fornecido é inválido")
+			return
+		}
+
+		if errors.Is(err, auth.ErrEmptyPhoneNumber) {
+			_http.SendBadRequest(w, "Telefone do utilizador vazio")
 			return
 		}
 
@@ -48,6 +65,16 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		if errors.Is(err, auth.ErrOnlyUniqueEmail) {
+			_http.SendBadRequest(w, "O e-mail do utilizador deve ser único")
+			return
+		}
+
+		if errors.Is(err, auth.ErrOnlyUniquePhoneNumber) {
+			_http.SendBadRequest(w, "O número de telefone do utilizador deve ser único")
+			return
+		}
+
 		if errors.Is(err, auth.ErrUserNotFound) {
 			_http.SendNotFound(w, "Utilizador não encontrado")
 			return
@@ -58,7 +85,6 @@ func HandleCreateUser(u auth.UserCreator) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

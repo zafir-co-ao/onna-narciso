@@ -1,0 +1,82 @@
+package pages
+
+import (
+    "fmt"
+    
+    "github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+var _hxTarget = "#user-profile"
+var _hxTriggerEvent = "refreshAuthUserProfile"
+
+templ UserProfile(u, au auth.UserOutput) {
+    @components.NewNavbarBuilder().
+        WithID("navbar").
+        WithTitle("Perfil").
+        WithHxTarget("#content").
+        WithUser(au).
+        WithPageTarget("#user-profile").
+        Build()
+    
+   <div 
+        id="user-profile" 
+        hx-get={ fmt.Sprintf("/auth/user-profile/%s", u.ID) }
+        hx-swap="outerHTML"
+        hx-trigger={ fmt.Sprintf("%s from:body", _hxTriggerEvent) }
+        hx-target={ _hxTarget }
+    >  
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-end">
+			    <div class="mt-4 sm:mt-0 sm:flex-none">
+                    <div class="flex gap-4">
+                        <form
+                            hx-get="/auth/dialogs/update-user-password-dialog"
+                            hx-trigger="click"
+                            hx-target="#dialog"
+                            hx-swap="outerHTML"
+                        >
+                            @userInputHidden("id", u.ID)
+                            @userInputHidden("hx-target", _hxTarget)
+                            @userInputHidden("hx-trigger-event", _hxTriggerEvent)
+                            @userInputHidden("hx-put", fmt.Sprintf("/auth/update-user-password/%s", u.ID))
+
+                            <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Atualizar Credenciais</button>
+                        </form>
+
+                        <form
+                            hx-get="/auth/dialogs/update-user-dialog"
+                            hx-trigger="click"
+                            hx-target="#dialog"
+                            hx-swap="outerHTML"
+                        >
+                            @userInputHidden("id", u.ID)
+                            @userInputHidden("hx-target", _hxTarget)
+                            @userInputHidden("hx-trigger-event", _hxTriggerEvent)
+                            @userInputHidden("hx-put", fmt.Sprintf("/auth/users/%s", u.ID))
+                            
+                            <button type="button" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Atualizar Perfil</button>
+                        </form>
+                    </div>
+				</div>
+			</div>
+            <div class="mt-8 space-y-4">
+                @userInfoField("Nome", u.Username)
+                @userInfoField("E-mail", u.Email)
+                @userInfoField("Telefone", fmt.Sprintf("+244 %s", u.PhoneNumber))
+            </div>
+        </div>
+		<dialog id="dialog" hx-swap-oob="true"></dialog>
+    </div>
+}
+
+templ userInfoField(title, value string) {
+    <div class="space-y-1"> 
+        <h2 class="text-base font-medium text-gray-900">{ title }</h2>
+        <p class="text-sm text-gray-500">{ value }</p>
+    </div>
+}
+
+templ userInputHidden(name, value string) {
+    <input type="hidden" name={ name } value={ value }/>
+}

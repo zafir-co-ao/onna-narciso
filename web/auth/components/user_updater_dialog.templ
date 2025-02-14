@@ -1,0 +1,9 @@
+package components
+
+import (
+    "github.com/zafir-co-ao/onna-narciso/web/shared/components"
+)
+
+templ HandleUpdateUserDialog(p UserUpdateParams)  {
+    @components.Dialog("Atualizar utilizador", UserUpdateForm(p))
+}

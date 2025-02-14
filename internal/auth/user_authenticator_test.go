@@ -8,10 +8,9 @@ import (
 )
 
 func TestUserAuthenticator(t *testing.T) {
-	password, _ := auth.NewPassword("1234")
 	user := auth.User{
 		Username: "Jonathan",
-		Password: password,
+		Password: auth.MustNewPassword("1234"),
 	}
 
 	repo := auth.NewInmemRepository(user)

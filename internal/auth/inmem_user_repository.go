@@ -40,6 +40,16 @@ func (r *inmemUserRepositoryImpl) FindByUsername(u Username) (User, error) {
 	return User{}, ErrUserNotFound
 }
 
+func (r *inmemUserRepositoryImpl) FindByEmail(e Email) (User, error) {
+	for _, user := range r.Data {
+		if user.Email == e {
+			return user, nil
+		}
+	}
+
+	return User{}, ErrUserNotFound
+}
+
 func (r *inmemUserRepositoryImpl) Save(u User) error {
 	r.Data[u.ID] = u
 	return nil

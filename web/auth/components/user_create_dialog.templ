@@ -2,6 +2,6 @@ package components
 
 import "github.com/zafir-co-ao/onna-narciso/web/shared/components"
 
-templ UserCreateDialog(url string) {
-	@components.Dialog("Adicionar utilizador", UserCreateForm(url))
+templ UserCreateDialog(url, hxTarget, hxTriggerEvent string) {
+	@components.Dialog("Adicionar utilizador", UserCreateForm(url, hxTarget, hxTriggerEvent))
 }

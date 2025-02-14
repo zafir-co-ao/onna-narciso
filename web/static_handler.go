@@ -23,7 +23,6 @@ func NewStaticHandler() func(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.StripPrefix("/", http.FileServer(staticFS)).ServeHTTP(w, r)
-
 	}
 }
 

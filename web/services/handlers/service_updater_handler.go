@@ -11,7 +11,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, r *http.Request) {
+func HandleUpdateService(su services.ServiceUpdater) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 
@@ -30,7 +30,7 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 			Duration:    d,
 		}
 
-		err = u.Update(i)
+		err = su.Update(i)
 
 		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")
@@ -62,7 +62,6 @@ func HandleUpdateService(u services.ServiceUpdater) func(w http.ResponseWriter, 
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendOk(w)
 	}
 }

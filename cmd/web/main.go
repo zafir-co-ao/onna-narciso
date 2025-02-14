@@ -11,6 +11,7 @@ import (
 	"github.com/zafir-co-ao/onna-narciso/internal/services"
 	"github.com/zafir-co-ao/onna-narciso/internal/sessions"
 
+	auth_stubs "github.com/zafir-co-ao/onna-narciso/internal/auth/stubs"
 	_hr_stubs "github.com/zafir-co-ao/onna-narciso/internal/hr/stubs"
 	"github.com/zafir-co-ao/onna-narciso/internal/scheduling/stubs"
 	_stubs "github.com/zafir-co-ao/onna-narciso/internal/sessions/stubs"
@@ -26,6 +27,7 @@ func main() {
 	sacl := stubs.NewServicesServiceACL()
 	aacl := _stubs.NewSchedulingServiceACL()
 	ssacl := _stubs.NewServicesServiceACL()
+	anacl := auth_stubs.NewNotificationsACL()
 	hrsacl := _hr_stubs.NewServicesServiceACL()
 
 	appointmentRepo := scheduling.NewAppointmentRepository(testdata.Appointments...)
@@ -55,6 +57,9 @@ func main() {
 		UserAutheticator:         auth.NewUserAuthenticator(userRepo),
 		UserFinder:               auth.NewUserFinder(userRepo),
 		UserCreator:              auth.NewUserCreator(userRepo, bus),
+		UserUpdater:              auth.NewUserUpdater(userRepo, bus),
+		UserPasswordUpdater:      auth.NewUserPasswordUpdater(userRepo, bus),
+		UserPasswordResetter:     auth.NewUserPasswordResetter(userRepo, bus, anacl),
 		ProfessionalCreator:      hr.NewProfessionalCreator(professionalRepo, hrsacl, bus),
 		ProfessionalFinder:       hr.NewProfessionalFinder(professionalRepo),
 		ProfessionalUpdater:      hr.NewProfessionalUpdater(professionalRepo, hrsacl, bus),

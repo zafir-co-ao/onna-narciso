@@ -3,16 +3,17 @@ package auth
 import (
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/kindalus/godx/pkg/nanoid"
-	"github.com/kindalus/godx/pkg/xslices"
 )
 
 const EventUserCreated = "EventUserCreated"
 
 type UserCreatorInput struct {
-	UserID   string
-	Username string
-	Password string
-	Role     string
+	UserID      string
+	Username    string
+	Email       string
+	PhoneNumber string
+	Password    string
+	Role        string
 }
 
 type UserCreator interface {
@@ -48,8 +49,26 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
-	if !u.isAvailableUsername(users, username) {
+	if !IsAvailableUsername(users, username) {
 		return UserOutput{}, ErrOnlyUniqueUsername
+	}
+
+	email, err := NewEmail(i.Email)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	if !IsAvailableEmail(users, email) {
+		return UserOutput{}, ErrOnlyUniqueEmail
+	}
+
+	phoneNumber, err := NewPhoneNumber(i.PhoneNumber)
+	if err != nil {
+		return UserOutput{}, err
+	}
+
+	if !IsAvailablePhoneNumber(users, phoneNumber) {
+		return UserOutput{}, ErrOnlyUniquePhoneNumber
 	}
 
 	password, err := NewPassword(i.Password)
@@ -62,7 +81,13 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 		return UserOutput{}, err
 	}
 
-	user := NewUser(username, password, role)
+	user := NewUserBuilder().
+		WithUserName(username).
+		WithEmail(email).
+		WithPhoneNumber(phoneNumber).
+		WithPassword(password).
+		WithRole(role).
+		Build()
 
 	err = u.repo.Save(user)
 	if err != nil {
@@ -78,10 +103,4 @@ func (u *creatorImpl) Create(i UserCreatorInput) (UserOutput, error) {
 	u.bus.Publish(e)
 
 	return toUserOutput(user), nil
-}
-
-func (u *creatorImpl) isAvailableUsername(users []User, username Username) bool {
-	return xslices.All(users, func(u User) bool {
-		return u.Username != username
-	})
 }

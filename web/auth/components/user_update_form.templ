@@ -1,0 +1,86 @@
+package components
+
+import (
+	"github.com/zafir-co-ao/onna-narciso/internal/auth"
+	"github.com/zafir-co-ao/onna-narciso/web/shared/components"
+	"github.com/zafir-co-ao/onna-narciso/web/auth/helpers"
+)
+
+
+templ UserUpdateForm(p UserUpdateParams) {
+    <form 
+		hx-put={ p.Url } 
+		hx-swap="none"
+		hx-on::after-request={ helpers.TriggerEvent(p.HxTarget, p.HxTriggerEvent) }
+	>
+		<div class="mt-4 space-y-4">
+			<div>
+				<input
+					type="text"
+					name="username"
+					value={ p.User.Username }
+					placeholder="Nome de Utilizador"
+					class="form-control"
+					oninput="this.value = this.value.replace(/\s/g, '')"
+					pattern="^\S+$"
+					required
+				/>
+			</div>
+			<div>
+				@components.InputField(
+					components.WithType("email"),
+					components.WithName("email"),
+                    components.WithValue(p.User.Email),
+					components.WithPlaceholder("E-mail"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+				<div>
+				@components.InputField(
+					components.WithType("number"),
+					components.WithName("phone-number"),
+                    components.WithValue(p.User.PhoneNumber),
+					components.WithPlaceholder("Telefone"),
+					components.WithClass("form-control"),
+					components.WithRequired("true"),
+				)
+			</div>
+			
+			if p.AuthUser.Role == auth.RoleManager.String() {
+				<div>	
+					@components.Dropdown(
+						"role",
+						p.User.Role,
+						components.WithOptions(
+							components.InputOption{auth.RoleManager.String(), auth.RoleManager.String()},
+							components.InputOption{auth.RoleReceptionist.String(), auth.RoleReceptionist.String()},
+						),
+					)
+				</div>
+			}
+
+			if p.AuthUser.Role != auth.RoleManager.String() {
+				<div>
+					<input
+						type="text"
+						name="role"
+						value={ p.User.Role }
+						class="form-control"
+						readonly
+						required
+					/>
+				</div>
+			}
+			
+			<div class="form-actions">
+				<button
+					class="w-full ml-auto rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:w-auto"
+					type="submit"
+				>
+					Salvar
+				</button>
+			</div>
+		</div>
+	</form>
+}

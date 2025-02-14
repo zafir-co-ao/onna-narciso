@@ -11,7 +11,7 @@ import (
 	_http "github.com/zafir-co-ao/onna-narciso/web/shared/http"
 )
 
-func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, r *http.Request) {
+func HandleCreateService(sc services.ServiceCreator) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		d, err := strconv.Atoi(r.FormValue("duration"))
 		if err != nil {
@@ -27,7 +27,7 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 			Duration:    d,
 		}
 
-		_, err = u.Create(i)
+		_, err = sc.Create(i)
 
 		if errors.Is(err, name.ErrEmptyName) {
 			_http.SendBadRequest(w, "O nome do serviço não pode estar vazio")
@@ -54,7 +54,6 @@ func HandleCreateService(u services.ServiceCreator) func(w http.ResponseWriter, 
 			return
 		}
 
-		w.Header().Set("X-Reload-Page", "ReloadPage")
 		_http.SendCreated(w)
 	}
 }

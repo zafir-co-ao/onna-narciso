@@ -151,7 +151,7 @@ func TestAppointmentScheduler(t *testing.T) {
 		}
 
 		if a.ProfessionalID.String() != i.ProfessionalID {
-			t.Errorf("The appointment professional must be  %s, got %s", i.ProfessionalID, a.ProfessionalID)
+			t.Errorf("The appointment professional must be %s, got %s", i.ProfessionalID, a.ProfessionalID)
 		}
 	})
 
