@@ -13,10 +13,10 @@ import (
 func TestUserPasswordResetter(t *testing.T) {
 	user := auth.User{Email: "kate@gmail.com", Password: auth.MustNewPassword("kate1234")}
 	repo := auth.NewInmemRepository(user)
-	nStub := stubs.NewNoticationsStub()
+	nacl := stubs.NewNotificationsACL()
 	bus := event.NewEventBus()
 
-	u := auth.NewUserPasswordResetter(repo, bus, nStub)
+	u := auth.NewUserPasswordResetter(repo, bus, nacl)
 	i := auth.UserPasswordResetterInput{Email: "kate@gmail.com"}
 
 	t.Run("should_retrieve_user_in_repository", func(t *testing.T) {
@@ -56,13 +56,13 @@ func TestUserPasswordResetter(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		if nStub.Contact.Email != user.Email.String() {
-			t.Errorf("Expected email to be sent to %s, got %v", user.Email.String(), nStub.Contact.Email)
+		if nacl.Contact.Email != user.Email.String() {
+			t.Errorf("Expected email to be sent to %s, got %v", user.Email.String(), nacl.Contact.Email)
 		}
 
 		expectedPrefix := "A sua nova palavra-passe é:"
-		if !strings.HasPrefix(nStub.Message.Body, expectedPrefix) {
-			t.Errorf("Expected email body to contain new password prefix, got %s", nStub.Message.Body)
+		if !strings.HasPrefix(nacl.Message.Body, expectedPrefix) {
+			t.Errorf("Expected email body to contain new password prefix, got %s", nacl.Message.Body)
 		}
 	})
 

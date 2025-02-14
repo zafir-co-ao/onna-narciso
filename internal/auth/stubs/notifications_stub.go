@@ -2,7 +2,7 @@ package stubs
 
 import "github.com/zafir-co-ao/onna-narciso/internal/notifications"
 
-func NewNoticationsStub() *notificationsStub {
+func NewNotificationsACL() *notificationsStub {
 	return &notificationsStub{}
 }
 

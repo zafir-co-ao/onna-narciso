@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/kindalus/godx/pkg/event"
 	"github.com/zafir-co-ao/onna-narciso/internal/notifications"
@@ -15,8 +16,11 @@ type UserPasswordResetterInput struct {
 	Email string
 }
 
-const PasswordLength = 12
-const EventUserPasswordReset = "EventUserPasswordReset"
+const (
+	PasswordLength                = 12
+	EventUserPasswordReset        = "EventUserPasswordReset"
+	ErrUserPasswordNotSentToEmail = "Erro ao enviar nova palavra para %s: %v"
+)
 
 func NewUserPasswordResetter(r Repository, bus event.Bus, n notifications.Notifier) UserPasswordResetter {
 	return &userPasswordResetterImpl{repo: r, bus: bus, notifier: n}
@@ -51,7 +55,7 @@ func (u *userPasswordResetterImpl) Reset(i UserPasswordResetterInput) error {
 	}
 
 	if err = u.SendPasswordToEmail(user, p); err != nil {
-		return err
+		slog.Error(ErrUserPasswordNotSentToEmail, user.Email.String(), err)
 	}
 
 	e := event.New(EventUserPasswordReset,
